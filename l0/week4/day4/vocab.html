@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vocabulary Week 4 Day 4 | Empire English</title><link rel="stylesheet" href="../../../css/empire.css"></head><body>
+<div class="container"><div class="header"><div class="brand">🏛️</div><h1>📖 Vocabulary</h1><p class="subtitle">Week 4 • Day 4 • Home & Daily Life</p></div>
+<div class="arabic-text">اضغط البطاقة لرؤية المعنى. اضغط 🔊 لسماع الكلمة.</div>
+<div class="card"><p id="card-counter" style="text-align:center;color:var(--text-muted)">1/8</p>
+<div class="flashcard" id="flashcard" onclick="Flashcard.flip()"></div>
+<div class="audio-controls" style="justify-content:center">
+<button class="btn btn-sm btn-outline" onclick="Flashcard.prev()">←</button>
+<button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
+<button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l0',4,4,'vocab')"> Done ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="listening.html">← Listening</a><a href="../../../index.html">Home</a></div></div>
+<script src="../../../js/app.js"></script>
+<script>const words=[{"word": "wash", "pronunciation": "WOSH", "arabic": "يغسل", "pos": "verb"}, {"word": "brush", "pronunciation": "BRUSH", "arabic": "يفرش", "pos": "verb"}, {"word": "get up", "pronunciation": "GET UP", "arabic": "يستيقظ/يقوم", "pos": "verb"}, {"word": "get dressed", "pronunciation": "GET DREST", "arabic": "يلبس", "pos": "verb"}, {"word": "leave", "pronunciation": "LEEV ⚠️", "arabic": "يغادر", "pos": "verb"}, {"word": "arrive", "pronunciation": "uh-RYV ⚠️", "arabic": "يصل", "pos": "verb"}, {"word": "turn on", "pronunciation": "TURN ON", "arabic": "يشغّل", "pos": "verb"}, {"word": "turn off", "pronunciation": "TURN OFF", "arabic": "يطفئ", "pos": "verb"}];document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>

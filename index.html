@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empire English — Practice Platform</title>
+  <link rel="stylesheet" href="css/empire.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">🏛️</div>
+      <h1>Empire English Practice</h1>
+      <p class="subtitle">Your daily practice hub — built for Arabic speakers</p>
+    </div>
+
+    <!-- Level Selector -->
+    <div class="nav" id="level-nav">
+      <a href="#" class="active" onclick="selectLevel('l0')">🌱 Level 0</a>
+      <a href="#" onclick="selectLevel('l1')">💪 Level 1</a>
+      <a href="#" onclick="selectLevel('l2')">🚀 Level 2</a>
+      <a href="#" onclick="selectLevel('l3')">👑 Level 3</a>
+    </div>
+
+    <!-- Week Navigation -->
+    <div class="week-nav" id="week-nav"></div>
+
+    <!-- Day Grid -->
+    <div class="card">
+      <h2>📅 Choose Your Day</h2>
+      <div class="day-grid" id="day-grid"></div>
+    </div>
+
+    <!-- Exercise Types -->
+    <div class="card" id="exercises" style="display:none;">
+      <h2>📋 Today's Exercises</h2>
+      <div class="nav" id="exercise-nav"></div>
+    </div>
+
+    <!-- Arabic instruction -->
+    <div class="arabic-text">
+      اختار المستوى → الأسبوع → اليوم → ثم ابدأ التمرين.<br>
+      كل تمرين فيه صوت + نص + مكان تسجل فيه نفسك.
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.8rem;">
+      <p>Empire English Community — Common Sense First 🏛️</p>
+      <p style="margin-top:5px;">practice.empireenglish.online</p>
+    </div>
+  </div>
+
+  <button class="btn btn-sm lang-toggle" id="lang-toggle-btn" onclick="Lang.toggle()">EN</button>
+
+  <script src="js/app.js"></script>
+  <script>
+    let currentLevel = 'l0';
+    let currentWeek = 1;
+    const WEEKS = { l0: 8, l1: 10, l2: 12, l3: 8 };
+
+    function selectLevel(level) {
+      currentLevel = level;
+      document.querySelectorAll('#level-nav a').forEach(a => a.classList.remove('active'));
+      event.target.classList.add('active');
+      renderWeeks();
+    }
+
+    function renderWeeks() {
+      const nav = document.getElementById('week-nav');
+      const max = WEEKS[currentLevel];
+      nav.innerHTML = '';
+      for (let w = 1; w <= max; w++) {
+        const a = document.createElement('a');
+        a.href = '#';
+        a.textContent = `Week ${w}`;
+        if (w === currentWeek) a.classList.add('active');
+        a.onclick = (e) => { e.preventDefault(); currentWeek = w; renderWeeks(); renderDays(); };
+        nav.appendChild(a);
+      }
+      renderDays();
+    }
+
+    function renderDays() {
+      const grid = document.getElementById('day-grid');
+      const days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      grid.innerHTML = '';
+      for (let d = 1; d <= 7; d++) {
+        const a = document.createElement('a');
+        a.href = `${currentLevel}/week${currentWeek}/day${d}/`;
+        a.textContent = `${days[d-1]}\nDay ${d}`;
+        a.style.whiteSpace = 'pre-line';
+        if (Progress.isDone(currentLevel, currentWeek, d, 'accent')) {
+          a.classList.add('done');
+        }
+        grid.appendChild(a);
+      }
+      document.getElementById('exercises').style.display = 'block';
+      renderExercises();
+    }
+
+    function renderExercises() {
+      const nav = document.getElementById('exercise-nav');
+      const types = [
+        { id: 'accent', emoji: '🎯', name: 'Accent' },
+        { id: 'shadowing', emoji: '🎧', name: 'Shadow' },
+        { id: 'listening', emoji: '👂', name: 'Listen' },
+        { id: 'vocab', emoji: '📖', name: 'Vocab' },
+      ];
+      nav.innerHTML = '';
+      types.forEach(t => {
+        const a = document.createElement('a');
+        a.href = `${currentLevel}/week${currentWeek}/day1/${t.id}.html`;
+        a.textContent = `${t.emoji} ${t.name}`;
+        nav.appendChild(a);
+      });
+    }
+
+    // Initialize
+    renderWeeks();
+  </script>
+</body>
+</html>

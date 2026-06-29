@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vocabulary Week 2 Day 3 | Empire English</title><link rel="stylesheet" href="../../../css/empire.css"></head><body>
+<div class="container"><div class="header"><div class="brand">🏛️</div><h1>📖 Vocabulary</h1><p class="subtitle">Week 2 • Day 3 • Numbers, Time, Days</p></div>
+<div class="arabic-text">اضغط البطاقة لرؤية المعنى. اضغط 🔊 لسماع الكلمة.</div>
+<div class="card"><p id="card-counter" style="text-align:center;color:var(--text-muted)">1/8</p>
+<div class="flashcard" id="flashcard" onclick="Flashcard.flip()"></div>
+<div class="audio-controls" style="justify-content:center">
+<button class="btn btn-sm btn-outline" onclick="Flashcard.prev()">←</button>
+<button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
+<button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l0',2,3,'vocab')"> Done ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="listening.html">← Listening</a><a href="../../../index.html">Home</a></div></div>
+<script src="../../../js/app.js"></script>
+<script>const words=[{"word": "Wednesday", "pronunciation": "WENZ-day", "arabic": "الأربعاء", "pos": "noun"}, {"word": "Thursday", "pronunciation": "THURZ-day ⚠️", "arabic": "الخميس", "pos": "noun"}, {"word": "Friday", "pronunciation": "FRY-day", "arabic": "الجمعة", "pos": "noun"}, {"word": "Saturday", "pronunciation": "SA-ter-day", "arabic": "السبت", "pos": "noun"}, {"word": "Sunday", "pronunciation": "SUN-day", "arabic": "الأحد", "pos": "noun"}, {"word": "week", "pronunciation": "WEEK", "arabic": "أسبوع", "pos": "noun"}, {"word": "month", "pronunciation": "MUNTH ⚠️", "arabic": "شهر", "pos": "noun"}, {"word": "year", "pronunciation": "YEER", "arabic": "سنة", "pos": "noun"}];document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>

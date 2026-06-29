@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Listening Week 6 Day 1 | Empire English</title><link rel="stylesheet" href="../../../css/empire.css"></head><body>
+<div class="container"><div class="header"><div class="brand">🏛️</div><h1>👂 Listening</h1><p class="subtitle">Week 6 • Day 1 • Places & Directions</p></div>
+<div class="arabic-text">اسمع الحوار وجاوب السؤال. ممكن تسمع أكتر من مرة.</div>
+<div class="card"><h2>🔊 Listen</h2>
+<button class="btn" onclick="TTS.speak('Hi, my name is Tom. Nice to meet you.')">▶️ Play</button>
+<button class="btn btn-outline" onclick="TTS.stop()">⏹️ Stop</button>
+<div class="speed-control"><label>Speed:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow</option><option value="0.75" selected>Normal</option><option value="1.0">Fast</option></select></div></div>
+<div class="card"><h2>❓ What is the speaker's name?</h2><div class="options"><div class="option" data-correct onclick="checkAnswer(this,true)">Tom</div><div class="option" onclick="checkAnswer(this,false)">Tim</div><div class="option" onclick="checkAnswer(this,false)">Sam</div></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l0',6,1,'listening')"> Done ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="shadowing.html">← Shadowing</a><a href="vocab.html">Vocab →</a></div></div>
+<script src="../../../js/app.js"></script>
+<script>function checkAnswer(el,c){document.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{el.classList.add('wrong');document.querySelector('[data-correct]').classList.add('correct')}}</script></body></html>

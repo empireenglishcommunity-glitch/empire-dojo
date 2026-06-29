@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vocabulary Week 6 Day 1 | Empire English</title><link rel="stylesheet" href="../../../css/empire.css"></head><body>
+<div class="container"><div class="header"><div class="brand">🏛️</div><h1>📖 Vocabulary</h1><p class="subtitle">Week 6 • Day 1 • Places & Directions</p></div>
+<div class="arabic-text">اضغط البطاقة لرؤية المعنى. اضغط 🔊 لسماع الكلمة.</div>
+<div class="card"><p id="card-counter" style="text-align:center;color:var(--text-muted)">1/8</p>
+<div class="flashcard" id="flashcard" onclick="Flashcard.flip()"></div>
+<div class="audio-controls" style="justify-content:center">
+<button class="btn btn-sm btn-outline" onclick="Flashcard.prev()">←</button>
+<button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
+<button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l0',6,1,'vocab')"> Done ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="listening.html">← Listening</a><a href="../../../index.html">Home</a></div></div>
+<script src="../../../js/app.js"></script>
+<script>const words=[{"word": "street", "pronunciation": "STREET ⚠️", "arabic": "شارع", "pos": "noun"}, {"word": "road", "pronunciation": "ROHD ⚠️", "arabic": "طريق", "pos": "noun"}, {"word": "city", "pronunciation": "SIH-dee ⚠️", "arabic": "مدينة", "pos": "noun"}, {"word": "town", "pronunciation": "TAWN", "arabic": "بلدة", "pos": "noun"}, {"word": "building", "pronunciation": "BIL-ding", "arabic": "مبنى", "pos": "noun"}, {"word": "school", "pronunciation": "SKOOL", "arabic": "مدرسة", "pos": "noun"}, {"word": "hospital", "pronunciation": "HOS-pih-dəl ⚠️", "arabic": "مستشفى", "pos": "noun"}, {"word": "bank", "pronunciation": "BANK", "arabic": "بنك", "pos": "noun"}];document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>

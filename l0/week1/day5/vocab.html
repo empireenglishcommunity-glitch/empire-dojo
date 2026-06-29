@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vocabulary Week 1 Day 5 | Empire English</title><link rel="stylesheet" href="../../../css/empire.css"></head><body>
+<div class="container"><div class="header"><div class="brand">🏛️</div><h1>📖 Vocabulary</h1><p class="subtitle">Week 1 • Day 5 • Greetings & Self</p></div>
+<div class="arabic-text">اضغط البطاقة لرؤية المعنى. اضغط 🔊 لسماع الكلمة.</div>
+<div class="card"><p id="card-counter" style="text-align:center;color:var(--text-muted)">1/8</p>
+<div class="flashcard" id="flashcard" onclick="Flashcard.flip()"></div>
+<div class="audio-controls" style="justify-content:center">
+<button class="btn btn-sm btn-outline" onclick="Flashcard.prev()">←</button>
+<button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
+<button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l0',1,5,'vocab')"> Done ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="listening.html">← Listening</a><a href="../../../index.html">Home</a></div></div>
+<script src="../../../js/app.js"></script>
+<script>const words=[{"word": "learn", "pronunciation": "LURN", "arabic": "يتعلم", "pos": "verb"}, {"word": "speak", "pronunciation": "SPEEK", "arabic": "يتكلم", "pos": "verb"}, {"word": "understand", "pronunciation": "un-der-STAND", "arabic": "يفهم", "pos": "verb"}, {"word": "help", "pronunciation": "HELP", "arabic": "يساعد", "pos": "verb"}, {"word": "work", "pronunciation": "WURK", "arabic": "يعمل", "pos": "verb"}, {"word": "go", "pronunciation": "GOH", "arabic": "يذهب", "pos": "verb"}, {"word": "come", "pronunciation": "KUM", "arabic": "يأتي", "pos": "verb"}, {"word": "see", "pronunciation": "SEE", "arabic": "يرى", "pos": "verb"}];document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>

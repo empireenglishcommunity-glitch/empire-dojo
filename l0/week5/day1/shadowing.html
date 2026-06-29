@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Shadowing Week 5 Day 1 | Empire English</title><link rel="stylesheet" href="../../../css/empire.css"></head><body>
+<div class="container"><div class="header"><div class="brand">🏛️</div><h1>🎧 Shadowing</h1><p class="subtitle">Week 5 • Day 1 • Food & Shopping</p></div>
+<div class="arabic-text">اسمع → كرر 3 مرات → سجل المحاولة الثالثة</div>
+<div class="card"><h2>📝 Passage</h2><div class="transcript">Hello. My name is Sarah. I am from Cairo. I live in a small apartment. I like to read books and drink coffee. Nice to meet you.</div>
+<button class="btn" onclick="TTS.speak('Hello. My name is Sarah. I am from Cairo. I live in a small apartment. I like to read books and drink coffee. Nice to meet you.')">▶️ Play</button>
+<button class="btn btn-outline" onclick="TTS.stop()">⏹️ Stop</button>
+<div class="speed-control"><label>Speed:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow</option><option value="0.75" selected>Normal</option><option value="1.0">Fast</option></select></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l0',5,1,'shadowing')"> Done ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="accent.html">← Accent</a><a href="listening.html">Listening →</a></div></div>
+<script src="../../../js/app.js"></script></body></html>

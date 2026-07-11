@@ -222,22 +222,6 @@ const Progress = {
 };
 
 // ============================================================
-//  LANGUAGE TOGGLE
-// ============================================================
-const Lang = {
-  current: 'ar', // Default Arabic for L0
-
-  toggle() {
-    this.current = this.current === 'ar' ? 'en' : 'ar';
-    document.querySelectorAll('.arabic-text').forEach(el => {
-      el.style.display = this.current === 'ar' ? 'block' : 'none';
-    });
-    const btn = document.getElementById('lang-toggle-btn');
-    if (btn) btn.textContent = this.current === 'ar' ? 'EN' : 'عربي';
-  }
-};
-
-// ============================================================
 //  FLASHCARD
 // ============================================================
 const Flashcard = {
@@ -279,13 +263,13 @@ const Flashcard = {
       card.innerHTML = `
         <div class="arabic">${word.arabic}</div>
         <div class="pos">${word.pos || ''}</div>
-        <div class="instruction">Tap to flip back</div>
+        <div class="instruction">Tap to flip back <span class="ar-inline" lang="ar" dir="rtl">/ اضغط للرجوع</span></div>
       `;
     } else {
       card.innerHTML = `
         <div class="word">${word.word}</div>
         <div class="pronunciation">${word.pronunciation}</div>
-        <div class="instruction">Tap to see Arabic meaning</div>
+        <div class="instruction">Tap to see Arabic meaning <span class="ar-inline" lang="ar" dir="rtl">/ اضغط لرؤية المعنى</span></div>
       `;
     }
 
@@ -311,8 +295,4 @@ document.addEventListener('DOMContentLoaded', () => {
   if (speedSelect) {
     speedSelect.addEventListener('change', (e) => TTS.setRate(e.target.value));
   }
-
-  // Language toggle
-  const langBtn = document.getElementById('lang-toggle-btn');
-  if (langBtn) langBtn.addEventListener('click', () => Lang.toggle());
 });

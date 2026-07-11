@@ -28,13 +28,13 @@
 
     <!-- Day Grid -->
     <div class="card">
-      <h2>📅 Choose Your Day</h2>
+      <h2>📅 Choose Your Day <span class="ar-inline" lang="ar" dir="rtl">/ اختار يومك</span></h2>
       <div class="day-grid" id="day-grid"></div>
     </div>
 
     <!-- Exercise Types -->
     <div class="card" id="exercises" style="display:none;">
-      <h2>📋 Today's Exercises</h2>
+      <h2>📋 Today's Exercises <span class="ar-inline" lang="ar" dir="rtl">/ تمارين اليوم</span></h2>
       <div class="nav" id="exercise-nav"></div>
     </div>
 
@@ -50,8 +50,6 @@
       <p style="margin-top:5px;">practice.empireenglish.online</p>
     </div>
   </div>
-
-  <button class="btn btn-sm lang-toggle" id="lang-toggle-btn" onclick="Lang.toggle()">EN</button>
 
   <script src="js/app.js"></script>
   <script>
@@ -110,7 +108,10 @@
       nav.innerHTML = '';
       types.forEach(t => {
         const a = document.createElement('a');
-        a.href = `${currentLevel}/week${currentWeek}/day1/${t.id}.html`;
+        // Extensionless, matching every other link on the site (and what
+        // the Discord bot itself generates) -- see .kiro/steering/
+        // project-rules.md's "Known quirk" section for why this matters.
+        a.href = `${currentLevel}/week${currentWeek}/day1/${t.id}`;
         a.textContent = `${t.emoji} ${t.name}`;
         nav.appendChild(a);
       });

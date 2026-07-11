@@ -63,6 +63,21 @@ def audio_id(level, week, day, kind):
     return f"{level}-w{week}-d{day}-{kind}"
 
 
+def bl(en, ar):
+    """Bilingual UI label helper. Every fixed piece of UI chrome (button
+    text, nav links, section headers, instructions) is shown in English
+    AND Arabic simultaneously, rather than behind a toggle -- our
+    students are Arabic speakers, some still beginners, so relying on a
+    click to reveal the Arabic label defeats the point. The Arabic
+    portion is wrapped in a properly lang/dir-tagged span (not just a
+    CSS class) so it renders correctly in Cairo/RTL and is identified
+    as Arabic to screen readers and translation tools, without flipping
+    the direction of the whole page (which stays LTR overall, since the
+    bulk of on-page content -- the actual English target words/
+    sentences students are learning -- reads left-to-right)."""
+    return f'{en} <span class="ar-inline" lang="ar" dir="rtl">/ {ar}</span>'
+
+
 # ============================================================
 #  ACCENT DRILL NORMALIZATION
 #
@@ -142,28 +157,28 @@ def gen_accent(level, week, day, focus, norm):
     pairs_card = ""
     if norm["pairs"]:
         pairs_html = "<br>".join(f"<b>{a}</b> / <b>{b}</b>" for a, b in norm["pairs"][:5])
-        pairs_card = f'<div class="card"><h2>📝 Minimal Pairs</h2><div class="transcript">{pairs_html}</div></div>'
+        pairs_card = f'<div class="card"><h2>📝 {bl("Minimal Pairs", "أزواج التمييز")}</h2><div class="transcript">{pairs_html}</div></div>'
 
     words_card = ""
     if norm["words"]:
         words = norm["words"][:8]
         words_html = " &bull; ".join(f"<b>{w}</b>" for w in words)
-        words_card = (f'<div class="card"><h2>🎯 Practice Words</h2><div class="transcript">{words_html}</div>'
-                      f'<button class="btn btn-outline btn-sm" onclick="TTS.speak(\'{esc(", ".join(words))}\', 0.6)">🔊 Hear Words</button></div>')
+        words_card = (f'<div class="card"><h2>🎯 {bl("Practice Words", "كلمات للتمرين")}</h2><div class="transcript">{words_html}</div>'
+                      f'<button class="btn btn-outline btn-sm" onclick="TTS.speak(\'{esc(", ".join(words))}\', 0.6)">🔊 {bl("Hear Words", "استمع للكلمات")}</button></div>')
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Accent Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week {week} • Day {day} • {focus}</p></div>
-<div class="arabic-text">{norm["instr_ar"]}</div>
-<div class="card"><h2>🔊 Target Sounds: {sounds}</h2>
-<button class="btn" onclick="TTS.speak('{esc(primary)}')">▶️ Listen to Model</button>
-<div class="speed-control"><label>Speed:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow</option><option value="0.8" selected>Normal</option><option value="1.0">Fast</option></select></div></div>
+<div class="arabic-text" lang="ar" dir="rtl">{norm["instr_ar"]}</div>
+<div class="card"><h2>🔊 {bl("Target Sounds", "الأصوات المستهدفة")}: {sounds}</h2>
+<button class="btn" onclick="TTS.speak('{esc(primary)}')">▶️ {bl("Listen to Model", "استمع للنموذج")}</button>
+<div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
 {pairs_card}
 {words_card}
-<div class="card"><h2>🎙️ Say This</h2><div class="transcript"><b>"{primary}"</b></div>
-<button class="btn btn-outline" onclick="TTS.speak('{esc(primary)}', 0.7)">🔊 Model</button></div>
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'accent')"> Done ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="index.html">← Today</a><a href="shadowing.html">Shadowing →</a></div></div>
+<div class="card"><h2>🎙️ {bl("Say This", "قول ده")}</h2><div class="transcript"><b>"{primary}"</b></div>
+<button class="btn btn-outline" onclick="TTS.speak('{esc(primary)}', 0.7)">🔊 {bl("Model", "نموذج")}</button></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'accent')"> {bl("Done", "تم")} ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
 <script src="/js/app.js"></script></body></html>'''
 
 
@@ -172,14 +187,14 @@ def gen_shadowing(level, week, day, theme, norm, aid):
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Shadowing Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎧 Shadowing</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
-<div class="arabic-text">اسمع → كرر 3 مرات → سجل المحاولة الثالثة</div>
-<div class="card"><h2>📝 Passage</h2><div class="transcript">{passage}</div>
-<button class="btn" onclick="KokoroAudio.play('{aid}','{esc(passage)}')">▶️ Play</button>
-<button class="btn btn-outline" onclick="TTS.stop()">⏹️ Stop</button>
-<div class="speed-control"><label>Speed:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow</option><option value="0.75" selected>Normal</option><option value="1.0">Fast</option></select></div>
-<p style="color:var(--text-muted);font-size:0.75rem;margin-top:10px">🎙️ Studio-quality audio when available, otherwise your browser's voice.</p></div>
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'shadowing')"> Done ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="accent.html">← Accent</a><a href="listening.html">Listening →</a></div></div>
+<div class="arabic-text" lang="ar" dir="rtl">اسمع → كرر 3 مرات → سجل المحاولة الثالثة</div>
+<div class="card"><h2>📝 {bl("Passage", "المقطع")}</h2><div class="transcript">{passage}</div>
+<button class="btn" onclick="KokoroAudio.play('{aid}','{esc(passage)}')">▶️ {bl("Play", "شغل")}</button>
+<button class="btn btn-outline" onclick="TTS.stop()">⏹️ {bl("Stop", "قف")}</button>
+<div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.75" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div>
+<p style="color:var(--text-muted);font-size:0.75rem;margin-top:10px">🎙️ {bl("Studio-quality audio when available, otherwise your browser's voice.", "صوت استوديو لما يكون متاح، وإلا صوت المتصفح.")}</p></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'shadowing')"> {bl("Done", "تم")} ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
 <script src="/js/app.js"></script></body></html>'''
 
 
@@ -206,21 +221,21 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
             is_correct = "true" if i == correct_idx else "false"
             data_c = " data-correct" if i == correct_idx else ""
             opts_html += f'<div class="option"{data_c} onclick="checkAnswer(this,{is_correct})">{o["arabic"]}</div>'
-        q_html += (f'<div class="card"><h2>🔊 Word {qi+1}</h2>'
-                   f'<button class="btn btn-sm" onclick="TTS.speak(\'{esc(word["word"])}\', 0.7)">▶️ Play Word</button>'
-                   f'<div class="question" style="margin-top:14px"><p>❓ What does this word mean?</p>'
+        q_html += (f'<div class="card"><h2>🔊 {bl("Word", "كلمة")} {qi+1}</h2>'
+                   f'<button class="btn btn-sm" onclick="TTS.speak(\'{esc(word["word"])}\', 0.7)">▶️ {bl("Play Word", "شغل الكلمة")}</button>'
+                   f'<div class="question" style="margin-top:14px"><p>❓ {bl("What does this word mean?", "معنى الكلمة دي إيه؟")}</p>'
                    f'<div class="options">{opts_html}</div></div></div>')
 
     if not q_html:
-        q_html = '<div class="card"><p>No vocabulary available for this day yet.</p></div>'
+        q_html = f'<div class="card"><p>{bl("No vocabulary available for this day yet.", "لا توجد مفردات متاحة لهذا اليوم حتى الآن.")}</p></div>'
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>👂 Listening</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
-<div class="arabic-text">اسمع الكلمة واختار المعنى الصحيح. ممكن تسمع أكتر من مرة.</div>
+<div class="arabic-text" lang="ar" dir="rtl">اسمع الكلمة واختار المعنى الصحيح. ممكن تسمع أكتر من مرة.</div>
 {q_html}
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'listening')"> Done ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="shadowing.html">← Shadowing</a><a href="vocab.html">Vocab →</a></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'listening')"> {bl("Done", "تم")} ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 <script src="/js/app.js"></script>
 <script>function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script></body></html>'''
 
@@ -229,15 +244,15 @@ def gen_vocab(level, week, day, theme, words):
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Vocabulary Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Vocabulary</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
-<div class="arabic-text">اضغط البطاقة لرؤية المعنى. اضغط 🔊 لسماع الكلمة.</div>
+<div class="arabic-text" lang="ar" dir="rtl">اضغط البطاقة لرؤية المعنى. اضغط 🔊 لسماع الكلمة.</div>
 <div class="card"><p id="card-counter" style="text-align:center;color:var(--text-muted)">1/{max(len(words),1)}</p>
 <div class="flashcard" id="flashcard" onclick="Flashcard.flip()"></div>
 <div class="audio-controls" style="justify-content:center">
 <button class="btn btn-sm btn-outline" onclick="Flashcard.prev()">←</button>
 <button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
 <button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> Done ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="listening.html">← Listening</a><a href="index.html">Today</a></div></div>
+<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> {bl("Done", "تم")} ✅</label></div>
+<div class="nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
 <script src="/js/app.js"></script>
 <script>const words={json.dumps(words, ensure_ascii=False)};document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>'''
 
@@ -248,16 +263,16 @@ def gen_day_index(level, week, day):
 <link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header">
 <img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px">
-<h1>Week {week} — Day {day}</h1><p class="subtitle">Choose your exercise</p></div>
-<div class="arabic-text">اختار التمرين اللي عايز تعمله</div>
-<div class="card"><h2>📋 Today's Exercises</h2>
+<h1>Week {week} — Day {day}</h1><p class="subtitle">{bl("Choose your exercise", "اختار التمرين")}</p></div>
+<div class="arabic-text" lang="ar" dir="rtl">اختار التمرين اللي عايز تعمله</div>
+<div class="card"><h2>📋 {bl("Today's Exercises", "تمارين اليوم")}</h2>
 <div class="nav" style="flex-direction:column;align-items:stretch">
 <a href="accent.html">🎯 Accent Drill — تدريب النطق</a>
 <a href="shadowing.html">🎧 Shadowing — المحاكاة</a>
 <a href="listening.html">👂 Listening — الاستماع</a>
 <a href="vocab.html">📖 Vocabulary — المفردات</a>
 </div></div>
-<div class="nav" style="margin-top:20px"><a href="/index.html">← Home</a></div>
+<div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
 </div></body></html>'''
 

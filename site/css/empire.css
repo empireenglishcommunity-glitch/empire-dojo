@@ -495,27 +495,16 @@ body::before {
   border-right: 3px solid var(--accent);
 }
 
-/* ─── Language Toggle ────────────────────────────────────── */
+/* ─── Bilingual Inline Labels ─────────────────────────────
+   Used by every fixed UI label (buttons, nav, section headers) to show
+   the Arabic translation inline, always visible, right next to the
+   English -- no toggle/click needed. See scripts/generate.py's bl(). */
 
-.lang-toggle {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  z-index: 100;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--accent);
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.lang-toggle:hover {
-  background: var(--accent);
-  color: var(--bg-primary);
+.ar-inline {
+  font-family: 'Cairo', sans-serif;
+  color: var(--text-secondary);
+  font-weight: 500;
+  unicode-bidi: isolate;
 }
 
 /* ─── Week/Day Navigation ────────────────────────────────── */

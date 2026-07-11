@@ -47,9 +47,10 @@ import urllib.request
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent  # empire-practice/ (parent of scripts/)
 KOKORO_URL = os.environ.get("KOKORO_URL", "http://localhost:8880")
 AUDIO_MANIFEST_PATH = SCRIPT_DIR / "audio-manifest.json"
-OUTPUT_DIR = SCRIPT_DIR / "audio"
+OUTPUT_DIR = REPO_ROOT / "site" / "audio"  # deployed site lives here, NOT in scripts/
 DEFAULT_VOICE = "af_heart"
 RESPONSE_FORMAT = "mp3"
 

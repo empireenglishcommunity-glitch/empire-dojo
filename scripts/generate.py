@@ -11,8 +11,12 @@ Path resolution (no more hardcoded /projects/sandbox/... paths):
   - Otherwise defaults to a sibling directory: ../EEC-REPO relative to
     this script's own location (matches the common local dev layout of
     cloning all org repos into one parent folder).
-  - Output is always written into this repo's own root (sibling of this
-    script), e.g. <repo>/l1/week3/day2/accent.html.
+  - Output is always written into this repo's site/ directory (a sibling
+    of this scripts/ directory), e.g. <repo>/site/l1/week3/day2/accent.html.
+    This keeps build tooling (this script, generate_audio.py, the audio
+    manifest) physically outside of whatever directory gets deployed as
+    the live website, so they can never be served as public assets no
+    matter how the deploy step is configured.
 
 Usage:
     python3 generate.py                # generate all 4 levels
@@ -25,20 +29,26 @@ import re
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent  # empire-practice/ (parent of scripts/)
 
 import os
 
-EEC_REPO_DIR = Path(os.environ.get("EEC_REPO_DIR", SCRIPT_DIR.parent / "EEC-REPO"))
+# EEC-REPO is a sibling of THIS repo (empire-practice/), i.e.
+# REPO_ROOT.parent / "EEC-REPO" -- not SCRIPT_DIR.parent, since SCRIPT_DIR
+# is now empire-practice/scripts/, one level deeper than the repo root.
+EEC_REPO_DIR = Path(os.environ.get("EEC_REPO_DIR", REPO_ROOT.parent / "EEC-REPO"))
 BOT_DIR = EEC_REPO_DIR / "bots" / "discord-learning-bot"
 DATA_DIR = BOT_DIR / "data"
 CONTENT_DIR = BOT_DIR / "content"
-OUTPUT_DIR = SCRIPT_DIR  # this repo's own root
+OUTPUT_DIR = REPO_ROOT / "site"  # deployed site lives here, NOT in scripts/
 
 # Single source of truth for how many curriculum weeks each level has —
 # must match bots/discord-learning-bot/src/curriculum.py's LEVEL_WEEK_COUNTS.
 LEVEL_WEEK_COUNTS = {"l0": 8, "l1": 10, "l2": 12, "l3": 8}
 
-AUDIO_MANIFEST_PATH = OUTPUT_DIR / "audio-manifest.json"
+# The manifest is build metadata, not a site asset — keep it in scripts/,
+# never in site/, so it's never deployed as a public file.
+AUDIO_MANIFEST_PATH = SCRIPT_DIR / "audio-manifest.json"
 
 
 def esc(s):

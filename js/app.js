@@ -46,6 +46,45 @@ const TTS = {
 };
 
 // ============================================================
+//  KOKORO AUDIO (pre-generated studio-quality clips, with
+//  automatic fallback to browser TTS if the MP3 isn't there yet)
+// ============================================================
+const KokoroAudio = {
+  _current: null,
+
+  /**
+   * Play a pre-generated clip by id (see audio-manifest.json / generate.py).
+   * Falls back to the browser's SpeechSynthesis voice if the MP3 is
+   * missing (e.g. Kokoro generation hasn't been run yet for this clip),
+   * so every page works correctly even before audio has been generated.
+   */
+  play(id, fallbackText, rate = null) {
+    this.stop();
+    const audio = new Audio(`/audio/${id}.mp3`);
+    this._current = audio;
+    if (rate) audio.playbackRate = rate;
+
+    audio.addEventListener('error', () => {
+      // MP3 not found (404) or unsupported — use browser TTS instead.
+      TTS.speak(fallbackText, rate);
+    });
+
+    audio.play().catch(() => {
+      // Autoplay/decoding failure — fall back too.
+      TTS.speak(fallbackText, rate);
+    });
+  },
+
+  stop() {
+    if (this._current) {
+      this._current.pause();
+      this._current = null;
+    }
+    TTS.stop();
+  }
+};
+
+// ============================================================
 //  VOICE RECORDER
 // ============================================================
 const Recorder = {

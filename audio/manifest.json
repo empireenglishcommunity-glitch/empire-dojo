@@ -1,0 +1,2404 @@
+{
+  "generated": "2026-07-11T13:39:34Z",
+  "voice": "af_heart",
+  "model": "kokoro-82m",
+  "format": "mp3",
+  "kokoro_url": "http://localhost:8880",
+  "total_clips": 266,
+  "files": {
+    "l0-w1-d1-shadow": {
+      "level": "l0",
+      "week": 1,
+      "day": 1,
+      "text": "Pat put the pen in the paper bag. Bob bought a big blue ball.",
+      "voice": "af_heart",
+      "file_size_bytes": 59180,
+      "generated_at": "2026-07-11T13:39:38Z"
+    },
+    "l0-w1-d2-shadow": {
+      "level": "l0",
+      "week": 1,
+      "day": 2,
+      "text": "Today I study at the table. The teacher told us ten new words.",
+      "voice": "af_heart",
+      "file_size_bytes": 64172,
+      "generated_at": "2026-07-11T13:39:45Z"
+    },
+    "l0-w1-d3-shadow": {
+      "level": "l0",
+      "week": 1,
+      "day": 3,
+      "text": "I came to class. The game was good. Can I get a cup of coffee?",
+      "voice": "af_heart",
+      "file_size_bytes": 59948,
+      "generated_at": "2026-07-11T13:39:51Z"
+    },
+    "l0-w1-d4-shadow": {
+      "level": "l0",
+      "week": 1,
+      "day": 4,
+      "text": "I sit in my seat and eat. Please leave — I need to live here.",
+      "voice": "af_heart",
+      "file_size_bytes": 56108,
+      "generated_at": "2026-07-11T13:39:57Z"
+    },
+    "l0-w1-d5-shadow": {
+      "level": "l0",
+      "week": 1,
+      "day": 5,
+      "text": "My name is ___. Today is a bad day because I am late. Can you take my bag?",
+      "voice": "af_heart",
+      "file_size_bytes": 74540,
+      "generated_at": "2026-07-11T13:40:04Z"
+    },
+    "l0-w1-d6-shadow": {
+      "level": "l0",
+      "week": 1,
+      "day": 6,
+      "text": "I practice my pronunciation every day. Today I can say these sounds better than yesterday. Pat, bat. Sheep, ship. Late, cat. I am getting better!",
+      "voice": "af_heart",
+      "file_size_bytes": 152108,
+      "generated_at": "2026-07-11T13:40:18Z"
+    },
+    "l0-w1-d7-shadow": {
+      "level": "l0",
+      "week": 1,
+      "day": 7,
+      "text": "Good morning. My name is ___. I am happy to be here today. I can see ten people in the big class. Please sit in your seat. The teacher is late but that is okay. I will eat my breakfast — bread and tea. This city is nice. I like it.",
+      "voice": "af_heart",
+      "file_size_bytes": 228524,
+      "generated_at": "2026-07-11T13:40:45Z"
+    },
+    "l0-w2-d1-shadow": {
+      "level": "l0",
+      "week": 2,
+      "day": 1,
+      "text": "I have five friends. Every Friday we visit my favorite place. I love it very much.",
+      "voice": "af_heart",
+      "file_size_bytes": 86444,
+      "generated_at": "2026-07-11T13:40:53Z"
+    },
+    "l0-w2-d2-shadow": {
+      "level": "l0",
+      "week": 2,
+      "day": 2,
+      "text": "I think three things: this, that, and the other. My mother thanks them both.",
+      "voice": "af_heart",
+      "file_size_bytes": 68780,
+      "generated_at": "2026-07-11T13:41:00Z"
+    },
+    "l0-w2-d3-shadow": {
+      "level": "l0",
+      "week": 2,
+      "day": 3,
+      "text": "This is easy. His sister has six prizes. Please close your eyes because it is a surprise.",
+      "voice": "af_heart",
+      "file_size_bytes": 90284,
+      "generated_at": "2026-07-11T13:41:09Z"
+    },
+    "l0-w2-d4-shadow": {
+      "level": "l0",
+      "week": 2,
+      "day": 4,
+      "text": "My father has an old car. I don't know if he is home. Go to the park — it's not far. I hope it's not too hot or cold.",
+      "voice": "af_heart",
+      "file_size_bytes": 117548,
+      "generated_at": "2026-07-11T13:41:21Z"
+    },
+    "l0-w2-d5-shadow": {
+      "level": "l0",
+      "week": 2,
+      "day": 5,
+      "text": "I put the book on the table and look at the food. It's good. The room is full. I should go to school soon — it's too far to walk.",
+      "voice": "af_heart",
+      "file_size_bytes": 120620,
+      "generated_at": "2026-07-11T13:41:32Z"
+    },
+    "l0-w2-d6-shadow": {
+      "level": "l0",
+      "week": 2,
+      "day": 6,
+      "text": "I think this food is very good. My father has five books — they are full of very useful things. I never visit the school on Thursday because it is too far.",
+      "voice": "af_heart",
+      "file_size_bytes": 149804,
+      "generated_at": "2026-07-11T13:41:46Z"
+    },
+    "l0-w2-d7-shadow": {
+      "level": "l0",
+      "week": 2,
+      "day": 7,
+      "text": "My father thinks this food is very good. He has five favorite things: his family, his car, good books, cold weather, and football on Thursday. Three of us go to school every day. The room is not very full — there is food for everyone. I am very thankful for everything.",
+      "voice": "af_heart",
+      "file_size_bytes": 268844,
+      "generated_at": "2026-07-11T13:42:17Z"
+    },
+    "l0-w3-d1-shadow": {
+      "level": "l0",
+      "week": 3,
+      "day": 1,
+      "text": "Good morning. Something interesting is happening this evening. I am running — nothing can stop me. I am getting stronger and stronger.",
+      "voice": "af_heart",
+      "file_size_bytes": 124844,
+      "generated_at": "2026-07-11T13:42:29Z"
+    },
+    "l0-w3-d2-shadow": {
+      "level": "l0",
+      "week": 3,
+      "day": 2,
+      "text": "Hello! How are you today? I want to go home with you. We worked hard this week. Yes, you are young and happy.",
+      "voice": "af_heart",
+      "file_size_bytes": 96044,
+      "generated_at": "2026-07-11T13:42:38Z"
+    },
+    "l0-w3-d3-shadow": {
+      "level": "l0",
+      "week": 3,
+      "day": 3,
+      "text": "Today I want to go to a computer store. My family and I — we live together. About a hundred people support us. It's not a problem.",
+      "voice": "af_heart",
+      "file_size_bytes": 131372,
+      "generated_at": "2026-07-11T13:42:51Z"
+    },
+    "l0-w3-d4-shadow": {
+      "level": "l0",
+      "week": 3,
+      "day": 4,
+      "text": "I work early in the morning. First, I learn some new words. My mother and brother come from another country. I love them very much — it's a wonderful world.",
+      "voice": "af_heart",
+      "file_size_bytes": 149420,
+      "generated_at": "2026-07-11T13:43:05Z"
+    },
+    "l0-w3-d5-shadow": {
+      "level": "l0",
+      "week": 3,
+      "day": 5,
+      "text": "I get up and get ready. Then I eat breakfast with my friend at seven. He said he never gets enough rest. I set ten things on the desk every morning. It's getting better.",
+      "voice": "af_heart",
+      "file_size_bytes": 164012,
+      "generated_at": "2026-07-11T13:43:22Z"
+    },
+    "l0-w3-d6-shadow": {
+      "level": "l0",
+      "week": 3,
+      "day": 6,
+      "text": "This morning I went to work early. I learned something new about computers. My friend and brother were together — they said nothing about the problem. Everything is getting better. I never give up.",
+      "voice": "af_heart",
+      "file_size_bytes": 177836,
+      "generated_at": "2026-07-11T13:43:40Z"
+    },
+    "l0-w3-d7-shadow": {
+      "level": "l0",
+      "week": 3,
+      "day": 7,
+      "text": "Every morning I learn something new about the world. My mother and brother work together at a computer company. Nothing about it is a problem for her — she is wonderful. I want to get better at everything. First, I turn on my computer. Then I work for about seven hours. In the evening, my family comes together. We never forget to support each other.",
+      "voice": "af_heart",
+      "file_size_bytes": 332972,
+      "generated_at": "2026-07-11T13:44:14Z"
+    },
+    "l0-w4-d1-shadow": {
+      "level": "l0",
+      "week": 4,
+      "day": 1,
+      "text": "I really like learning languages. The road is long but I love the ride. I look at the light on the right. I read and I listen. I learn and I grow.",
+      "voice": "af_heart",
+      "file_size_bytes": 145964,
+      "generated_at": "2026-07-11T13:44:27Z"
+    },
+    "l0-w4-d2-shadow": {
+      "level": "l0",
+      "week": 4,
+      "day": 2,
+      "text": "I feel really good this morning. I arrived here early. The world looks beautiful after the rain. I want to call my family. All of them are far from here. I live near the school. The water is cold but I don't care.",
+      "voice": "af_heart",
+      "file_size_bytes": 208556,
+      "generated_at": "2026-07-11T13:44:47Z"
+    },
+    "l0-w4-d3-shadow": {
+      "level": "l0",
+      "week": 4,
+      "day": 3,
+      "text": "I just changed my job in June. My teacher is rich and generous. I enjoy watching the children choose lunch. Each age brings a new challenge. Which language do you like?",
+      "voice": "af_heart",
+      "file_size_bytes": 172076,
+      "generated_at": "2026-07-11T13:45:02Z"
+    },
+    "l0-w4-d4-shadow": {
+      "level": "l0",
+      "week": 4,
+      "day": 4,
+      "text": "I like my life right now. Five times I tried to find my voice. The boy pointed down the road. How about we go out? I enjoy the sound of the night. It's time to join.",
+      "voice": "af_heart",
+      "file_size_bytes": 169388,
+      "generated_at": "2026-07-11T13:45:22Z"
+    },
+    "l0-w4-d5-shadow": {
+      "level": "l0",
+      "week": 4,
+      "day": 5,
+      "text": "I ride my bike around town. I turn right at the light. The road is long but I like it. The loud boys are playing outside. I enjoy this time — night time is the right time. I am loyal to my choice.",
+      "voice": "af_heart",
+      "file_size_bytes": 197420,
+      "generated_at": "2026-07-11T13:45:48Z"
+    },
+    "l0-w4-d6-shadow": {
+      "level": "l0",
+      "week": 4,
+      "day": 6,
+      "text": "I really love my life right now. Learning English is my choice. I enjoy riding around town — the roads are long but beautiful. Last night I joined my friends. The children were playing loudly. It was really nice.",
+      "voice": "af_heart",
+      "file_size_bytes": 213164,
+      "generated_at": "2026-07-11T13:46:18Z"
+    },
+    "l0-w4-d7-shadow": {
+      "level": "l0",
+      "week": 4,
+      "day": 7,
+      "text": "I really like my life right now. I live in a large house near a beautiful river. Every morning I ride my bike around the town. I look right, then left. The road is long but I enjoy the ride. Last night I joined my friends at a restaurant. The children were playing loudly. We had a choice: watch a movie or listen to music. I chose to listen. The royal concert was loud and joyful. Learning English is my choice — I love it.",
+      "voice": "af_heart",
+      "file_size_bytes": 430124,
+      "generated_at": "2026-07-11T13:47:03Z"
+    },
+    "l0-w5-d1-shadow": {
+      "level": "l0",
+      "week": 5,
+      "day": 1,
+      "text": "I am here. I can hear you clearly. This year is nearly over. I have no fear — my career path is clear. Come near and listen, dear.",
+      "voice": "af_heart",
+      "file_size_bytes": 129452,
+      "generated_at": "2026-07-11T13:47:16Z"
+    },
+    "l0-w5-d2-shadow": {
+      "level": "l0",
+      "week": 5,
+      "day": 2,
+      "text": "Where is my chair? Over there, in the fresh air. I prepared to share my work. It's only fair. I don't care about my hair. I am aware of what's there.",
+      "voice": "af_heart",
+      "file_size_bytes": 137132,
+      "generated_at": "2026-07-11T13:47:27Z"
+    },
+    "l0-w5-d3-shadow": {
+      "level": "l0",
+      "week": 5,
+      "day": 3,
+      "text": "I parked my car far from the apartment. It was dark but not hard to find. I walked through the garden to the market. The stars were beautiful. My heart felt happy. This is the start of something wonderful.",
+      "voice": "af_heart",
+      "file_size_bytes": 203180,
+      "generated_at": "2026-07-11T13:47:45Z"
+    },
+    "l0-w5-d4-shadow": {
+      "level": "l0",
+      "week": 5,
+      "day": 4,
+      "text": "This year I started a new career. I heard about it at a party — my friend shared the news. I wasn't afraid to start far from here. Where I work now, the air is clear and the garden is dark and beautiful. I care about my heart and my art.",
+      "voice": "af_heart",
+      "file_size_bytes": 225452,
+      "generated_at": "2026-07-11T13:48:05Z"
+    },
+    "l0-w5-d5-shadow": {
+      "level": "l0",
+      "week": 5,
+      "day": 5,
+      "text": "I run every morning. The road is really long — three streets from here. My friend drives me around in her car. I'm sorry I arrived late. During breakfast I remembered: the restaurant is on the right after the bridge. It was a strong, rainy morning.",
+      "voice": "af_heart",
+      "file_size_bytes": 246572,
+      "generated_at": "2026-07-11T13:48:33Z"
+    },
+    "l0-w5-d6-shadow": {
+      "level": "l0",
+      "week": 5,
+      "day": 6,
+      "text": "I started my career near here last year. The market is far from my apartment but I don't care. Every morning I prepare, start the car, and drive through the dark streets. The air is clear and I can hear the birds.",
+      "voice": "af_heart",
+      "file_size_bytes": 205484,
+      "generated_at": "2026-07-11T13:48:52Z"
+    },
+    "l0-w5-d7-shadow": {
+      "level": "l0",
+      "week": 5,
+      "day": 7,
+      "text": "Every year I hear the same story: learning English is hard. I don't agree. The truth is clear — if you start, if you care, if you practice, you get better. My friend started last year with fear in her heart. She could barely share a word. Now? She reads, she speaks, she drives conversations forward. Her career is far from where it started. She is near her dream. The air is different here — full of opportunity. Don't stare at the mountain — start climbing.",
+      "voice": "af_heart",
+      "file_size_bytes": 438188,
+      "generated_at": "2026-07-11T13:49:33Z"
+    },
+    "l0-w6-d1-shadow": {
+      "level": "l0",
+      "week": 6,
+      "day": 1,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:49:38Z"
+    },
+    "l0-w6-d2-shadow": {
+      "level": "l0",
+      "week": 6,
+      "day": 2,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:49:41Z"
+    },
+    "l0-w6-d3-shadow": {
+      "level": "l0",
+      "week": 6,
+      "day": 3,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:49:45Z"
+    },
+    "l0-w6-d4-shadow": {
+      "level": "l0",
+      "week": 6,
+      "day": 4,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:49:49Z"
+    },
+    "l0-w6-d5-shadow": {
+      "level": "l0",
+      "week": 6,
+      "day": 5,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:49:52Z"
+    },
+    "l0-w6-d6-shadow": {
+      "level": "l0",
+      "week": 6,
+      "day": 6,
+      "text": "Let's review this week's sounds.",
+      "voice": "af_heart",
+      "file_size_bytes": 31148,
+      "generated_at": "2026-07-11T13:49:56Z"
+    },
+    "l0-w6-d7-shadow": {
+      "level": "l0",
+      "week": 6,
+      "day": 7,
+      "text": "Please read this passage aloud and record yourself.",
+      "voice": "af_heart",
+      "file_size_bytes": 51884,
+      "generated_at": "2026-07-11T13:50:02Z"
+    },
+    "l0-w7-d1-shadow": {
+      "level": "l0",
+      "week": 7,
+      "day": 1,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:06Z"
+    },
+    "l0-w7-d2-shadow": {
+      "level": "l0",
+      "week": 7,
+      "day": 2,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:10Z"
+    },
+    "l0-w7-d3-shadow": {
+      "level": "l0",
+      "week": 7,
+      "day": 3,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:14Z"
+    },
+    "l0-w7-d4-shadow": {
+      "level": "l0",
+      "week": 7,
+      "day": 4,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:17Z"
+    },
+    "l0-w7-d5-shadow": {
+      "level": "l0",
+      "week": 7,
+      "day": 5,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:21Z"
+    },
+    "l0-w7-d6-shadow": {
+      "level": "l0",
+      "week": 7,
+      "day": 6,
+      "text": "Let's review this week's sounds.",
+      "voice": "af_heart",
+      "file_size_bytes": 31148,
+      "generated_at": "2026-07-11T13:50:25Z"
+    },
+    "l0-w7-d7-shadow": {
+      "level": "l0",
+      "week": 7,
+      "day": 7,
+      "text": "Please read this passage aloud and record yourself.",
+      "voice": "af_heart",
+      "file_size_bytes": 51884,
+      "generated_at": "2026-07-11T13:50:30Z"
+    },
+    "l0-w8-d1-shadow": {
+      "level": "l0",
+      "week": 8,
+      "day": 1,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:33Z"
+    },
+    "l0-w8-d2-shadow": {
+      "level": "l0",
+      "week": 8,
+      "day": 2,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:37Z"
+    },
+    "l0-w8-d3-shadow": {
+      "level": "l0",
+      "week": 8,
+      "day": 3,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:42Z"
+    },
+    "l0-w8-d4-shadow": {
+      "level": "l0",
+      "week": 8,
+      "day": 4,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:46Z"
+    },
+    "l0-w8-d5-shadow": {
+      "level": "l0",
+      "week": 8,
+      "day": 5,
+      "text": "I am practicing English.",
+      "voice": "af_heart",
+      "file_size_bytes": 29996,
+      "generated_at": "2026-07-11T13:50:50Z"
+    },
+    "l0-w8-d6-shadow": {
+      "level": "l0",
+      "week": 8,
+      "day": 6,
+      "text": "Let's review this week's sounds.",
+      "voice": "af_heart",
+      "file_size_bytes": 31148,
+      "generated_at": "2026-07-11T13:50:54Z"
+    },
+    "l0-w8-d7-shadow": {
+      "level": "l0",
+      "week": 8,
+      "day": 7,
+      "text": "Please read this passage aloud and record yourself.",
+      "voice": "af_heart",
+      "file_size_bytes": 51884,
+      "generated_at": "2026-07-11T13:51:00Z"
+    },
+    "l1-w1-d1-shadow": {
+      "level": "l1",
+      "week": 1,
+      "day": 1,
+      "text": "I will PREsent my PROject, and then I will reCORD the meeting on my new REcord player.",
+      "voice": "af_heart",
+      "file_size_bytes": 94892,
+      "generated_at": "2026-07-11T13:51:08Z"
+    },
+    "l1-w1-d2-shadow": {
+      "level": "l1",
+      "week": 1,
+      "day": 2,
+      "text": "I want to go to the store to buy a present for my friend.",
+      "voice": "af_heart",
+      "file_size_bytes": 48812,
+      "generated_at": "2026-07-11T13:51:14Z"
+    },
+    "l1-w1-d3-shadow": {
+      "level": "l1",
+      "week": 1,
+      "day": 3,
+      "text": "I want some coffee this morning because I can't find my keys anywhere, and we're going to a party tonight.",
+      "voice": "af_heart",
+      "file_size_bytes": 94124,
+      "generated_at": "2026-07-11T13:51:22Z"
+    },
+    "l1-w1-d4-shadow": {
+      "level": "l1",
+      "week": 1,
+      "day": 4,
+      "text": "Every MORNing, I open the WINdow in my KITchen and feel HAPpy looking at the YELlow flowers in the GARden.",
+      "voice": "af_heart",
+      "file_size_bytes": 132908,
+      "generated_at": "2026-07-11T13:51:33Z"
+    },
+    "l1-w1-d5-shadow": {
+      "level": "l1",
+      "week": 1,
+      "day": 5,
+      "text": "In my BEDroom, I keep my TOOTHbrush and SUNglasses near the CLASSroom door, not far from the old GREENhouse.",
+      "voice": "af_heart",
+      "file_size_bytes": 127532,
+      "generated_at": "2026-07-11T13:51:44Z"
+    },
+    "l1-w1-d6-shadow": {
+      "level": "l1",
+      "week": 1,
+      "day": 6,
+      "text": "Every week I try to record my progress. My record shows I present my project better each time I present it — and that makes me happy.",
+      "voice": "af_heart",
+      "file_size_bytes": 135596,
+      "generated_at": "2026-07-11T13:51:56Z"
+    },
+    "l1-w1-d7-shadow": {
+      "level": "l1",
+      "week": 1,
+      "day": 7,
+      "text": "Every morning, I present my daily plan to my team. I object when people don't prepare, because a good project needs a good record of what happened before. Yesterday, my present for my brother was a record player — an old one, but he was happy to receive it in his bedroom.",
+      "voice": "af_heart",
+      "file_size_bytes": 260396,
+      "generated_at": "2026-07-11T13:52:25Z"
+    },
+    "l1-w2-d1-shadow": {
+      "level": "l1",
+      "week": 2,
+      "day": 1,
+      "text": "I bought some butter and water at the party in the city — it's a pretty little place.",
+      "voice": "af_heart",
+      "file_size_bytes": 73388,
+      "generated_at": "2026-07-11T13:52:33Z"
+    },
+    "l1-w2-d2-shadow": {
+      "level": "l1",
+      "week": 2,
+      "day": 2,
+      "text": "My buddy is ready to study for the wedding — his body is muddy from climbing that old ladder.",
+      "voice": "af_heart",
+      "file_size_bytes": 87980,
+      "generated_at": "2026-07-11T13:52:41Z"
+    },
+    "l1-w2-d3-shadow": {
+      "level": "l1",
+      "week": 2,
+      "day": 3,
+      "text": "What about getting up early? There's a lot of work, and not at all of it is easy — but get up anyway.",
+      "voice": "af_heart",
+      "file_size_bytes": 86444,
+      "generated_at": "2026-07-11T13:52:51Z"
+    },
+    "l1-w2-d4-shadow": {
+      "level": "l1",
+      "week": 2,
+      "day": 4,
+      "text": "Press the button, drink some water, and climb the little mountain — no matter what is written, it's better than staying home.",
+      "voice": "af_heart",
+      "file_size_bytes": 107180,
+      "generated_at": "2026-07-11T13:53:01Z"
+    },
+    "l1-w2-d5-shadow": {
+      "level": "l1",
+      "week": 2,
+      "day": 5,
+      "text": "It doesn't matter what city — a little water and butter make everything better, and studying a little every day gets you a lot further.",
+      "voice": "af_heart",
+      "file_size_bytes": 119852,
+      "generated_at": "2026-07-11T13:53:12Z"
+    },
+    "l1-w2-d6-shadow": {
+      "level": "l1",
+      "week": 2,
+      "day": 6,
+      "text": "Every day my buddy studies a little better. He's a writer who likes to get up early, put water and butter on the table, and climb a muddy ladder — better than the mountain, no matter what.",
+      "voice": "af_heart",
+      "file_size_bytes": 172076,
+      "generated_at": "2026-07-11T13:53:27Z"
+    },
+    "l1-w2-d7-shadow": {
+      "level": "l1",
+      "week": 2,
+      "day": 7,
+      "text": "Every Saturday, my buddy and I get up early and go to the city to study at a little cafe. The water there is better than at home, and the butter on the bread is amazing. Last week, a writer sat next to us — he was working on a book about a mountain village. It doesn't matter what day it is; a little coffee and a lot of conversation always make it a good morning.",
+      "voice": "af_heart",
+      "file_size_bytes": 338732,
+      "generated_at": "2026-07-11T13:54:02Z"
+    },
+    "l1-w3-d1-shadow": {
+      "level": "l1",
+      "week": 3,
+      "day": 1,
+      "text": "Pick up an apple, look at it, and put it in an hour — then turn off the light and get up.",
+      "voice": "af_heart",
+      "file_size_bytes": 77612,
+      "generated_at": "2026-07-11T13:54:11Z"
+    },
+    "l1-w3-d2-shadow": {
+      "level": "l1",
+      "week": 3,
+      "day": 2,
+      "text": "This is easy — give it to one of us, and have a seat, because as usual, I love it.",
+      "voice": "af_heart",
+      "file_size_bytes": 74924,
+      "generated_at": "2026-07-11T13:54:18Z"
+    },
+    "l1-w3-d3-shadow": {
+      "level": "l1",
+      "week": 3,
+      "day": 3,
+      "text": "Stop it — that's a big idea, not at all bad. Look up, took a picture, in black and white.",
+      "voice": "af_heart",
+      "file_size_bytes": 87212,
+      "generated_at": "2026-07-11T13:54:26Z"
+    },
+    "l1-w3-d4-shadow": {
+      "level": "l1",
+      "week": 3,
+      "day": 4,
+      "text": "Come on in, wait a minute — what about it? Hang on a second and check it out.",
+      "voice": "af_heart",
+      "file_size_bytes": 69932,
+      "generated_at": "2026-07-11T13:54:33Z"
+    },
+    "l1-w3-d5-shadow": {
+      "level": "l1",
+      "week": 3,
+      "day": 5,
+      "text": "I picked up an apple, ate it all up, turned off the light, and gave it a rest — look at us, we made it out okay.",
+      "voice": "af_heart",
+      "file_size_bytes": 99884,
+      "generated_at": "2026-07-11T13:54:42Z"
+    },
+    "l1-w3-d6-shadow": {
+      "level": "l1",
+      "week": 3,
+      "day": 6,
+      "text": "Come on in, have a seat — pick up an apple, give it a look, and wait a minute. This is easy, not at all a big idea, but check it out anyway.",
+      "voice": "af_heart",
+      "file_size_bytes": 128300,
+      "generated_at": "2026-07-11T13:54:54Z"
+    },
+    "l1-w3-d7-shadow": {
+      "level": "l1",
+      "week": 3,
+      "day": 7,
+      "text": "Every evening, I pick up an apple on my way home and eat it all up before dinner. It's not at all a big idea, but it helps me relax. Come on in, have a seat, and give it a try yourself — turn off your phone for an hour and just enjoy a quiet moment. Look at us now, we made it out of a busy day okay.",
+      "voice": "af_heart",
+      "file_size_bytes": 285356,
+      "generated_at": "2026-07-11T13:55:25Z"
+    },
+    "l1-w4-d1-shadow": {
+      "level": "l1",
+      "week": 4,
+      "day": 1,
+      "text": "It's important — press the button, and I'm certain the kitten's name is written on a cotton sentence card, near the mountain.",
+      "voice": "af_heart",
+      "file_size_bytes": 107180,
+      "generated_at": "2026-07-11T13:55:36Z"
+    },
+    "l1-w4-d2-shadow": {
+      "level": "l1",
+      "week": 4,
+      "day": 2,
+      "text": "It doesn't matter — I'm certain the water is better near the mountain, and it's written on a little button by the trail.",
+      "voice": "af_heart",
+      "file_size_bytes": 97580,
+      "generated_at": "2026-07-11T13:55:44Z"
+    },
+    "l1-w4-d3-shadow": {
+      "level": "l1",
+      "week": 4,
+      "day": 3,
+      "text": "Pay attention — it's important to draw the curtain, walk to the fountain, and be certain about every sentence near the mountain.",
+      "voice": "af_heart",
+      "file_size_bytes": 116780,
+      "generated_at": "2026-07-11T13:55:54Z"
+    },
+    "l1-w4-d4-shadow": {
+      "level": "l1",
+      "week": 4,
+      "day": 4,
+      "text": "The button on the water bottle matters — I'm certain the little kitten is better off near the mountain than in the city.",
+      "voice": "af_heart",
+      "file_size_bytes": 102188,
+      "generated_at": "2026-07-11T13:56:03Z"
+    },
+    "l1-w4-d5-shadow": {
+      "level": "l1",
+      "week": 4,
+      "day": 5,
+      "text": "It's certain and important — press that button now, near the fountain, under the mountain curtain, exactly as it's written.",
+      "voice": "af_heart",
+      "file_size_bytes": 111788,
+      "generated_at": "2026-07-11T13:56:12Z"
+    },
+    "l1-w4-d6-shadow": {
+      "level": "l1",
+      "week": 4,
+      "day": 6,
+      "text": "It's certain and important: press the button near the mountain fountain. It doesn't matter what's written on the curtain — the little kitten already knows it's better.",
+      "voice": "af_heart",
+      "file_size_bytes": 143276,
+      "generated_at": "2026-07-11T13:56:24Z"
+    },
+    "l1-w4-d7-shadow": {
+      "level": "l1",
+      "week": 4,
+      "day": 7,
+      "text": "It's important to know a mountain trail before you climb it. Press the button on your water bottle, draw back the curtain of morning fog, and walk toward the fountain at the base. I'm certain the view gets better with every step — the little kitten that lives near the visitor center is written about in every guidebook. No matter the weather, this mountain matters to everyone in the city.",
+      "voice": "af_heart",
+      "file_size_bytes": 349868,
+      "generated_at": "2026-07-11T13:56:55Z"
+    },
+    "l1-w5-d1-shadow": {
+      "level": "l1",
+      "week": 5,
+      "day": 1,
+      "text": "Let's go out — who is coming? Do it now, it's too easy, so go away and let me finish with my blue eyes on the clock.",
+      "voice": "af_heart",
+      "file_size_bytes": 109484,
+      "generated_at": "2026-07-11T13:57:05Z"
+    },
+    "l1-w5-d2-shadow": {
+      "level": "l1",
+      "week": 5,
+      "day": 2,
+      "text": "She asked if I am taking a day off, but we are going to the office with my aunt anyway.",
+      "voice": "af_heart",
+      "file_size_bytes": 81452,
+      "generated_at": "2026-07-11T13:57:13Z"
+    },
+    "l1-w5-d3-shadow": {
+      "level": "l1",
+      "week": 5,
+      "day": 3,
+      "text": "She asked who is going out today — I am taking a day off, and it's too easy to just go out and enjoy my blue eyes in the sun.",
+      "voice": "af_heart",
+      "file_size_bytes": 119084,
+      "generated_at": "2026-07-11T13:57:22Z"
+    },
+    "l1-w5-d4-shadow": {
+      "level": "l1",
+      "week": 5,
+      "day": 4,
+      "text": "Go away, I am busy — she asked who is here, but it's too old a question, and I am too easy to please anyway.",
+      "voice": "af_heart",
+      "file_size_bytes": 105644,
+      "generated_at": "2026-07-11T13:57:31Z"
+    },
+    "l1-w5-d5-shadow": {
+      "level": "l1",
+      "week": 5,
+      "day": 5,
+      "text": "Just go out already — who is stopping you? I am too easy to please, and we are taking a day off because it's too easy to enjoy.",
+      "voice": "af_heart",
+      "file_size_bytes": 119468,
+      "generated_at": "2026-07-11T13:57:41Z"
+    },
+    "l1-w5-d6-shadow": {
+      "level": "l1",
+      "week": 5,
+      "day": 6,
+      "text": "She asked who is going out today. I am too easy to say no — go away, we are taking a day off, and it's too easy to enjoy the blue sky.",
+      "voice": "af_heart",
+      "file_size_bytes": 134060,
+      "generated_at": "2026-07-11T13:57:53Z"
+    },
+    "l1-w5-d7-shadow": {
+      "level": "l1",
+      "week": 5,
+      "day": 7,
+      "text": "She asked if I am free to go out today, and I am! Who is coming with us? We are meeting my aunt at the office first, then we'll go away to the lake — it's too easy to say no to a day off like this. The blue sky and blue eyes of summer make everything feel new again.",
+      "voice": "af_heart",
+      "file_size_bytes": 243116,
+      "generated_at": "2026-07-11T13:58:15Z"
+    },
+    "l1-w6-d1-shadow": {
+      "level": "l1",
+      "week": 6,
+      "day": 1,
+      "text": "Tell him to call her, give him the book, and ask her too — I went with him, not for her.",
+      "voice": "af_heart",
+      "file_size_bytes": 78380,
+      "generated_at": "2026-07-11T13:58:23Z"
+    },
+    "l1-w6-d2-shadow": {
+      "level": "l1",
+      "week": 6,
+      "day": 2,
+      "text": "I have been waiting since she has gone — we had left before you have seen it, and he has told them what they had known.",
+      "voice": "af_heart",
+      "file_size_bytes": 99884,
+      "generated_at": "2026-07-11T13:58:32Z"
+    },
+    "l1-w6-d3-shadow": {
+      "level": "l1",
+      "week": 6,
+      "day": 3,
+      "text": "Him? He never called her. I have a car, but I have been walking lately — and I told HER the news, not him.",
+      "voice": "af_heart",
+      "file_size_bytes": 97580,
+      "generated_at": "2026-07-11T13:58:41Z"
+    },
+    "l1-w6-d4-shadow": {
+      "level": "l1",
+      "week": 6,
+      "day": 4,
+      "text": "Did you tell him? Could you ask her too? I should have known, and I would have called him and given her a call about the plan.",
+      "voice": "af_heart",
+      "file_size_bytes": 104876,
+      "generated_at": "2026-07-11T13:58:50Z"
+    },
+    "l1-w6-d5-shadow": {
+      "level": "l1",
+      "week": 6,
+      "day": 5,
+      "text": "Just tell him already! I have been busy, and she has gone home — did you ask her, or would you have called him yourself?",
+      "voice": "af_heart",
+      "file_size_bytes": 104876,
+      "generated_at": "2026-07-11T13:58:59Z"
+    },
+    "l1-w6-d6-shadow": {
+      "level": "l1",
+      "week": 6,
+      "day": 6,
+      "text": "Him? I never told him. I have been meaning to ask her, but she has gone already — did you give him the news, or should I have told her myself?",
+      "voice": "af_heart",
+      "file_size_bytes": 125996,
+      "generated_at": "2026-07-11T13:59:10Z"
+    },
+    "l1-w6-d7-shadow": {
+      "level": "l1",
+      "week": 6,
+      "day": 7,
+      "text": "Him? He never called her back. I told him to ask her about the meeting, but he has been too busy. She has gone to the office already, and I would have joined her if I have had more time. Did you tell him the schedule changed? I have a feeling he hasn't heard yet — could you give him a call and ask her to wait?",
+      "voice": "af_heart",
+      "file_size_bytes": 272300,
+      "generated_at": "2026-07-11T13:59:34Z"
+    },
+    "l1-w7-d1-shadow": {
+      "level": "l1",
+      "week": 7,
+      "day": 1,
+      "text": "Good day! It's a big game today — have some milk and black coffee before you stop at that red door.",
+      "voice": "af_heart",
+      "file_size_bytes": 89516,
+      "generated_at": "2026-07-11T13:59:43Z"
+    },
+    "l1-w7-d2-shadow": {
+      "level": "l1",
+      "week": 7,
+      "day": 2,
+      "text": "What time is it? Last time, we had a good time right there — it's a big deal, that time especially.",
+      "voice": "af_heart",
+      "file_size_bytes": 92588,
+      "generated_at": "2026-07-11T13:59:51Z"
+    },
+    "l1-w7-d3-shadow": {
+      "level": "l1",
+      "week": 7,
+      "day": 3,
+      "text": "We stayed ten nights in November and wanted some more — just give me one minute, ten nights isn't enough.",
+      "voice": "af_heart",
+      "file_size_bytes": 95660,
+      "generated_at": "2026-07-11T14:00:00Z"
+    },
+    "l1-w7-d4-shadow": {
+      "level": "l1",
+      "week": 7,
+      "day": 4,
+      "text": "That time, next Tuesday, my big brother is bringing some snacks — good grief, write it on the black board so we remember!",
+      "voice": "af_heart",
+      "file_size_bytes": 115244,
+      "generated_at": "2026-07-11T14:00:11Z"
+    },
+    "l1-w7-d5-shadow": {
+      "level": "l1",
+      "week": 7,
+      "day": 5,
+      "text": "What a big game that was! What time did it end? I remember some milk, ten nights, that time — next Tuesday's game will be even better.",
+      "voice": "af_heart",
+      "file_size_bytes": 126380,
+      "generated_at": "2026-07-11T14:00:21Z"
+    },
+    "l1-w7-d6-shadow": {
+      "level": "l1",
+      "week": 7,
+      "day": 6,
+      "text": "What a big game! Some milk and black coffee made it a good time. Ten nights in November, next Tuesday's game, and my big brother bringing some snacks — good grief, what a time that was.",
+      "voice": "af_heart",
+      "file_size_bytes": 173996,
+      "generated_at": "2026-07-11T14:00:35Z"
+    },
+    "l1-w7-d7-shadow": {
+      "level": "l1",
+      "week": 7,
+      "day": 7,
+      "text": "What a big game that was last Tuesday! We had some milk and black coffee before it started, and my big brother stayed ten nights just to watch it live. What time does the next one start? Good grief, I need some more coffee — that time flew by so fast, and next Tuesday's rematch will be an even bigger deal.",
+      "voice": "af_heart",
+      "file_size_bytes": 288812,
+      "generated_at": "2026-07-11T14:01:01Z"
+    },
+    "l1-w8-d1-shadow": {
+      "level": "l1",
+      "week": 8,
+      "day": 1,
+      "text": "Tell me about your trip again — we walked along and around the park, and then she went away, alone, above the shop.",
+      "voice": "af_heart",
+      "file_size_bytes": 105644,
+      "generated_at": "2026-07-11T14:01:12Z"
+    },
+    "l1-w8-d2-shadow": {
+      "level": "l1",
+      "week": 8,
+      "day": 2,
+      "text": "My teacher is also a doctor — the water needs a little sugar, no matter the color, because the actor was better than his brother.",
+      "voice": "af_heart",
+      "file_size_bytes": 122540,
+      "generated_at": "2026-07-11T14:01:28Z"
+    },
+    "l1-w8-d3-shadow": {
+      "level": "l1",
+      "week": 8,
+      "day": 3,
+      "text": "I need a book for the class — she is taller than her brother, as I said, and this is one of the best gifts of all.",
+      "voice": "af_heart",
+      "file_size_bytes": 102572,
+      "generated_at": "2026-07-11T14:01:44Z"
+    },
+    "l1-w8-d4-shadow": {
+      "level": "l1",
+      "week": 8,
+      "day": 4,
+      "text": "My family loves chocolate and vegetables — this camera is comfortable and different from mine, so bring it for a family photo.",
+      "voice": "af_heart",
+      "file_size_bytes": 121004,
+      "generated_at": "2026-07-11T14:01:56Z"
+    },
+    "l1-w8-d5-shadow": {
+      "level": "l1",
+      "week": 8,
+      "day": 5,
+      "text": "Tell me about the teacher and the camera again — my family's doctor loves chocolate, as I said, and the camera is a gift for the family, about time too!",
+      "voice": "af_heart",
+      "file_size_bytes": 145580,
+      "generated_at": "2026-07-11T14:02:22Z"
+    },
+    "l1-w8-d6-shadow": {
+      "level": "l1",
+      "week": 8,
+      "day": 6,
+      "text": "About a family camera, my teacher and the doctor talked again — the chocolate was different, the sofa was comfortable, and I told the teacher about the vegetable garden and the family photo.",
+      "voice": "af_heart",
+      "file_size_bytes": 175916,
+      "generated_at": "2026-07-11T14:02:38Z"
+    },
+    "l1-w8-d7-shadow": {
+      "level": "l1",
+      "week": 8,
+      "day": 7,
+      "text": "About a month ago, my family bought a new camera for our vacation. My teacher told us again about the difference between a comfortable trip and a difficult one, so we planned around the schedule of a local doctor who knows the area. We brought chocolate and vegetables for the family, and everyone had a wonderful time together, again and again.",
+      "voice": "af_heart",
+      "file_size_bytes": 323756,
+      "generated_at": "2026-07-11T14:03:14Z"
+    },
+    "l1-w9-d1-shadow": {
+      "level": "l1",
+      "week": 9,
+      "day": 1,
+      "text": "About the camera — the teacher is away again, and I forgot a family photo, so I forgot about the whole thing.",
+      "voice": "af_heart",
+      "file_size_bytes": 101804,
+      "generated_at": "2026-07-11T14:03:23Z"
+    },
+    "l1-w9-d2-shadow": {
+      "level": "l1",
+      "week": 9,
+      "day": 2,
+      "text": "Pick up the water bottle near the big city fountain — she asked about the mountain, and it's an important, better place to visit.",
+      "voice": "af_heart",
+      "file_size_bytes": 117932,
+      "generated_at": "2026-07-11T14:03:34Z"
+    },
+    "l1-w9-d3-shadow": {
+      "level": "l1",
+      "week": 9,
+      "day": 3,
+      "text": "Did you tell him about it? I asked her already — he should call her again, but did you ask him first?",
+      "voice": "af_heart",
+      "file_size_bytes": 87212,
+      "generated_at": "2026-07-11T14:03:42Z"
+    },
+    "l1-w9-d4-shadow": {
+      "level": "l1",
+      "week": 9,
+      "day": 4,
+      "text": "About an hour ago, I picked up an apple and some water near the big game. Did you tell him the button on the camera is broken? It's a big deal — ask her about the mountain trip again.",
+      "voice": "af_heart",
+      "file_size_bytes": 168236,
+      "generated_at": "2026-07-11T14:03:57Z"
+    },
+    "l1-w9-d5-shadow": {
+      "level": "l1",
+      "week": 9,
+      "day": 5,
+      "text": "(Free speech: talk for 30-45 seconds about your day without a script.)",
+      "voice": "af_heart",
+      "file_size_bytes": 83756,
+      "generated_at": "2026-07-11T14:04:05Z"
+    },
+    "l1-w9-d6-shadow": {
+      "level": "l1",
+      "week": 9,
+      "day": 6,
+      "text": "About an hour ago, my big brother asked her about the mountain trip — did you tell him the camera's button broke? Pick up the water, ask about the big game, and tell him it's a better, more important deal than the mountain's water.",
+      "voice": "af_heart",
+      "file_size_bytes": 205100,
+      "generated_at": "2026-07-11T14:04:25Z"
+    },
+    "l1-w9-d7-shadow": {
+      "level": "l1",
+      "week": 9,
+      "day": 7,
+      "text": "(Semi-spontaneous — choose your own topic, but aim to naturally include: at least 3 stressed content words with reduced function words around them, at least 2 flap-T or glottal-stop-T words, at least 2 examples of any linking type, at least 1 dropped-H pronoun, and at least 3 schwa syllables.)",
+      "voice": "af_heart",
+      "file_size_bytes": 298796,
+      "generated_at": "2026-07-11T14:05:00Z"
+    },
+    "l1-w10-d1-shadow": {
+      "level": "l1",
+      "week": 10,
+      "day": 1,
+      "text": "It doesn't matter — the water here is better, and I'll record a new record this city has never heard.",
+      "voice": "af_heart",
+      "file_size_bytes": 92972,
+      "generated_at": "2026-07-11T14:05:10Z"
+    },
+    "l1-w10-d2-shadow": {
+      "level": "l1",
+      "week": 10,
+      "day": 2,
+      "text": "Pick up an apple and look at the mountain — press the button, I'm certain it's important.",
+      "voice": "af_heart",
+      "file_size_bytes": 76076,
+      "generated_at": "2026-07-11T14:05:18Z"
+    },
+    "l1-w10-d3-shadow": {
+      "level": "l1",
+      "week": 10,
+      "day": 3,
+      "text": "Go out and tell him I have been waiting — she asked me to ask her again, but I have been busy.",
+      "voice": "af_heart",
+      "file_size_bytes": 83756,
+      "generated_at": "2026-07-11T14:05:26Z"
+    },
+    "l1-w10-d4-shadow": {
+      "level": "l1",
+      "week": 10,
+      "day": 4,
+      "text": "It's a big game — tell me about the family camera. Some milk and a teacher's advice about the family made it a good day.",
+      "voice": "af_heart",
+      "file_size_bytes": 112940,
+      "generated_at": "2026-07-11T14:05:35Z"
+    },
+    "l1-w10-d5-shadow": {
+      "level": "l1",
+      "week": 10,
+      "day": 5,
+      "text": "(Record both Part A — reading — and Part B — spontaneous speech — as two separate clips.)",
+      "voice": "af_heart",
+      "file_size_bytes": 92588,
+      "generated_at": "2026-07-11T14:05:45Z"
+    },
+    "l1-w10-d6-shadow": {
+      "level": "l1",
+      "week": 10,
+      "day": 6,
+      "text": "About an hour ago, I picked up an apple, told him about the big game, and asked her about the mountain — it doesn't matter, the water here is better, and my family's camera captured a good moment. Go out, press the button, and tell him I have been certain about this big deal.",
+      "voice": "af_heart",
+      "file_size_bytes": 254252,
+      "generated_at": "2026-07-11T14:06:07Z"
+    },
+    "l1-w10-d7-shadow": {
+      "level": "l1",
+      "week": 10,
+      "day": 7,
+      "text": "About ten weeks ago, I started Level 1 as a beginner in connected speech. My teacher and I have been working on the water-and-butter flap, the button-and-mountain glottal stop, and linking words like pick up an apple and go out. I have also learned to tell him and ask her naturally, dropping the h, and to say about and camera with a proper schwa instead of a full vowel. It's a big deal, and I'm certain I'm better prepared for Level 2 now than I was before.",
+      "voice": "af_heart",
+      "file_size_bytes": 432812,
+      "generated_at": "2026-07-11T14:06:53Z"
+    },
+    "l2-w1-d1-shadow": {
+      "level": "l2",
+      "week": 1,
+      "day": 1,
+      "text": "About the camera, the teacher is certain again — it doesn't matter, she's away because of a camera issue.",
+      "voice": "af_heart",
+      "file_size_bytes": 95660,
+      "generated_at": "2026-07-11T14:07:04Z"
+    },
+    "l2-w1-d2-shadow": {
+      "level": "l2",
+      "week": 1,
+      "day": 2,
+      "text": "It's better water, and that's certain, no matter what! Press the button — the mountain view matters more than you think!",
+      "voice": "af_heart",
+      "file_size_bytes": 101036,
+      "generated_at": "2026-07-11T14:07:13Z"
+    },
+    "l2-w1-d3-shadow": {
+      "level": "l2",
+      "week": 1,
+      "day": 3,
+      "text": "Pick up an apple and go out for a big game — some milk and an apple make a big, good breakfast before you go.",
+      "voice": "af_heart",
+      "file_size_bytes": 103724,
+      "generated_at": "2026-07-11T14:07:22Z"
+    },
+    "l2-w1-d4-shadow": {
+      "level": "l2",
+      "week": 1,
+      "day": 4,
+      "text": "Did you tell him? I asked her already! I have been waiting — has she gone yet? Tell him now, ask her later!",
+      "voice": "af_heart",
+      "file_size_bytes": 99116,
+      "generated_at": "2026-07-11T14:07:32Z"
+    },
+    "l2-w1-d5-shadow": {
+      "level": "l2",
+      "week": 1,
+      "day": 5,
+      "text": "About an hour ago, I picked up an apple, told him about the big game near the mountain, and I'm certain it's better water than the city has — press the button, ask her, and go out again!",
+      "voice": "af_heart",
+      "file_size_bytes": 166316,
+      "generated_at": "2026-07-11T14:07:46Z"
+    },
+    "l2-w1-d6-shadow": {
+      "level": "l2",
+      "week": 1,
+      "day": 6,
+      "text": "About an hour ago, my big brother picked up an apple, told him about the mountain, and I'm certain it's better water than the city has. Did you ask her about the button? It doesn't matter — go out, press it, and I'll tell him we made it out okay!",
+      "voice": "af_heart",
+      "file_size_bytes": 215468,
+      "generated_at": "2026-07-11T14:08:04Z"
+    },
+    "l2-w1-d7-shadow": {
+      "level": "l2",
+      "week": 1,
+      "day": 7,
+      "text": "(Free speech: pick a simple debate topic — e.g. 'city life vs. country life' — and argue for one side for 45-60 seconds.)",
+      "voice": "af_heart",
+      "file_size_bytes": 147116,
+      "generated_at": "2026-07-11T14:08:17Z"
+    },
+    "l2-w2-d1-shadow": {
+      "level": "l2",
+      "week": 2,
+      "day": 1,
+      "text": "I like fish and chips with salt and pepper — we danced to rock and roll, up and down, with bread and butter after.",
+      "voice": "af_heart",
+      "file_size_bytes": 112556,
+      "generated_at": "2026-07-11T14:08:27Z"
+    },
+    "l2-w2-d2-shadow": {
+      "level": "l2",
+      "week": 2,
+      "day": 2,
+      "text": "I could have gone, but I should have called first — she would have known if she must have asked, and we might have missed it.",
+      "voice": "af_heart",
+      "file_size_bytes": 98348,
+      "generated_at": "2026-07-11T14:08:36Z"
+    },
+    "l2-w2-d3-shadow": {
+      "level": "l2",
+      "week": 2,
+      "day": 3,
+      "text": "I'm going to the store — do you want to come? I've been waiting for you and looking for my keys, but I have to go soon.",
+      "voice": "af_heart",
+      "file_size_bytes": 100652,
+      "generated_at": "2026-07-11T14:08:44Z"
+    },
+    "l2-w2-d4-shadow": {
+      "level": "l2",
+      "week": 2,
+      "day": 4,
+      "text": "I should have gone to the store for some milk and bread — I've been waiting for you and looking for my keys and my phone, so we have to go and get some fish and chips for dinner.",
+      "voice": "af_heart",
+      "file_size_bytes": 151724,
+      "generated_at": "2026-07-11T14:08:57Z"
+    },
+    "l2-w2-d5-shadow": {
+      "level": "l2",
+      "week": 2,
+      "day": 5,
+      "text": "(Free speech: describe your weekend plans for 30 seconds, using natural reduced forms where appropriate.)",
+      "voice": "af_heart",
+      "file_size_bytes": 106796,
+      "generated_at": "2026-07-11T14:09:07Z"
+    },
+    "l2-w2-d6-shadow": {
+      "level": "l2",
+      "week": 2,
+      "day": 6,
+      "text": "I should have gone to the store for some fish and chips, and I would have if I hadn't been waiting for you — we're going to need some bread and butter, so do you want to come and get some?",
+      "voice": "af_heart",
+      "file_size_bytes": 145964,
+      "generated_at": "2026-07-11T14:09:20Z"
+    },
+    "l2-w2-d7-shadow": {
+      "level": "l2",
+      "week": 2,
+      "day": 7,
+      "text": "I should have gone to the store yesterday for some fish and chips, but I was waiting for a call and looking for my keys. My friend and I were going to meet for coffee, and we would have talked about bread and butter recipes, but I must have forgotten the time. I have to go and get milk and eggs now — do you want to come with me?",
+      "voice": "af_heart",
+      "file_size_bytes": 281516,
+      "generated_at": "2026-07-11T14:09:51Z"
+    },
+    "l2-w3-d1-shadow": {
+      "level": "l2",
+      "week": 3,
+      "day": 1,
+      "text": "The student read the news about the new tune — it's my duty to report the nuclear news, and the new duke changed his tune.",
+      "voice": "af_heart",
+      "file_size_bytes": 114860,
+      "generated_at": "2026-07-11T14:10:01Z"
+    },
+    "l2-w3-d2-shadow": {
+      "level": "l2",
+      "week": 3,
+      "day": 2,
+      "text": "That suit is suitable for the interview — bring your resume, and the lure of a new job made him salute the offer.",
+      "voice": "af_heart",
+      "file_size_bytes": 102572,
+      "generated_at": "2026-07-11T14:10:11Z"
+    },
+    "l2-w3-d3-shadow": {
+      "level": "l2",
+      "week": 3,
+      "day": 3,
+      "text": "The music was new, and it took only a few minutes to tune — that cute duke found a cure for his student's problem with a few new songs.",
+      "voice": "af_heart",
+      "file_size_bytes": 128684,
+      "generated_at": "2026-07-11T14:10:22Z"
+    },
+    "l2-w3-d4-shadow": {
+      "level": "l2",
+      "week": 3,
+      "day": 4,
+      "text": "The institute gave the student a great opportunity — it's your duty to constitute a fair report on the news, and this is news to the student.",
+      "voice": "af_heart",
+      "file_size_bytes": 134060,
+      "generated_at": "2026-07-11T14:10:34Z"
+    },
+    "l2-w3-d5-shadow": {
+      "level": "l2",
+      "week": 3,
+      "day": 5,
+      "text": "This new opportunity at the institute is exactly what the student needs — I'd like to present the news about our new institute today, and tune my resume to fit it.",
+      "voice": "af_heart",
+      "file_size_bytes": 159788,
+      "generated_at": "2026-07-11T14:10:46Z"
+    },
+    "l2-w3-d6-shadow": {
+      "level": "l2",
+      "week": 3,
+      "day": 6,
+      "text": "The new student at the institute found a great opportunity, but it took a few minutes to tune his resume for the news interview — that cute duke's new music made it worth the duty.",
+      "voice": "af_heart",
+      "file_size_bytes": 157868,
+      "generated_at": "2026-07-11T14:11:00Z"
+    },
+    "l2-w3-d7-shadow": {
+      "level": "l2",
+      "week": 3,
+      "day": 7,
+      "text": "As a new student at this institute, I've had a few great opportunities already. My duty this week was to tune up my resume and present the latest news about our research. It's a cute coincidence, but the music program here is new too, and a few students told me it's one of the best in the country. I truly believe this institute constitutes a unique opportunity for anyone who wants a fresh start.",
+      "voice": "af_heart",
+      "file_size_bytes": 389420,
+      "generated_at": "2026-07-11T14:11:37Z"
+    },
+    "l2-w4-d1-shadow": {
+      "level": "l2",
+      "week": 4,
+      "day": 1,
+      "text": "I said BLUE, not green — SHE did it, not him — and I meant TODAY, not tomorrow!",
+      "voice": "af_heart",
+      "file_size_bytes": 80300,
+      "generated_at": "2026-07-11T14:11:46Z"
+    },
+    "l2-w4-d2-shadow": {
+      "level": "l2",
+      "week": 4,
+      "day": 2,
+      "text": "You did WHAT? I can't believe it! She said WHAT? That's shocking — really? No WAY!",
+      "voice": "af_heart",
+      "file_size_bytes": 75308,
+      "generated_at": "2026-07-11T14:11:54Z"
+    },
+    "l2-w4-d3-shadow": {
+      "level": "l2",
+      "week": 4,
+      "day": 3,
+      "text": "This is the right decision, and I strongly believe it — this is the final answer, there's no doubt.",
+      "voice": "af_heart",
+      "file_size_bytes": 91820,
+      "generated_at": "2026-07-11T14:12:03Z"
+    },
+    "l2-w4-d4-shadow": {
+      "level": "l2",
+      "week": 4,
+      "day": 4,
+      "text": "This is EXACTLY why we need change — the evidence CLEARLY shows this is true, and the FACT is, we MUST consider all options.",
+      "voice": "af_heart",
+      "file_size_bytes": 129452,
+      "generated_at": "2026-07-11T14:12:14Z"
+    },
+    "l2-w4-d5-shadow": {
+      "level": "l2",
+      "week": 4,
+      "day": 5,
+      "text": "(Free speech: respond to the working-from-home statement for 30-45 seconds, using contrastive, surprised, and confident intonation naturally.)",
+      "voice": "af_heart",
+      "file_size_bytes": 164780,
+      "generated_at": "2026-07-11T14:12:30Z"
+    },
+    "l2-w4-d6-shadow": {
+      "level": "l2",
+      "week": 4,
+      "day": 6,
+      "text": "You did WHAT? I said BLUE, not green — this is EXACTLY why I don't trust that plan! SHE did it, not him — and this is the right decision, no doubt about it!",
+      "voice": "af_heart",
+      "file_size_bytes": 152876,
+      "generated_at": "2026-07-11T14:12:44Z"
+    },
+    "l2-w4-d7-shadow": {
+      "level": "l2",
+      "week": 4,
+      "day": 7,
+      "text": "(Free speech: argue for or against 'Social media should have a minimum age requirement of 16.' Include at least one correction/contrast, and end with a confident, falling-intonation conclusion.)",
+      "voice": "af_heart",
+      "file_size_bytes": 205100,
+      "generated_at": "2026-07-11T14:13:04Z"
+    },
+    "l2-w5-d1-shadow": {
+      "level": "l2",
+      "week": 5,
+      "day": 1,
+      "text": "I feel cool after the tall school bell rang — the ball fell well past the full pool near the tall, cool school.",
+      "voice": "af_heart",
+      "file_size_bytes": 104492,
+      "generated_at": "2026-07-11T14:13:14Z"
+    },
+    "l2-w5-d2-shadow": {
+      "level": "l2",
+      "week": 5,
+      "day": 2,
+      "text": "The little local shop is lovely and likely loyal to its customers — this level of service is a likely, local, lovely charm.",
+      "voice": "af_heart",
+      "file_size_bytes": 129452,
+      "generated_at": "2026-07-11T14:13:26Z"
+    },
+    "l2-w5-d3-shadow": {
+      "level": "l2",
+      "week": 5,
+      "day": 3,
+      "text": "Please help me find the milk and salt — the film's result was worth it for every adult who needed a belt fix.",
+      "voice": "af_heart",
+      "file_size_bytes": 107180,
+      "generated_at": "2026-07-11T14:13:35Z"
+    },
+    "l2-w5-d4-shadow": {
+      "level": "l2",
+      "week": 5,
+      "day": 4,
+      "text": "This is a typical political and cultural issue globally — the natural, moral, and social effects matter for everyone.",
+      "voice": "af_heart",
+      "file_size_bytes": 118700,
+      "generated_at": "2026-07-11T14:13:45Z"
+    },
+    "l2-w5-d5-shadow": {
+      "level": "l2",
+      "week": 5,
+      "day": 5,
+      "text": "This political and cultural issue is a global problem — the moral and social responsibility falls on all of us, not just locally.",
+      "voice": "af_heart",
+      "file_size_bytes": 135596,
+      "generated_at": "2026-07-11T14:13:56Z"
+    },
+    "l2-w5-d6-shadow": {
+      "level": "l2",
+      "week": 5,
+      "day": 6,
+      "text": "I feel the political and cultural level of this global issue is a moral and social problem — help me understand the local, typical result of this debate.",
+      "voice": "af_heart",
+      "file_size_bytes": 155564,
+      "generated_at": "2026-07-11T14:14:10Z"
+    },
+    "l2-w5-d7-shadow": {
+      "level": "l2",
+      "week": 5,
+      "day": 7,
+      "text": "I truly feel that global political and cultural issues deserve a local, practical solution. Little steps, like a lovely local school program, can have a real, natural impact on social and moral values. The level of loyal community support will likely determine the final result — and I believe a full, well-planned effort could help solve this typical, but important, problem.",
+      "voice": "af_heart",
+      "file_size_bytes": 391724,
+      "generated_at": "2026-07-11T14:14:47Z"
+    },
+    "l2-w6-d1-shadow": {
+      "level": "l2",
+      "week": 6,
+      "day": 1,
+      "text": "Are you coming to the party tonight? Did you finish the report? Can you help me review it? Is this correct?",
+      "voice": "af_heart",
+      "file_size_bytes": 96044,
+      "generated_at": "2026-07-11T14:14:56Z"
+    },
+    "l2-w6-d2-shadow": {
+      "level": "l2",
+      "week": 6,
+      "day": 2,
+      "text": "What time is it, and where do you live? Why did you leave early, and how does this work?",
+      "voice": "af_heart",
+      "file_size_bytes": 74924,
+      "generated_at": "2026-07-11T14:15:04Z"
+    },
+    "l2-w6-d3-shadow": {
+      "level": "l2",
+      "week": 6,
+      "day": 3,
+      "text": "I need apples, bananas, and oranges from the store — we also visited Paris, Rome, and Berlin, focusing on reading, writing, and speaking.",
+      "voice": "af_heart",
+      "file_size_bytes": 141356,
+      "generated_at": "2026-07-11T14:15:17Z"
+    },
+    "l2-w6-d4-shadow": {
+      "level": "l2",
+      "week": 6,
+      "day": 4,
+      "text": "It's cold today, isn't it? You're coming to the party, aren't you? They won't be late, will they?",
+      "voice": "af_heart",
+      "file_size_bytes": 81452,
+      "generated_at": "2026-07-11T14:15:25Z"
+    },
+    "l2-w6-d5-shadow": {
+      "level": "l2",
+      "week": 6,
+      "day": 5,
+      "text": "Are you free this weekend? What are your plans? I need to buy apples, bananas, and oranges — you'll come with me, won't you?",
+      "voice": "af_heart",
+      "file_size_bytes": 109868,
+      "generated_at": "2026-07-11T14:15:34Z"
+    },
+    "l2-w6-d6-shadow": {
+      "level": "l2",
+      "week": 6,
+      "day": 6,
+      "text": "Are you coming to the party? What time should I arrive, and should I bring apples, bananas, or oranges? It's going to be great, isn't it?",
+      "voice": "af_heart",
+      "file_size_bytes": 127148,
+      "generated_at": "2026-07-11T14:15:45Z"
+    },
+    "l2-w6-d7-shadow": {
+      "level": "l2",
+      "week": 6,
+      "day": 7,
+      "text": "Are you free this weekend? I'm planning a trip, and I need to buy some snacks, drinks, and maps before we go. Where should we go, and how long should we stay? It's going to be a fun trip, isn't it? You're definitely coming, aren't you? What time works best for you — morning, afternoon, or evening?",
+      "voice": "af_heart",
+      "file_size_bytes": 268844,
+      "generated_at": "2026-07-11T14:16:10Z"
+    },
+    "l2-w7-d1-shadow": {
+      "level": "l2",
+      "week": 7,
+      "day": 1,
+      "text": "I think the bank needs a pink sink — thank you for the drink, I'll sink into this chair while my uncle sorts through the junk.",
+      "voice": "af_heart",
+      "file_size_bytes": 106412,
+      "generated_at": "2026-07-11T14:16:21Z"
+    },
+    "l2-w7-d2-shadow": {
+      "level": "l2",
+      "week": 7,
+      "day": 2,
+      "text": "My finger points at a single angle — England has an interesting language, and hunger made him point at the food.",
+      "voice": "af_heart",
+      "file_size_bytes": 105644,
+      "generated_at": "2026-07-11T14:16:30Z"
+    },
+    "l2-w7-d3-shadow": {
+      "level": "l2",
+      "week": 7,
+      "day": 3,
+      "text": "I think one cat is enough — my finger points at one goat near the bank, where I also saw one kite.",
+      "voice": "af_heart",
+      "file_size_bytes": 91052,
+      "generated_at": "2026-07-11T14:16:38Z"
+    },
+    "l2-w7-d4-shadow": {
+      "level": "l2",
+      "week": 7,
+      "day": 4,
+      "text": "Thanks for thinking about the English banking system — the singer is getting stronger and longer with practice, and I'm thinking about drinking less.",
+      "voice": "af_heart",
+      "file_size_bytes": 133292,
+      "generated_at": "2026-07-11T14:16:49Z"
+    },
+    "l2-w7-d5-shadow": {
+      "level": "l2",
+      "week": 7,
+      "day": 5,
+      "text": "When thinking analytically about English banking, we see stronger, longer-term trends — thanks to clear thinking, our strategy is stronger.",
+      "voice": "af_heart",
+      "file_size_bytes": 136364,
+      "generated_at": "2026-07-11T14:17:02Z"
+    },
+    "l2-w7-d6-shadow": {
+      "level": "l2",
+      "week": 7,
+      "day": 6,
+      "text": "I think one cat and one goat are enough — my finger points at the bank, where I'm thinking about English banking and a singer's stronger, longer performance.",
+      "voice": "af_heart",
+      "file_size_bytes": 145196,
+      "generated_at": "2026-07-11T14:17:16Z"
+    },
+    "l2-w7-d7-shadow": {
+      "level": "l2",
+      "week": 7,
+      "day": 7,
+      "text": "I'm thinking about my banking habits these days. Thanks to some careful thinking, I've realized that drinking less coffee and saving more could make my finances stronger. My uncle, a singer with a strong voice, told me that one small change, like one cup less a day, can add up over a longer period. English financial habits are interesting to think about, and I hope my thinking leads to a stronger, longer-term plan.",
+      "voice": "af_heart",
+      "file_size_bytes": 409004,
+      "generated_at": "2026-07-11T14:18:20Z"
+    },
+    "l2-w8-d1-shadow": {
+      "level": "l2",
+      "week": 8,
+      "day": 1,
+      "text": "After a long day at work, I like to relax and watch a movie — the book, which I bought last week, is really interesting, and when I have free time, I usually read or go for a walk.",
+      "voice": "af_heart",
+      "file_size_bytes": 178988,
+      "generated_at": "2026-07-11T14:18:43Z"
+    },
+    "l2-w8-d2-shadow": {
+      "level": "l2",
+      "week": 8,
+      "day": 2,
+      "text": "My brother, who lives in Canada, is visiting soon — because it was raining last time, we decided to stay home, but the company, which was founded in 1990, is doing well.",
+      "voice": "af_heart",
+      "file_size_bytes": 177068,
+      "generated_at": "2026-07-11T14:18:59Z"
+    },
+    "l2-w8-d3-shadow": {
+      "level": "l2",
+      "week": 8,
+      "day": 3,
+      "text": "There are three reasons for this: first, the cost; second, the time; and third, the risk — my plan has two parts, first research, then action.",
+      "voice": "af_heart",
+      "file_size_bytes": 133676,
+      "generated_at": "2026-07-11T14:19:11Z"
+    },
+    "l2-w8-d4-shadow": {
+      "level": "l2",
+      "week": 8,
+      "day": 4,
+      "text": "I want to go to the store before it closes — she likes to read books in her free time, and we need to finish this today, no matter what.",
+      "voice": "af_heart",
+      "file_size_bytes": 124076,
+      "generated_at": "2026-07-11T14:19:23Z"
+    },
+    "l2-w8-d5-shadow": {
+      "level": "l2",
+      "week": 8,
+      "day": 5,
+      "text": "(Free speech: analyze why people procrastinate for 45-60 seconds, using clear thought groups.)",
+      "voice": "af_heart",
+      "file_size_bytes": 109484,
+      "generated_at": "2026-07-11T14:19:35Z"
+    },
+    "l2-w8-d6-shadow": {
+      "level": "l2",
+      "week": 8,
+      "day": 6,
+      "text": "After a long day at work, which is often exhausting, I like to relax, read a book, or watch a movie — there are three reasons for this: first, the cost; second, the time; and third, my own comfort.",
+      "voice": "af_heart",
+      "file_size_bytes": 191276,
+      "generated_at": "2026-07-11T14:19:54Z"
+    },
+    "l2-w8-d7-shadow": {
+      "level": "l2",
+      "week": 8,
+      "day": 7,
+      "text": "(Free speech: explain a decision or process — e.g., how you chose your current job, or how you plan your week — using clear thought groups and pauses to structure your explanation.)",
+      "voice": "af_heart",
+      "file_size_bytes": 176684,
+      "generated_at": "2026-07-11T14:20:09Z"
+    },
+    "l2-w9-d1-shadow": {
+      "level": "l2",
+      "week": 9,
+      "day": 1,
+      "text": "The EVIDENCE shows this policy works. This EVIDENCE is clear and undeniable. We cannot ignore this EVIDENCE any longer.",
+      "voice": "af_heart",
+      "file_size_bytes": 123308,
+      "generated_at": "2026-07-11T14:20:20Z"
+    },
+    "l2-w9-d2-shadow": {
+      "level": "l2",
+      "week": 9,
+      "day": 2,
+      "text": "Some say it's EXPENSIVE, but it's actually an INVESTMENT — this is NOT a cost, it's an OPPORTUNITY, and people call it a RISK, but I call it a CHANCE.",
+      "voice": "af_heart",
+      "file_size_bytes": 142892,
+      "generated_at": "2026-07-11T14:20:32Z"
+    },
+    "l2-w9-d3-shadow": {
+      "level": "l2",
+      "week": 9,
+      "day": 3,
+      "text": "This matters. This REALLY matters. This is why we MUST act NOW — there is no time left to wait.",
+      "voice": "af_heart",
+      "file_size_bytes": 95276,
+      "generated_at": "2026-07-11T14:20:41Z"
+    },
+    "l2-w9-d4-shadow": {
+      "level": "l2",
+      "week": 9,
+      "day": 4,
+      "text": "And the result? ABSOLUTE failure. The answer is EXACTLY right — what we need now is REAL change.",
+      "voice": "af_heart",
+      "file_size_bytes": 101036,
+      "generated_at": "2026-07-11T14:20:51Z"
+    },
+    "l2-w9-d5-shadow": {
+      "level": "l2",
+      "week": 9,
+      "day": 5,
+      "text": "(Free speech: deliver a 60-second persuasive argument, using consistent emphasis, contrast, escalation, and pausing.)",
+      "voice": "af_heart",
+      "file_size_bytes": 134060,
+      "generated_at": "2026-07-11T14:21:02Z"
+    },
+    "l2-w9-d6-shadow": {
+      "level": "l2",
+      "week": 9,
+      "day": 6,
+      "text": "The EVIDENCE is clear. Some call it EXPENSIVE, but I call it an INVESTMENT — and the result? REAL, lasting change. This matters. This REALLY matters.",
+      "voice": "af_heart",
+      "file_size_bytes": 150572,
+      "generated_at": "2026-07-11T14:21:15Z"
+    },
+    "l2-w9-d7-shadow": {
+      "level": "l2",
+      "week": 9,
+      "day": 7,
+      "text": "(Free speech: choose a real topic you care about and deliver a persuasive 60-90 second argument, using consistent key-word emphasis, contrastive stress against a counter-argument, escalating intensity, and strategic pause+emphasis for your conclusion.)",
+      "voice": "af_heart",
+      "file_size_bytes": 276908,
+      "generated_at": "2026-07-11T14:21:45Z"
+    },
+    "l2-w10-d1-shadow": {
+      "level": "l2",
+      "week": 10,
+      "day": 1,
+      "text": "Nice weather today, isn't it? You're a doctor, aren't you? This is a great restaurant, don't you think?",
+      "voice": "af_heart",
+      "file_size_bytes": 88748,
+      "generated_at": "2026-07-11T14:21:55Z"
+    },
+    "l2-w10-d2-shadow": {
+      "level": "l2",
+      "week": 10,
+      "day": 2,
+      "text": "You haven't seen my keys, have you? This flight isn't delayed, is it? They didn't cancel the meeting, did they?",
+      "voice": "af_heart",
+      "file_size_bytes": 95276,
+      "generated_at": "2026-07-11T14:22:04Z"
+    },
+    "l2-w10-d3-shadow": {
+      "level": "l2",
+      "week": 10,
+      "day": 3,
+      "text": "Oh, you're an EXPERT, aren't you? You KNEW that already, didn't you? That was YOUR idea, wasn't it?",
+      "voice": "af_heart",
+      "file_size_bytes": 84908,
+      "generated_at": "2026-07-11T14:22:12Z"
+    },
+    "l2-w10-d4-shadow": {
+      "level": "l2",
+      "week": 10,
+      "day": 4,
+      "text": "You're coming, aren't you? (confident version) — You're coming, aren't you? (genuinely unsure version) — You're coming, aren't you? (sarcastic version).",
+      "voice": "af_heart",
+      "file_size_bytes": 139436,
+      "generated_at": "2026-07-11T14:22:23Z"
+    },
+    "l2-w10-d5-shadow": {
+      "level": "l2",
+      "week": 10,
+      "day": 5,
+      "text": "(Free speech: casual conversation using at least 2 different tag question intonations naturally.)",
+      "voice": "af_heart",
+      "file_size_bytes": 99884,
+      "generated_at": "2026-07-11T14:22:32Z"
+    },
+    "l2-w10-d6-shadow": {
+      "level": "l2",
+      "week": 10,
+      "day": 6,
+      "text": "Nice weather, isn't it? You haven't seen my umbrella, have you? Oh, you're an EXPERT on weather now, aren't you?",
+      "voice": "af_heart",
+      "file_size_bytes": 98348,
+      "generated_at": "2026-07-11T14:22:41Z"
+    },
+    "l2-w10-d7-shadow": {
+      "level": "l2",
+      "week": 10,
+      "day": 7,
+      "text": "(Create a short imagined dialogue between two friends discussing weekend plans, using at least one confident-falling tag, one genuinely-uncertain-rising tag, and optionally one sarcastic tag if it fits naturally.)",
+      "voice": "af_heart",
+      "file_size_bytes": 221228,
+      "generated_at": "2026-07-11T14:23:05Z"
+    },
+    "l2-w11-d1-shadow": {
+      "level": "l2",
+      "week": 11,
+      "day": 1,
+      "text": "I shoulda called her yesterday — whaddya want for dinner? Gimme a minute, and lemme think about it.",
+      "voice": "af_heart",
+      "file_size_bytes": 86444,
+      "generated_at": "2026-07-11T14:23:15Z"
+    },
+    "l2-w11-d2-shadow": {
+      "level": "l2",
+      "week": 11,
+      "day": 2,
+      "text": "Pick up an apple and gimme some water — press the button on the machine, would ya?",
+      "voice": "af_heart",
+      "file_size_bytes": 69932,
+      "generated_at": "2026-07-11T14:23:22Z"
+    },
+    "l2-w11-d3-shadow": {
+      "level": "l2",
+      "week": 11,
+      "day": 3,
+      "text": "(Shadow your own Day 1/2 transcriptions, matching the original audio's speed and reduction exactly.)",
+      "voice": "af_heart",
+      "file_size_bytes": 112940,
+      "generated_at": "2026-07-11T14:23:32Z"
+    },
+    "l2-w11-d4-shadow": {
+      "level": "l2",
+      "week": 11,
+      "day": 4,
+      "text": "Didja finish the report? Yeah, I shoulda done it sooner. I gotta go now — it's kinda late already.",
+      "voice": "af_heart",
+      "file_size_bytes": 92204,
+      "generated_at": "2026-07-11T14:23:42Z"
+    },
+    "l2-w11-d5-shadow": {
+      "level": "l2",
+      "week": 11,
+      "day": 5,
+      "text": "(Shadow your transcription of a real, unfamiliar native-speed audio clip.)",
+      "voice": "af_heart",
+      "file_size_bytes": 74540,
+      "generated_at": "2026-07-11T14:23:49Z"
+    },
+    "l2-w11-d6-shadow": {
+      "level": "l2",
+      "week": 11,
+      "day": 6,
+      "text": "Didja finish? I shoulda called her, but I gotta go pick up an apple and gimme a minute first — whaddya want, anyway?",
+      "voice": "af_heart",
+      "file_size_bytes": 104876,
+      "generated_at": "2026-07-11T14:23:58Z"
+    },
+    "l2-w11-d7-shadow": {
+      "level": "l2",
+      "week": 11,
+      "day": 7,
+      "text": "(Choose a new, unfamiliar native-speed audio clip of your choice — a podcast, interview, or video. Listen, transcribe including all reductions, then shadow it and record your shadowed version.)",
+      "voice": "af_heart",
+      "file_size_bytes": 203180,
+      "generated_at": "2026-07-11T14:24:17Z"
+    },
+    "l2-w12-d1-shadow": {
+      "level": "l2",
+      "week": 12,
+      "day": 1,
+      "text": "I could have gone for fish and chips, but I chose a new tune instead — the new duke should have tuned his approach to the news.",
+      "voice": "af_heart",
+      "file_size_bytes": 109100,
+      "generated_at": "2026-07-11T14:24:28Z"
+    },
+    "l2-w12-d2-shadow": {
+      "level": "l2",
+      "week": 12,
+      "day": 2,
+      "text": "I said BLUE, not green — is this political and global issue clear to you? Are you coming, and what time is it?",
+      "voice": "af_heart",
+      "file_size_bytes": 104876,
+      "generated_at": "2026-07-11T14:24:37Z"
+    },
+    "l2-w12-d3-shadow": {
+      "level": "l2",
+      "week": 12,
+      "day": 3,
+      "text": "I think the EVIDENCE, after a long day of banking research, is clear — my finger points to it, and this REALLY matters.",
+      "voice": "af_heart",
+      "file_size_bytes": 112172,
+      "generated_at": "2026-07-11T14:24:46Z"
+    },
+    "l2-w12-d4-shadow": {
+      "level": "l2",
+      "week": 12,
+      "day": 4,
+      "text": "Nice weather, isn't it? You haven't seen my keys, have you? I shoulda called her — this is gonna be great, isn't it?",
+      "voice": "af_heart",
+      "file_size_bytes": 99500,
+      "generated_at": "2026-07-11T14:24:56Z"
+    },
+    "l2-w12-d5-shadow": {
+      "level": "l2",
+      "week": 12,
+      "day": 5,
+      "text": "(Record both Part A — reading — and Part B — spontaneous persuasive speech — as two separate clips.)",
+      "voice": "af_heart",
+      "file_size_bytes": 105644,
+      "generated_at": "2026-07-11T14:25:04Z"
+    },
+    "l2-w12-d6-shadow": {
+      "level": "l2",
+      "week": 12,
+      "day": 6,
+      "text": "Not only is this a global, political issue, but the EVIDENCE, having been reviewed carefully, is also clear — after a long day of thinking, this REALLY matters, isn't it obvious?",
+      "voice": "af_heart",
+      "file_size_bytes": 175148,
+      "generated_at": "2026-07-11T14:25:19Z"
+    },
+    "l2-w12-d7-shadow": {
+      "level": "l2",
+      "week": 12,
+      "day": 7,
+      "text": "Not only have I grown as a speaker over these twelve weeks, but I've also learned to think and argue with real confidence in English. Having studied reduction, dark L, and even the tricky NG sound, I feel prepared for whatever comes next. Rarely have I worked this hard on anything, and the EVIDENCE — my own recordings from week one compared to now — REALLY shows it. This is gonna be a great foundation for Level 3, isn't it?",
+      "voice": "af_heart",
+      "file_size_bytes": 422060,
+      "generated_at": "2026-07-11T14:25:59Z"
+    },
+    "l3-w1-d1-shadow": {
+      "level": "l3",
+      "week": 1,
+      "day": 1,
+      "text": "It's totally vital to meditate about the capital's latitude and the satellite orbiting it.",
+      "voice": "af_heart",
+      "file_size_bytes": 84908,
+      "generated_at": "2026-07-11T14:26:07Z"
+    },
+    "l3-w1-d2-shadow": {
+      "level": "l3",
+      "week": 1,
+      "day": 2,
+      "text": "(Free speech: a passionate 30-second rant about a minor daily annoyance, e.g., slow wifi or bad traffic.)",
+      "voice": "af_heart",
+      "file_size_bytes": 116012,
+      "generated_at": "2026-07-11T14:26:17Z"
+    },
+    "l3-w1-d3-shadow": {
+      "level": "l3",
+      "week": 1,
+      "day": 3,
+      "text": "I instantly and distinctly remember the quantity constantly changing — it was a distinctly large amount.",
+      "voice": "af_heart",
+      "file_size_bytes": 101804,
+      "generated_at": "2026-07-11T14:26:26Z"
+    },
+    "l3-w1-d4-shadow": {
+      "level": "l3",
+      "week": 1,
+      "day": 4,
+      "text": "Oh, TOTALLY, that's a GREAT idea — definitely, I TOTALLY believe that, absolutely.",
+      "voice": "af_heart",
+      "file_size_bytes": 85676,
+      "generated_at": "2026-07-11T14:26:34Z"
+    },
+    "l3-w1-d5-shadow": {
+      "level": "l3",
+      "week": 1,
+      "day": 5,
+      "text": "(Free speech: 60 seconds, completely unplanned, any topic.)",
+      "voice": "af_heart",
+      "file_size_bytes": 67628,
+      "generated_at": "2026-07-11T14:26:41Z"
+    },
+    "l3-w1-d6-shadow": {
+      "level": "l3",
+      "week": 1,
+      "day": 6,
+      "text": "It's totally vital to instantly and distinctly remember the satellite's latitude — oh, TOTALLY, that's a great idea, definitely!",
+      "voice": "af_heart",
+      "file_size_bytes": 129836,
+      "generated_at": "2026-07-11T14:26:52Z"
+    },
+    "l3-w1-d7-shadow": {
+      "level": "l3",
+      "week": 1,
+      "day": 7,
+      "text": "(Free speech: 60-90 seconds on any topic, PLUS a brief emotional/humorous reaction moment within it.)",
+      "voice": "af_heart",
+      "file_size_bytes": 124076,
+      "generated_at": "2026-07-11T14:27:02Z"
+    },
+    "l3-w2-d1-shadow": {
+      "level": "l3",
+      "week": 2,
+      "day": 1,
+      "text": "It's a colossal, plausible reason for the dismissal — the principal made a universal rule about every animal.",
+      "voice": "af_heart",
+      "file_size_bytes": 108332,
+      "generated_at": "2026-07-11T14:27:11Z"
+    },
+    "l3-w2-d2-shadow": {
+      "level": "l3",
+      "week": 2,
+      "day": 2,
+      "text": "Oh, TOTALLY brilliant! What a FEEL-good, beautiful, wonderful story — just wonderful.",
+      "voice": "af_heart",
+      "file_size_bytes": 87980,
+      "generated_at": "2026-07-11T14:27:19Z"
+    },
+    "l3-w2-d3-shadow": {
+      "level": "l3",
+      "week": 2,
+      "day": 3,
+      "text": "The results showed adults' pulse rates rising after insults — the pulse quickened noticeably.",
+      "voice": "af_heart",
+      "file_size_bytes": 93740,
+      "generated_at": "2026-07-11T14:27:27Z"
+    },
+    "l3-w2-d4-shadow": {
+      "level": "l3",
+      "week": 2,
+      "day": 4,
+      "text": "(Free speech: react genuinely and out loud to something funny or surprising you recall or imagine.)",
+      "voice": "af_heart",
+      "file_size_bytes": 100268,
+      "generated_at": "2026-07-11T14:27:37Z"
+    },
+    "l3-w2-d5-shadow": {
+      "level": "l3",
+      "week": 2,
+      "day": 5,
+      "text": "(Free speech: 60 seconds, unplanned, any topic.)",
+      "voice": "af_heart",
+      "file_size_bytes": 56108,
+      "generated_at": "2026-07-11T14:27:43Z"
+    },
+    "l3-w2-d6-shadow": {
+      "level": "l3",
+      "week": 2,
+      "day": 6,
+      "text": "It's a colossal, plausible reason — oh, TOTALLY brilliant, what a feel-good, beautiful, wonderful story! The principal's pulse quickened after the results.",
+      "voice": "af_heart",
+      "file_size_bytes": 156716,
+      "generated_at": "2026-07-11T14:27:56Z"
+    },
+    "l3-w2-d7-shadow": {
+      "level": "l3",
+      "week": 2,
+      "day": 7,
+      "text": "(Free speech: 60-90 seconds on any topic, including a genuine attempt at humor or sarcasm.)",
+      "voice": "af_heart",
+      "file_size_bytes": 117164,
+      "generated_at": "2026-07-11T14:28:05Z"
+    },
+    "l3-w3-d1-shadow": {
+      "level": "l3",
+      "week": 3,
+      "day": 1,
+      "text": "The methodology needs to corroborate and substantiate the claim — epistemology helps delineate what we can truly know.",
+      "voice": "af_heart",
+      "file_size_bytes": 118700,
+      "generated_at": "2026-07-11T14:28:15Z"
+    },
+    "l3-w3-d2-shadow": {
+      "level": "l3",
+      "week": 3,
+      "day": 2,
+      "text": "We extrapolate data to juxtapose two postulated theories — the professor delineated its limits clearly.",
+      "voice": "af_heart",
+      "file_size_bytes": 109868,
+      "generated_at": "2026-07-11T14:28:25Z"
+    },
+    "l3-w3-d3-shadow": {
+      "level": "l3",
+      "week": 3,
+      "day": 3,
+      "text": "Our methodology will corroborate and substantiate this extrapolated finding, in line with established academic standards.",
+      "voice": "af_heart",
+      "file_size_bytes": 125612,
+      "generated_at": "2026-07-11T14:28:35Z"
+    },
+    "l3-w3-d4-shadow": {
+      "level": "l3",
+      "week": 3,
+      "day": 4,
+      "text": "(Read an unfamiliar academic paragraph of your choice aloud, cold, with no preparation.)",
+      "voice": "af_heart",
+      "file_size_bytes": 93740,
+      "generated_at": "2026-07-11T14:28:44Z"
+    },
+    "l3-w3-d5-shadow": {
+      "level": "l3",
+      "week": 3,
+      "day": 5,
+      "text": "(Free speech: explain a concept you know well, academically, for 45-60 seconds, unscripted.)",
+      "voice": "af_heart",
+      "file_size_bytes": 111020,
+      "generated_at": "2026-07-11T14:28:54Z"
+    },
+    "l3-w3-d6-shadow": {
+      "level": "l3",
+      "week": 3,
+      "day": 6,
+      "text": "Our methodology will corroborate and substantiate this extrapolated, juxtaposed data, in line with established epistemology.",
+      "voice": "af_heart",
+      "file_size_bytes": 131372,
+      "generated_at": "2026-07-11T14:29:04Z"
+    },
+    "l3-w3-d7-shadow": {
+      "level": "l3",
+      "week": 3,
+      "day": 7,
+      "text": "(Free speech: explain any topic academically for 60-90 seconds, using naturally-occurring complex vocabulary.)",
+      "voice": "af_heart",
+      "file_size_bytes": 132908,
+      "generated_at": "2026-07-11T14:29:15Z"
+    },
+    "l3-w4-d1-shadow": {
+      "level": "l3",
+      "week": 4,
+      "day": 1,
+      "text": "Let's circle back and touch base about our bandwidth — we need to streamline this deliverable by Friday.",
+      "voice": "af_heart",
+      "file_size_bytes": 95276,
+      "generated_at": "2026-07-11T14:29:24Z"
+    },
+    "l3-w4-d2-shadow": {
+      "level": "l3",
+      "week": 4,
+      "day": 2,
+      "text": "I wanted to touch base and circle back on the deliverable timeline — let's align on the action items before we escalate this further.",
+      "voice": "af_heart",
+      "file_size_bytes": 129452,
+      "generated_at": "2026-07-11T14:29:34Z"
+    },
+    "l3-w4-d3-shadow": {
+      "level": "l3",
+      "week": 4,
+      "day": 3,
+      "text": "I understand your position, but I need to push back on this deadline — let's escalate this if we can't align.",
+      "voice": "af_heart",
+      "file_size_bytes": 104876,
+      "generated_at": "2026-07-11T14:29:43Z"
+    },
+    "l3-w4-d4-shadow": {
+      "level": "l3",
+      "week": 4,
+      "day": 4,
+      "text": "(Read a real, unfamiliar professional document aloud, cold, with no preparation.)",
+      "voice": "af_heart",
+      "file_size_bytes": 89132,
+      "generated_at": "2026-07-11T14:29:53Z"
+    },
+    "l3-w4-d5-shadow": {
+      "level": "l3",
+      "week": 4,
+      "day": 5,
+      "text": "(Free speech: answer 'Tell me about yourself' as if in a real job interview, for 60-90 seconds.)",
+      "voice": "af_heart",
+      "file_size_bytes": 113324,
+      "generated_at": "2026-07-11T14:30:02Z"
+    },
+    "l3-w4-d6-shadow": {
+      "level": "l3",
+      "week": 4,
+      "day": 6,
+      "text": "I wanted to touch base and circle back — I understand your position, but given our bandwidth, I need to push back on this deadline.",
+      "voice": "af_heart",
+      "file_size_bytes": 122540,
+      "generated_at": "2026-07-11T14:30:13Z"
+    },
+    "l3-w4-d7-shadow": {
+      "level": "l3",
+      "week": 4,
+      "day": 7,
+      "text": "(Free speech: 90 seconds, a realistic professional scenario of your choice, fully spontaneous.)",
+      "voice": "af_heart",
+      "file_size_bytes": 101804,
+      "generated_at": "2026-07-11T14:30:21Z"
+    },
+    "l3-w5-d1-shadow": {
+      "level": "l3",
+      "week": 5,
+      "day": 1,
+      "text": "And the answer is... [pause] ...simple. There is only one truth... [pause] ...and it's this: we have one choice left... [pause] ...to act now.",
+      "voice": "af_heart",
+      "file_size_bytes": 130220,
+      "generated_at": "2026-07-11T14:30:32Z"
+    },
+    "l3-w5-d2-shadow": {
+      "level": "l3",
+      "week": 5,
+      "day": 2,
+      "text": "(Deliver with genuine escalating energy) We've faced challenges before. We've overcome them before. And we WILL overcome this one too!",
+      "voice": "af_heart",
+      "file_size_bytes": 135212,
+      "generated_at": "2026-07-11T14:30:43Z"
+    },
+    "l3-w5-d3-shadow": {
+      "level": "l3",
+      "week": 5,
+      "day": 3,
+      "text": "(Deliver with genuine pace contrast) This... is... serious. But there's so much we can do about it, so many options, so much hope!",
+      "voice": "af_heart",
+      "file_size_bytes": 136364,
+      "generated_at": "2026-07-11T14:30:54Z"
+    },
+    "l3-w5-d4-shadow": {
+      "level": "l3",
+      "week": 5,
+      "day": 4,
+      "text": "This... is... our moment. We've waited, we've prepared, we've hoped — and now, it's here!",
+      "voice": "af_heart",
+      "file_size_bytes": 76460,
+      "generated_at": "2026-07-11T14:31:01Z"
+    },
+    "l3-w5-d5-shadow": {
+      "level": "l3",
+      "week": 5,
+      "day": 5,
+      "text": "(Free speech: 60-90 seconds, a real topic you care about, delivered persuasively and unscripted.)",
+      "voice": "af_heart",
+      "file_size_bytes": 114860,
+      "generated_at": "2026-07-11T14:31:11Z"
+    },
+    "l3-w5-d6-shadow": {
+      "level": "l3",
+      "week": 5,
+      "day": 6,
+      "text": "This... is... our moment. We've waited, we've prepared — and now, it's here! So much to do, so much hope, so little time to waste!",
+      "voice": "af_heart",
+      "file_size_bytes": 123692,
+      "generated_at": "2026-07-11T14:31:21Z"
+    },
+    "l3-w5-d7-shadow": {
+      "level": "l3",
+      "week": 5,
+      "day": 7,
+      "text": "(Free speech: 90 seconds, a genuine persuasive speech on a real topic, fully spontaneous.)",
+      "voice": "af_heart",
+      "file_size_bytes": 103724,
+      "generated_at": "2026-07-11T14:31:30Z"
+    },
+    "l3-w6-d1-shadow": {
+      "level": "l3",
+      "week": 6,
+      "day": 1,
+      "text": "(Deliver both versions back to back, clearly shifting tone) I need this report by Friday. — Hey, could you maybe get that report to me by Friday? No rush, but that'd be great!",
+      "voice": "af_heart",
+      "file_size_bytes": 176300,
+      "generated_at": "2026-07-11T14:31:45Z"
+    },
+    "l3-w6-d2-shadow": {
+      "level": "l3",
+      "week": 6,
+      "day": 2,
+      "text": "I would be grateful for your guidance on this matter — if you don't mind my asking, with all due respect, could you clarify this point?",
+      "voice": "af_heart",
+      "file_size_bytes": 118316,
+      "generated_at": "2026-07-11T14:31:56Z"
+    },
+    "l3-w6-d3-shadow": {
+      "level": "l3",
+      "week": 6,
+      "day": 3,
+      "text": "Oh hey, how's it going? Crazy weather we're having, huh? Any big plans this weekend? So good to see you!",
+      "voice": "af_heart",
+      "file_size_bytes": 100652,
+      "generated_at": "2026-07-11T14:32:06Z"
+    },
+    "l3-w6-d4-shadow": {
+      "level": "l3",
+      "week": 6,
+      "day": 4,
+      "text": "Hey, how's it going? So, about that report, I need it by Friday — and by the way, I'd be grateful for your guidance on this too.",
+      "voice": "af_heart",
+      "file_size_bytes": 121004,
+      "generated_at": "2026-07-11T14:32:16Z"
+    },
+    "l3-w6-d5-shadow": {
+      "level": "l3",
+      "week": 6,
+      "day": 5,
+      "text": "(Free speech: simulate a realistic 60-90 second conversation involving at least 2 register shifts.)",
+      "voice": "af_heart",
+      "file_size_bytes": 121772,
+      "generated_at": "2026-07-11T14:32:31Z"
+    },
+    "l3-w6-d6-shadow": {
+      "level": "l3",
+      "week": 6,
+      "day": 6,
+      "text": "Hey, how's it going? Crazy weather, huh? So, about that report — I need it by Friday, and I'd be grateful for your guidance on it.",
+      "voice": "af_heart",
+      "file_size_bytes": 124076,
+      "generated_at": "2026-07-11T14:32:50Z"
+    },
+    "l3-w6-d7-shadow": {
+      "level": "l3",
+      "week": 6,
+      "day": 7,
+      "text": "(Free speech: simulate any realistic scenario — e.g., a workday morning — that naturally moves through greeting, small talk, and a more formal/business exchange.)",
+      "voice": "af_heart",
+      "file_size_bytes": 172076,
+      "generated_at": "2026-07-11T14:33:07Z"
+    },
+    "l3-w7-d1-shadow": {
+      "level": "l3",
+      "week": 7,
+      "day": 1,
+      "text": "(Shadow a 20-30 second unscripted native clip by ear only, no transcript.)",
+      "voice": "af_heart",
+      "file_size_bytes": 90668,
+      "generated_at": "2026-07-11T14:33:16Z"
+    },
+    "l3-w7-d2-shadow": {
+      "level": "l3",
+      "week": 7,
+      "day": 2,
+      "text": "(Shadow an emotionally expressive native clip, matching the emotional tone as well as the sounds.)",
+      "voice": "af_heart",
+      "file_size_bytes": 94124,
+      "generated_at": "2026-07-11T14:33:24Z"
+    },
+    "l3-w7-d3-shadow": {
+      "level": "l3",
+      "week": 7,
+      "day": 3,
+      "text": "(Shadow a fast, comedic native dialogue clip at full original speed.)",
+      "voice": "af_heart",
+      "file_size_bytes": 73388,
+      "generated_at": "2026-07-11T14:33:31Z"
+    },
+    "l3-w7-d4-shadow": {
+      "level": "l3",
+      "week": 7,
+      "day": 4,
+      "text": "(Record your 5th shadowing attempt of a chosen clip, after 4 unrecorded practice rounds.)",
+      "voice": "af_heart",
+      "file_size_bytes": 94892,
+      "generated_at": "2026-07-11T14:33:40Z"
+    },
+    "l3-w7-d5-shadow": {
+      "level": "l3",
+      "week": 7,
+      "day": 5,
+      "text": "(Attempt full Phase 5 shadowing — no text, matching emotion, speed, and tone — on your most challenging clip yet.)",
+      "voice": "af_heart",
+      "file_size_bytes": 116396,
+      "generated_at": "2026-07-11T14:33:50Z"
+    },
+    "l3-w7-d6-shadow": {
+      "level": "l3",
+      "week": 7,
+      "day": 6,
+      "text": "(Final review shadowing pass on your best/favorite clip from this week.)",
+      "voice": "af_heart",
+      "file_size_bytes": 67628,
+      "generated_at": "2026-07-11T14:33:57Z"
+    },
+    "l3-w7-d7-shadow": {
+      "level": "l3",
+      "week": 7,
+      "day": 7,
+      "text": "(Choose a new, unfamiliar native-speed audio clip — ideally comedic or emotionally expressive, 20-40 seconds. Shadow it fully, without text.)",
+      "voice": "af_heart",
+      "file_size_bytes": 166316,
+      "generated_at": "2026-07-11T14:34:11Z"
+    },
+    "l3-w8-d1-shadow": {
+      "level": "l3",
+      "week": 8,
+      "day": 1,
+      "text": "About an hour ago, I picked up an apple and told him about the camera near the button — it doesn't matter, this all feels effortless now.",
+      "voice": "af_heart",
+      "file_size_bytes": 128684,
+      "generated_at": "2026-07-11T14:34:22Z"
+    },
+    "l3-w8-d2-shadow": {
+      "level": "l3",
+      "week": 8,
+      "day": 2,
+      "text": "The new tune felt political — I was thinking I shoulda mentioned the EVIDENCE, since it's gonna be great, isn't it?",
+      "voice": "af_heart",
+      "file_size_bytes": 101804,
+      "generated_at": "2026-07-11T14:34:32Z"
+    },
+    "l3-w8-d3-shadow": {
+      "level": "l3",
+      "week": 8,
+      "day": 3,
+      "text": "It's totally vital to corroborate this colossal methodology — let's circle back and touch base on the bandwidth.",
+      "voice": "af_heart",
+      "file_size_bytes": 107564,
+      "generated_at": "2026-07-11T14:34:41Z"
+    },
+    "l3-w8-d4-shadow": {
+      "level": "l3",
+      "week": 8,
+      "day": 4,
+      "text": "This... is... our moment. Hey, how's it going? Well, anyway, I mean, it's complicated, you know?",
+      "voice": "af_heart",
+      "file_size_bytes": 89900,
+      "generated_at": "2026-07-11T14:34:49Z"
+    },
+    "l3-w8-d5-shadow": {
+      "level": "l3",
+      "week": 8,
+      "day": 5,
+      "text": "(Free speech: 10-15 minutes continuous, on a substantial topic of your choice — this mirrors Table 11's Gold-tier '10 min continuous' target.)",
+      "voice": "af_heart",
+      "file_size_bytes": 167468,
+      "generated_at": "2026-07-11T14:35:03Z"
+    },
+    "l3-w8-d6-shadow": {
+      "level": "l3",
+      "week": 8,
+      "day": 6,
+      "text": "About an hour ago, I picked up an apple and told him about the camera near the button — this all feels totally effortless now. This... is... our moment. Hey, how's it going? Well, anyway, we've waited, we've prepared, and now it's here!",
+      "voice": "af_heart",
+      "file_size_bytes": 223532,
+      "generated_at": "2026-07-11T14:35:26Z"
+    },
+    "l3-w8-d7-shadow": {
+      "level": "l3",
+      "week": 8,
+      "day": 7,
+      "text": "(Free speech: 5-10 minutes, spontaneous, reflecting on your full learning journey — what you started with, what was hardest, what changed, and what's next.)",
+      "voice": "af_heart",
+      "file_size_bytes": 151724,
+      "generated_at": "2026-07-11T14:35:40Z"
+    }
+  }
+}

@@ -103,24 +103,36 @@ npx wrangler pages deploy site --project-name=empire-practice
 ### Known quirk — extensionless URLs only
 Every internal link (Discord bot task links, in-page nav) points at
 extensionless paths (e.g. `/l1/week3/day2/accent`, not `.../accent.html`).
-This is required, not stylistic: on the custom domain specifically,
-`.html`-suffixed static asset paths were verified to return a genuine,
-non-cached 404 (`cache-control: no-store`), while the identical
-extensionless path returns 200 everywhere (custom domain, `.pages.dev`
-subdomain, and deployment-specific URLs alike). Root cause not fully
-diagnosed (would need Cloudflare zone-level API access this project's
-token doesn't have) — but the working pattern is confirmed and must be
-preserved. If you ever add a new generated page type, link to it without
-the `.html` suffix.
+This is required, not stylistic: `.html`-suffixed static asset paths
+were verified to return a genuine, non-cached 404 (`cache-control:
+no-store`) on the custom domain, while the identical extensionless path
+returns 200 everywhere. **Root cause is now understood** (as of the
+2026-07-11 DNS zone migration documented in
+`Kiro-Master-Index/SESSION_CONTINUITY.md`'s "session 5" section): the
+domain's original Cloudflare account had some non-default Page Rule or
+Cache Rule intercepting `.html` requests before Cloudflare Pages' own
+redirect logic could run. That account is now permanently inaccessible,
+so the exact rule can never be inspected — but a fresh, clean zone
+(the one this domain now lives in) has zero custom Page Rules/Cache
+Rules and correctly 308-redirects `.html` to the extensionless form,
+confirming this was account-specific misconfiguration, not a Cloudflare
+Pages platform quirk. **Keep using extensionless URLs regardless** —
+it's the correct, portable pattern either way. If you ever add a new
+generated page type, link to it without the `.html` suffix.
 
-### API token
-The Cloudflare API token used for deploys/domain management during
-development had **Pages-project scope only** — it could not list zones,
-purge cache by zone, or inspect zone-level redirect rules. If you hit a
-custom-domain-specific issue that seems cache- or redirect-related,
-get a token with zone read/cache-purge permissions for `empireenglish.online`
-before spending time on it — the Pages-scoped token cannot diagnose
-those issues.
+### API token / Cloudflare account
+As of 2026-07-11, `empireenglish.online`'s DNS zone lives under the
+Cloudflare account `Macalempire@gmail.com` (account id
+`8c2ca895bd4e579be07d2fa6c9fdba7e`) — the same account that owns this
+project's Pages deployment. A zone-scoped API token with `Zone:Zone
+Read`, `Zone:DNS Edit`, `Zone:Page Rules Edit`, and `Zone:Cache Rules
+Edit` permissions (no listed expiry as of its creation) was issued for
+that migration — if it's still valid, it can also be used for
+Pages-affecting zone work here, but always verify via
+`/user/tokens/verify` first, never assume a token is still active.
+See `Kiro-Master-Index/SESSION_CONTINUITY.md`'s "session 5" section for
+the full migration history before assuming anything about domain/zone
+config.
 
 ---
 

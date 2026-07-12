@@ -2,15 +2,18 @@
 """Generate all practice platform HTML pages from curriculum data.
 
 Covers all 4 levels (L0-L3, 38 weeks total), reading curriculum content
-directly from the EEC-REPO discord-learning-bot's data/ and content/
-directories, and writes output into THIS repo (empire-practice), not a
+directly from the empire-nexus discord-learning-bot's data/ and content/
+directories, and writes output into THIS repo (empire-dojo), not a
 sibling repo.
 
 Path resolution (no more hardcoded /projects/sandbox/... paths):
-  - EEC_REPO_DIR env var, if set, points at the EEC-REPO checkout.
-  - Otherwise defaults to a sibling directory: ../EEC-REPO relative to
-    this script's own location (matches the common local dev layout of
-    cloning all org repos into one parent folder).
+  - EEC_REPO_DIR env var, if set, points at the empire-nexus checkout.
+    (Env var name kept as EEC_REPO_DIR for backward compatibility with
+    existing deploy scripts/CI — it points at empire-nexus, formerly
+    named EEC-REPO.)
+  - Otherwise defaults to a sibling directory: ../empire-nexus relative
+    to this script's own location (matches the common local dev layout
+    of cloning all org repos into one parent folder).
   - Output is always written into this repo's site/ directory (a sibling
     of this scripts/ directory), e.g. <repo>/site/l1/week3/day2/accent.html.
     This keeps build tooling (this script, generate_audio.py, the audio
@@ -21,7 +24,7 @@ Path resolution (no more hardcoded /projects/sandbox/... paths):
 Usage:
     python3 generate.py                # generate all 4 levels
     python3 generate.py --level l1     # generate a single level
-    EEC_REPO_DIR=/path/to/EEC-REPO python3 generate.py
+    EEC_REPO_DIR=/path/to/empire-nexus python3 generate.py
 """
 import argparse
 import json
@@ -29,14 +32,14 @@ import re
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parent  # empire-practice/ (parent of scripts/)
+REPO_ROOT = SCRIPT_DIR.parent  # empire-dojo/ (parent of scripts/)
 
 import os
 
-# EEC-REPO is a sibling of THIS repo (empire-practice/), i.e.
-# REPO_ROOT.parent / "EEC-REPO" -- not SCRIPT_DIR.parent, since SCRIPT_DIR
-# is now empire-practice/scripts/, one level deeper than the repo root.
-EEC_REPO_DIR = Path(os.environ.get("EEC_REPO_DIR", REPO_ROOT.parent / "EEC-REPO"))
+# empire-nexus (formerly EEC-REPO) is a sibling of THIS repo (empire-dojo/),
+# i.e. REPO_ROOT.parent / "empire-nexus" -- not SCRIPT_DIR.parent, since
+# SCRIPT_DIR is empire-dojo/scripts/, one level deeper than the repo root.
+EEC_REPO_DIR = Path(os.environ.get("EEC_REPO_DIR", REPO_ROOT.parent / "empire-nexus"))
 BOT_DIR = EEC_REPO_DIR / "bots" / "discord-learning-bot"
 DATA_DIR = BOT_DIR / "data"
 CONTENT_DIR = BOT_DIR / "content"
@@ -317,7 +320,17 @@ def generate_level(level, audio_manifest):
             day_dir = OUTPUT_DIR / level / f"week{week}" / f"day{day}"
             day_dir.mkdir(parents=True, exist_ok=True)
 
-            day_vocab = vocab[(day - 1) * 8: day * 8] if len(vocab) >= day * 8 else vocab[:8]
+            # Split weekly vocab into 7 days using the SAME adaptive formula
+            # as the bot's curriculum.py get_vocabulary_for_day() (len // 7,
+            # no fallback). Previously this used a hardcoded "8 words/day"
+            # slice that fell back to vocab[:8] (day 1's words, verbatim)
+            # for any week with fewer than day*8 total words -- silently
+            # showing day 1's vocabulary again on day 6/7 (or worse) for
+            # every week below the 56-word threshold. That's every L2/L3
+            # week (denser, more advanced vocab by design) plus a couple
+            # of L1 weeks. Must stay in sync with curriculum.py's formula.
+            words_per_day = max(1, len(vocab) // 7)
+            day_vocab = vocab[(day - 1) * words_per_day: day * words_per_day]
             norm = normalize_drill(drills_by_day.get(day))
             shadow_aid = audio_id(level, week, day, "shadow")
 
@@ -351,9 +364,9 @@ def main():
 
     if not DATA_DIR.exists():
         raise SystemExit(
-            f"ERROR: EEC-REPO data directory not found: {DATA_DIR}\n"
+            f"ERROR: empire-nexus data directory not found: {DATA_DIR}\n"
             f"Set EEC_REPO_DIR to the correct path, e.g.:\n"
-            f"  EEC_REPO_DIR=/path/to/EEC-REPO python3 generate.py"
+            f"  EEC_REPO_DIR=/path/to/empire-nexus python3 generate.py"
         )
 
     print("Generating Empire English Practice Platform...")

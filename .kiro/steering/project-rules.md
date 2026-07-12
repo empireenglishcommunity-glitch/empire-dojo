@@ -1,5 +1,5 @@
 
-# empire-practice — AI Agent Steering Rules
+# empire-dojo — AI Agent Steering Rules
 
 > This file is automatically loaded by Kiro and any AI agent working on this repository.
 > It provides critical context, constraints, and decision rules for all future work.
@@ -9,17 +9,18 @@
 ## 1. Project Identity
 
 - **Project:** Empire English Practice Platform — the web companion to the Discord Learning Bot
-- **Parent project:** Empire English Community (see `EEC-REPO/.kiro/steering/project-rules.md` for org-wide rules)
+- **Parent project:** Empire English Community (see `empire-nexus/.kiro/steering/project-rules.md` for org-wide rules)
 - **Purpose:** Gives students a page to land on when a Discord daily task says "go practice your accent/shadowing/listening/vocab" — the bot links here, this repo has no independent content strategy of its own
 - **Live at:** https://practice.empireenglish.online
-- **Repository:** `empireenglishcommunity-glitch/empire-practice`
+- **Repository:** `empireenglishcommunity-glitch/empire-dojo`
+- **Note:** this repo was previously named `empire-practice`. The Cloudflare Pages *project* is still named `empire-practice` (unchanged, external resource) — only the GitHub repo was renamed. Don't confuse the two.
 
 ---
 
 ## 2. Repository Structure (STRICT — read before deploying)
 
 ```
-empire-practice/
+empire-dojo/
 ├── site/       <- THE DEPLOYED WEBSITE. This is the ONLY directory that
 │                  should ever be uploaded to Cloudflare Pages. Nothing
 │                  else in this repo should ever be publicly reachable.
@@ -36,9 +37,10 @@ uploaded the entire repo root — including `generate.py`,
 A first attempt at fixing this just moved those files into a same-level
 `scripts/` folder, which was **not actually a fix** — that folder was
 still *inside* the directory being deployed, so `scripts/generate.py`
-was still publicly reachable at that URL. The real fix (`empire-practice
-PR #4`) was this `site/` vs `scripts/` split. Never deploy `.` (the repo
-root) — always deploy `site/` explicitly.
+was still publicly reachable at that URL. The real fix (this repo's
+PR #4, back when it was still named `empire-practice`) was this
+`site/` vs `scripts/` split. Never deploy `.` (the repo root) — always
+deploy `site/` explicitly.
 
 Also watch for: `.pyc` bytecode files and other build artifacts getting
 committed to git and then served publicly. `.gitignore` does **not**
@@ -50,9 +52,9 @@ it, not just add a gitignore rule.
 
 ## 3. Content Source of Truth
 
-- **All curriculum content (vocabulary, accent drills, shadowing text) comes from `EEC-REPO/bots/discord-learning-bot/`** — specifically its `data/` and `content/` directories. This repo has ZERO independent content — it only renders what the bot's curriculum already contains.
-- Never fabricate or invent curriculum content here (dialogue, vocabulary, drills) to "fill in" a level or week. If real content doesn't exist yet in EEC-REPO for some week/level, that's a signal to go fix it there, not to invent placeholder text here.
-- `LEVEL_WEEK_COUNTS = {"l0": 8, "l1": 10, "l2": 12, "l3": 8}` in `scripts/generate.py` MUST always match the identical constant in `EEC-REPO/bots/discord-learning-bot/src/curriculum.py`. If the bot's curriculum grows (new weeks/levels), update both in the same PR.
+- **All curriculum content (vocabulary, accent drills, shadowing text) comes from `empire-nexus/bots/discord-learning-bot/`** — specifically its `data/` and `content/` directories. This repo has ZERO independent content — it only renders what the bot's curriculum already contains.
+- Never fabricate or invent curriculum content here (dialogue, vocabulary, drills) to "fill in" a level or week. If real content doesn't exist yet in empire-nexus for some week/level, that's a signal to go fix it there, not to invent placeholder text here.
+- `LEVEL_WEEK_COUNTS = {"l0": 8, "l1": 10, "l2": 12, "l3": 8}` in `scripts/generate.py` MUST always match the identical constant in `empire-nexus/bots/discord-learning-bot/src/curriculum.py`. If the bot's curriculum grows (new weeks/levels), update both in the same PR.
 - Shadowing pages use the curriculum's real `sentence_practice`/`record_this` text. Listening pages use a grounded vocab-comprehension check (hear a real word, pick its correct Arabic meaning from real same-week distractors) — this was a deliberate choice to scale to all weeks without fabricating dialogue content that only existed for weeks 1-2 in an earlier version of this generator.
 - Vocab flashcard pages (1,843 words across L0-L3) deliberately do NOT have pre-generated Kokoro audio — only browser TTS. This was a scope/storage tradeoff, explicitly flagged as open to revisiting.
 
@@ -60,18 +62,18 @@ it, not just add a gitignore rule.
 
 ## 4. Regenerating the Site
 
-Requires `EEC-REPO` cloned as a sibling directory:
+Requires `empire-nexus` cloned as a sibling directory:
 ```
 parent/
-  EEC-REPO/
-  empire-practice/
+  empire-nexus/
+  empire-dojo/
 ```
 
 ```bash
-cd empire-practice
+cd empire-dojo
 python3 scripts/generate.py                # writes into site/, all 4 levels
 python3 scripts/generate.py --level l1      # single level only
-EEC_REPO_DIR=/path/to/EEC-REPO python3 scripts/generate.py   # override sibling assumption
+EEC_REPO_DIR=/path/to/empire-nexus python3 scripts/generate.py   # override sibling assumption
 
 # Kokoro TTS audio for shadowing pages (writes into site/audio/):
 python3 scripts/generate_audio.py
@@ -83,7 +85,12 @@ because the script exited 0. (A real, previously-shipped bug: after the
 `scripts/` folder move, `generate.py`'s default `EEC_REPO_DIR` path
 calculation pointed one directory level too deep and would have failed
 outright — caught only by actually re-running the script, not by code
-review.)
+review. A second, since-fixed bug: after both repos were renamed
+[`EEC-REPO`→`empire-nexus`, `empire-practice`→`empire-dojo`], the
+default sibling-directory path still pointed at the old `EEC-REPO` name,
+so `python3 scripts/generate.py` with no `EEC_REPO_DIR` override failed
+outright for anyone following this file's own setup instructions.
+Verified fixed by actually running the command, not just editing text.)
 
 ---
 
@@ -164,5 +171,5 @@ based on one or two spot-checked URLs.
 
 ## 7. Related Repos
 
-- `EEC-REPO/bots/discord-learning-bot/` — canonical curriculum source AND the consumer of this site's URLs (`src/curriculum.py`'s `practice_platform_task_url()`/`practice_platform_day_url()`). Any URL-shape change here requires a matching change there, and vice versa.
-- `Kiro-Master-Index` — session checkpoint history for this whole project; read `SESSION_CONTINUITY.md` before starting new work here.
+- `empire-nexus/bots/discord-learning-bot/` — canonical curriculum source AND the consumer of this site's URLs (`src/curriculum.py`'s `practice_platform_task_url()`/`practice_platform_day_url()`). Any URL-shape change here requires a matching change there, and vice versa. (Formerly named `EEC-REPO` — update this note again if it's renamed a second time.)
+- `empire-chronicle` — session checkpoint history for this whole project (superseded the old `Kiro-Master-Index` name); read its `SESSION_CONTINUITY.md` before starting new work here.

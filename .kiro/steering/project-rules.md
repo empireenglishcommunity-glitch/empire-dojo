@@ -115,7 +115,7 @@ were verified to return a genuine, non-cached 404 (`cache-control:
 no-store`) on the custom domain, while the identical extensionless path
 returns 200 everywhere. **Root cause is now understood** (as of the
 2026-07-11 DNS zone migration documented in
-`Kiro-Master-Index/SESSION_CONTINUITY.md`'s "session 5" section): the
+`empire-chronicle/SESSION_CONTINUITY.md`'s "session 5" section): the
 domain's original Cloudflare account had some non-default Page Rule or
 Cache Rule intercepting `.html` requests before Cloudflare Pages' own
 redirect logic could run. That account is now permanently inaccessible,
@@ -137,7 +137,7 @@ Edit` permissions (no listed expiry as of its creation) was issued for
 that migration — if it's still valid, it can also be used for
 Pages-affecting zone work here, but always verify via
 `/user/tokens/verify` first, never assume a token is still active.
-See `Kiro-Master-Index/SESSION_CONTINUITY.md`'s "session 5" section for
+See `empire-chronicle/SESSION_CONTINUITY.md`'s "session 5" section for
 the full migration history before assuming anything about domain/zone
 config.
 

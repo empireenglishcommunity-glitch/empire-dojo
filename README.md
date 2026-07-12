@@ -1,4 +1,4 @@
-# empire-practice
+# empire-dojo
 
 Static practice platform for the Empire English Community Discord Learning
 Bot. Covers L0-L3 curriculum (38 weeks) with accent drills, shadowing
@@ -30,13 +30,13 @@ root.
 ## Regenerating the site
 
 ```bash
-# From a checkout with EEC-REPO cloned as a sibling directory:
+# From a checkout with empire-nexus cloned as a sibling directory:
 #   parent/
-#     EEC-REPO/
-#     empire-practice/
-cd empire-practice
+#     empire-nexus/
+#     empire-dojo/
+cd empire-dojo
 python3 scripts/generate.py                # writes into site/
-EEC_REPO_DIR=/path/to/EEC-REPO python3 scripts/generate.py   # override path
+EEC_REPO_DIR=/path/to/empire-nexus python3 scripts/generate.py   # override path
 
 # Generate Kokoro TTS audio for shadowing pages (writes into site/audio/):
 python3 scripts/generate_audio.py
@@ -49,6 +49,10 @@ Deploy **only** the `site/` directory, e.g.:
 ```bash
 npx wrangler pages deploy site --project-name=empire-practice
 ```
+
+> Note: `empire-practice` here is the Cloudflare Pages project name, not
+> this repo's name (this repo is `empire-dojo`). The Pages project kept
+> its original name across the repo rename.
 
 Never run `wrangler pages deploy .` from the repo root — that would
 re-expose `scripts/` (and any other non-site files) as public assets.

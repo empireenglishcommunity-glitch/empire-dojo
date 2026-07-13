@@ -255,6 +255,10 @@ def gen_accent(level, week, day, focus, norm):
 <div class="rec-indicator" id="rec-indicator"></div>
 </div>
 <div class="recorder-playback" id="recorder-playback" style="display:none">
+<div class="card" style="background:rgba(46,204,113,0.05);border-color:var(--success);padding:16px;margin:12px 0">
+<p style="color:var(--success);font-weight:600;font-size:0.9rem">🎯 {bl("Compare & Rate", "قارن وقيّم")}</p>
+<p style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px">{bl("Listen to both, then rate yourself:", "اسمع الاتنين وقيّم نفسك:")}</p>
+</div>
 <div class="ab-comparison">
 <button class="btn btn-outline btn-sm" onclick="TTS.speak('{esc(primary)}', 0.7)">🔊 {bl("Listen to Model", "استمع للنموذج")}</button>
 <button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 {bl("Listen to Yours", "استمع لتسجيلك")}</button>
@@ -286,6 +290,7 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">اسمع النموذج 3 مرات، وسجّل المحاولة الثالثة.</div>
 <div class="recorder-controls" id="recorder-controls">
 <button class="btn btn-danger recorder-btn" id="rec-start" onclick="RecorderUI.start()">⏺️ {bl("Record", "سجّل")}</button>
+<button class="btn btn-sm" onclick="ShadowRecord.start('{aid}','{esc(passage)}')">⏺️▶️ {bl("Shadow & Record", "حاكي وسجّل")}</button>
 <button class="btn btn-outline recorder-btn" id="rec-stop" onclick="RecorderUI.stop()" style="display:none">⏹️ {bl("Stop", "قف")}</button>
 <span class="rec-timer" id="rec-timer">0:00</span>
 <div class="rec-indicator" id="rec-indicator"></div>
@@ -338,17 +343,29 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
         q_html = f'<div class="card"><p>{bl("No vocabulary available for this day yet.", "لا توجد مفردات متاحة لهذا اليوم حتى الآن.")}</p></div>'
 
     theme = esc_html(theme)
+
+    # Build dictation sentences from vocab words for this day (S2.3)
+    dictation_words = [esc(w["word"]) for w in day_vocab[:5] if w.get("word")]
+    dictation_json = safe_json_for_script_tag([w["word"] for w in day_vocab[:5] if w.get("word")])
+
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>👂 Listening</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
 <div class="arabic-text" lang="ar" dir="rtl">اسمع الكلمة واختار المعنى الصحيح. ممكن تسمع أكتر من مرة.</div>
+<div class="mode-toggle">
+<button class="mode-btn active" data-mode="quiz" onclick="Dictation.showQuiz()">❓ {bl("Quiz", "اختبار")}</button>
+<button class="mode-btn" data-mode="dictation" onclick="Dictation.show()">✍️ {bl("Dictation", "إملاء")}</button>
+</div>
+<div id="listening-quiz-section">
 {q_html}
+</div>
+<div id="dictation-section" style="display:none"></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'listening')"> {bl("Done", "تم")} ✅</label></div>
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('listening')}
 <script src="/js/app.js"></script>
-<script>function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script></body></html>'''
+<script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script></body></html>'''
 
 
 def gen_vocab(level, week, day, theme, words):
@@ -356,19 +373,27 @@ def gen_vocab(level, week, day, theme, words):
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Vocabulary Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Vocabulary</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
-<div class="arabic-text" lang="ar" dir="rtl">اضغط البطاقة لرؤية المعنى. اضغط 🔊 لسماع الكلمة.</div>
+<div class="arabic-text" lang="ar" dir="rtl">اختار طريقة التمرين: بطاقات، اختبار، أو استماع.</div>
+<div class="mode-toggle">
+<button class="mode-btn active" data-mode="flashcard" onclick="InteractiveVocab.switchMode('flashcard')">📖 {bl("Cards", "بطاقات")}</button>
+<button class="mode-btn" data-mode="quiz" onclick="InteractiveVocab.switchMode('quiz')">✍️ {bl("Quiz", "اختبار")}</button>
+<button class="mode-btn" data-mode="listen" onclick="InteractiveVocab.switchMode('listen')">🎧 {bl("Listen & Type", "اسمع واكتب")}</button>
+</div>
+<div id="flashcard-section">
 <div class="card"><p id="card-counter" style="text-align:center;color:var(--text-muted)">1/{max(len(words),1)}</p>
 <div class="flashcard" id="flashcard" onclick="Flashcard.flip()"></div>
 <div class="audio-controls" style="justify-content:center">
 <button class="btn btn-sm btn-outline" onclick="Flashcard.prev()">←</button>
 <button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
 <button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
+</div>
+<div id="quiz-section" style="display:none"></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> {bl("Done", "تم")} ✅</label></div>
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
 {bottom_nav('vocab')}
 <script src="/js/app.js"></script>
-<script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>'''
+<script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script></body></html>'''
 
 
 def gen_day_index(level, week, day):

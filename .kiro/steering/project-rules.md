@@ -170,7 +170,42 @@ based on one or two spot-checked URLs.
 
 ---
 
-## 7. Related Repos
+## 8. Preview-URL Discipline (Aegis — never merge without checking)
+
+**Hard rule: never merge a PR that touches `scripts/` or `site/` without
+clicking through its Cloudflare Pages preview URL first.**
+
+Cloudflare Pages automatically generates a unique preview URL for every
+PR branch (visible in the PR's Deployments section or commit status
+checks). This has been happening since the project's creation — it was
+just never formalized as a required step. Now it is.
+
+Why this matters:
+- `generate.py` exiting 0 does NOT mean the pages look right (see
+  rule 6 above — multiple real bugs passed exit-0 checks).
+- The CI `verify_pages.py` check catches structural/injection issues,
+  but it can't catch visual regressions (layout broken, wrong content
+  displayed, CSS broken).
+- The preview URL is free, automatic, and already exists — using it
+  costs zero effort beyond actually looking at the pages.
+
+What "clicking through" means in practice:
+1. Open the Cloudflare preview URL from the PR's status/deployment.
+2. Spot-check at least one page per level (L0-L3).
+3. Confirm the page loads, renders correctly, has the right content,
+   and navigation links work.
+4. If `scripts/diff_against_live.py` is available, also run it against
+   the preview URL to confirm only intended changes are present:
+   ```bash
+   python3 scripts/diff_against_live.py <preview-url>
+   ```
+
+If the preview URL is broken or unavailable, that itself is a signal
+something is wrong — do not merge without understanding why.
+
+---
+
+## 9. Related Repos
 
 - `empire-nexus/bots/discord-learning-bot/` — canonical curriculum source AND the consumer of this site's URLs (`src/curriculum.py`'s `practice_platform_task_url()`/`practice_platform_day_url()`). Any URL-shape change here requires a matching change there, and vice versa. (Formerly named `EEC-REPO` — update this note again if it's renamed a second time.)
 - `empire-chronicle` — session checkpoint history for this whole project (superseded the old `Kiro-Master-Index` name); read its `SESSION_CONTINUITY.md` before starting new work here.

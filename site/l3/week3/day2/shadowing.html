@@ -7,6 +7,23 @@
 <button class="btn btn-outline" onclick="TTS.stop()">⏹️ Stop <span class="ar-inline" lang="ar" dir="rtl">/ قف</span></button>
 <div class="speed-control"><label>Speed <span class="ar-inline" lang="ar" dir="rtl">/ السرعة</span>:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.75" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div>
 <p style="color:var(--text-muted);font-size:0.75rem;margin-top:10px">🎙️ Studio-quality audio when available, otherwise your browser's voice. <span class="ar-inline" lang="ar" dir="rtl">/ صوت استوديو لما يكون متاح، وإلا صوت المتصفح.</span></p></div>
+<div class="card recorder-card"><h2>🎙️ Record Your Shadow <span class="ar-inline" lang="ar" dir="rtl">/ سجّل محاكاتك</span></h2>
+<div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">اسمع النموذج 3 مرات، وسجّل المحاولة الثالثة.</div>
+<div class="recorder-controls" id="recorder-controls">
+<button class="btn btn-danger recorder-btn" id="rec-start" onclick="RecorderUI.start()">⏺️ Record <span class="ar-inline" lang="ar" dir="rtl">/ سجّل</span></button>
+<button class="btn btn-outline recorder-btn" id="rec-stop" onclick="RecorderUI.stop()" style="display:none">⏹️ Stop <span class="ar-inline" lang="ar" dir="rtl">/ قف</span></button>
+<span class="rec-timer" id="rec-timer">0:00</span>
+<div class="rec-indicator" id="rec-indicator"></div>
+</div>
+<div class="recorder-playback" id="recorder-playback" style="display:none">
+<div class="ab-comparison">
+<button class="btn btn-outline btn-sm" onclick="KokoroAudio.play('l3-w3-d2-shadow','We extrapolate data to juxtapose two postulated theories — the professor delineated its limits clearly.')">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 Listen to Yours <span class="ar-inline" lang="ar" dir="rtl">/ استمع لتسجيلك</span></button>
+</div>
+<div class="recorder-actions" style="margin-top:12px">
+<button class="btn btn-outline btn-sm" onclick="RecorderUI.start()">🔄 Re-record <span class="ar-inline" lang="ar" dir="rtl">/ سجّل تاني</span></button>
+<a class="btn btn-outline btn-sm" id="rec-download" download="my-shadow-recording.webm">💾 Download <span class="ar-inline" lang="ar" dir="rtl">/ حمّل</span></a>
+</div></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l3',3,2,'shadowing')"> Done <span class="ar-inline" lang="ar" dir="rtl">/ تم</span> ✅</label></div>
 <div class="nav" style="margin-top:20px"><a href="accent.html">← Accent <span class="ar-inline" lang="ar" dir="rtl">/ النطق</span></a><a href="listening.html">Listening <span class="ar-inline" lang="ar" dir="rtl">/ الاستماع</span> →</a></div></div>
 <script src="/js/app.js"></script></body></html>

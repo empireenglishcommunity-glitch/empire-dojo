@@ -226,6 +226,23 @@ def gen_accent(level, week, day, focus, norm):
 {words_card}
 <div class="card"><h2>🎙️ {bl("Say This", "قول ده")}</h2><div class="transcript"><b>"{esc_html(primary)}"</b></div>
 <button class="btn btn-outline" onclick="TTS.speak('{esc(primary)}', 0.7)">🔊 {bl("Model", "نموذج")}</button></div>
+<div class="card recorder-card"><h2>🎙️ {bl("Record Yourself", "سجّل نفسك")}</h2>
+<div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">سجّل نفسك وانت بتقول الجملة. بعدين قارن صوتك بالنموذج.</div>
+<div class="recorder-controls" id="recorder-controls">
+<button class="btn btn-danger recorder-btn" id="rec-start" onclick="RecorderUI.start()">⏺️ {bl("Record", "سجّل")}</button>
+<button class="btn btn-outline recorder-btn" id="rec-stop" onclick="RecorderUI.stop()" style="display:none">⏹️ {bl("Stop", "قف")}</button>
+<span class="rec-timer" id="rec-timer">0:00</span>
+<div class="rec-indicator" id="rec-indicator"></div>
+</div>
+<div class="recorder-playback" id="recorder-playback" style="display:none">
+<div class="ab-comparison">
+<button class="btn btn-outline btn-sm" onclick="TTS.speak('{esc(primary)}', 0.7)">🔊 {bl("Listen to Model", "استمع للنموذج")}</button>
+<button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 {bl("Listen to Yours", "استمع لتسجيلك")}</button>
+</div>
+<div class="recorder-actions" style="margin-top:12px">
+<button class="btn btn-outline btn-sm" onclick="RecorderUI.start()">🔄 {bl("Re-record", "سجّل تاني")}</button>
+<a class="btn btn-outline btn-sm" id="rec-download" download="my-accent-recording.webm">💾 {bl("Download", "حمّل")}</a>
+</div></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'accent')"> {bl("Done", "تم")} ✅</label></div>
 <div class="nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
 <script src="/js/app.js"></script></body></html>'''
@@ -243,6 +260,23 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 <button class="btn btn-outline" onclick="TTS.stop()">⏹️ {bl("Stop", "قف")}</button>
 <div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.75" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div>
 <p style="color:var(--text-muted);font-size:0.75rem;margin-top:10px">🎙️ {bl("Studio-quality audio when available, otherwise your browser's voice.", "صوت استوديو لما يكون متاح، وإلا صوت المتصفح.")}</p></div>
+<div class="card recorder-card"><h2>🎙️ {bl("Record Your Shadow", "سجّل محاكاتك")}</h2>
+<div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">اسمع النموذج 3 مرات، وسجّل المحاولة الثالثة.</div>
+<div class="recorder-controls" id="recorder-controls">
+<button class="btn btn-danger recorder-btn" id="rec-start" onclick="RecorderUI.start()">⏺️ {bl("Record", "سجّل")}</button>
+<button class="btn btn-outline recorder-btn" id="rec-stop" onclick="RecorderUI.stop()" style="display:none">⏹️ {bl("Stop", "قف")}</button>
+<span class="rec-timer" id="rec-timer">0:00</span>
+<div class="rec-indicator" id="rec-indicator"></div>
+</div>
+<div class="recorder-playback" id="recorder-playback" style="display:none">
+<div class="ab-comparison">
+<button class="btn btn-outline btn-sm" onclick="KokoroAudio.play('{aid}','{esc(passage)}')">🔊 {bl("Listen to Model", "استمع للنموذج")}</button>
+<button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 {bl("Listen to Yours", "استمع لتسجيلك")}</button>
+</div>
+<div class="recorder-actions" style="margin-top:12px">
+<button class="btn btn-outline btn-sm" onclick="RecorderUI.start()">🔄 {bl("Re-record", "سجّل تاني")}</button>
+<a class="btn btn-outline btn-sm" id="rec-download" download="my-shadow-recording.webm">💾 {bl("Download", "حمّل")}</a>
+</div></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'shadowing')"> {bl("Done", "تم")} ✅</label></div>
 <div class="nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
 <script src="/js/app.js"></script></body></html>'''

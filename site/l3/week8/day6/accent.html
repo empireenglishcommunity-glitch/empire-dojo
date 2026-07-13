@@ -9,6 +9,23 @@
 <div class="card"><h2>🎯 Practice Words <span class="ar-inline" lang="ar" dir="rtl">/ كلمات للتمرين</span></h2><div class="transcript"><b>water (L1)</b> &bull; <b>political (L2)</b> &bull; <b>totally (L3 refinement)</b> &bull; <b>This... is... our moment. (L3 delivery)</b></div><button class="btn btn-outline btn-sm" onclick="TTS.speak('water (L1), political (L2), totally (L3 refinement), This... is... our moment. (L3 delivery)', 0.6)">🔊 Hear Words <span class="ar-inline" lang="ar" dir="rtl">/ استمع للكلمات</span></button></div>
 <div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"About an hour ago, I picked up an apple and told him about the camera near the button — this all feels totally effortless now. This... is... our moment. Hey, how&#39;s it going? Well, anyway, we&#39;ve waited, we&#39;ve prepared, and now it&#39;s here!"</b></div>
 <button class="btn btn-outline" onclick="TTS.speak('About an hour ago, I picked up an apple and told him about the camera near the button — this all feels totally effortless now. This... is... our moment. Hey, how\'s it going? Well, anyway, we\'ve waited, we\'ve prepared, and now it\'s here!', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
+<div class="card recorder-card"><h2>🎙️ Record Yourself <span class="ar-inline" lang="ar" dir="rtl">/ سجّل نفسك</span></h2>
+<div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">سجّل نفسك وانت بتقول الجملة. بعدين قارن صوتك بالنموذج.</div>
+<div class="recorder-controls" id="recorder-controls">
+<button class="btn btn-danger recorder-btn" id="rec-start" onclick="RecorderUI.start()">⏺️ Record <span class="ar-inline" lang="ar" dir="rtl">/ سجّل</span></button>
+<button class="btn btn-outline recorder-btn" id="rec-stop" onclick="RecorderUI.stop()" style="display:none">⏹️ Stop <span class="ar-inline" lang="ar" dir="rtl">/ قف</span></button>
+<span class="rec-timer" id="rec-timer">0:00</span>
+<div class="rec-indicator" id="rec-indicator"></div>
+</div>
+<div class="recorder-playback" id="recorder-playback" style="display:none">
+<div class="ab-comparison">
+<button class="btn btn-outline btn-sm" onclick="TTS.speak('About an hour ago, I picked up an apple and told him about the camera near the button — this all feels totally effortless now. This... is... our moment. Hey, how\'s it going? Well, anyway, we\'ve waited, we\'ve prepared, and now it\'s here!', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 Listen to Yours <span class="ar-inline" lang="ar" dir="rtl">/ استمع لتسجيلك</span></button>
+</div>
+<div class="recorder-actions" style="margin-top:12px">
+<button class="btn btn-outline btn-sm" onclick="RecorderUI.start()">🔄 Re-record <span class="ar-inline" lang="ar" dir="rtl">/ سجّل تاني</span></button>
+<a class="btn btn-outline btn-sm" id="rec-download" download="my-accent-recording.webm">💾 Download <span class="ar-inline" lang="ar" dir="rtl">/ حمّل</span></a>
+</div></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l3',8,6,'accent')"> Done <span class="ar-inline" lang="ar" dir="rtl">/ تم</span> ✅</label></div>
 <div class="nav" style="margin-top:20px"><a href="index.html">← Today <span class="ar-inline" lang="ar" dir="rtl">/ اليوم</span></a><a href="shadowing.html">Shadowing <span class="ar-inline" lang="ar" dir="rtl">/ المحاكاة</span> →</a></div></div>
 <script src="/js/app.js"></script></body></html>

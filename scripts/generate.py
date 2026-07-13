@@ -217,6 +217,25 @@ def swipe_hint():
     """Show swipe hint on mobile (hidden on desktop via CSS)."""
     return f'<div class="swipe-hint">← {bl("Swipe to navigate", "اسحب للتنقل")} →</div>'
 
+
+def pwa_head():
+    """PWA meta tags for generated pages (Sahel S4)."""
+    return ('<link rel="manifest" href="/manifest.json">'
+            '<meta name="theme-color" content="#D4AF37">'
+            '<meta name="apple-mobile-web-app-capable" content="yes">'
+            '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'
+            '<meta name="apple-mobile-web-app-title" content="Empire English">'
+            '<link rel="apple-touch-icon" href="/logo.png">')
+
+
+def gamification_bar():
+    """Persistent top bar showing streak + daily progress (Sahel S5)."""
+    return ('<div class="gamification-bar">'
+            '<span class="streak" id="streak-display">🔥 0</span>'
+            '<div class="progress-bar" id="daily-progress"></div>'
+            '<span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span>'
+            '</div>')
+
 def gen_accent(level, week, day, focus, norm):
     sounds = esc_html(norm["sounds"] or "Review")
     focus = esc_html(focus)
@@ -236,8 +255,9 @@ def gen_accent(level, week, day, focus, norm):
                       f'<button class="btn btn-outline btn-sm" onclick="TTS.speak(\'{esc(", ".join(words))}\', 0.6)">🔊 {bl("Hear Words", "استمع للكلمات")}</button></div>')
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Accent Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Accent Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week {week} • Day {day} • {focus}</p></div>
+{gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">{instr_ar}</div>
 <div class="card"><h2>🔊 {bl("Target Sounds", "الأصوات المستهدفة")}: {sounds}</h2>
 <button class="btn" onclick="TTS.speak('{esc(primary)}')">▶️ {bl("Listen to Model", "استمع للنموذج")}</button>
@@ -278,8 +298,9 @@ def gen_shadowing(level, week, day, theme, norm, aid):
     passage = norm["primary_text"]
     theme = esc_html(theme)
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Shadowing Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Shadowing Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎧 Shadowing</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">اسمع → كرر 3 مرات → سجل المحاولة الثالثة</div>
 <div class="card"><h2>📝 {bl("Passage", "المقطع")}</h2><div class="transcript">{esc_html(passage)}</div>
 <button class="btn" onclick="KokoroAudio.play('{aid}','{esc(passage)}')">▶️ {bl("Play", "شغل")}</button>
@@ -349,8 +370,9 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
     dictation_json = safe_json_for_script_tag([w["word"] for w in day_vocab[:5] if w.get("word")])
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>👂 Listening</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">اسمع الكلمة واختار المعنى الصحيح. ممكن تسمع أكتر من مرة.</div>
 <div class="mode-toggle">
 <button class="mode-btn active" data-mode="quiz" onclick="Dictation.showQuiz()">❓ {bl("Quiz", "اختبار")}</button>
@@ -371,8 +393,9 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 def gen_vocab(level, week, day, theme, words):
     theme = esc_html(theme)
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Vocabulary Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Vocabulary Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Vocabulary</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">اختار طريقة التمرين: بطاقات، اختبار، أو استماع.</div>
 <div class="mode-toggle">
 <button class="mode-btn active" data-mode="flashcard" onclick="InteractiveVocab.switchMode('flashcard')">📖 {bl("Cards", "بطاقات")}</button>
@@ -396,14 +419,35 @@ def gen_vocab(level, week, day, theme, words):
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script></body></html>'''
 
 
-def gen_day_index(level, week, day):
+def gen_day_index(level, week, day, pattern=None):
+    pattern_card = ""
+    if pattern:
+        phrase = esc_html(pattern.get("phrase", ""))
+        when = esc_html(pattern.get("when", ""))
+        arabic = esc_html(pattern.get("arabic", ""))
+        example = esc_html(pattern.get("example", ""))
+        phrase_escaped = esc(pattern.get("phrase", ""))
+        today_pattern_label = bl("Today's Pattern", "نمط اليوم")
+        listen_label = bl("Listen", "استمع")
+        pattern_card = (
+            f'<div class="card" style="border-left:3px solid var(--accent)">'
+            f'<h2>💬 {today_pattern_label}</h2>'
+            f'<div class="transcript" style="font-size:1.3rem;line-height:1.6"><b>{phrase}</b></div>'
+            f'<p style="color:var(--text-secondary);margin:8px 0">📍 {when}</p>'
+            f'<p style="font-family:Cairo,sans-serif;direction:rtl;color:var(--accent-light);margin:8px 0">{arabic}</p>'
+            f'<p style="color:var(--text-secondary);font-size:0.85rem;margin:12px 0;font-style:italic">💡 "{example}"</p>'
+            f'<button class="btn btn-sm" onclick="TTS.speak(\'{phrase_escaped}\', 0.7)">🔊 {listen_label}</button>'
+            f'</div>'
+        )
+
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Week {week} Day {day} | Empire English</title>
-<link rel="stylesheet" href="/css/empire.css"></head><body>
+{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header">
 <img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px">
 <h1>Week {week} — Day {day}</h1><p class="subtitle">{bl("Choose your exercise", "اختار التمرين")}</p></div>
 <div class="arabic-text" lang="ar" dir="rtl">اختار التمرين اللي عايز تعمله</div>
+{pattern_card}
 <div class="card"><h2>📋 {bl("Today's Exercises", "تمارين اليوم")}</h2>
 <div class="nav" style="flex-direction:column;align-items:stretch">
 <a href="accent.html">🎯 Accent Drill — تدريب النطق</a>
@@ -413,7 +457,8 @@ def gen_day_index(level, week, day):
 </div></div>
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
-</div></body></html>'''
+</div>
+<script src="/js/app.js"></script></body></html>'''
 
 
 # ============================================================
@@ -429,9 +474,31 @@ def load_week_accent_data(level, week):
         return json.load(f)
 
 
+def load_patterns(level):
+    """Load patterns for a level, returning a flat list for round-robin."""
+    patterns_file = CONTENT_DIR / "patterns" / f"{level}_patterns.json"
+    if not patterns_file.exists():
+        return []
+    with open(patterns_file, encoding="utf-8") as f:
+        data = json.load(f)
+    # Flatten all categories into one list
+    flat = []
+    categories = list(data.keys())
+    # Interleave categories for variety (round-robin through categories)
+    max_per_cat = max((len(v) for v in data.values()), default=0)
+    for i in range(max_per_cat):
+        for cat in categories:
+            items = data[cat]
+            if i < len(items):
+                flat.append(items[i])
+    return flat
+
+
 def generate_level(level, audio_manifest):
     max_week = LEVEL_WEEK_COUNTS[level]
     total = 0
+    patterns = load_patterns(level)
+    pattern_idx = 0
 
     for week in range(1, max_week + 1):
         week_file = DATA_DIR / f"{level}_week{week}.json"
@@ -471,7 +538,9 @@ def generate_level(level, audio_manifest):
             shadow_aid = audio_id(level, week, day, "shadow")
 
             with open(day_dir / "index.html", "w", encoding="utf-8") as f:
-                f.write(gen_day_index(level, week, day))
+                day_pattern = patterns[pattern_idx % len(patterns)] if patterns else None
+                pattern_idx += 1
+                f.write(gen_day_index(level, week, day, pattern=day_pattern))
             with open(day_dir / "accent.html", "w", encoding="utf-8") as f:
                 f.write(gen_accent(level, week, day, focus, norm))
             with open(day_dir / "shadowing.html", "w", encoding="utf-8") as f:

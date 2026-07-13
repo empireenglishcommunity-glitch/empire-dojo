@@ -702,6 +702,81 @@ body::before {
   display: none; /* hidden on desktop */
 }
 
+/* ─── Gamification (Sahel S5) ─────────────────────────────── */
+
+.gamification-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+}
+
+.gamification-bar .streak {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.progress-bar {
+  flex: 1;
+  max-width: 120px;
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.confetti-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.confetti-message {
+  background: var(--bg-card);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 24px 40px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  box-shadow: var(--shadow-gold-lg);
+  text-align: center;
+  animation: pulse-glow 1s infinite;
+}
+
+.confetti-particle {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: confetti-fall 3s ease-in forwards;
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
 /* ─── Interactive Modes (Sahel S2) ───────────────────────── */
 
 .mode-toggle {

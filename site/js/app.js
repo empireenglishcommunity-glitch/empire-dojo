@@ -306,6 +306,108 @@ const Flashcard = {
 };
 
 // ============================================================
+//  GAMIFICATION (Sahel S5 — streak, progress, confetti)
+// ============================================================
+const Gamification = {
+  init() {
+    this._updateStreak();
+    this._renderProgressBar();
+    this._checkDailyCompletion();
+  },
+
+  _getToday() {
+    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  },
+
+  _updateStreak() {
+    const today = this._getToday();
+    const lastActive = localStorage.getItem('empire_last_active_date');
+    let streak = parseInt(localStorage.getItem('empire_streak') || '0');
+
+    if (lastActive === today) {
+      // Already logged today, streak unchanged
+    } else {
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+      if (lastActive === yesterday) {
+        streak++;
+      } else if (lastActive && lastActive !== today) {
+        streak = 1; // Streak broken, restart
+      } else {
+        streak = 1; // First visit
+      }
+      localStorage.setItem('empire_streak', streak);
+      localStorage.setItem('empire_last_active_date', today);
+    }
+
+    // Render streak in header if element exists
+    const streakEl = document.getElementById('streak-display');
+    if (streakEl) {
+      streakEl.textContent = `🔥 ${streak}`;
+      streakEl.title = `${streak} day streak`;
+    }
+  },
+
+  _renderProgressBar() {
+    const bar = document.getElementById('daily-progress');
+    if (!bar) return;
+
+    // Detect current level/week/day from URL
+    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d)/);
+    if (!match) return;
+
+    const [, level, week, day] = match;
+    const types = ['accent', 'shadowing', 'listening', 'vocab'];
+    let done = 0;
+    types.forEach(t => { if (Progress.isDone(level, parseInt(week), parseInt(day), t)) done++; });
+
+    const pct = (done / 4) * 100;
+    bar.innerHTML = `<div class="progress-fill" style="width:${pct}%"></div>`;
+    bar.title = `${done}/4 exercises done today`;
+
+    // Update tasks counter
+    const counter = document.getElementById('tasks-done');
+    if (counter) counter.textContent = `✅ ${done}/4`;
+  },
+
+  _checkDailyCompletion() {
+    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d)/);
+    if (!match) return;
+
+    const [, level, week, day] = match;
+    const types = ['accent', 'shadowing', 'listening', 'vocab'];
+    const allDone = types.every(t => Progress.isDone(level, parseInt(week), parseInt(day), t));
+
+    if (allDone) {
+      const confettiKey = `empire_confetti_${level}_w${week}_d${day}`;
+      if (!localStorage.getItem(confettiKey)) {
+        localStorage.setItem(confettiKey, '1');
+        this._showConfetti();
+      }
+    }
+  },
+
+  _showConfetti() {
+    // Simple confetti animation using CSS
+    const overlay = document.createElement('div');
+    overlay.className = 'confetti-overlay';
+    overlay.innerHTML = '<div class="confetti-message">🎉 أحسنت! All done today!</div>';
+    document.body.appendChild(overlay);
+
+    // Create confetti particles
+    for (let i = 0; i < 40; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'confetti-particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 2 + 's';
+      particle.style.backgroundColor = ['#D4AF37', '#2ECC71', '#E74C3C', '#3498DB', '#F39C12'][Math.floor(Math.random() * 5)];
+      overlay.appendChild(particle);
+    }
+
+    setTimeout(() => overlay.remove(), 4000);
+  }
+};
+
+// ============================================================
 //  SWIPE NAVIGATION (Sahel S1 — navigate between exercises)
 // ============================================================
 const SwipeNav = {
@@ -708,10 +810,16 @@ document.addEventListener('DOMContentLoaded', () => {
   TTS.init();
   SwipeNav.init();
   BottomNav.init();
+  Gamification.init();
   
   // Speed control
   const speedSelect = document.getElementById('speed-select');
   if (speedSelect) {
     speedSelect.addEventListener('change', (e) => TTS.setRate(e.target.value));
+  }
+
+  // Register Service Worker (PWA — Sahel S4)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
 });

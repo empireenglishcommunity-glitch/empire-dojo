@@ -379,6 +379,223 @@ const BottomNav = {
 };
 
 // ============================================================
+//  INTERACTIVE VOCAB (Sahel S2 — Quiz Mode + Listen & Type)
+// ============================================================
+const InteractiveVocab = {
+  words: [],
+  mode: 'flashcard', // 'flashcard' | 'quiz' | 'listen'
+  currentIndex: 0,
+  score: 0,
+  attempted: 0,
+
+  init(words) {
+    this.words = words;
+    this.currentIndex = 0;
+    this.score = 0;
+    this.attempted = 0;
+    // Mode buttons will call switchMode
+  },
+
+  switchMode(mode) {
+    this.mode = mode;
+    this.currentIndex = 0;
+    this.score = 0;
+    this.attempted = 0;
+
+    // Update mode buttons
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.querySelector(`.mode-btn[data-mode="${mode}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    // Show/hide sections
+    const flashcardSection = document.getElementById('flashcard-section');
+    const quizSection = document.getElementById('quiz-section');
+
+    if (flashcardSection) flashcardSection.style.display = mode === 'flashcard' ? 'block' : 'none';
+    if (quizSection) quizSection.style.display = mode !== 'flashcard' ? 'block' : 'none';
+
+    if (mode !== 'flashcard') this._renderQuizCard();
+  },
+
+  _renderQuizCard() {
+    const container = document.getElementById('quiz-section');
+    if (!container || !this.words.length) return;
+
+    if (this.currentIndex >= this.words.length) {
+      // Show final score
+      const pct = Math.round((this.score / this.words.length) * 100);
+      container.innerHTML = `<div class="card"><h2>🏆 ${this.score}/${this.words.length} (${pct}%)</h2>` +
+        `<p style="color:var(--text-secondary);margin:12px 0">${pct >= 80 ? 'أحسنت! Excellent!' : pct >= 50 ? 'Good effort! حاول تاني' : 'Keep practicing! كمّل تمرين'}</p>` +
+        `<button class="btn btn-sm" onclick="InteractiveVocab.switchMode('${this.mode}')">🔄 Try Again</button></div>`;
+      return;
+    }
+
+    const word = this.words[this.currentIndex];
+    const isQuiz = this.mode === 'quiz';
+    // Quiz: show Arabic, type English. Listen: play English audio, type word.
+    const prompt = isQuiz
+      ? `<div style="font-family:'Cairo',sans-serif;font-size:1.4rem;direction:rtl;color:var(--accent);margin:16px 0">${this._escText(word.arabic)}</div>`
+      : `<button class="btn" onclick="TTS.speak('${this._escAttr(word.word)}', 0.7)">🔊 Play Word</button>`;
+
+    const hint = isQuiz ? 'Type the English word / اكتب الكلمة بالإنجليزي' : 'Type what you hear / اكتب اللي سمعته';
+
+    container.innerHTML = `<div class="card"><p style="text-align:center;color:var(--text-muted)">${this.currentIndex + 1}/${this.words.length}</p>` +
+      prompt +
+      `<p style="color:var(--text-secondary);font-size:0.85rem;margin:10px 0">${hint}</p>` +
+      `<input type="text" id="quiz-input" class="quiz-input" autocomplete="off" autocapitalize="off" placeholder="..." onkeydown="if(event.key==='Enter')InteractiveVocab.checkAnswer()">` +
+      `<button class="btn btn-sm" style="margin-top:12px" onclick="InteractiveVocab.checkAnswer()">✓ Check</button>` +
+      `<div id="quiz-feedback" style="margin-top:12px"></div></div>`;
+
+    // Auto-play in listen mode
+    if (!isQuiz) setTimeout(() => TTS.speak(word.word, 0.7), 300);
+
+    // Focus input
+    setTimeout(() => { const inp = document.getElementById('quiz-input'); if (inp) inp.focus(); }, 100);
+  },
+
+  checkAnswer() {
+    const input = document.getElementById('quiz-input');
+    const feedback = document.getElementById('quiz-feedback');
+    if (!input || !feedback) return;
+
+    const word = this.words[this.currentIndex];
+    const answer = input.value.trim().toLowerCase();
+    const correct = word.word.toLowerCase();
+    this.attempted++;
+
+    if (answer === correct) {
+      this.score++;
+      feedback.innerHTML = `<div style="color:var(--success);font-weight:600">✅ Correct! — ${this._escText(word.word)}</div>`;
+    } else {
+      feedback.innerHTML = `<div style="color:var(--danger);font-weight:600">❌ ${this._escText(word.word)}</div>`;
+    }
+
+    input.disabled = true;
+    setTimeout(() => { this.currentIndex++; this._renderQuizCard(); }, 1500);
+  },
+
+  _escText(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); },
+  _escAttr(s) { return String(s || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+};
+
+// ============================================================
+//  DICTATION MODE (Sahel S2 — Listening page)
+// ============================================================
+const Dictation = {
+  sentences: [],
+  currentIndex: 0,
+  score: 0,
+
+  init(sentences) {
+    this.sentences = sentences;
+    this.currentIndex = 0;
+    this.score = 0;
+  },
+
+  show() {
+    const section = document.getElementById('dictation-section');
+    const quizSection = document.getElementById('listening-quiz-section');
+    const modeBtn = document.querySelectorAll('.mode-btn');
+
+    if (section) section.style.display = 'block';
+    if (quizSection) quizSection.style.display = 'none';
+    modeBtn.forEach(b => b.classList.remove('active'));
+    const activeBtn = document.querySelector('.mode-btn[data-mode="dictation"]');
+    if (activeBtn) activeBtn.classList.add('active');
+
+    this._renderCard();
+  },
+
+  showQuiz() {
+    const section = document.getElementById('dictation-section');
+    const quizSection = document.getElementById('listening-quiz-section');
+    const modeBtn = document.querySelectorAll('.mode-btn');
+
+    if (section) section.style.display = 'none';
+    if (quizSection) quizSection.style.display = 'block';
+    modeBtn.forEach(b => b.classList.remove('active'));
+    const activeBtn = document.querySelector('.mode-btn[data-mode="quiz"]');
+    if (activeBtn) activeBtn.classList.add('active');
+  },
+
+  _renderCard() {
+    const section = document.getElementById('dictation-section');
+    if (!section || !this.sentences.length) return;
+
+    if (this.currentIndex >= this.sentences.length) {
+      const pct = Math.round((this.score / this.sentences.length) * 100);
+      section.innerHTML = `<div class="card"><h2>🏆 ${this.score}/${this.sentences.length} (${pct}%)</h2>` +
+        `<p style="color:var(--text-secondary);margin:12px 0">${pct >= 80 ? 'أحسنت! Excellent!' : 'Keep practicing! كمّل تمرين'}</p>` +
+        `<button class="btn btn-sm" onclick="Dictation.currentIndex=0;Dictation.score=0;Dictation._renderCard()">🔄 Try Again</button></div>`;
+      return;
+    }
+
+    const sentence = this.sentences[this.currentIndex];
+    section.innerHTML = `<div class="card"><h2>✍️ Dictation ${this.currentIndex + 1}/${this.sentences.length}</h2>` +
+      `<button class="btn" onclick="TTS.speak('${sentence.replace(/'/g,"\\'")}', 0.6)">🔊 Play Sentence</button>` +
+      `<p style="color:var(--text-secondary);font-size:0.85rem;margin:12px 0">Type what you hear / اكتب اللي سمعته</p>` +
+      `<textarea id="dictation-input" class="quiz-input" rows="2" style="width:100%;resize:vertical" placeholder="..."></textarea>` +
+      `<button class="btn btn-sm" style="margin-top:12px" onclick="Dictation.check()">✓ Check</button>` +
+      `<div id="dictation-feedback" style="margin-top:12px"></div></div>`;
+
+    setTimeout(() => TTS.speak(sentence, 0.6), 300);
+    setTimeout(() => { const inp = document.getElementById('dictation-input'); if (inp) inp.focus(); }, 100);
+  },
+
+  check() {
+    const input = document.getElementById('dictation-input');
+    const feedback = document.getElementById('dictation-feedback');
+    if (!input || !feedback) return;
+
+    const sentence = this.sentences[this.currentIndex];
+    const answer = input.value.trim().toLowerCase().replace(/[.,!?;:'"]/g, '');
+    const correct = sentence.toLowerCase().replace(/[.,!?;:'"]/g, '');
+
+    // Simple word-by-word comparison
+    const answerWords = answer.split(/\s+/).filter(Boolean);
+    const correctWords = correct.split(/\s+/).filter(Boolean);
+    let matches = 0;
+    correctWords.forEach((w, i) => { if (answerWords[i] === w) matches++; });
+    const accuracy = correctWords.length ? Math.round((matches / correctWords.length) * 100) : 0;
+
+    if (accuracy >= 80) this.score++;
+
+    const highlighted = correctWords.map((w, i) => {
+      const got = answerWords[i] || '';
+      return got === w ? `<span style="color:var(--success)">${w}</span>` : `<span style="color:var(--danger);text-decoration:underline">${w}</span>`;
+    }).join(' ');
+
+    feedback.innerHTML = `<div style="margin-top:8px"><p style="font-weight:600;color:${accuracy >= 80 ? 'var(--success)' : 'var(--danger)'}">${accuracy}% accurate</p>` +
+      `<p style="margin-top:8px;line-height:1.8">${highlighted}</p></div>`;
+
+    input.disabled = true;
+    setTimeout(() => { this.currentIndex++; this._renderCard(); }, 3000);
+  }
+};
+
+// ============================================================
+//  SHADOW & RECORD (Sahel S2 — simultaneous play + record)
+// ============================================================
+const ShadowRecord = {
+  /**
+   * Play the model audio/TTS while simultaneously recording the user.
+   * Uses the existing Recorder and KokoroAudio/TTS.
+   */
+  async start(audioId, fallbackText) {
+    // Start recording first
+    await RecorderUI.start();
+    // Then play model (slight delay for mic to initialize)
+    setTimeout(() => {
+      if (audioId) {
+        KokoroAudio.play(audioId, fallbackText);
+      } else {
+        TTS.speak(fallbackText, 0.75);
+      }
+    }, 300);
+  }
+};
+
+// ============================================================
 //  RECORDER UI (Sahel S0 — wires existing Recorder into pages)
 // ============================================================
 const RecorderUI = {

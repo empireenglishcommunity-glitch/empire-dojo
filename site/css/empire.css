@@ -702,6 +702,64 @@ body::before {
   display: none; /* hidden on desktop */
 }
 
+/* ─── Interactive Modes (Sahel S2) ───────────────────────── */
+
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.mode-btn {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 40px;
+}
+
+.mode-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+
+.mode-btn.active {
+  background: linear-gradient(135deg, #D4AF37, #cd7f32);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.quiz-input {
+  width: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.3s;
+  min-height: 48px;
+}
+
+.quiz-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.quiz-input::placeholder { color: var(--text-muted); }
+
+.quiz-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* ─── Swipe Hint (Sahel S1) ──────────────────────────────── */
 
 .swipe-hint {

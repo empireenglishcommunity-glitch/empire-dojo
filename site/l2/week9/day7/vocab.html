@@ -9,6 +9,8 @@
 <button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
 <button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l2',9,7,'vocab')"> Done <span class="ar-inline" lang="ar" dir="rtl">/ تم</span> ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="listening.html">← Listening <span class="ar-inline" lang="ar" dir="rtl">/ الاستماع</span></a><a href="index.html">Today <span class="ar-inline" lang="ar" dir="rtl">/ اليوم</span></a></div></div>
+<div class="swipe-hint">← Swipe to navigate <span class="ar-inline" lang="ar" dir="rtl">/ اسحب للتنقل</span> →</div>
+<div class="nav page-nav" style="margin-top:20px"><a href="listening.html">← Listening <span class="ar-inline" lang="ar" dir="rtl">/ الاستماع</span></a><a href="index.html">Today <span class="ar-inline" lang="ar" dir="rtl">/ اليوم</span></a></div></div>
+<nav class="bottom-nav" id="bottom-nav"><a href="accent.html"><span class="nav-icon">🎯</span>Accent</a><a href="shadowing.html"><span class="nav-icon">🎧</span>Shadow</a><a href="listening.html"><span class="nav-icon">👂</span>Listen</a><a href="vocab.html" class="active"><span class="nav-icon">📖</span>Vocab</a></nav>
 <script src="/js/app.js"></script>
 <script>const words=[{"word": "coalition", "pronunciation": "koh-ə-LISH-ən", "arabic": "تحالف", "pos": "noun"}, {"word": "policy reform", "pronunciation": "POL-ə-see ri-FORM", "arabic": "إصلاح سياسي", "pos": "noun phrase"}, {"word": "consensus", "pronunciation": "kən-SEN-səs", "arabic": "توافق في الرأي", "pos": "noun"}, {"word": "marginalized", "pronunciation": "MAR-jə-nə-lyzd", "arabic": "مهمش", "pos": "adjective"}, {"word": "lobby (political)", "pronunciation": "LOB-ee", "arabic": "جماعة ضغط/يمارس ضغطًا", "pos": "noun/verb"}];document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>

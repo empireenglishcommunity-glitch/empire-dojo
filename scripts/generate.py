@@ -197,6 +197,26 @@ def normalize_drill(drill):
 #  PAGE GENERATORS
 # ============================================================
 
+def bottom_nav(active):
+    """Generate the fixed bottom navigation bar for mobile (Sahel S1).
+    `active` is one of: 'accent', 'shadowing', 'listening', 'vocab'."""
+    items = [
+        ('accent', '🎯', 'Accent'),
+        ('shadowing', '🎧', 'Shadow'),
+        ('listening', '👂', 'Listen'),
+        ('vocab', '📖', 'Vocab'),
+    ]
+    links = ""
+    for page, icon, label in items:
+        cls = ' class="active"' if page == active else ''
+        links += f'<a href="{page}.html"{cls}><span class="nav-icon">{icon}</span>{label}</a>'
+    return f'<nav class="bottom-nav" id="bottom-nav">{links}</nav>'
+
+
+def swipe_hint():
+    """Show swipe hint on mobile (hidden on desktop via CSS)."""
+    return f'<div class="swipe-hint">← {bl("Swipe to navigate", "اسحب للتنقل")} →</div>'
+
 def gen_accent(level, week, day, focus, norm):
     sounds = esc_html(norm["sounds"] or "Review")
     focus = esc_html(focus)
@@ -244,7 +264,9 @@ def gen_accent(level, week, day, focus, norm):
 <a class="btn btn-outline btn-sm" id="rec-download" download="my-accent-recording.webm">💾 {bl("Download", "حمّل")}</a>
 </div></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'accent')"> {bl("Done", "تم")} ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
+{bottom_nav('accent')}
 <script src="/js/app.js"></script></body></html>'''
 
 
@@ -278,7 +300,9 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 <a class="btn btn-outline btn-sm" id="rec-download" download="my-shadow-recording.webm">💾 {bl("Download", "حمّل")}</a>
 </div></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'shadowing')"> {bl("Done", "تم")} ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
+{bottom_nav('shadowing')}
 <script src="/js/app.js"></script></body></html>'''
 
 
@@ -320,7 +344,9 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 <div class="arabic-text" lang="ar" dir="rtl">اسمع الكلمة واختار المعنى الصحيح. ممكن تسمع أكتر من مرة.</div>
 {q_html}
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'listening')"> {bl("Done", "تم")} ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
+{bottom_nav('listening')}
 <script src="/js/app.js"></script>
 <script>function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script></body></html>'''
 
@@ -338,7 +364,9 @@ def gen_vocab(level, week, day, theme, words):
 <button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
 <button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> {bl("Done", "تم")} ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
+{bottom_nav('vocab')}
 <script src="/js/app.js"></script>
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>'''
 

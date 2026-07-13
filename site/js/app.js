@@ -306,6 +306,79 @@ const Flashcard = {
 };
 
 // ============================================================
+//  SWIPE NAVIGATION (Sahel S1 — navigate between exercises)
+// ============================================================
+const SwipeNav = {
+  startX: 0,
+  startY: 0,
+  threshold: 60, // minimum px to count as a swipe
+
+  init() {
+    // Only on exercise pages (accent, shadowing, listening, vocab)
+    const pages = ['accent', 'shadowing', 'listening', 'vocab'];
+    const path = window.location.pathname;
+    const current = pages.find(p => path.endsWith('/' + p) || path.endsWith('/' + p + '.html'));
+    if (!current) return;
+
+    this.pages = pages;
+    this.currentIndex = pages.indexOf(current);
+
+    document.addEventListener('touchstart', (e) => this._onTouchStart(e), { passive: true });
+    document.addEventListener('touchend', (e) => this._onTouchEnd(e), { passive: true });
+  },
+
+  _onTouchStart(e) {
+    this.startX = e.changedTouches[0].screenX;
+    this.startY = e.changedTouches[0].screenY;
+  },
+
+  _onTouchEnd(e) {
+    const dx = e.changedTouches[0].screenX - this.startX;
+    const dy = e.changedTouches[0].screenY - this.startY;
+
+    // Only trigger if horizontal swipe is dominant (not scrolling)
+    if (Math.abs(dx) < this.threshold || Math.abs(dy) > Math.abs(dx)) return;
+
+    if (dx > 0) {
+      // Swipe right → previous exercise
+      this._navigate(-1);
+    } else {
+      // Swipe left → next exercise
+      this._navigate(1);
+    }
+  },
+
+  _navigate(direction) {
+    const newIndex = this.currentIndex + direction;
+    if (newIndex < 0 || newIndex >= this.pages.length) return;
+    // Navigate to sibling page (same day, different exercise)
+    window.location.href = this.pages[newIndex];
+  }
+};
+
+// ============================================================
+//  BOTTOM NAV HIGHLIGHT (Sahel S1)
+// ============================================================
+const BottomNav = {
+  init() {
+    const nav = document.getElementById('bottom-nav');
+    if (!nav) return;
+    const pages = ['accent', 'shadowing', 'listening', 'vocab'];
+    const path = window.location.pathname;
+    const current = pages.find(p => path.endsWith('/' + p) || path.endsWith('/' + p + '.html'));
+    if (!current) return;
+
+    const links = nav.querySelectorAll('a');
+    links.forEach(a => {
+      const href = a.getAttribute('href');
+      if (href && (href.endsWith('/' + current) || href.endsWith('/' + current + '.html') || href === current + '.html' || href === current)) {
+        a.classList.add('active');
+      }
+    });
+  }
+};
+
+// ============================================================
 //  RECORDER UI (Sahel S0 — wires existing Recorder into pages)
 // ============================================================
 const RecorderUI = {
@@ -416,6 +489,8 @@ const RecorderUI = {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   TTS.init();
+  SwipeNav.init();
+  BottomNav.init();
   
   // Speed control
   const speedSelect = document.getElementById('speed-select');

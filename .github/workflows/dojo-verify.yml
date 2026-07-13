@@ -1,0 +1,34 @@
+name: empire-dojo verify
+
+# Run on PRs that touch site content, the generator, or this workflow.
+on:
+  pull_request:
+    paths:
+      - "scripts/**"
+      - "site/**"
+      - ".github/workflows/dojo-verify.yml"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout empire-dojo
+        uses: actions/checkout@v4
+
+      - name: Checkout empire-nexus (curriculum source)
+        uses: actions/checkout@v4
+        with:
+          repository: empireenglishcommunity-glitch/empire-nexus
+          path: empire-nexus
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Regenerate site from curriculum
+        run: |
+          EEC_REPO_DIR=${{ github.workspace }}/empire-nexus python3 scripts/generate.py
+
+      - name: Verify all generated pages (html.parser + injection sweep)
+        run: python3 scripts/verify_pages.py

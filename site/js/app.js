@@ -306,6 +306,112 @@ const Flashcard = {
 };
 
 // ============================================================
+//  RECORDER UI (Sahel S0 — wires existing Recorder into pages)
+// ============================================================
+const RecorderUI = {
+  blob: null,
+  audioUrl: null,
+  _player: null,
+
+  /**
+   * Start recording — updates UI to show stop button, timer, waveform.
+   */
+  async start() {
+    // Clean up any previous recording playback
+    this._stopPlayback();
+
+    const card = document.querySelector('.recorder-card');
+    const startBtn = document.getElementById('rec-start');
+    const stopBtn = document.getElementById('rec-stop');
+    const timer = document.getElementById('rec-timer');
+    const indicator = document.getElementById('rec-indicator');
+    const playback = document.getElementById('recorder-playback');
+
+    if (!startBtn || !stopBtn) return;
+
+    // Reset UI state
+    startBtn.style.display = 'none';
+    stopBtn.style.display = 'inline-flex';
+    if (timer) { timer.textContent = '0:00'; timer.classList.add('is-recording'); }
+    if (playback) playback.style.display = 'none';
+    if (card) card.classList.add('is-recording');
+
+    // Create waveform bars if not present
+    if (indicator) {
+      indicator.classList.add('active');
+      if (!indicator.children.length) {
+        for (let i = 0; i < 5; i++) {
+          const bar = document.createElement('span');
+          bar.className = 'bar';
+          indicator.appendChild(bar);
+        }
+      }
+    }
+
+    // Start recording using existing Recorder class
+    await Recorder.start((elapsed) => {
+      if (timer) timer.textContent = Timer.formatTime(elapsed);
+    });
+  },
+
+  /**
+   * Stop recording — shows playback controls + A/B comparison.
+   */
+  async stop() {
+    const card = document.querySelector('.recorder-card');
+    const startBtn = document.getElementById('rec-start');
+    const stopBtn = document.getElementById('rec-stop');
+    const timer = document.getElementById('rec-timer');
+    const indicator = document.getElementById('rec-indicator');
+    const playback = document.getElementById('recorder-playback');
+    const downloadLink = document.getElementById('rec-download');
+
+    // Stop recording
+    this.blob = await Recorder.stop();
+
+    // Update UI
+    if (stopBtn) stopBtn.style.display = 'none';
+    if (startBtn) startBtn.style.display = 'inline-flex';
+    if (timer) timer.classList.remove('is-recording');
+    if (indicator) indicator.classList.remove('active');
+    if (card) card.classList.remove('is-recording');
+
+    if (this.blob) {
+      // Create object URL for playback
+      if (this.audioUrl) URL.revokeObjectURL(this.audioUrl);
+      this.audioUrl = URL.createObjectURL(this.blob);
+
+      // Show playback section
+      if (playback) playback.style.display = 'block';
+
+      // Set download link
+      if (downloadLink) downloadLink.href = this.audioUrl;
+    }
+  },
+
+  /**
+   * Play back the user's recording.
+   */
+  playMine() {
+    if (!this.audioUrl) return;
+    this._stopPlayback();
+    this._player = new Audio(this.audioUrl);
+    this._player.play().catch(() => {});
+  },
+
+  /**
+   * Stop any current playback of user recording.
+   */
+  _stopPlayback() {
+    if (this._player) {
+      this._player.pause();
+      this._player.currentTime = 0;
+      this._player = null;
+    }
+  }
+};
+
+// ============================================================
 //  INITIALIZATION
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {

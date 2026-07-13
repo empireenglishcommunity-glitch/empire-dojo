@@ -9,6 +9,8 @@
 <button class="btn btn-sm" onclick="Flashcard.hearWord()">🔊</button>
 <button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('l2',2,7,'vocab')"> Done <span class="ar-inline" lang="ar" dir="rtl">/ تم</span> ✅</label></div>
-<div class="nav" style="margin-top:20px"><a href="listening.html">← Listening <span class="ar-inline" lang="ar" dir="rtl">/ الاستماع</span></a><a href="index.html">Today <span class="ar-inline" lang="ar" dir="rtl">/ اليوم</span></a></div></div>
+<div class="swipe-hint">← Swipe to navigate <span class="ar-inline" lang="ar" dir="rtl">/ اسحب للتنقل</span> →</div>
+<div class="nav page-nav" style="margin-top:20px"><a href="listening.html">← Listening <span class="ar-inline" lang="ar" dir="rtl">/ الاستماع</span></a><a href="index.html">Today <span class="ar-inline" lang="ar" dir="rtl">/ اليوم</span></a></div></div>
+<nav class="bottom-nav" id="bottom-nav"><a href="accent.html"><span class="nav-icon">🎯</span>Accent</a><a href="shadowing.html"><span class="nav-icon">🎧</span>Shadow</a><a href="listening.html"><span class="nav-icon">👂</span>Listen</a><a href="vocab.html" class="active"><span class="nav-icon">📖</span>Vocab</a></nav>
 <script src="/js/app.js"></script>
 <script>const words=[{"word": "waste", "pronunciation": "wayst", "arabic": "نفايات/هدر", "pos": "noun"}, {"word": "landfill", "pronunciation": "LAND-fil", "arabic": "مدفن نفايات", "pos": "noun"}, {"word": "organic", "pronunciation": "or-GAN-ik", "arabic": "عضوي", "pos": "adjective"}, {"word": "fossil fuel", "pronunciation": "FOS-əl FYOO-əl", "arabic": "وقود أحفوري", "pos": "noun phrase"}, {"word": "urgent", "pronunciation": "UR-jənt", "arabic": "عاجل/ملح", "pos": "adjective"}];document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>

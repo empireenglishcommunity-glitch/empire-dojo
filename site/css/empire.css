@@ -696,19 +696,125 @@ body::before {
   margin-top: 40px;
 }
 
-/* ─── Responsive ─────────────────────────────────────────── */
+/* ─── Bottom Navigation Bar (Sahel S1) ───────────────────── */
+
+.bottom-nav {
+  display: none; /* hidden on desktop */
+}
+
+/* ─── Swipe Hint (Sahel S1) ──────────────────────────────── */
+
+.swipe-hint {
+  display: none;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  margin: 8px 0;
+  opacity: 0.7;
+}
+
+/* ─── Responsive (Sahel S1 — Mobile-First UX) ────────────── */
 
 @media (max-width: 600px) {
-  .container { padding: 16px; }
-  .card { padding: 20px; }
-  .flashcard { padding: 30px 20px; min-height: 180px; }
+  /* Core layout — prevent overflow */
+  html, body { overflow-x: hidden; }
+  .container { padding: 16px 14px 90px; } /* 90px bottom for fixed nav */
+  .card { padding: 18px 16px; }
+  .flashcard { padding: 30px 16px; min-height: 180px; }
   .flashcard .word { font-size: 1.7rem; }
-  .btn { padding: 11px 20px; font-size: 0.85rem; }
   .timer { font-size: 2.2rem; }
-  .day-grid { grid-template-columns: repeat(4, 1fr); }
+  .day-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .header { padding: 24px 0 20px; margin-bottom: 20px; }
   .header h1 { font-size: 1.3rem; }
+  .header .subtitle { font-size: 0.8rem; }
+
+  /* Buttons — all 48px+ touch targets (S1.4) */
+  .btn { padding: 14px 22px; font-size: 0.9rem; min-height: 48px; }
+  .btn-sm { padding: 12px 18px; font-size: 0.85rem; min-height: 48px; }
+  .nav a, .nav button { padding: 14px 16px; min-height: 48px; font-size: 0.85rem; }
+
+  /* Audio controls — larger and more visible (S1.5) */
+  .speed-control { flex-wrap: wrap; gap: 8px; }
+  .speed-control select { padding: 12px 16px; font-size: 0.9rem; min-height: 48px; }
+  .audio-controls { gap: 8px; }
+  .audio-controls .btn { width: 100%; justify-content: center; }
+
+  /* Transcript — prevent overflow on narrow screens */
+  .transcript { padding: 16px; font-size: 1rem; word-break: break-word; overflow-wrap: break-word; }
+
+  /* Options — 48px+ touch targets */
+  .option { padding: 16px 18px; min-height: 48px; font-size: 1rem; }
+
+  /* Arabic text — readable size */
+  .arabic-text { font-size: 0.9rem; padding: 12px 14px; }
+
+  /* Done section checkbox — larger */
+  .done-section .checkbox { width: 28px; height: 28px; }
+  .done-section label { font-size: 1rem; min-height: 48px; }
+
+  /* Navigation links — hide text nav at bottom (replaced by fixed bar) */
+  .nav.page-nav { display: none; }
+
+  /* Show swipe hint on mobile */
+  .swipe-hint { display: block; }
+
+  /* Bottom fixed navigation bar (S1.3) */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 8px 0;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.65rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    min-width: 60px;
+    min-height: 52px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+  }
+
+  .bottom-nav a .nav-icon {
+    font-size: 1.4rem;
+    margin-bottom: 2px;
+  }
+
+  .bottom-nav a.active {
+    color: var(--accent);
+    background: rgba(212, 175, 55, 0.1);
+  }
+
+  .bottom-nav a:active {
+    transform: scale(0.92);
+  }
 }
 
 @media (max-width: 380px) {
   .day-grid { grid-template-columns: repeat(3, 1fr); }
+  .container { padding: 12px 10px 90px; }
+  .card { padding: 14px 12px; }
+  .header h1 { font-size: 1.1rem; }
+  .flashcard .word { font-size: 1.4rem; }
+  .btn { padding: 12px 16px; font-size: 0.85rem; }
+  .bottom-nav a { min-width: 50px; font-size: 0.6rem; }
+  .bottom-nav a .nav-icon { font-size: 1.2rem; }
 }

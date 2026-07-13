@@ -306,6 +306,107 @@ const Flashcard = {
 };
 
 // ============================================================
+//  CONNECTED PROGRESS (Sahel S6 — Discord bot API sync)
+// ============================================================
+const ConnectedProgress = {
+  token: null,
+  data: null,
+  API_BASE: 'https://bot.empireenglish.online',  // Cloudflare Tunnel
+
+  init() {
+    this.token = localStorage.getItem('empire_link_token');
+    if (this.token) {
+      this._fetchProgress();
+    }
+  },
+
+  connect(token) {
+    token = token.trim();
+    if (!token) return;
+    localStorage.setItem('empire_link_token', token);
+    this.token = token;
+    this._fetchProgress();
+  },
+
+  disconnect() {
+    localStorage.removeItem('empire_link_token');
+    this.token = null;
+    this.data = null;
+    this._updateUI();
+  },
+
+  async _fetchProgress() {
+    try {
+      const res = await fetch(`${this.API_BASE}/api/progress?token=${this.token}`);
+      if (!res.ok) {
+        if (res.status === 404) {
+          // Invalid token
+          this.disconnect();
+        }
+        return;
+      }
+      this.data = await res.json();
+      this._updateUI();
+    } catch (e) {
+      // Network error — use cached data or ignore
+    }
+  },
+
+  _updateUI() {
+    const streakEl = document.getElementById('streak-display');
+    const connectBtn = document.getElementById('connect-discord-btn');
+
+    if (this.data && streakEl) {
+      streakEl.textContent = `🔥 ${this.data.streak}`;
+      streakEl.title = `${this.data.streak} day streak (synced from Discord)`;
+    }
+
+    if (connectBtn) {
+      connectBtn.style.display = this.token ? 'none' : 'inline-flex';
+    }
+  },
+
+  async submitSrsReview(word, score) {
+    if (!this.token) return false;
+    try {
+      const res = await fetch(`${this.API_BASE}/api/srs-review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: this.token, word, score })
+      });
+      return res.ok;
+    } catch (e) {
+      // Queue for later
+      const queue = JSON.parse(localStorage.getItem('empire_srs_queue') || '[]');
+      queue.push({ word, score, ts: Date.now() });
+      localStorage.setItem('empire_srs_queue', JSON.stringify(queue));
+      return false;
+    }
+  },
+
+  async syncQueue() {
+    if (!this.token) return;
+    const queue = JSON.parse(localStorage.getItem('empire_srs_queue') || '[]');
+    if (!queue.length) return;
+    const remaining = [];
+    for (const item of queue) {
+      try {
+        const res = await fetch(`${this.API_BASE}/api/srs-review`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: this.token, word: item.word, score: item.score })
+        });
+        if (!res.ok) remaining.push(item);
+      } catch (e) {
+        remaining.push(item);
+        break; // still offline
+      }
+    }
+    localStorage.setItem('empire_srs_queue', JSON.stringify(remaining));
+  }
+};
+
+// ============================================================
 //  GAMIFICATION (Sahel S5 — streak, progress, confetti)
 // ============================================================
 const Gamification = {
@@ -811,6 +912,8 @@ document.addEventListener('DOMContentLoaded', () => {
   SwipeNav.init();
   BottomNav.init();
   Gamification.init();
+  ConnectedProgress.init();
+  ConnectedProgress.syncQueue();
   
   // Speed control
   const speedSelect = document.getElementById('speed-select');

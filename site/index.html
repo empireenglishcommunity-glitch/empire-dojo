@@ -50,6 +50,20 @@
       كل تمرين فيه صوت + نص + مكان تسجل فيه نفسك.
     </div>
 
+    <!-- Connected Progress / Review Link -->
+    <div class="card" id="connect-card">
+      <h2>🔗 Discord + Review <span class="ar-inline" lang="ar" dir="rtl">/ الربط والمراجعة</span></h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <a href="/review/" class="btn btn-sm">📝 Vocab Review</a>
+        <button class="btn btn-sm btn-outline" id="connect-discord-btn" onclick="document.getElementById('connect-modal').style.display='block'">🔗 Connect Discord</button>
+      </div>
+      <div id="connect-modal" style="display:none;margin-top:16px">
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:8px">Type <code>!link</code> in Discord, then paste your token here:</p>
+        <input type="text" id="home-token-input" class="quiz-input" placeholder="Paste token..." style="margin-bottom:8px">
+        <button class="btn btn-sm" onclick="ConnectedProgress.connect(document.getElementById('home-token-input').value);document.getElementById('connect-modal').style.display='none'">✓ Connect</button>
+      </div>
+    </div>
+
     <!-- Footer -->
     <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.8rem;">
       <p>Empire English Community — Common Sense First 🏛️</p>

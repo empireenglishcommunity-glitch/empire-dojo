@@ -55,10 +55,54 @@ AUDIO_MANIFEST_PATH = SCRIPT_DIR / "audio-manifest.json"
 
 
 def esc(s):
-    """Escape a string for safe inclusion inside a single-quoted JS string literal."""
+    """Escape a string for safe inclusion inside a single-quoted JS string literal
+    (used for onclick="TTS.speak('...')" attributes etc.)."""
     if s is None:
         s = ""
     return str(s).replace("\\", "\\\\").replace("'", "\\'").replace('"', "&quot;").replace("\n", " ")
+
+
+def esc_html(s):
+    """Escape a string for safe inclusion as HTML body/attribute text.
+
+    Found via adversarial-input stress testing: curriculum JSON text
+    (theme, accent focus, transcripts, listening-quiz answer options) was
+    being interpolated directly into generated HTML with NO escaping at
+    all -- only esc() existed, and that escapes for a *JS string literal*
+    context (onclick="TTS.speak('...')"), not for HTML body/attribute
+    context. Proven exploitable, not just theoretical: a crafted
+    <img src=x onerror=...> in a vocabulary word's "arabic" field
+    survived all the way into Flashcard.render()'s innerHTML call in
+    app.js and would execute in a real browser; a crafted </script> in
+    the same field broke out of vocab.html's <script> block early
+    (browsers scan for the literal "</script" regardless of JS-string
+    quoting, per the HTML spec -- json.dumps()'s escaping doesn't help
+    here since it escapes for JSON syntax, not for HTML/script-tag
+    context). Today's real curriculum content is hand-authored and
+    committed to the repo (no bot command lets anyone submit curriculum
+    text), so this isn't externally attacker-controlled right now -- but
+    it's still a real defect: today's actual content already contains
+    apostrophes and ampersands ("don't", "it's", "Salt & Pepper"), and
+    escaping untrusted-shaped text correctly is simply correct practice
+    for a static-site generator, independent of today's trust level.
+    """
+    if s is None:
+        s = ""
+    return (str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            .replace('"', "&quot;").replace("'", "&#39;"))
+
+
+def safe_json_for_script_tag(data):
+    """json.dumps() a value for embedding inside a <script>...</script> tag.
+
+    Escaping "</" as "<\\/" prevents any string value containing a
+    literal "</script" from prematurely closing the script block --
+    standard mitigation for this well-known HTML/JS embedding issue.
+    Valid JS: a string may contain an escaped forward slash, and "<\\/"
+    parses identically to "</" once the JS engine reads the string, so
+    this changes nothing about the resulting data structure.
+    """
+    return json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
 
 
 def audio_id(level, week, day, kind):
@@ -154,31 +198,33 @@ def normalize_drill(drill):
 # ============================================================
 
 def gen_accent(level, week, day, focus, norm):
-    sounds = norm["sounds"] or "Review"
+    sounds = esc_html(norm["sounds"] or "Review")
+    focus = esc_html(focus)
     primary = norm["primary_text"]
+    instr_ar = esc_html(norm["instr_ar"])
 
     pairs_card = ""
     if norm["pairs"]:
-        pairs_html = "<br>".join(f"<b>{a}</b> / <b>{b}</b>" for a, b in norm["pairs"][:5])
+        pairs_html = "<br>".join(f"<b>{esc_html(a)}</b> / <b>{esc_html(b)}</b>" for a, b in norm["pairs"][:5])
         pairs_card = f'<div class="card"><h2>📝 {bl("Minimal Pairs", "أزواج التمييز")}</h2><div class="transcript">{pairs_html}</div></div>'
 
     words_card = ""
     if norm["words"]:
         words = norm["words"][:8]
-        words_html = " &bull; ".join(f"<b>{w}</b>" for w in words)
+        words_html = " &bull; ".join(f"<b>{esc_html(w)}</b>" for w in words)
         words_card = (f'<div class="card"><h2>🎯 {bl("Practice Words", "كلمات للتمرين")}</h2><div class="transcript">{words_html}</div>'
                       f'<button class="btn btn-outline btn-sm" onclick="TTS.speak(\'{esc(", ".join(words))}\', 0.6)">🔊 {bl("Hear Words", "استمع للكلمات")}</button></div>')
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Accent Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week {week} • Day {day} • {focus}</p></div>
-<div class="arabic-text" lang="ar" dir="rtl">{norm["instr_ar"]}</div>
+<div class="arabic-text" lang="ar" dir="rtl">{instr_ar}</div>
 <div class="card"><h2>🔊 {bl("Target Sounds", "الأصوات المستهدفة")}: {sounds}</h2>
 <button class="btn" onclick="TTS.speak('{esc(primary)}')">▶️ {bl("Listen to Model", "استمع للنموذج")}</button>
 <div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
 {pairs_card}
 {words_card}
-<div class="card"><h2>🎙️ {bl("Say This", "قول ده")}</h2><div class="transcript"><b>"{primary}"</b></div>
+<div class="card"><h2>🎙️ {bl("Say This", "قول ده")}</h2><div class="transcript"><b>"{esc_html(primary)}"</b></div>
 <button class="btn btn-outline" onclick="TTS.speak('{esc(primary)}', 0.7)">🔊 {bl("Model", "نموذج")}</button></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'accent')"> {bl("Done", "تم")} ✅</label></div>
 <div class="nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
@@ -187,11 +233,12 @@ def gen_accent(level, week, day, focus, norm):
 
 def gen_shadowing(level, week, day, theme, norm, aid):
     passage = norm["primary_text"]
+    theme = esc_html(theme)
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Shadowing Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎧 Shadowing</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
 <div class="arabic-text" lang="ar" dir="rtl">اسمع → كرر 3 مرات → سجل المحاولة الثالثة</div>
-<div class="card"><h2>📝 {bl("Passage", "المقطع")}</h2><div class="transcript">{passage}</div>
+<div class="card"><h2>📝 {bl("Passage", "المقطع")}</h2><div class="transcript">{esc_html(passage)}</div>
 <button class="btn" onclick="KokoroAudio.play('{aid}','{esc(passage)}')">▶️ {bl("Play", "شغل")}</button>
 <button class="btn btn-outline" onclick="TTS.stop()">⏹️ {bl("Stop", "قف")}</button>
 <div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.75" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div>
@@ -223,7 +270,7 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
         for i, o in enumerate(options):
             is_correct = "true" if i == correct_idx else "false"
             data_c = " data-correct" if i == correct_idx else ""
-            opts_html += f'<div class="option"{data_c} onclick="checkAnswer(this,{is_correct})">{o["arabic"]}</div>'
+            opts_html += f'<div class="option"{data_c} onclick="checkAnswer(this,{is_correct})">{esc_html(o["arabic"])}</div>'
         q_html += (f'<div class="card"><h2>🔊 {bl("Word", "كلمة")} {qi+1}</h2>'
                    f'<button class="btn btn-sm" onclick="TTS.speak(\'{esc(word["word"])}\', 0.7)">▶️ {bl("Play Word", "شغل الكلمة")}</button>'
                    f'<div class="question" style="margin-top:14px"><p>❓ {bl("What does this word mean?", "معنى الكلمة دي إيه؟")}</p>'
@@ -232,6 +279,7 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
     if not q_html:
         q_html = f'<div class="card"><p>{bl("No vocabulary available for this day yet.", "لا توجد مفردات متاحة لهذا اليوم حتى الآن.")}</p></div>'
 
+    theme = esc_html(theme)
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>👂 Listening</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
@@ -244,6 +292,7 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 
 
 def gen_vocab(level, week, day, theme, words):
+    theme = esc_html(theme)
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Vocabulary Week {week} Day {day} | Empire English</title><link rel="stylesheet" href="/css/empire.css"></head><body>
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Vocabulary</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
@@ -257,7 +306,7 @@ def gen_vocab(level, week, day, theme, words):
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> {bl("Done", "تم")} ✅</label></div>
 <div class="nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
 <script src="/js/app.js"></script>
-<script>const words={json.dumps(words, ensure_ascii=False)};document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>'''
+<script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>Flashcard.init(words));</script></body></html>'''
 
 
 def gen_day_index(level, week, day):

@@ -259,18 +259,39 @@ const Flashcard = {
     const word = this.words[this.index];
     if (!word) return;
 
+    // Build the flashcard's inner DOM with real elements + textContent
+    // instead of an innerHTML template string. Found via adversarial-
+    // input stress testing on empire-dojo's generate.py: word.arabic/
+    // word.word/word.pronunciation/word.pos come straight from
+    // curriculum JSON with no HTML sanitization anywhere in the
+    // pipeline, and a crafted <img src=x onerror=...> value genuinely
+    // executed here via the old innerHTML assignment. textContent can
+    // never be interpreted as markup, so this closes the vulnerability
+    // at the point where it actually executes, independent of whatever
+    // escaping the page generator does (or fails to do) upstream.
+    card.innerHTML = '';
     if (this.flipped) {
-      card.innerHTML = `
-        <div class="arabic">${word.arabic}</div>
-        <div class="pos">${word.pos || ''}</div>
-        <div class="instruction">Tap to flip back <span class="ar-inline" lang="ar" dir="rtl">/ اضغط للرجوع</span></div>
-      `;
+      const arabic = document.createElement('div');
+      arabic.className = 'arabic';
+      arabic.textContent = word.arabic;
+      const pos = document.createElement('div');
+      pos.className = 'pos';
+      pos.textContent = word.pos || '';
+      const instruction = document.createElement('div');
+      instruction.className = 'instruction';
+      instruction.innerHTML = 'Tap to flip back <span class="ar-inline" lang="ar" dir="rtl">/ اضغط للرجوع</span>';
+      card.append(arabic, pos, instruction);
     } else {
-      card.innerHTML = `
-        <div class="word">${word.word}</div>
-        <div class="pronunciation">${word.pronunciation}</div>
-        <div class="instruction">Tap to see Arabic meaning <span class="ar-inline" lang="ar" dir="rtl">/ اضغط لرؤية المعنى</span></div>
-      `;
+      const wordEl = document.createElement('div');
+      wordEl.className = 'word';
+      wordEl.textContent = word.word;
+      const pron = document.createElement('div');
+      pron.className = 'pronunciation';
+      pron.textContent = word.pronunciation;
+      const instruction = document.createElement('div');
+      instruction.className = 'instruction';
+      instruction.innerHTML = 'Tap to see Arabic meaning <span class="ar-inline" lang="ar" dir="rtl">/ اضغط لرؤية المعنى</span>';
+      card.append(wordEl, pron, instruction);
     }
 
     // Update counter

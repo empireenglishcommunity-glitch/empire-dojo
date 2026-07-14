@@ -361,6 +361,18 @@ const ConnectedProgress = {
       streakEl.title = `${this.data.streak} day streak (synced from Discord)`;
     }
 
+    // Show pronunciation stats if available
+    if (this.data && this.data.pronunciation && this.data.pronunciation.last_score !== null) {
+      const pron = this.data.pronunciation;
+      const pronEl = document.getElementById('pronunciation-stat');
+      if (pronEl) {
+        const trend = pron.trend === 'improving' ? '↑' : pron.trend === 'declining' ? '↓' : '→';
+        pronEl.textContent = `🎯 ${pron.average_7d}% ${trend}`;
+        pronEl.title = `Pronunciation: ${pron.average_7d}% avg (${pron.trend})`;
+        pronEl.style.display = 'inline';
+      }
+    }
+
     if (connectBtn) {
       connectBtn.style.display = this.token ? 'none' : 'inline-flex';
     }

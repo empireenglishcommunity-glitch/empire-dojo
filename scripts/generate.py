@@ -232,6 +232,7 @@ def gamification_bar():
     """Persistent top bar showing streak + daily progress (Sahel S5)."""
     return ('<div class="gamification-bar">'
             '<span class="streak" id="streak-display">🔥 0</span>'
+            '<span id="pronunciation-stat" style="display:none;color:var(--accent);font-size:0.8rem;font-weight:600"></span>'
             '<div class="progress-bar" id="daily-progress"></div>'
             '<span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span>'
             '</div>')

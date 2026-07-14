@@ -50,6 +50,13 @@
       كل تمرين فيه صوت + نص + مكان تسجل فيه نفسك.
     </div>
 
+    <!-- Weekly Progress Chart (Sahel S5.3) -->
+    <div class="card" id="weekly-progress-card">
+      <h2>📊 Weekly Progress <span class="ar-inline" lang="ar" dir="rtl">/ تقدم الأسبوع</span></h2>
+      <div class="weekly-chart" id="weekly-chart"></div>
+      <p style="text-align:center;color:var(--text-muted);font-size:0.75rem;margin-top:10px" id="weekly-summary"></p>
+    </div>
+
     <!-- Connected Progress / Review Link -->
     <div class="card" id="connect-card">
       <h2>🔗 Discord + Review <span class="ar-inline" lang="ar" dir="rtl">/ الربط والمراجعة</span></h2>
@@ -82,6 +89,7 @@
       document.querySelectorAll('#level-nav a').forEach(a => a.classList.remove('active'));
       event.target.classList.add('active');
       renderWeeks();
+      renderWeeklyChart();
     }
 
     function renderWeeks() {
@@ -93,7 +101,7 @@
         a.href = '#';
         a.textContent = `Week ${w}`;
         if (w === currentWeek) a.classList.add('active');
-        a.onclick = (e) => { e.preventDefault(); currentWeek = w; renderWeeks(); renderDays(); };
+        a.onclick = (e) => { e.preventDefault(); currentWeek = w; renderWeeks(); renderDays(); renderWeeklyChart(); };
         nav.appendChild(a);
       }
       renderDays();
@@ -139,6 +147,38 @@
 
     // Initialize
     renderWeeks();
+    renderWeeklyChart();
+
+    function renderWeeklyChart() {
+      const chart = document.getElementById('weekly-chart');
+      const summary = document.getElementById('weekly-summary');
+      if (!chart) return;
+
+      const days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      const types = ['accent', 'shadowing', 'listening', 'vocab'];
+      let totalDone = 0;
+      let html = '';
+
+      for (let d = 1; d <= 7; d++) {
+        let dayDone = 0;
+        types.forEach(t => {
+          if (Progress.isDone(currentLevel, currentWeek, d, t)) dayDone++;
+        });
+        totalDone += dayDone;
+        const pct = (dayDone / 4) * 100;
+        const barClass = pct === 100 ? 'bar-complete' : pct > 0 ? 'bar-partial' : '';
+        html += `<div class="chart-day ${barClass}">` +
+          `<div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.max(pct, 4)}%"></div></div>` +
+          `<span class="chart-label">${days[d-1]}</span>` +
+          `<span class="chart-count">${dayDone}/4</span>` +
+          `</div>`;
+      }
+
+      chart.innerHTML = html;
+      const totalPossible = 28;
+      const pct = Math.round((totalDone / totalPossible) * 100);
+      summary.textContent = `${totalDone}/${totalPossible} exercises this week (${pct}%)`;
+    }
   </script>
 </body>
 </html>

@@ -51,6 +51,8 @@ const TTS = {
 // ============================================================
 const KokoroAudio = {
   _current: null,
+  _fallbackText: null,
+  rate: 0.75,
 
   /**
    * Play a pre-generated clip by id (see audio-manifest.json / generate.py).
@@ -60,27 +62,51 @@ const KokoroAudio = {
    */
   play(id, fallbackText, rate = null) {
     this.stop();
+    this._fallbackText = fallbackText;
+    if (rate) this.rate = parseFloat(rate);
     const audio = new Audio(`/audio/${id}.mp3`);
     this._current = audio;
-    if (rate) audio.playbackRate = rate;
+    audio.playbackRate = this.rate;
 
     audio.addEventListener('error', () => {
       // MP3 not found (404) or unsupported — use browser TTS instead.
-      TTS.speak(fallbackText, rate);
+      TTS.speak(fallbackText, this.rate);
     });
 
     audio.play().catch(() => {
       // Autoplay/decoding failure — fall back too.
-      TTS.speak(fallbackText, rate);
+      TTS.speak(fallbackText, this.rate);
     });
   },
 
+  /**
+   * Fix D015: the Shadowing page's Stop button called TTS.stop() and its
+   * Speed <select> called TTS.setRate() -- but the passage is actually
+   * played via KokoroAudio.play() (an <audio> element), not TTS's
+   * speechSynthesis. Neither control ever touched the real playing
+   * <audio> element, so Stop did nothing while a clip was mid-playback
+   * and Speed changes had no audible effect until/unless the fallback
+   * TTS path happened to be in use. stop() now pauses the actual <audio>
+   * element (and still cancels speechSynthesis as a no-op-safe fallback,
+   * in case the browser-TTS path was the one actually playing).
+   */
   stop() {
     if (this._current) {
       this._current.pause();
       this._current = null;
     }
     TTS.stop();
+  },
+
+  /**
+   * Fix D015 (Speed control): apply a new rate immediately to whatever is
+   * currently playing (mid-clip playbackRate changes on <audio> apply
+   * live), and remember it for the next play() call too.
+   */
+  setRate(rate) {
+    this.rate = parseFloat(rate);
+    if (this._current) this._current.playbackRate = this.rate;
+    TTS.setRate(rate);
   }
 };
 
@@ -92,11 +118,42 @@ const Recorder = {
   chunks: [],
   recording: false,
   startTime: null,
+  mimeType: 'audio/webm', // actual negotiated type, set at start()
+
+  /**
+   * Pick a MIME type the current browser's MediaRecorder can actually
+   * produce. Fixes D014: 'audio/webm' was hardcoded everywhere (both
+   * here and in the Blob construction in stop()), but Safari/iOS
+   * MediaRecorder does not support audio/webm at all -- recording
+   * silently produced a blob tagged as audio/webm that Safari itself
+   * (and the <audio> playback element used for "Listen to Yours") could
+   * not decode, so nothing played back and downloads were unusable.
+   * Feature-detect the best available type instead of assuming one.
+   */
+  _pickMimeType() {
+    const candidates = [
+      'audio/mp4',                 // Safari/iOS
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/ogg;codecs=opus',
+    ];
+    if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) {
+      return ''; // let the browser pick its own default
+    }
+    return candidates.find(c => MediaRecorder.isTypeSupported(c)) || '';
+  },
 
   async start(onTimeUpdate) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.mediaRecorder = new MediaRecorder(stream);
+      const preferredType = this._pickMimeType();
+      this.mediaRecorder = preferredType
+        ? new MediaRecorder(stream, { mimeType: preferredType })
+        : new MediaRecorder(stream);
+      // Use whatever MediaRecorder actually reports it's producing (it may
+      // differ slightly from the requested type, e.g. adding a codec
+      // string) so the Blob we build in stop() is tagged correctly.
+      this.mimeType = this.mediaRecorder.mimeType || preferredType || 'audio/webm';
       this.chunks = [];
       this.recording = true;
       this.startTime = Date.now();
@@ -124,7 +181,7 @@ const Recorder = {
       if (!this.mediaRecorder || !this.recording) { resolve(null); return; }
       
       this.mediaRecorder.onstop = () => {
-        const blob = new Blob(this.chunks, { type: 'audio/webm' });
+        const blob = new Blob(this.chunks, { type: this.mimeType || 'audio/webm' });
         this.recording = false;
         clearInterval(this._timer);
         resolve(blob);
@@ -203,6 +260,18 @@ const Progress = {
 
   markDone(level, week, day, type) {
     localStorage.setItem(this.getKey(level, week, day, type), 'done');
+    // Fix D016: the "Done" checkbox on each exercise page called
+    // markDone() but nothing re-rendered the progress bar/task counter on
+    // the same page afterward -- Gamification._renderProgressBar() only
+    // ran once, on DOMContentLoaded, before the checkbox existed in its
+    // "done" state. Checking the box gave zero visible feedback that
+    // anything happened. Re-run both here so the change is reflected
+    // immediately, without needing per-page markup changes in
+    // generate.py's 4 near-identical checkbox handlers.
+    if (typeof Gamification !== 'undefined') {
+      Gamification._renderProgressBar();
+      Gamification._checkDailyCompletion();
+    }
   },
 
   isDone(level, week, day, type) {
@@ -426,6 +495,31 @@ const Gamification = {
     this._updateStreak();
     this._renderProgressBar();
     this._checkDailyCompletion();
+    this._restoreDoneCheckbox();
+  },
+
+  /**
+   * Fix D017: the "Done" checkbox's checked state was never restored on
+   * page load -- Progress.markDone() writes to localStorage, but nothing
+   * ever read it back to set the checkbox's `.checked` property, so
+   * navigating away and back always showed an unchecked box even though
+   * the exercise really was recorded as done. Detect level/week/day/type
+   * from the URL (same regex + exercise-type detection used elsewhere in
+   * this file) and sync the checkbox to the stored state.
+   */
+  _restoreDoneCheckbox() {
+    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d)/);
+    if (!match) return;
+    const [, level, week, day] = match;
+
+    const types = ['accent', 'shadowing', 'listening', 'vocab'];
+    const path = window.location.pathname;
+    const type = types.find(t => path.endsWith('/' + t) || path.endsWith('/' + t + '.html'));
+    if (!type) return;
+
+    const checkbox = document.querySelector('.done-section .checkbox');
+    if (!checkbox) return;
+    checkbox.checked = Progress.isDone(level, parseInt(week), parseInt(day), type);
   },
 
   _getToday() {
@@ -889,9 +983,27 @@ const RecorderUI = {
       // Show playback section
       if (playback) playback.style.display = 'block';
 
-      // Set download link
-      if (downloadLink) downloadLink.href = this.audioUrl;
+      // Set download link. The generated markup hardcodes a
+      // download="...webm" attribute (D014) -- correct the extension to
+      // match the blob's real MIME type (e.g. Safari produces audio/mp4,
+      // not audio/webm), so the downloaded file's extension matches its
+      // actual contents and opens correctly on the device that made it.
+      if (downloadLink) {
+        downloadLink.href = this.audioUrl;
+        const ext = this._extensionFor(this.blob.type);
+        const base = (downloadLink.getAttribute('download') || 'recording.webm').replace(/\.\w+$/, '');
+        downloadLink.setAttribute('download', `${base}.${ext}`);
+      }
     }
+  },
+
+  /** Map a MIME type to a sensible file extension for downloads. */
+  _extensionFor(mimeType) {
+    if (!mimeType) return 'webm';
+    if (mimeType.includes('mp4')) return 'm4a';
+    if (mimeType.includes('ogg')) return 'ogg';
+    if (mimeType.includes('webm')) return 'webm';
+    return 'webm';
   },
 
   /**

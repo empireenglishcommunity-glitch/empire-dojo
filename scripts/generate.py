@@ -305,8 +305,8 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 <div class="arabic-text" lang="ar" dir="rtl">اسمع → كرر 3 مرات → سجل المحاولة الثالثة</div>
 <div class="card"><h2>📝 {bl("Passage", "المقطع")}</h2><div class="transcript">{esc_html(passage)}</div>
 <button class="btn" onclick="KokoroAudio.play('{aid}','{esc(passage)}')">▶️ {bl("Play", "شغل")}</button>
-<button class="btn btn-outline" onclick="TTS.stop()">⏹️ {bl("Stop", "قف")}</button>
-<div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.75" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div>
+<button class="btn btn-outline" onclick="KokoroAudio.stop()">⏹️ {bl("Stop", "قف")}</button>
+<div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="KokoroAudio.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.75" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div>
 <p style="color:var(--text-muted);font-size:0.75rem;margin-top:10px">🎙️ {bl("Studio-quality audio when available, otherwise your browser's voice.", "صوت استوديو لما يكون متاح، وإلا صوت المتصفح.")}</p></div>
 <div class="card recorder-card"><h2>🎙️ {bl("Record Your Shadow", "سجّل محاكاتك")}</h2>
 <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">اسمع النموذج 3 مرات، وسجّل المحاولة الثالثة.</div>

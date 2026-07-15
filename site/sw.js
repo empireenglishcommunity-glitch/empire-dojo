@@ -4,7 +4,14 @@
  */
 
 const CACHE_NAME = 'empire-v1';
-const OFFLINE_URL = '/offline.html';
+// Extensionless — Cloudflare Pages serves /offline.html at the clean URL
+// /offline but 308-redirects the literal /offline.html request there.
+// A precached/cached response that came from a redirected fetch has its
+// `redirected` flag set, and browsers refuse to use a redirected Response
+// in respondWith() ("Failed to convert value to 'Response'"), which broke
+// the offline fallback entirely (D013). Fetching /offline directly avoids
+// the redirect hop altogether.
+const OFFLINE_URL = '/offline';
 
 // Pre-cache essential assets on install
 const PRECACHE = [
@@ -13,7 +20,7 @@ const PRECACHE = [
   '/js/app.js',
   '/logo.png',
   '/favicon.png',
-  '/offline.html',
+  '/offline',
   '/manifest.json'
 ];
 

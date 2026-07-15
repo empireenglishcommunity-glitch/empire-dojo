@@ -205,6 +205,45 @@ something is wrong — do not merge without understanding why.
 
 ---
 
+## 8.5. Post-Merge Production Deploy (Hisn — never assume merge = live)
+
+**Hard rule: merging a PR to `main` does NOT put it on the live site.**
+This repo has no CI/CD auto-deploy pipeline — `.github/workflows/`
+only runs verification checks on PRs, it never deploys anything.
+`https://practice.empireenglish.online` only reflects whatever was
+last manually deployed via:
+
+```bash
+cd empire-dojo
+git checkout main && git pull
+npx wrangler pages deploy site --project-name=empire-practice
+```
+
+**This gap was found for real** (2026-07-15, Hisn full-ecosystem
+verification campaign, defect D008): PR #21 (the Wuslah W1 student
+dashboard) was merged to `main`, but nobody ran the deploy command
+afterward. The live site continued serving an older build — missing
+the entire `/dash/` page AND the homepage's new "📊 My Dashboard" link
+— until this was caught by a page crawler comparing local repo state
+against live HTTP responses, not by anyone noticing visually.
+
+**Rule going forward: after merging ANY PR that touches `site/`, run
+the deploy command in section 5 before considering the work "done."**
+Section 8's preview-URL discipline (checking the PR's preview deploy
+before merging) is necessary but NOT sufficient — it confirms the
+CHANGE is correct, not that it's actually LIVE after merge. Both steps
+are required:
+1. Before merge: check the preview URL (section 8)
+2. After merge: run the production deploy command (section 5)
+
+If unsure whether the live site is current, don't guess — compare
+`git log -1 --format=%H` on `main` against the live site's actual
+rendered content for something that changed in that commit (e.g. grep
+for new text/links that PR added). This is exactly how the D008 gap
+was confirmed, not by trusting a deploy history log or dashboard.
+
+---
+
 ## 9. Related Repos
 
 - `empire-nexus/bots/discord-learning-bot/` — canonical curriculum source AND the consumer of this site's URLs (`src/curriculum.py`'s `practice_platform_task_url()`/`practice_platform_day_url()`). Any URL-shape change here requires a matching change there, and vice versa. (Formerly named `EEC-REPO` — update this note again if it's renamed a second time.)

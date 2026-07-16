@@ -108,9 +108,34 @@
       renderDays();
     }
 
+    // Hisn D030: same day-of-week -> day-number convention already used
+    // throughout this ecosystem (the bot's daily_task_post/!week/the
+    // practice-platform link generator all use this exact
+    // Sat=1..Fri=7 ordering) -- NOT a new convention invented here.
+    // Computing it here too lets the homepage know "today" the same
+    // way Discord already does, instead of showing 7 generic
+    // unlabeled day cards with no relationship to the real calendar.
+    // NOTE: uses the student's own device/browser timezone, NOT the
+    // bot's configured Asia/Dubai timezone (tasks.py's _now()) -- this
+    // is a client-side static site with no server-side "current time"
+    // to ask. For students in/near that timezone this will normally
+    // agree with Discord's daily task post, but could disagree for a
+    // short window near midnight for a student in a very different
+    // timezone. Acceptable for a "helps you find today faster" UX
+    // nicety (doesn't affect verification/points, which are entirely
+    // server-side and already correct) -- flagged in defect_log.md
+    // D030 rather than silently assumed away.
+    function todaysDayNumber() {
+      const days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      const jsDay = new Date().getDay();  // 0=Sun..6=Sat (JS's own convention)
+      const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][jsDay];
+      return days.indexOf(dayName) + 1;  // 1-indexed, matching day1/day2/... URLs
+    }
+
     function renderDays() {
       const grid = document.getElementById('day-grid');
       const days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+      const today = todaysDayNumber();
       grid.innerHTML = '';
       for (let d = 1; d <= 7; d++) {
         const a = document.createElement('a');
@@ -119,6 +144,14 @@
         a.style.whiteSpace = 'pre-line';
         if (Progress.isDone(currentLevel, currentWeek, d, 'accent')) {
           a.classList.add('done');
+        }
+        // Hisn D030: found live during H6 -- the owner correctly pointed
+        // out that a student landing here has no way to tell which of
+        // the 7 generic day cards is actually "today" without doing the
+        // date math themselves, even though the system already knows.
+        if (d === today) {
+          a.classList.add('today');
+          a.title = "Today's tasks / تمارين اليوم";
         }
         grid.appendChild(a);
       }
@@ -173,6 +206,23 @@
       if (matchingLevelLink) matchingLevelLink.classList.add('active');
       renderWeeks();
       renderWeeklyChart();
+
+      // Hisn D030: found live during H6, immediately after D029's fix
+      // landed -- the owner correctly pointed out that even once the
+      // homepage jumps to the real level/week, the student STILL has
+      // to figure out which of the 7 day cards is "today" themselves.
+      // Their own suggestion: since !link's whole purpose is "let me
+      // just get to today's tasks," take them straight there instead
+      // of making them pick, for a FRESH !link click specifically.
+      // Deliberately NOT done on an ordinary revisit with an
+      // already-saved token (fromUrlThisLoad is only true on a fresh
+      // ?token= URL, see app.js's ConnectedProgress) -- a student
+      // browsing back to the homepage later (e.g. to look at last
+      // week) should land on the picker, not get yanked to today's
+      // page against their will every single time.
+      if (data.fromUrlThisLoad) {
+        window.location.href = `${currentLevel}/week${currentWeek}/day${todaysDayNumber()}/`;
+      }
     });
 
     function renderWeeklyChart() {

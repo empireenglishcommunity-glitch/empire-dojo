@@ -381,6 +381,12 @@ const ConnectedProgress = {
   token: null,
   data: null,
   API_BASE: 'https://bot.empireenglish.online',  // Cloudflare Tunnel
+  // Hisn D030: tracks whether the CURRENT page load's token came fresh
+  // from the !link URL (vs. a previously-saved token on an ordinary
+  // homepage revisit) -- see index.html's listener for why this
+  // distinction matters (auto-jump to today's exercises on a fresh
+  // !link click, but don't force-navigate away on a normal revisit).
+  _connectedFromUrlThisLoad: false,
 
   init() {
     // Hisn D029: !link's DM'd URL is `{platform_url}?token={token}` --
@@ -398,6 +404,7 @@ const ConnectedProgress = {
     // ("your personal link").
     const urlToken = new URLSearchParams(window.location.search).get('token');
     if (urlToken) {
+      this._connectedFromUrlThisLoad = true;
       this.connect(urlToken);
       // Remove the token from the visible URL after consuming it (same
       // reasoning !link's own DM gives for not sharing it -- a token
@@ -446,7 +453,18 @@ const ConnectedProgress = {
       // Dispatched every time fresh data arrives (not just on first
       // connect), so a page that's already open and later becomes
       // connected still gets the update.
-      window.dispatchEvent(new CustomEvent('empire:progress-loaded', { detail: this.data }));
+      //
+      // Hisn D030: includes fromUrlThisLoad so listeners can tell "this
+      // is a fresh !link click, just now" apart from "this token was
+      // already saved from a previous visit" -- the homepage uses this
+      // to decide whether to auto-jump straight to today's exercises
+      // (fresh link click -- the whole point was to get straight to
+      // today's tasks) vs. just highlighting today's card without
+      // forcing navigation away (ordinary revisit, e.g. browsing an
+      // earlier week -- shouldn't get yanked back to today every time).
+      window.dispatchEvent(new CustomEvent('empire:progress-loaded', {
+        detail: { ...this.data, fromUrlThisLoad: this._connectedFromUrlThisLoad },
+      }));
     } catch (e) {
       // Network error — use cached data or ignore
     }

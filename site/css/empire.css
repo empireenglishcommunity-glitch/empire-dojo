@@ -685,6 +685,27 @@ body::before {
   color: var(--success);
 }
 
+/* Hisn D030: highlights which day card is genuinely "today" on the
+   real calendar, computed the same Sat=1..Fri=7 way the rest of the
+   ecosystem already does (see index.html's todaysDayNumber()) --
+   previously the 7 day cards were visually indistinguishable, so a
+   student had no way to tell which one to pick without doing the date
+   math themselves. A glow/border rather than a solid fill so it still
+   layers correctly if a day is BOTH "today" AND "done". */
+.day-grid a.today {
+  box-shadow: 0 0 0 2px var(--accent), 0 0 12px rgba(212, 175, 55, 0.5);
+  position: relative;
+}
+
+.day-grid a.today::after {
+  content: "●";
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: var(--accent);
+  font-size: 0.6rem;
+}
+
 /* ─── Footer ─────────────────────────────────────────────── */
 
 .footer {

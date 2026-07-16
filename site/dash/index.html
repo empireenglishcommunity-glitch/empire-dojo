@@ -209,10 +209,16 @@
         <div class="milestones-grid" id="milestones-grid"></div>
       </div>
 
-      <!-- Nour's Tips -->
-      <div class="card" id="nour-tips-card" style="display:none">
-        <h2>💬 Nour's Study Tips <span class="ar-inline" lang="ar" dir="rtl">/ نصائح نور</span></h2>
-        <div id="nour-tips-list"></div>
+      <!-- Masar M2.5: Nour's Weekly Growth Letter (replaces the old
+           "Nour's Study Tips" card -- that feature was designed in the
+           Wuslah spec but its actual AI generation task was never
+           built, so it always silently showed generic fallback text
+           (Hisn D020). This card reads from the new /api/growth-letter
+           endpoint, backed by a real, verified weekly generation task. -->
+      <div class="card" id="growth-letter-card" style="display:none">
+        <h2>📝 Nour's Weekly Growth Letter <span class="ar-inline" lang="ar" dir="rtl">/ رسالة نور الأسبوعية</span></h2>
+        <div id="growth-letter-text" style="color:var(--text-secondary);font-size:0.85rem;line-height:1.6"></div>
+        <div id="growth-letter-meta" style="color:var(--text-muted);font-size:0.7rem;margin-top:10px"></div>
       </div>
 
       <!-- Leaderboard -->
@@ -376,15 +382,35 @@
       // Milestones
       this._renderMilestones(d.milestones);
 
-      // Nour tips
-      if (d.nour_tips && d.nour_tips.length > 0) {
-        document.getElementById('nour-tips-card').style.display = 'block';
-        document.getElementById('nour-tips-list').innerHTML =
-          d.nour_tips.map(t => `<div class="tip-item">${this._esc(t)}</div>`).join('');
-      }
+      // Masar M2.5: Nour's Weekly Growth Letter (replaces the old
+      // "Nour's Study Tips" card that never had real AI content --
+      // Hisn D020). Own separate fetch, same pattern as the
+      // leaderboard below -- the letter is cached server-side
+      // (nour_growth_letters table) so this is a cheap read, not a
+      // fresh AI generation per page load.
+      this._fetchGrowthLetter();
 
       // Leaderboard
       this._fetchLeaderboard();
+    },
+
+    async _fetchGrowthLetter() {
+      const card = document.getElementById('growth-letter-card');
+      try {
+        const res = await fetch(`${this.API_BASE}/api/growth-letter?token=${this.token}`);
+        if (!res.ok) return; // flag off or not enabled for this student -- card stays hidden, no error shown
+        const data = await res.json();
+        if (!data.letter) return; // no letter generated yet for this student
+
+        card.style.display = 'block';
+        document.getElementById('growth-letter-text').textContent = data.letter;
+        const genDate = data.generated_at ? new Date(data.generated_at.replace(' ', 'T')).toLocaleDateString() : '';
+        document.getElementById('growth-letter-meta').textContent =
+          genDate ? `Generated ${genDate}` : '';
+      } catch (e) {
+        // Best-effort card -- a failed fetch here should never break
+        // the rest of the dashboard render.
+      }
     },
 
     _renderWeekGrid(activity) {

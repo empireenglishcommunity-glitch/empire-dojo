@@ -383,6 +383,30 @@ const ConnectedProgress = {
   API_BASE: 'https://bot.empireenglish.online',  // Cloudflare Tunnel
 
   init() {
+    // Hisn D029: !link's DM'd URL is `{platform_url}?token={token}` --
+    // but until now, nothing on this page ever read the `?token=` query
+    // parameter at all. It was silently ignored: clicking that link just
+    // landed on the plain homepage with the token sitting inert in the
+    // address bar, doing nothing, while the student would have had to
+    // separately notice the "Connect Discord" button and manually
+    // paste the same token in by hand for it to take effect. Confirmed
+    // live during Hisn H6 (owner "took the link straight" and it never
+    // connected). Now checked FIRST, before falling back to any
+    // previously-saved token in localStorage, and persisted the same
+    // way manual connect() already does -- so following the !link URL
+    // directly connects immediately, exactly as its own DM text implies
+    // ("your personal link").
+    const urlToken = new URLSearchParams(window.location.search).get('token');
+    if (urlToken) {
+      this.connect(urlToken);
+      // Remove the token from the visible URL after consuming it (same
+      // reasoning !link's own DM gives for not sharing it -- a token
+      // sitting in the address bar is easy to accidentally screenshot/
+      // share). replaceState avoids adding a new history entry.
+      const cleanUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, document.title, cleanUrl);
+      return;
+    }
     this.token = localStorage.getItem('empire_link_token');
     if (this.token) {
       this._fetchProgress();
@@ -416,6 +440,13 @@ const ConnectedProgress = {
       }
       this.data = await res.json();
       this._updateUI();
+      // Hisn D029: let pages that need to react to the student's real
+      // level/week (currently just the homepage's picker) hook in
+      // without ConnectedProgress needing to know those pages exist.
+      // Dispatched every time fresh data arrives (not just on first
+      // connect), so a page that's already open and later becomes
+      // connected still gets the update.
+      window.dispatchEvent(new CustomEvent('empire:progress-loaded', { detail: this.data }));
     } catch (e) {
       // Network error — use cached data or ignore
     }

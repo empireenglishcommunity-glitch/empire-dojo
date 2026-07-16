@@ -380,7 +380,7 @@
       document.getElementById('srs-accuracy').textContent = `${d.srs.accuracy_pct}%`;
 
       // Milestones
-      this._renderMilestones(d.milestones);
+      this._renderMilestones(d.milestones, d.milestones_catalog);
 
       // Masar M2.5: Nour's Weekly Growth Letter (replaces the old
       // "Nour's Study Tips" card that never had real AI content --
@@ -463,30 +463,33 @@
       trendEl.textContent = `Trend: ${trendEmoji} ${pron.trend}`;
     },
 
-    _renderMilestones(milestones) {
+    _renderMilestones(milestones, catalog) {
+      // Hisn D036 fix: this used to render a hardcoded, entirely
+      // fictional list of 12 milestone IDs (first_recording, streak_7,
+      // level_l1, etc.) that shared ZERO overlap with the real 15
+      // milestone IDs used everywhere else in the system (milestones.json,
+      // ability_milestones, !markmilestone) -- meaning this grid could
+      // NEVER show an "achieved" badge for any milestone a student
+      // actually completed, always showing every real milestone as
+      // locked, for every student, forever. Now renders the REAL
+      // catalog served by /api/dashboard's new `milestones_catalog`
+      // field (id/name/name_ar/level, read from the same
+      // milestones.json the bot itself uses), so achieved status is
+      // finally honest.
       const grid = document.getElementById('milestones-grid');
-      // Define known milestones
-      const allMilestones = [
-        { id: 'first_recording', name: '🎙️ First Recording' },
-        { id: 'streak_7', name: '🔥 7-Day Streak' },
-        { id: 'streak_14', name: '🔥 14-Day Streak' },
-        { id: 'streak_30', name: '🔥 30-Day Streak' },
-        { id: 'first_assessment', name: '📊 First Assessment' },
-        { id: 'pronunciation_80', name: '🎯 80%+ Pronunciation' },
-        { id: 'srs_50', name: '📝 50 Words Mastered' },
-        { id: 'srs_100', name: '📝 100 Words Mastered' },
-        { id: 'level_l1', name: '💪 Reached L1' },
-        { id: 'level_l2', name: '🚀 Reached L2' },
-        { id: 'level_l3', name: '👑 Reached L3' },
-        { id: 'conversation_first', name: '💬 First Conversation' },
-      ];
+      const allMilestones = catalog || [];
+      if (allMilestones.length === 0) {
+        grid.innerHTML = '<p style="color:var(--text-muted)">No milestones defined yet.</p>';
+        return;
+      }
 
       const achieved = new Set((milestones || []).map(m => m.id));
       let html = '';
       for (const m of allMilestones) {
         const cls = achieved.has(m.id) ? 'achieved' : '';
         const icon = achieved.has(m.id) ? '✅' : '🔒';
-        html += `<div class="milestone-badge ${cls}">${icon} ${m.name}</div>`;
+        const label = m.name_ar ? `${m.name} — ${m.name_ar}` : m.name;
+        html += `<div class="milestone-badge ${cls}" title="${m.level}">${icon} ${label}</div>`;
       }
       grid.innerHTML = html;
     },

@@ -328,12 +328,39 @@
       document.getElementById('level-badge').textContent = d.level;
       document.getElementById('points-display').textContent = `${d.total_points.toLocaleString()} pts • #${d.leaderboard_rank}`;
 
-      // Level progress
-      const pct = Math.max(0, Math.min(100, d.level_progress.pct));
-      document.getElementById('level-progress').style.width = `${pct}%`;
-      const nextLevel = {'L0':'L1','L1':'L2','L2':'L3','L3':'MAX'}[d.level] || 'MAX';
-      document.getElementById('level-progress-label').textContent =
-        nextLevel === 'MAX' ? 'Maximum level reached!' : `${Math.round(pct)}% to ${nextLevel}`;
+      // Level progress -- Masar M1.2: when the momentum field is
+      // present (masar_momentum_score flag ON for this student), the
+      // SAME bar/label elements are driven by the honest, recency-
+      // based Momentum Score instead of the old points-vs-threshold
+      // XP bar (fixes Hisn D012 -- the two were measuring unrelated
+      // things and confusing students about their own progress).
+      // When the field is absent (flag OFF), falls back to the
+      // original behavior with zero changes -- this is what makes
+      // the flag instantly, safely revertible.
+      if (d.momentum) {
+        const score = Math.max(0, Math.min(100, d.momentum.score));
+        document.getElementById('level-progress').style.width = `${score}%`;
+        const labelText = {
+          restarting: 'Restarting',
+          building: 'Building',
+          steady: 'Steady',
+          strong: 'Strong Momentum',
+        }[d.momentum.label] || d.momentum.label;
+        const labelTextAr = {
+          restarting: 'بداية جديدة',
+          building: 'في البناء',
+          steady: 'مستقر',
+          strong: 'زخم قوي',
+        }[d.momentum.label] || '';
+        document.getElementById('level-progress-label').textContent =
+          `${labelText} (${score}) — نشاطك الأسبوعي ${labelTextAr ? '/ ' + labelTextAr : ''}`;
+      } else {
+        const pct = Math.max(0, Math.min(100, d.level_progress.pct));
+        document.getElementById('level-progress').style.width = `${pct}%`;
+        const nextLevel = {'L0':'L1','L1':'L2','L2':'L3','L3':'MAX'}[d.level] || 'MAX';
+        document.getElementById('level-progress-label').textContent =
+          nextLevel === 'MAX' ? 'Maximum level reached!' : `${Math.round(pct)}% to ${nextLevel}`;
+      }
 
       // Week activity
       this._renderWeekGrid(d.week_activity);

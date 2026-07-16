@@ -150,6 +150,31 @@
     renderWeeks();
     renderWeeklyChart();
 
+    // Hisn D029: auto-select the connected student's REAL level/week
+    // once their progress data arrives, instead of always sitting at
+    // the hardcoded L0/Week 1 defaults regardless of who's visiting.
+    // Confirmed live during Hisn H6: Discord correctly knew the owner
+    // was on Week 3, but this picker started at Week 1 every time,
+    // with no connection to the actually-linked account's real data
+    // at all. Listens for the event ConnectedProgress fires (in
+    // app.js) once /api/progress returns -- this fires on the initial
+    // page load if a token is already saved/passed via the !link URL
+    // (see app.js's init() for that half of the fix), and again on
+    // any later successful fetch.
+    window.addEventListener('empire:progress-loaded', (e) => {
+      const data = e.detail;
+      if (!data || !data.level) return;
+      const level = data.level.toLowerCase();
+      if (!WEEKS[level]) return;  // unknown level — ignore, keep defaults
+      currentLevel = level;
+      currentWeek = Math.min(WEEKS[level], Math.max(1, data.week || 1));
+      document.querySelectorAll('#level-nav a').forEach(a => a.classList.remove('active'));
+      const matchingLevelLink = document.querySelector(`#level-nav a[onclick*="'${level}'"]`);
+      if (matchingLevelLink) matchingLevelLink.classList.add('active');
+      renderWeeks();
+      renderWeeklyChart();
+    });
+
     function renderWeeklyChart() {
       const chart = document.getElementById('weekly-chart');
       const summary = document.getElementById('weekly-summary');

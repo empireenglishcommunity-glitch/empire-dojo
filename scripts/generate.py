@@ -242,6 +242,53 @@ def watermark_comment():
     return '<!-- Empire English Community | Proprietary Content | Unauthorized reproduction prohibited -->'
 
 
+def content_gate_css():
+    """Hissar P3: CSS for content gating overlay."""
+    return '''<style>
+.gate-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+background:var(--bg,#1a1a2e);transition:opacity .3s}
+.gate-overlay.hidden{opacity:0;pointer-events:none}
+.gate-box{text-align:center;padding:40px 24px;max-width:380px;border-radius:16px;
+background:var(--card-bg,#16213e);border:1px solid var(--border,#2d3748);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.gate-box h2{color:var(--accent,#D4AF37);margin-bottom:12px}
+.gate-box p{color:var(--text-secondary,#a0a0a0);margin:8px 0;line-height:1.5}
+.gate-box .gate-link{display:inline-block;margin-top:16px;padding:12px 24px;background:var(--accent,#D4AF37);
+color:#000;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.95rem}
+.gated-content{display:none}
+.gated-content.unlocked{display:block}
+</style>'''
+
+
+def content_gate_overlay():
+    """Hissar P3: locked overlay shown when student has no valid token."""
+    return '''<div class="gate-overlay" id="gate-overlay">
+<div class="gate-box">
+<h2>🔒</h2>
+<p><b>هذا المحتوى متاح لطلاب Empire English فقط</b></p>
+<p style="font-size:0.85rem">This content is exclusive to Empire English students.</p>
+<p style="font-size:0.8rem;margin-top:12px" lang="ar" dir="rtl">للوصول: استخدم رابطك الشخصي من Discord<br>اكتب <code style="background:#2d3748;padding:2px 6px;border-radius:4px">!link</code> في <code style="background:#2d3748;padding:2px 6px;border-radius:4px">#bot-commands</code></p>
+<a class="gate-link" href="https://discord.gg/kbucwYU3ee">انضم إلى Discord</a>
+</div></div>'''
+
+
+def content_gate_js():
+    """Hissar P3: JS that validates token and unlocks content."""
+    return '''<script>
+(function(){
+  const API='https://bot.empireenglish.online/api/validate-token';
+  const overlay=document.getElementById('gate-overlay');
+  const content=document.getElementById('gated-content');
+  if(!overlay||!content)return;
+  const token=localStorage.getItem('empire_link_token')||new URLSearchParams(location.search).get('token');
+  if(!token){return;}
+  fetch(API+'?token='+encodeURIComponent(token))
+    .then(r=>{if(r.ok)return r.json();throw new Error('invalid')})
+    .then(d=>{if(d.valid){overlay.classList.add('hidden');content.classList.add('unlocked')}})
+    .catch(()=>{});
+})();
+</script>'''
+
+
 def gamification_bar():
     """Persistent top bar showing streak + daily progress (Sahel S5)."""
     return ('<div class="gamification-bar">'
@@ -270,8 +317,10 @@ def gen_accent(level, week, day, focus, norm):
                       f'<button class="btn btn-outline btn-sm" onclick="TTS.speak(\'{esc(", ".join(words))}\', 0.6)">🔊 {bl("Hear Words", "استمع للكلمات")}</button></div>')
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Accent Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Accent Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
 {watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week {week} • Day {day} • {focus}</p></div>
 {gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">{instr_ar}</div>
@@ -307,15 +356,17 @@ def gen_accent(level, week, day, focus, norm):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
 {bottom_nav('accent')}
-<script src="/js/app.js"></script>{copyright_footer()}</body></html>'''
+<script src="/js/app.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_shadowing(level, week, day, theme, norm, aid):
     passage = norm["primary_text"]
     theme = esc_html(theme)
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Shadowing Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Shadowing Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
 {watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎧 Shadowing</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
 {gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">اسمع → كرر 3 مرات → سجل المحاولة الثالثة</div>
@@ -346,7 +397,7 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
 {bottom_nav('shadowing')}
-<script src="/js/app.js"></script>{copyright_footer()}</body></html>'''
+<script src="/js/app.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
@@ -387,8 +438,10 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
     dictation_json = safe_json_for_script_tag([w["word"] for w in day_vocab[:5] if w.get("word")])
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
 {watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>👂 Listening</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
 {gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">اسمع الكلمة واختار المعنى الصحيح. ممكن تسمع أكتر من مرة.</div>
@@ -405,14 +458,16 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 <div class="nav page-nav" style="margin-top:20px"><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('listening')}
 <script src="/js/app.js"></script>
-<script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script>{copyright_footer()}</body></html>'''
+<script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_vocab(level, week, day, theme, words):
     theme = esc_html(theme)
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="icon" type="image/png" href="/favicon.png"><title>Vocabulary Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
+<link rel="icon" type="image/png" href="/favicon.png"><title>Vocabulary Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
 {watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Vocabulary</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
 {gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">اختار طريقة التمرين: بطاقات، اختبار، أو استماع.</div>
@@ -435,7 +490,7 @@ def gen_vocab(level, week, day, theme, words):
 <div class="nav page-nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
 {bottom_nav('vocab')}
 <script src="/js/app.js"></script>
-<script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{copyright_footer()}</body></html>'''
+<script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_day_index(level, week, day, pattern=None):
@@ -461,8 +516,10 @@ def gen_day_index(level, week, day, pattern=None):
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Week {week} Day {day} | Empire English</title>
-{pwa_head()}<link rel="stylesheet" href="/css/empire.css"></head><body>
+{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
 {watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
 <div class="container"><div class="header">
 <img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px">
 <h1>Week {week} — Day {day}</h1><p class="subtitle">{bl("Choose your exercise", "اختار التمرين")}</p></div>
@@ -478,7 +535,7 @@ def gen_day_index(level, week, day, pattern=None):
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
 </div>
-<script src="/js/app.js"></script>{copyright_footer()}</body></html>'''
+<script src="/js/app.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 # ============================================================

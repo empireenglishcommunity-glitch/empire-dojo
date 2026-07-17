@@ -1,0 +1,14 @@
+# Empire English Community — Practice Platform
+# Proprietary curriculum content. Do NOT crawl/index learning pages.
+
+User-agent: *
+Disallow: /l0/
+Disallow: /l1/
+Disallow: /l2/
+Disallow: /l3/
+Disallow: /audio/
+Disallow: /review/
+Allow: /
+Allow: /dash/
+
+# Sitemap: none (content is gated, not meant for public discovery)

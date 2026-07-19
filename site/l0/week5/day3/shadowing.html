@@ -19,7 +19,13 @@ color:#000;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.95
 <p><b>هذا المحتوى متاح لطلاب Empire English فقط</b></p>
 <p style="font-size:0.85rem">This content is exclusive to Empire English students.</p>
 <p style="font-size:0.8rem;margin-top:12px" lang="ar" dir="rtl">للوصول: استخدم رابطك الشخصي من Discord<br>اكتب <code style="background:#2d3748;padding:2px 6px;border-radius:4px">!link</code> في <code style="background:#2d3748;padding:2px 6px;border-radius:4px">#bot-commands</code></p>
-<a class="gate-link" href="https://discord.gg/kbucwYU3ee">انضم إلى Discord</a>
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid #2d3748">
+<p style="font-size:0.8rem;color:#a0a0a0;margin-bottom:8px">عندك التوكن؟ الصقه هنا / Already have your token? Paste it:</p>
+<input type="text" id="gate-token-input" placeholder="Paste token..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #2d3748;background:#0f1629;color:#fff;font-size:0.9rem;margin-bottom:8px;text-align:center">
+<button id="gate-connect-btn" onclick="window._gateConnect()" style="padding:10px 20px;background:#D4AF37;color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;width:100%">🔗 Connect / ربط</button>
+<p id="gate-error" style="font-size:0.75rem;color:#E74C3C;margin-top:6px;display:none">Token invalid — توكن غلط</p>
+</div>
+<a class="gate-link" href="https://discord.gg/kbucwYU3ee" style="margin-top:12px">انضم إلى Discord</a>
 </div></div>
 <div id="gated-content" class="gated-content">
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎧 Shadowing</h1><p class="subtitle">Week 5 • Day 3 • Food &amp; Shopping</p></div>
@@ -58,11 +64,51 @@ color:#000;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.95
   const overlay=document.getElementById('gate-overlay');
   const content=document.getElementById('gated-content');
   if(!overlay||!content)return;
-  const token=localStorage.getItem('empire_link_token')||new URLSearchParams(location.search).get('token');
-  if(!token){return;}
-  fetch(API+'?token='+encodeURIComponent(token))
-    .then(r=>{if(r.ok)return r.json();throw new Error('invalid')})
-    .then(d=>{if(d.valid){overlay.classList.add('hidden');content.classList.add('unlocked')}})
-    .catch(()=>{});
+
+  function unlock(token){
+    fetch(API+'?token='+encodeURIComponent(token))
+      .then(r=>{if(r.ok)return r.json();throw new Error('invalid')})
+      .then(d=>{
+        if(d.valid){
+          localStorage.setItem('empire_link_token',token);
+          overlay.classList.add('hidden');
+          content.classList.add('unlocked');
+        } else { showError(); }
+      })
+      .catch(()=>{ showError(); });
+  }
+
+  function showError(){
+    const err=document.getElementById('gate-error');
+    if(err) err.style.display='block';
+  }
+
+  // Check URL token first (from !link DM), then localStorage
+  const urlToken=new URLSearchParams(location.search).get('token');
+  if(urlToken){
+    // Clean URL (remove token from address bar for privacy)
+    const cleanUrl=location.pathname+location.hash;
+    history.replaceState({},'',cleanUrl);
+    unlock(urlToken);
+    return;
+  }
+
+  const savedToken=localStorage.getItem('empire_link_token');
+  if(savedToken){ unlock(savedToken); return; }
+
+  // Manual paste handler (gate overlay input)
+  window._gateConnect=function(){
+    const input=document.getElementById('gate-token-input');
+    if(!input)return;
+    const t=input.value.trim();
+    if(!t)return;
+    // Support pasting full URL or just the token
+    let token=t;
+    try{ const u=new URL(t); token=u.searchParams.get('token')||t; }catch(e){}
+    unlock(token);
+  };
+  // Allow Enter key in the input
+  const inp=document.getElementById('gate-token-input');
+  if(inp) inp.addEventListener('keydown',function(e){if(e.key==='Enter')window._gateConnect();});
 })();
 </script><div style="text-align:center;padding:20px 0;color:var(--text-muted);font-size:0.7rem;border-top:1px solid var(--border);margin-top:30px">© 2026 Empire English Community. All rights reserved. <span lang="ar" dir="rtl">هذا المحتوى ملكية خاصة ومحمي بحقوق الطبع والنشر.</span></div></div></body></html>

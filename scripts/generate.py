@@ -260,31 +260,81 @@ color:#000;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.95
 
 
 def content_gate_overlay():
-    """Hissar P3: locked overlay shown when student has no valid token."""
+    """Hissar P3: locked overlay shown when student has no valid token.
+    Includes a token paste field so students can connect directly from
+    the gate without navigating back to the homepage."""
     return '''<div class="gate-overlay" id="gate-overlay">
 <div class="gate-box">
 <h2>🔒</h2>
 <p><b>هذا المحتوى متاح لطلاب Empire English فقط</b></p>
 <p style="font-size:0.85rem">This content is exclusive to Empire English students.</p>
 <p style="font-size:0.8rem;margin-top:12px" lang="ar" dir="rtl">للوصول: استخدم رابطك الشخصي من Discord<br>اكتب <code style="background:#2d3748;padding:2px 6px;border-radius:4px">!link</code> في <code style="background:#2d3748;padding:2px 6px;border-radius:4px">#bot-commands</code></p>
-<a class="gate-link" href="https://discord.gg/kbucwYU3ee">انضم إلى Discord</a>
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid #2d3748">
+<p style="font-size:0.8rem;color:#a0a0a0;margin-bottom:8px">عندك التوكن؟ الصقه هنا / Already have your token? Paste it:</p>
+<input type="text" id="gate-token-input" placeholder="Paste token..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #2d3748;background:#0f1629;color:#fff;font-size:0.9rem;margin-bottom:8px;text-align:center">
+<button id="gate-connect-btn" onclick="window._gateConnect()" style="padding:10px 20px;background:#D4AF37;color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;width:100%">🔗 Connect / ربط</button>
+<p id="gate-error" style="font-size:0.75rem;color:#E74C3C;margin-top:6px;display:none">Token invalid — توكن غلط</p>
+</div>
+<a class="gate-link" href="https://discord.gg/kbucwYU3ee" style="margin-top:12px">انضم إلى Discord</a>
 </div></div>'''
 
 
 def content_gate_js():
-    """Hissar P3: JS that validates token and unlocks content."""
+    """Hissar P3: JS that validates token and unlocks content.
+    Handles: (1) token from URL ?token= param, (2) token saved in
+    localStorage, (3) manual paste via the gate overlay input field."""
     return '''<script>
 (function(){
   const API='https://bot.empireenglish.online/api/validate-token';
   const overlay=document.getElementById('gate-overlay');
   const content=document.getElementById('gated-content');
   if(!overlay||!content)return;
-  const token=localStorage.getItem('empire_link_token')||new URLSearchParams(location.search).get('token');
-  if(!token){return;}
-  fetch(API+'?token='+encodeURIComponent(token))
-    .then(r=>{if(r.ok)return r.json();throw new Error('invalid')})
-    .then(d=>{if(d.valid){overlay.classList.add('hidden');content.classList.add('unlocked')}})
-    .catch(()=>{});
+
+  function unlock(token){
+    fetch(API+'?token='+encodeURIComponent(token))
+      .then(r=>{if(r.ok)return r.json();throw new Error('invalid')})
+      .then(d=>{
+        if(d.valid){
+          localStorage.setItem('empire_link_token',token);
+          overlay.classList.add('hidden');
+          content.classList.add('unlocked');
+        } else { showError(); }
+      })
+      .catch(()=>{ showError(); });
+  }
+
+  function showError(){
+    const err=document.getElementById('gate-error');
+    if(err) err.style.display='block';
+  }
+
+  // Check URL token first (from !link DM), then localStorage
+  const urlToken=new URLSearchParams(location.search).get('token');
+  if(urlToken){
+    // Clean URL (remove token from address bar for privacy)
+    const cleanUrl=location.pathname+location.hash;
+    history.replaceState({},'',cleanUrl);
+    unlock(urlToken);
+    return;
+  }
+
+  const savedToken=localStorage.getItem('empire_link_token');
+  if(savedToken){ unlock(savedToken); return; }
+
+  // Manual paste handler (gate overlay input)
+  window._gateConnect=function(){
+    const input=document.getElementById('gate-token-input');
+    if(!input)return;
+    const t=input.value.trim();
+    if(!t)return;
+    // Support pasting full URL or just the token
+    let token=t;
+    try{ const u=new URL(t); token=u.searchParams.get('token')||t; }catch(e){}
+    unlock(token);
+  };
+  // Allow Enter key in the input
+  const inp=document.getElementById('gate-token-input');
+  if(inp) inp.addEventListener('keydown',function(e){if(e.key==='Enter')window._gateConnect();});
 })();
 </script>'''
 

@@ -243,118 +243,23 @@ def watermark_comment():
 
 
 def content_gate_css():
-    """Hissar P3 / Darb Phase 0: gating overlay CSS + a synchronous
-    <head> script that eliminates the lock-screen flash.
-
-    The flash: previously the overlay was visible by default and only
-    hidden AFTER an async token-validation fetch resolved — so a
-    returning, authorized student saw the 🔒 screen for a few hundred
-    ms on EVERY page load. Now a tiny synchronous script in <head>
-    checks localStorage BEFORE the body paints and adds `html.has-token`,
-    which the CSS below uses to hide the overlay and show content
-    immediately — zero flash. content_gate_js() then validates the
-    saved token in the background and re-locks only if it's actually
-    invalid. (Interim until Phase 3's edge gate removes this JS gate.)"""
-    return '''<style>
-.gate-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
-background:var(--bg,#1a1a2e);transition:opacity .3s}
-.gate-overlay.hidden{opacity:0;pointer-events:none}
-.gate-box{text-align:center;padding:40px 24px;max-width:380px;border-radius:16px;
-background:var(--card-bg,#16213e);border:1px solid var(--border,#2d3748);box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.gate-box h2{color:var(--accent,#D4AF37);margin-bottom:12px}
-.gate-box p{color:var(--text-secondary,#a0a0a0);margin:8px 0;line-height:1.5}
-.gate-box .gate-link{display:inline-block;margin-top:16px;padding:12px 24px;background:var(--accent,#D4AF37);
-color:#000;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.95rem}
-.gated-content{display:none}
-.gated-content.unlocked{display:block}
-html.has-token .gate-overlay{display:none!important}
-html.has-token .gated-content{display:block}
-</style>
-<script>if(window.localStorage&&localStorage.getItem('empire_link_token')){document.documentElement.classList.add('has-token');}</script>'''
+    """Darb Phase 3: the edge middleware now handles gating — no need for
+    client-side CSS/JS gate anymore. Kept as an empty function so all
+    call sites in the page templates don't need changing."""
+    return ''
 
 
 def content_gate_overlay():
-    """Hissar P3: locked overlay shown when student has no valid token.
-    Includes a token paste field so students can connect directly from
-    the gate without navigating back to the homepage."""
-    return '''<div class="gate-overlay" id="gate-overlay">
-<div class="gate-box">
-<h2>🔒</h2>
-<p><b>هذا المحتوى متاح لطلاب Empire English فقط</b></p>
-<p style="font-size:0.85rem">This content is exclusive to Empire English students.</p>
-<p style="font-size:0.8rem;margin-top:12px" lang="ar" dir="rtl">للوصول: استخدم رابطك الشخصي من Discord<br>اكتب <code style="background:#2d3748;padding:2px 6px;border-radius:4px">!link</code> في <code style="background:#2d3748;padding:2px 6px;border-radius:4px">#bot-commands</code></p>
-<div style="margin-top:16px;padding-top:16px;border-top:1px solid #2d3748">
-<p style="font-size:0.8rem;color:#a0a0a0;margin-bottom:8px">عندك التوكن؟ الصقه هنا / Already have your token? Paste it:</p>
-<input type="text" id="gate-token-input" placeholder="Paste token..." style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid #2d3748;background:#0f1629;color:#fff;font-size:0.9rem;margin-bottom:8px;text-align:center">
-<button id="gate-connect-btn" onclick="window._gateConnect()" style="padding:10px 20px;background:#D4AF37;color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;width:100%">🔗 Connect / ربط</button>
-<p id="gate-error" style="font-size:0.75rem;color:#E74C3C;margin-top:6px;display:none">Token invalid — توكن غلط</p>
-</div>
-</div></div>'''
+    """Darb Phase 3: edge gate replaces the client-side overlay.
+    Returns empty — the middleware serves gate.html for unauthorized
+    requests, so pages never even reach the browser without a session."""
+    return ''
 
 
 def content_gate_js():
-    """Hissar P3: JS that validates token and unlocks content.
-    Handles: (1) token from URL ?token= param, (2) token saved in
-    localStorage, (3) manual paste via the gate overlay input field."""
-    return '''<script>
-(function(){
-  const API='https://bot.empireenglish.online/api/validate-token';
-  const overlay=document.getElementById('gate-overlay');
-  const content=document.getElementById('gated-content');
-  if(!overlay||!content)return;
-
-  function reveal(){document.documentElement.classList.add('has-token');overlay.classList.add('hidden');content.classList.add('unlocked');}
-  function lock(){document.documentElement.classList.remove('has-token');overlay.classList.remove('hidden');content.classList.remove('unlocked');}
-  function showError(){const err=document.getElementById('gate-error');if(err)err.style.display='block';}
-
-  function validate(token){
-    return fetch(API+'?token='+encodeURIComponent(token))
-      .then(r=>{if(r.ok)return r.json();throw new Error('invalid')})
-      .then(d=>!!d.valid);
-  }
-
-  // Fresh token from the !link URL, or a manual paste: validate FIRST,
-  // then reveal (these are new unlocks, so a brief check is fine).
-  function unlock(token){
-    validate(token).then(function(ok){
-      if(ok){localStorage.setItem('empire_link_token',token);reveal();}
-      else{lock();showError();}
-    }).catch(function(){lock();showError();});
-  }
-
-  const urlToken=new URLSearchParams(location.search).get('token');
-  if(urlToken){
-    const cleanUrl=location.pathname+location.hash;
-    history.replaceState({},'',cleanUrl);
-    unlock(urlToken);
-    return;
-  }
-
-  const savedToken=localStorage.getItem('empire_link_token');
-  if(savedToken){
-    // The <head> script already revealed content instantly (no flash).
-    // Just confirm the saved token is still valid in the background;
-    // re-lock ONLY if it turns out invalid (expired/revoked).
-    validate(savedToken).then(function(ok){
-      if(!ok){localStorage.removeItem('empire_link_token');lock();}
-    }).catch(function(){/* network hiccup: leave content shown */});
-    return;
-  }
-
-  // No token at all: the gate is visible by default. Wire the paste box.
-  window._gateConnect=function(){
-    const input=document.getElementById('gate-token-input');
-    if(!input)return;
-    const t=input.value.trim();
-    if(!t)return;
-    let token=t;
-    try{const u=new URL(t);token=u.searchParams.get('token')||t;}catch(e){}
-    unlock(token);
-  };
-  const inp=document.getElementById('gate-token-input');
-  if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter')window._gateConnect();});
-})();
-</script>'''
+    """Darb Phase 3: edge gate replaces the client-side JS validation.
+    Returns empty — no more per-page token checking needed."""
+    return ''
 
 
 def gamification_bar():

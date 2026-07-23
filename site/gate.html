@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empire English — Access Required</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta name="theme-color" content="#D4AF37">
+  <link rel="stylesheet" href="/css/empire.css">
+  <style>
+    .gate-container { max-width: 420px; margin: 0 auto; padding: 60px 20px; text-align: center; }
+    .gate-logo { width: 64px; height: 64px; border-radius: 50%; box-shadow: 0 0 20px rgba(212,175,55,0.4); margin-bottom: 24px; }
+    .gate-title { font-family: 'Cinzel', serif; color: var(--accent); font-size: 1.5rem; margin-bottom: 8px; }
+    .gate-subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 30px; }
+    .gate-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px 24px; }
+    .gate-input { width: 100%; padding: 14px; border-radius: 10px; border: 2px solid var(--border); background: var(--bg-primary); color: var(--text-primary); font-size: 1.1rem; text-align: center; letter-spacing: 2px; font-family: monospace; transition: border-color 0.3s; }
+    .gate-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+    .gate-btn { width: 100%; margin-top: 16px; padding: 14px; }
+    .gate-error { color: var(--danger); font-size: 0.8rem; margin-top: 12px; display: none; }
+    .gate-success { color: var(--success); font-size: 0.8rem; margin-top: 12px; display: none; }
+    .gate-help { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .gate-help p { font-size: 0.8rem; color: var(--text-muted); margin: 6px 0; }
+    .gate-help code { background: var(--bg-primary); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="gate-container">
+    <img src="/logo.png" alt="Empire English" class="gate-logo">
+    <h1 class="gate-title">Empire English</h1>
+    <p class="gate-subtitle">Practice Platform — Exclusive Access</p>
+
+    <div class="gate-card">
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:16px">
+        Enter your claim code to access the practice platform
+      </p>
+      <p style="font-family:'Cairo',sans-serif;direction:rtl;color:var(--text-secondary);font-size:0.85rem;margin-bottom:20px">
+        ادخل كود الوصول للدخول لمنصة التمرين
+      </p>
+
+      <input type="text" id="code-input" class="gate-input" placeholder="XXXXXXXX" maxlength="16" autocomplete="off" autocapitalize="characters">
+      <button class="btn gate-btn" id="claim-btn" onclick="claimCode()">
+        🔓 Access <span style="font-family:'Cairo',sans-serif">/ دخول</span>
+      </button>
+
+      <p class="gate-error" id="error-msg"></p>
+      <p class="gate-success" id="success-msg"></p>
+    </div>
+
+    <div class="gate-help">
+      <p>How to get your code:</p>
+      <p style="font-size:0.85rem;color:var(--text-secondary)">
+        Go to Discord → <code>#bot-commands</code> → type <code>!link</code>
+      </p>
+      <p style="font-family:'Cairo',sans-serif;direction:rtl;font-size:0.85rem;color:var(--text-secondary)">
+        روح Discord ← <code>#bot-commands</code> ← اكتب <code dir="ltr">!link</code>
+      </p>
+      <p style="margin-top:16px;font-size:0.75rem;color:var(--text-muted)">
+        Each code is single-use and expires in 15 minutes.<br>
+        <span style="font-family:'Cairo',sans-serif;direction:rtl">كل كود يُستخدم مرة واحدة وينتهي خلال ١٥ دقيقة</span>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://bot.empireenglish.online';
+
+    // Check if there's a code in the URL (from !link DM)
+    const urlCode = new URLSearchParams(window.location.search).get('code');
+    if (urlCode) {
+      document.getElementById('code-input').value = urlCode.trim();
+      // Auto-submit after a brief moment
+      setTimeout(() => claimCode(), 300);
+      // Clean URL
+      history.replaceState({}, '', window.location.pathname);
+    }
+
+    async function claimCode() {
+      const input = document.getElementById('code-input');
+      const btn = document.getElementById('claim-btn');
+      const errorEl = document.getElementById('error-msg');
+      const successEl = document.getElementById('success-msg');
+
+      const code = input.value.trim().toUpperCase();
+      if (!code) {
+        showError('Please enter your code / ادخل الكود');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '...';
+      errorEl.style.display = 'none';
+      successEl.style.display = 'none';
+
+      try {
+        const res = await fetch(API_BASE + '/api/claim', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code }),
+          credentials: 'include',
+        });
+
+        const data = await res.json();
+
+        if (data.ok && data.token) {
+          // Set the empire_session cookie (parent domain for cross-subdomain)
+          const maxAge = 60 * 86400; // 60 days (matches token TTL)
+          document.cookie = `empire_session=${encodeURIComponent(data.token)}; path=/; max-age=${maxAge}; secure; samesite=lax`;
+
+          // Also store in localStorage for the Phase 2 JS (DarbSession)
+          localStorage.setItem('empire_darb_session', data.token);
+          // Legacy compat: exercise page gates still check this
+          localStorage.setItem('empire_link_token', data.token);
+
+          successEl.textContent = 'Access granted! Redirecting... / تم الدخول!';
+          successEl.style.display = 'block';
+
+          // Redirect to homepage (calendar)
+          setTimeout(() => { window.location.href = '/'; }, 800);
+        } else {
+          showError(data.error === 'invalid or expired code'
+            ? 'Code invalid or expired. Run !link again. / كود خاطئ أو منتهي'
+            : (data.error || 'Something went wrong'));
+        }
+      } catch (e) {
+        showError('Network error. Try again. / خطأ بالاتصال');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = '🔓 Access <span style="font-family:Cairo,sans-serif">/ دخول</span>';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    // Allow Enter key
+    document.getElementById('code-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') claimCode();
+    });
+  </script>
+</body>
+</html>

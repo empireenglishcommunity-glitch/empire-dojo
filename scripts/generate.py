@@ -199,14 +199,16 @@ def normalize_drill(drill):
 
 def bottom_nav(active):
     """Generate the fixed bottom navigation bar for mobile (Sahel S1).
-    `active` is one of: 'accent', 'shadowing', 'listening', 'vocab'."""
+    `active` is one of: 'accent', 'shadowing', 'listening', 'vocab'.
+    First item is always Home (the personal calendar) so the student is
+    one tap from home on any exercise page — no more back-back-back."""
+    links = '<a href="/"><span class="nav-icon">🏠</span>Home</a>'
     items = [
         ('accent', '🎯', 'Accent'),
         ('shadowing', '🎧', 'Shadow'),
         ('listening', '👂', 'Listen'),
         ('vocab', '📖', 'Vocab'),
     ]
-    links = ""
     for page, icon, label in items:
         cls = ' class="active"' if page == active else ''
         links += f'<a href="{page}.html"{cls}><span class="nav-icon">{icon}</span>{label}</a>'
@@ -327,7 +329,7 @@ def gen_accent(level, week, day, focus, norm):
 </div></div></div>
 <div class="done-section" id="record-required-note"><p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6">🎙️ {bl("This is a recording task", "دي مهمة تسجيل")}: {bl("record yourself above, then tap", "سجّل نفسك فوق، بعدين اضغط")} <b>{bl("Send to Discord", "أرسل للديسكورد")}</b> {bl("to complete it (it posts to #showcase and marks your day).", "عشان تكمّلها (هتترفع في #showcase وتتحسب في يومك).")}</p></div>
 {swipe_hint()}
-<div class="nav page-nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
 {bottom_nav('accent')}
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
@@ -368,7 +370,7 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 </div></div></div>
 <div class="done-section" id="record-required-note"><p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6">🎙️ {bl("This is a recording task", "دي مهمة تسجيل")}: {bl("record yourself above, then tap", "سجّل نفسك فوق، بعدين اضغط")} <b>{bl("Send to Discord", "أرسل للديسكورد")}</b> {bl("to complete it (it posts to #showcase and marks your day).", "عشان تكمّلها (هتترفع في #showcase وتتحسب في يومك).")}</p></div>
 {swipe_hint()}
-<div class="nav page-nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
 {bottom_nav('shadowing')}
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
@@ -428,7 +430,7 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 <div id="dictation-section" style="display:none"></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'listening')"> {bl("Done", "تم")} ✅</label></div>
 {swipe_hint()}
-<div class="nav page-nav" style="margin-top:20px"><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('listening')}
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
@@ -460,7 +462,7 @@ def gen_vocab(level, week, day, theme, words):
 <div id="quiz-section" style="display:none"></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> {bl("Done", "تم")} ✅</label></div>
 {swipe_hint()}
-<div class="nav page-nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('vocab')}
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''

@@ -780,34 +780,42 @@ const InteractiveVocab = {
     if (!container || !this.words.length) return;
 
     if (this.currentIndex >= this.words.length) {
-      // Show final score
+      // Results screen — clearly the END, not a wrong answer.
       const pct = Math.round((this.score / this.words.length) * 100);
-      container.innerHTML = `<div class="card"><h2>🏆 ${this.score}/${this.words.length} (${pct}%)</h2>` +
-        `<p style="color:var(--text-secondary);margin:12px 0">${pct >= 80 ? 'أحسنت! Excellent!' : pct >= 50 ? 'Good effort! حاول تاني' : 'Keep practicing! كمّل تمرين'}</p>` +
-        `<button class="btn btn-sm" onclick="InteractiveVocab.switchMode('${this.mode}')">🔄 Try Again</button></div>`;
+      const praise = pct >= 80 ? 'أحسنت! ممتاز! / Excellent!'
+        : pct >= 50 ? 'جيد! واصل التمرين / Good — keep going!'
+        : 'استمر في التدريب / Keep practicing!';
+      container.innerHTML = `<div class="card" style="text-align:center"><h2>🏆 ${this.score}/${this.words.length} (${pct}%)</h2>` +
+        `<p style="color:var(--text-secondary);margin:12px 0">${praise}</p>` +
+        `<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">` +
+        `<button class="btn btn-sm btn-outline" onclick="InteractiveVocab.switchMode('${this.mode}')">🔄 راجع تاني / Review again</button>` +
+        `<a class="btn btn-sm" href="index.html">✅ خلصت / Done</a>` +
+        `</div></div>`;
       return;
     }
 
     const word = this.words[this.currentIndex];
-    const isQuiz = this.mode === 'quiz';
-    // Quiz: show Arabic, type English. Listen: play English audio, type word.
-    const prompt = isQuiz
+    const isTranslate = this.mode === 'quiz';
+    // Translate: show Arabic, type English (no audio — it would reveal the
+    // answer). Listen & Type: play the English audio, type what you hear.
+    const prompt = isTranslate
       ? `<div style="font-family:'Cairo',sans-serif;font-size:1.4rem;direction:rtl;color:var(--accent);margin:16px 0">${this._escText(word.arabic)}</div>`
-      : `<button class="btn" onclick="TTS.speak('${this._escAttr(word.word)}', 0.7)">🔊 Play Word</button>`;
+      : `<button class="btn" onclick="TTS.speak('${this._escAttr(word.word)}', 0.7)">🔊 اسمع الكلمة / Play word</button>`;
 
-    const hint = isQuiz ? 'Type the English word / اكتب الكلمة بالإنجليزي' : 'Type what you hear / اكتب اللي سمعته';
+    const hint = isTranslate
+      ? 'اكتب الكلمة بالإنجليزي / Type the English word'
+      : 'اكتب الكلمة اللي سمعتها / Type the word you heard';
 
     container.innerHTML = `<div class="card"><p style="text-align:center;color:var(--text-muted)">${this.currentIndex + 1}/${this.words.length}</p>` +
       prompt +
       `<p style="color:var(--text-secondary);font-size:0.85rem;margin:10px 0">${hint}</p>` +
       `<input type="text" id="quiz-input" class="quiz-input" autocomplete="off" autocapitalize="off" placeholder="..." onkeydown="if(event.key==='Enter')InteractiveVocab.checkAnswer()">` +
-      `<button class="btn btn-sm" style="margin-top:12px" onclick="InteractiveVocab.checkAnswer()">✓ Check</button>` +
+      `<button class="btn btn-sm" style="margin-top:12px" onclick="InteractiveVocab.checkAnswer()">✓ تحقق / Check</button>` +
       `<div id="quiz-feedback" style="margin-top:12px"></div></div>`;
 
-    // Auto-play in listen mode
-    if (!isQuiz) setTimeout(() => TTS.speak(word.word, 0.7), 300);
+    // Auto-play in Listen & Type mode
+    if (!isTranslate) setTimeout(() => TTS.speak(word.word, 0.7), 300);
 
-    // Focus input
     setTimeout(() => { const inp = document.getElementById('quiz-input'); if (inp) inp.focus(); }, 100);
   },
 
@@ -817,19 +825,62 @@ const InteractiveVocab = {
     if (!input || !feedback) return;
 
     const word = this.words[this.currentIndex];
-    const answer = input.value.trim().toLowerCase();
-    const correct = word.word.toLowerCase();
+    const result = this._match(input.value, word.word);
     this.attempted++;
 
-    if (answer === correct) {
+    // A 🔊 replay so they always hear the correct pronunciation.
+    const replay = `<button class="btn btn-sm btn-outline" style="margin-top:8px" onclick="TTS.speak('${this._escAttr(word.word)}', 0.7)">🔊 اسمعها / Hear it</button>`;
+
+    if (result.ok && !result.almost) {
       this.score++;
-      feedback.innerHTML = `<div style="color:var(--success);font-weight:600">✅ Correct! — ${this._escText(word.word)}</div>`;
+      feedback.innerHTML = `<div style="color:var(--success);font-weight:600">✅ صح! Correct — ${this._escText(word.word)}</div>${replay}`;
+    } else if (result.ok && result.almost) {
+      // Tiny typo / spelling variant — count it, but show the exact spelling.
+      this.score++;
+      feedback.innerHTML = `<div style="color:var(--success);font-weight:600">✅ تقريباً صح! Almost — it's spelled: <b>${this._escText(word.word)}</b></div>${replay}`;
     } else {
-      feedback.innerHTML = `<div style="color:var(--danger);font-weight:600">❌ ${this._escText(word.word)}</div>`;
+      feedback.innerHTML = `<div style="color:var(--danger);font-weight:600">❌ الصح: ${this._escText(word.word)}</div>${replay}`;
     }
 
     input.disabled = true;
-    setTimeout(() => { this.currentIndex++; this._renderQuizCard(); }, 1500);
+    setTimeout(() => { this.currentIndex++; this._renderQuizCard(); }, result.ok ? 1600 : 2400);
+  },
+
+  // ---- Forgiving answer matching ---------------------------------------
+  // Normalise, accept US/UK spelling variants, and tolerate a 1-char typo
+  // so students aren't wrongly told "try again" for trivial differences.
+  _canon(s) {
+    let t = String(s || '').toLowerCase().trim()
+      .replace(/^[^a-z]+|[^a-z]+$/g, '')   // strip surrounding punctuation
+      .replace(/\s+/g, ' ');
+    // Common British → American normalisations (both sides get canonicalised)
+    t = t.replace(/our\b/g, 'or')          // colour→color, favour→favor
+         .replace(/ise\b/g, 'ize')         // realise→realize
+         .replace(/isation\b/g, 'ization')
+         .replace(/re\b/g, 'er')           // centre→center, metre→meter
+         .replace(/ll/g, 'l');             // travelling→traveling
+    return t;
+  },
+
+  _lev(a, b) {
+    const m = a.length, n = b.length;
+    if (Math.abs(m - n) > 1) return 2;     // early out (>1 means "not close")
+    const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+    for (let j = 0; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++)
+      for (let j = 1; j <= n; j++)
+        d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1,
+                           d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    return d[m][n];
+  },
+
+  _match(answer, correct) {
+    const ca = this._canon(answer), cc = this._canon(correct);
+    if (!ca) return { ok: false, almost: false };
+    if (ca === cc) return { ok: true, almost: false };
+    // 1-character typo tolerance for words longer than 3 letters
+    if (cc.length > 3 && this._lev(ca, cc) <= 1) return { ok: true, almost: true };
+    return { ok: false, almost: false };
   },
 
   _escText(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); },

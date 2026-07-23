@@ -445,10 +445,10 @@ def gen_vocab(level, week, day, theme, words):
 <div id="gated-content" class="gated-content">
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Vocabulary</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
 {gamification_bar()}
-<div class="arabic-text" lang="ar" dir="rtl">اختار طريقة التمرين: بطاقات، اختبار، أو استماع.</div>
+<div class="arabic-text" lang="ar" dir="rtl">اختر طريقة التمرين:<br>📖 <b>بطاقات</b> — شوف الكلمة ومعناها.<br>✍️ <b>ترجم</b> — يظهر لك المعنى بالعربي، اكتب الكلمة بالإنجليزي.<br>🎧 <b>اسمع واكتب</b> — اسمع الكلمة واكتبها.</div>
 <div class="mode-toggle">
 <button class="mode-btn active" data-mode="flashcard" onclick="InteractiveVocab.switchMode('flashcard')">📖 {bl("Cards", "بطاقات")}</button>
-<button class="mode-btn" data-mode="quiz" onclick="InteractiveVocab.switchMode('quiz')">✍️ {bl("Quiz", "اختبار")}</button>
+<button class="mode-btn" data-mode="quiz" onclick="InteractiveVocab.switchMode('quiz')">✍️ {bl("Translate", "ترجم")}</button>
 <button class="mode-btn" data-mode="listen" onclick="InteractiveVocab.switchMode('listen')">🎧 {bl("Listen & Type", "اسمع واكتب")}</button>
 </div>
 <div id="flashcard-section">

@@ -1,32 +1,34 @@
 /**
- * Empire English Practice — Service Worker (Sahel S4)
- * Cache-first for static assets (HTML, CSS, JS, audio).
+ * Empire English Practice — Service Worker (Sahel S4 + Darb cache fix)
+ *
+ * Strategy:
+ *   - CSS / JS / HTML / JSON  → NETWORK-FIRST (always get the latest, fall
+ *     back to cache only when offline). This is critical: a cache-first
+ *     policy on a fixed cache name meant returning students kept seeing a
+ *     STALE empire.css forever (new JS rendered new calendar cells while
+ *     the old CSS had no styles for them → unstyled purple links). Bug #2.
+ *   - Images / audio (.png/.jpg/.mp3/.webm) → CACHE-FIRST (immutable, large;
+ *     saves students' data). These filenames don't change content.
+ *
+ * The CACHE_NAME is versioned; bumping it purges every old cache on
+ * activate, so this deploy also clears any stale empire-v1 assets.
  */
 
-const CACHE_NAME = 'empire-v1';
-// Extensionless — Cloudflare Pages serves /offline.html at the clean URL
-// /offline but 308-redirects the literal /offline.html request there.
-// A precached/cached response that came from a redirected fetch has its
-// `redirected` flag set, and browsers refuse to use a redirected Response
-// in respondWith() ("Failed to convert value to 'Response'"), which broke
-// the offline fallback entirely (D013). Fetching /offline directly avoids
-// the redirect hop altogether.
+const CACHE_NAME = 'empire-v3';
 const OFFLINE_URL = '/offline';
 
-// Pre-cache essential assets on install
+// Pre-cache only the offline fallback + icons (NOT css/js — those are
+// network-first now, so precaching them stale would defeat the fix).
 const PRECACHE = [
-  '/',
-  '/css/empire.css',
-  '/js/app.js',
+  '/offline',
   '/logo.png',
   '/favicon.png',
-  '/offline',
-  '/manifest.json'
+  '/manifest.json',
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE)).catch(() => {})
   );
   self.skipWaiting();
 });
@@ -35,22 +37,19 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-
-  // Only handle GET requests
   if (request.method !== 'GET') return;
 
-  // Cache-first for static assets
-  if (request.url.match(/\.(css|js|png|jpg|mp3|webm|json)$/) ||
-      request.url.includes('/css/') ||
-      request.url.includes('/js/') ||
-      request.url.includes('/audio/')) {
+  const url = request.url;
+
+  // CACHE-FIRST only for big, immutable media (images + audio).
+  if (url.match(/\.(png|jpg|jpeg|gif|webp|svg|mp3|webm|m4a|ogg)$/i) ||
+      url.includes('/audio/')) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;
@@ -66,7 +65,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-first for HTML pages, fallback to cache then offline page
+  // NETWORK-FIRST for everything else (CSS, JS, HTML, JSON) — always fresh,
+  // fall back to cache (then the offline page) only when the network fails.
   event.respondWith(
     fetch(request).then((response) => {
       if (response.ok) {

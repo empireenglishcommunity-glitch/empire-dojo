@@ -325,7 +325,7 @@ def gen_accent(level, week, day, focus, norm):
 <button class="btn btn-outline btn-sm" onclick="RecorderUI.start()">🔄 {bl("Re-record", "سجّل تاني")}</button>
 <a class="btn btn-outline btn-sm" id="rec-download" download="my-accent-recording.webm">💾 {bl("Download", "حمّل")}</a>
 </div></div></div>
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'accent')"> {bl("Done", "تم")} ✅</label></div>
+<div class="done-section" id="record-required-note"><p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6">🎙️ {bl("This is a recording task", "دي مهمة تسجيل")}: {bl("record yourself above, then tap", "سجّل نفسك فوق، بعدين اضغط")} <b>{bl("Send to Discord", "أرسل للديسكورد")}</b> {bl("to complete it (it posts to #showcase and marks your day).", "عشان تكمّلها (هتترفع في #showcase وتتحسب في يومك).")}</p></div>
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
 {bottom_nav('accent')}
@@ -366,7 +366,7 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 <button class="btn btn-outline btn-sm" onclick="RecorderUI.start()">🔄 {bl("Re-record", "سجّل تاني")}</button>
 <a class="btn btn-outline btn-sm" id="rec-download" download="my-shadow-recording.webm">💾 {bl("Download", "حمّل")}</a>
 </div></div></div>
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'shadowing')"> {bl("Done", "تم")} ✅</label></div>
+<div class="done-section" id="record-required-note"><p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6">🎙️ {bl("This is a recording task", "دي مهمة تسجيل")}: {bl("record yourself above, then tap", "سجّل نفسك فوق، بعدين اضغط")} <b>{bl("Send to Discord", "أرسل للديسكورد")}</b> {bl("to complete it (it posts to #showcase and marks your day).", "عشان تكمّلها (هتترفع في #showcase وتتحسب في يومك).")}</p></div>
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
 {bottom_nav('shadowing')}

@@ -1124,6 +1124,28 @@ body::before {
   color: #F39C12;
 }
 
+/* State: Partial — started but not all 4 exercises done (Phase 7).
+   Blue-tinted so an active-but-incomplete day is clearly different from
+   an untouched "missed" (amber) day and from a complete "done" (green). */
+.darb-cal-cell.partial {
+  background: rgba(52, 152, 219, 0.08);
+  border-color: rgba(52, 152, 219, 0.45);
+}
+
+.darb-cal-cell.partial .cal-day {
+  color: #3498DB;
+}
+
+.cal-partial-badge {
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 8px;
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498DB;
+  letter-spacing: 0.3px;
+}
+
 /* State: Locked — muted, not clickable */
 .darb-cal-cell.state-locked {
   opacity: 0.35;
@@ -1229,6 +1251,7 @@ body::before {
 
 .darb-legend .dot-today { background: var(--accent); box-shadow: 0 0 4px var(--accent); }
 .darb-legend .dot-done { background: var(--success); }
+.darb-legend .dot-partial { background: #3498DB; }
 .darb-legend .dot-missed { background: #F39C12; }
 .darb-legend .dot-locked { background: var(--text-muted); opacity: 0.4; }
 

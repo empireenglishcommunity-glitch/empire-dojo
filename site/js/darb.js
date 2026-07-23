@@ -183,6 +183,7 @@ const DarbCalendar = {
     html += `<div class="darb-legend">
       <span><span class="dot dot-today"></span> Today</span>
       <span><span class="dot dot-done"></span> Done</span>
+      <span><span class="dot dot-partial"></span> Started</span>
       <span><span class="dot dot-missed"></span> Catch-up</span>
       <span><span class="dot dot-locked"></span> Locked</span>
     </div>`;
@@ -206,14 +207,33 @@ const DarbCalendar = {
           ? `/${level.toLowerCase()}/week${d.week}/day${d.day}/`
           : '#';
 
-        html += `<a class="darb-cal-cell ${stateClass} ${tierClass}" 
+        // Phase 7: partial-progress detection. A day is "partial" when
+        // it's NOT fully done (day_tier 0) but the student HAS completed
+        // at least one of its exercises — so an active-but-incomplete day
+        // no longer looks identical to a day they never touched.
+        const exercises = d.exercises || {};
+        const totalEx = Object.keys(exercises).length || 4;
+        const doneCount = Object.values(exercises).filter(t => t > 0).length;
+        const isPartial = d.day_tier === 0 && doneCount > 0 && doneCount < totalEx;
+        const partialClass = isPartial ? 'partial' : '';
+
+        // Badge: fully-done days show their tier; partial days show N/4.
+        let badge = '';
+        if (d.day_tier > 0) {
+          badge = `<span class="tier-badge tier-${tierName}" style="font-size:0.55rem;padding:2px 5px">${tierName}</span>`;
+        } else if (isPartial) {
+          badge = `<span class="cal-partial-badge">${doneCount}/${totalEx}</span>`;
+        }
+
+        html += `<a class="darb-cal-cell ${stateClass} ${tierClass} ${partialClass}" 
           href="${href}" 
           data-tier="${d.day_tier}"
+          data-done="${doneCount}"
           data-week="${d.week}" data-day="${d.day}"
-          ${d.state === 'locked' ? `title="Opens ${d.date}"` : ''}>
+          ${d.state === 'locked' ? `title="Opens ${d.date}"` : (isPartial ? `title="${doneCount} of ${totalEx} exercises done — finish the rest to complete this day"` : '')}>
           <span class="cal-day">${dayLabel}</span>
           <span class="cal-date">${dateStr}</span>
-          ${d.day_tier > 0 ? `<span class="tier-badge tier-${tierName}" style="font-size:0.55rem;padding:2px 5px">${tierName}</span>` : ''}
+          ${badge}
         </a>`;
       }
       html += `</div>`;

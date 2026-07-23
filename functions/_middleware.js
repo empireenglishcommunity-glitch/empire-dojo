@@ -21,6 +21,8 @@
 const PUBLIC_PATHS = [
   '/gate.html',
   '/gate',
+  '/guide',
+  '/guide/',
   '/css/',
   '/js/',
   '/favicon.png',

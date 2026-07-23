@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل الاستخدام | Empire English</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta name="theme-color" content="#D4AF37">
+  <link rel="stylesheet" href="/css/empire.css">
+  <style>
+    /* Guide-specific, RTL-friendly */
+    .guide-body { font-family: 'Cairo', sans-serif; line-height: 1.9; }
+    .guide-body .card { text-align: right; }
+    .guide-body h2 { justify-content: flex-start; }
+    .step { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0; }
+    .step .num {
+      flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg,#D4AF37,#cd7f32); color: #0A0A0F;
+      font-weight: 700; display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; margin-top: 2px;
+    }
+    .step .txt { flex: 1; }
+    .color-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+    .swatch { width: 22px; height: 22px; border-radius: 6px; flex: 0 0 22px; }
+    .sw-today { box-shadow: 0 0 0 2px #D4AF37, 0 0 8px rgba(212,175,55,.5); }
+    .sw-done { background: #2ECC71; }
+    .sw-partial { background: #3498DB; }
+    .sw-missed { background: #F39C12; }
+    .sw-locked { background: #5a5f69; opacity: .5; }
+    .en { direction: ltr; unicode-bidi: isolate; color: var(--accent-light); font-weight: 600; }
+    .callout {
+      background: rgba(212,175,55,0.06); border-right: 3px solid var(--accent);
+      border-radius: 10px; padding: 14px 18px; margin: 16px 0;
+    }
+    .tabs { display: flex; gap: 10px; margin: 16px 0; }
+    .device-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; margin: 12px 0; }
+    .device-card h3 { color: var(--accent); margin-bottom: 10px; }
+    code { background: var(--bg-primary); padding: 2px 8px; border-radius: 6px; direction: ltr; display: inline-block; }
+    .print-btn { position: sticky; top: 10px; z-index: 5; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+      .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container guide-body">
+
+    <div class="header">
+      <img src="/logo.png" alt="Empire English" class="logo" style="width:56px;height:56px;border-radius:50%;box-shadow:0 0 15px rgba(212,175,55,0.3)">
+      <h1>دليل استخدام منصة التمرين</h1>
+      <p class="subtitle">Empire English — كل ما تحتاج معرفته لتبدأ بسهولة</p>
+    </div>
+
+    <div class="no-print" style="text-align:center;margin-bottom:20px">
+      <button class="btn print-btn" onclick="window.print()">🖨️ احفظ كـ PDF / اطبع الدليل</button>
+    </div>
+
+    <!-- 1. Welcome -->
+    <div class="card">
+      <h2>👋 أهلاً بك</h2>
+      <p>قمنا بتطوير منصة التمرين بالكامل لتصبح تجربة <b>شخصية وأسهل وأوضح</b> لك. الهدف الوحيد من كل هذه التحسينات هو مساعدتك على المتابعة اليومية وتتبّع تقدّمك دون تشتت.</p>
+      <div class="callout">
+        💡 كل ميزة جديدة هنا صُمّمت <b>لمصلحتك أنت</b> — لتجعل تعلّمك أوضح وأكثر متعة. ورأيك دائماً موضع ترحيب لنطوّر أكثر وأكثر.
+      </div>
+    </div>
+
+    <!-- 2. Access -->
+    <div class="card">
+      <h2>🔑 كيف تدخل إلى المنصة</h2>
+      <p>المنصة الآن خاصة بطلاب Empire English فقط. للدخول لأول مرة:</p>
+      <div class="step"><div class="num">1</div><div class="txt">اذهب إلى Discord، إلى قناة <code>#bot-commands</code>، واكتب الأمر <code>!link</code></div></div>
+      <div class="step"><div class="num">2</div><div class="txt">سيصلك من البوت في الرسائل الخاصة <b>كود دخول</b> مكوّن من 8 أحرف/أرقام (ورابط سريع).</div></div>
+      <div class="step"><div class="num">3</div><div class="txt">افتح <span class="en">practice.empireenglish.online</span> والصق الكود في الخانة، ثم اضغط <span class="en">Access / دخول</span>. أو اضغط الرابط السريع مباشرةً.</div></div>
+      <div class="step"><div class="num">4</div><div class="txt">تم! سيفتح لك <b>تقويمك الشخصي</b>، ويبقى دخولك محفوظاً على جهازك لمدة <b>60 يوماً</b> — لن تحتاج إعادة الكود في كل مرة.</div></div>
+      <div class="callout">
+        ⚠️ الكود يُستخدم <b>مرة واحدة</b> وينتهي خلال 15 دقيقة. لو انتهى أو فقدت الدخول، اكتب <code>!link</code> مرة أخرى للحصول على كود جديد.
+      </div>
+    </div>
+
+    <!-- 3. Calendar -->
+    <div class="card">
+      <h2>📅 تقويمك الشخصي</h2>
+      <p>الصفحة الرئيسية أصبحت <b>تقويماً خاصاً بك</b> يبدأ من يوم انضمامك — بتواريخ حقيقية. كل يوم له لون يوضّح حالته:</p>
+      <div class="color-row"><span class="swatch sw-today"></span><span><b>أصفر + نقطة</b> = يومك الحالي (اليوم).</span></div>
+      <div class="color-row"><span class="swatch sw-done"></span><span><b>أخضر</b> = أنجزت اليوم كاملاً (التمارين الأربعة). يبقى أخضر للأبد.</span></div>
+      <div class="color-row"><span class="swatch sw-partial"></span><span><b>أزرق (مثل 2/4)</b> = بدأت اليوم لكن لم تُكمل كل التمارين بعد.</span></div>
+      <div class="color-row"><span class="swatch sw-missed"></span><span><b>برتقالي</b> = يوم سابق لم تُنجزه — لا تقلق، يمكنك دائماً العودة وإكماله.</span></div>
+      <div class="color-row"><span class="swatch sw-locked"></span><span><b>رمادي / مقفل</b> = يوم قادم، سيُفتح في موعده.</span></div>
+      <div class="callout">
+        😊 لا داعي للقلق إن فاتك يوم — النظام مصمّم ليعمل معك من بداية انضمامك، ويمكنك تعويض أي يوم في أي وقت. لن تُحرم من أي درس.
+      </div>
+    </div>
+
+    <!-- 4. Exercises -->
+    <div class="card">
+      <h2>✍️ تمارين اليوم الأربعة</h2>
+      <p>كل يوم فيه 4 تمارين. طريقة إنهائها تختلف حسب نوعها:</p>
+      <div class="device-card">
+        <h3>🎯 Accent &nbsp;+&nbsp; 🎧 Shadowing — تمارين تسجيل صوتي</h3>
+        <p>هذه تمارين <b>تسجيل</b>: سجّل نفسك في الصفحة، ثم اضغط زر <span class="en">📤 Send to Discord</span>. سيُرفع تسجيلك تلقائياً إلى قناة <code>#showcase</code> ويُحتسب اليوم تلقائياً — لا حاجة لأي خطوة إضافية.</p>
+      </div>
+      <div class="device-card">
+        <h3>👂 Listening &nbsp;+&nbsp; 📖 Vocabulary — تمارين إجابة/مراجعة</h3>
+        <p>هذه لا تحتاج تسجيلاً. بعد إنهائها، ضع علامة <span class="en">✅ Done / تم</span> في أسفل الصفحة.</p>
+      </div>
+      <div class="callout">
+        🎙️ ملاحظة: تمرينا النطق والمحاكاة يتطلبان تسجيلاً فعلياً — هذه هي طريقة إثبات إنجازك، ولمصلحتك حتى تتحسّن نُطقك فعلاً.
+      </div>
+    </div>
+
+    <!-- 5. Mastery -->
+    <div class="card">
+      <h2>🏅 ألوان الإتقان (المستويات)</h2>
+      <p>كلما عُدت وكرّرت اليوم في أيام مختلفة، يرتقي مستوى إتقانك ويتغيّر لون شارتك:</p>
+      <p style="text-align:center;font-size:1.05rem;margin:14px 0">
+        🥉 <b>Bronze</b> ← 🥈 <b>Silver</b> ← 🥇 <b>Gold</b> ← 💠 <b>Platinum</b> ← 💎 <b>Diamond</b>
+      </p>
+      <p>الترقية تحدث <b>مرة واحدة في اليوم</b> لكل تمرين — راجع بانتظام لتصل إلى الماسة 💎.</p>
+    </div>
+
+    <!-- 6. Navigation + review -->
+    <div class="card">
+      <h2>🏠 التنقّل ومراجعة الكلمات</h2>
+      <p>• في أي صفحة تمرين، اضغط زر <span class="en">🏠 Home</span> (في الأسفل على الهاتف) للعودة إلى تقويمك فوراً.</p>
+      <p>• من الصفحة الرئيسية، ستجد بطاقة <span class="en">📚 Review Past Words</span> — لمراجعة الكلمات من الأيام السابقة حتى تثبت في ذاكرتك (نظام تكرار متباعد).</p>
+    </div>
+
+    <!-- 7. Add to home screen -->
+    <div class="card">
+      <h2>📱 ضع المنصة كأيقونة تطبيق على هاتفك</h2>
+      <p>لتفتح المنصة بضغطة واحدة مثل أي تطبيق (بدون فتح المتصفح في كل مرة):</p>
+
+      <div class="device-card">
+        <h3>🍏 آيفون (iPhone) — عبر متصفح Safari</h3>
+        <div class="step"><div class="num">1</div><div class="txt">افتح <span class="en">practice.empireenglish.online</span> في متصفح <b>Safari</b> (مهم: Safari وليس Chrome على الآيفون).</div></div>
+        <div class="step"><div class="num">2</div><div class="txt">اضغط زر <b>المشاركة</b> (Share) — المربّع الذي بداخله سهم لأعلى، أسفل الشاشة.</div></div>
+        <div class="step"><div class="num">3</div><div class="txt">اسحب للأسفل واختر <span class="en">Add to Home Screen</span> (إضافة إلى الشاشة الرئيسية).</div></div>
+        <div class="step"><div class="num">4</div><div class="txt">اضغط <span class="en">Add</span> (إضافة) في الأعلى.</div></div>
+        <div class="step"><div class="num">5</div><div class="txt">ستظهر أيقونة <b>Empire English</b> على شاشتك — افتحها كأي تطبيق. ✅</div></div>
+      </div>
+
+      <div class="device-card">
+        <h3>🤖 أندرويد (Android) — عبر متصفح Chrome</h3>
+        <div class="step"><div class="num">1</div><div class="txt">افتح <span class="en">practice.empireenglish.online</span> في متصفح <b>Chrome</b>.</div></div>
+        <div class="step"><div class="num">2</div><div class="txt">اضغط زر <b>القائمة</b> (النقاط الثلاث ⋮) في الأعلى على اليمين.</div></div>
+        <div class="step"><div class="num">3</div><div class="txt">اختر <span class="en">Add to Home screen</span> (إضافة إلى الشاشة الرئيسية) — أو <span class="en">Install app</span>.</div></div>
+        <div class="step"><div class="num">4</div><div class="txt">اضغط <span class="en">Add</span> / <span class="en">Install</span> (إضافة / تثبيت).</div></div>
+        <div class="step"><div class="num">5</div><div class="txt">ستظهر أيقونة <b>Empire</b> على شاشتك — افتحها كأي تطبيق. ✅</div></div>
+      </div>
+
+      <div class="callout">
+        💡 نصيحة: سجّل دخولك أولاً بالكود، ثم أضف الأيقونة — لتفتح مباشرةً على تقويمك في كل مرة.
+      </div>
+    </div>
+
+    <!-- 8. Help -->
+    <div class="card">
+      <h2>🆘 تحتاج مساعدة؟</h2>
+      <p>نحن معك في كل خطوة. إن واجهت أي صعوبة:</p>
+      <p>• قناة الدعم في Discord: اكتب سؤالك في قناة <b class="en">#support</b> داخل السيرفر.</p>
+      <p>• مجموعة التليجرام (طلاب Empire): <a href="https://t.me/+cZJf7tQbmQIyODA0" class="en">اضغط هنا للانضمام</a></p>
+      <p>اكتب سؤالك وسنساعدك في أسرع وقت. 💛</p>
+    </div>
+
+    <!-- 9. Feedback -->
+    <div class="card" style="border-color:var(--success)">
+      <h2>💛 رأيك يهمّنا</h2>
+      <p>كل هذه التحسينات من أجلك. إن كان لديك أي ملاحظة أو اقتراح لجعل تجربتك أفضل، شاركنا في قناة الدعم أو مجموعة التليجرام — رأيك يساعدنا على التطوير باستمرار.</p>
+      <p style="text-align:center;margin-top:14px;color:var(--accent)"><b>بالتوفيق في رحلتك مع Empire English 🏛️</b></p>
+    </div>
+
+    <div class="no-print" style="text-align:center;margin:24px 0">
+      <a href="/" class="btn btn-outline">🏠 اذهب إلى تقويمي</a>
+    </div>
+
+    <div class="footer">Empire English Community — Common Sense First 🏛️<br>practice.empireenglish.online</div>
+  </div>
+</body>
+</html>

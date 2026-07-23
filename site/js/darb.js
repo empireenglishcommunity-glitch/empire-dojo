@@ -424,9 +424,11 @@ const DarbRecording = {
   },
 
   async _send(btn) {
-    // Get the recorded blob from RecorderUI
+    // Get the recorded blob from RecorderUI. Accent/shadow are recording
+    // tasks — there is no other way to complete them, so block sending
+    // until an actual recording exists.
     if (!RecorderUI || !RecorderUI.blob) {
-      this._showFeedback('Record first before sending', 'error');
+      this._showFeedback('🎙️ Record yourself first, then send. / سجّل نفسك الأول، وبعدين ابعت.', 'error');
       return;
     }
 

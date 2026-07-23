@@ -355,9 +355,150 @@ const DarbExercise = {
 
 
 // ============================================================
+//  DARB RECORDING — Send to Discord (#showcase) + auto-complete
+// ============================================================
+const DarbRecording = {
+  /** Initialize on exercise pages: add "Send to Discord" button */
+  init() {
+    if (!DarbSession.hasSession()) return;
+
+    // Detect level/week/day/exercise from URL
+    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab)/);
+    if (!match) return;
+
+    const [, level, week, day, exercise] = match;
+    this._level = level.toUpperCase();
+    this._week = parseInt(week);
+    this._day = parseInt(day);
+    this._exercise = exercise === 'shadowing' ? 'shadow' : exercise;
+
+    // Find the recorder playback section and add "Send to Discord" button
+    const playbackSection = document.getElementById('recorder-playback');
+    if (playbackSection) {
+      this._addSendButton(playbackSection);
+    }
+
+    // Also observe for when playback appears (after first recording)
+    const observer = new MutationObserver(() => {
+      const pb = document.getElementById('recorder-playback');
+      if (pb && pb.style.display !== 'none' && !pb.querySelector('.darb-send-btn')) {
+        this._addSendButton(pb);
+      }
+    });
+    const recorderCard = document.querySelector('.recorder-card');
+    if (recorderCard) {
+      observer.observe(recorderCard, { childList: true, subtree: true, attributes: true });
+    }
+  },
+
+  _addSendButton(container) {
+    if (container.querySelector('.darb-send-btn')) return;
+
+    const actionsDiv = container.querySelector('.recorder-actions') || container;
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-success btn-sm darb-send-btn';
+    btn.innerHTML = '📤 Send to Discord <span class="ar-inline" lang="ar" dir="rtl">/ أرسل للديسكورد</span>';
+    btn.style.cssText = 'margin-top:8px';
+    btn.onclick = () => this._send(btn);
+    actionsDiv.appendChild(btn);
+  },
+
+  async _send(btn) {
+    // Get the recorded blob from RecorderUI
+    if (!RecorderUI || !RecorderUI.blob) {
+      this._showFeedback('Record first before sending', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const formData = new FormData();
+    formData.append('audio', RecorderUI.blob, RecorderUI._extensionFor
+      ? `recording.${RecorderUI._extensionFor(RecorderUI.blob.type)}`
+      : 'recording.webm');
+    formData.append('exercise', this._exercise);
+    formData.append('week', this._week.toString());
+    formData.append('day', this._day.toString());
+
+    const res = await DarbSession.fetch('/api/submit-recording', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res) {
+      btn.disabled = false;
+      btn.innerHTML = '📤 Send to Discord <span class="ar-inline" lang="ar" dir="rtl">/ أرسل للديسكورد</span>';
+      this._showFeedback('Network error — try again', 'error');
+      return;
+    }
+
+    try {
+      const data = await res.json();
+      if (data.ok) {
+        btn.innerHTML = '✅ Sent!';
+        btn.style.background = 'var(--success)';
+
+        // Auto-check the Done checkbox (visual feedback)
+        const checkbox = document.querySelector('.done-section .checkbox');
+        if (checkbox && !checkbox.checked) {
+          checkbox.checked = true;
+          // Also update localStorage for consistency
+          if (typeof Progress !== 'undefined') {
+            const exType = this._exercise === 'shadow' ? 'shadowing' : this._exercise;
+            Progress.markDone(this._level.toLowerCase(), this._week, this._day, exType);
+          }
+        }
+
+        // Show tier feedback
+        const tierNames = { 0:'none', 1:'bronze', 2:'silver', 3:'gold', 4:'platinum', 5:'diamond' };
+        const tierName = tierNames[data.exercise_tier] || 'none';
+        let msg = `<span class="tier-badge tier-${tierName}">⭐ ${tierName}</span>`;
+        if (data.posted) {
+          msg += ' <span style="color:var(--success);font-size:0.8rem">Posted to #showcase!</span>';
+        }
+        if (data.day_done) {
+          msg += ' <span style="color:var(--success);font-size:0.8rem;margin-left:4px">Day complete!</span>';
+        }
+        if (data.already_done) {
+          msg = '<span style="color:var(--text-muted);font-size:0.8rem">Already done today — posted to showcase anyway</span>';
+        }
+        this._showFeedback(msg, 'success');
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = '📤 Send to Discord <span class="ar-inline" lang="ar" dir="rtl">/ أرسل للديسكورد</span>';
+        this._showFeedback(data.error || 'Failed to send', 'error');
+      }
+    } catch (e) {
+      btn.disabled = false;
+      btn.innerHTML = '📤 Send to Discord <span class="ar-inline" lang="ar" dir="rtl">/ أرسل للديسكورد</span>';
+      this._showFeedback('Something went wrong', 'error');
+    }
+  },
+
+  _showFeedback(html, type) {
+    const recorderCard = document.querySelector('.recorder-card');
+    if (!recorderCard) return;
+
+    let fb = recorderCard.querySelector('.darb-send-feedback');
+    if (!fb) {
+      fb = document.createElement('div');
+      fb.className = 'darb-send-feedback';
+      fb.style.cssText = 'margin-top:12px;text-align:center;padding:8px;border-radius:8px';
+      recorderCard.appendChild(fb);
+    }
+
+    fb.innerHTML = html;
+    fb.style.background = type === 'error' ? 'rgba(231,76,60,0.1)' : 'rgba(46,204,113,0.08)';
+  }
+};
+
+
+// ============================================================
 //  INITIALIZATION (runs on every page that loads darb.js)
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   DarbSession.init();
   DarbExercise.init();
+  DarbRecording.init();
 });

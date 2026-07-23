@@ -264,7 +264,7 @@ const DarbExercise = {
     if (!DarbSession.hasSession()) return;
 
     // Detect level/week/day/exercise from URL
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab)/);
+    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking)/);
     if (!match) return;
 
     const [, level, week, day, exercise] = match;
@@ -383,7 +383,7 @@ const DarbRecording = {
     if (!DarbSession.hasSession()) return;
 
     // Detect level/week/day/exercise from URL
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab)/);
+    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking)/);
     if (!match) return;
 
     const [, level, week, day, exercise] = match;

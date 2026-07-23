@@ -208,6 +208,7 @@ def bottom_nav(active):
         ('shadowing', '🎧', 'Shadow'),
         ('listening', '👂', 'Listen'),
         ('vocab', '📖', 'Vocab'),
+        ('speaking', '🎙️', 'Speak'),
     ]
     for page, icon, label in items:
         cls = ' class="active"' if page == active else ''
@@ -375,6 +376,53 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
+def gen_speaking(level, week, day, theme, mission):
+    """Enhancement E1: Speaking as a 5th practice exercise. Free-speech
+    recording task (no model audio) — record → Send to Discord → posts to
+    #showcase + marks the speaking daily task. Same recorder + gate +
+    watermark + nav as the other pages."""
+    theme = esc_html(theme)
+    if mission:
+        prompt = esc_html(mission.get("prompt", ""))
+        mtype = esc_html(str(mission.get("type", "free_talk")).replace("_", " ").title())
+        target = int(mission.get("target_seconds", 60) or 60)
+    else:
+        prompt = "Talk in English about today's topic for a full minute."
+        mtype = "Free Talk"
+        target = 60
+    target_label = bl(f"Target: {target} seconds", f"الهدف: {target} ثانية")
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Speaking Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎙️ Speaking</h1><p class="subtitle">Week {week} • Day {day} • {mtype}</p></div>
+{gamification_bar()}
+<div class="arabic-text" lang="ar" dir="rtl">اقرأ المهمة، فكّر شوية، وبعدين سجّل نفسك وأنت بتتكلم بالإنجليزي.</div>
+<div class="card" style="border-left:3px solid var(--accent)"><h2>🗣️ {bl("Your Mission", "مهمتك")}</h2>
+<div class="transcript" style="font-size:1.15rem;line-height:1.7">{prompt}</div>
+<p style="color:var(--accent-light);margin-top:10px">⏱️ {target_label}</p></div>
+<div class="card recorder-card"><h2>🎙️ {bl("Record Yourself", "سجّل نفسك")}</h2>
+<div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">اتكلم بطلاقة قدر ما تقدر — مش لازم يكون مثالي، المهم تتكلم.</div>
+<div class="recorder-controls" id="recorder-controls">
+<button class="btn btn-danger recorder-btn" id="rec-start" onclick="RecorderUI.start()">⏺️ {bl("Record", "سجّل")}</button>
+<button class="btn btn-outline recorder-btn" id="rec-stop" onclick="RecorderUI.stop()" style="display:none">⏹️ {bl("Stop", "قف")}</button>
+<span class="rec-timer" id="rec-timer">0:00</span>
+<div class="rec-indicator" id="rec-indicator"></div>
+</div>
+<div class="recorder-playback" id="recorder-playback" style="display:none">
+<div class="recorder-actions">
+<button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 {bl("Listen to Yours", "استمع لتسجيلك")}</button>
+<button class="btn btn-outline btn-sm" onclick="RecorderUI.start()">🔄 {bl("Re-record", "سجّل تاني")}</button>
+<a class="btn btn-outline btn-sm" id="rec-download" download="my-speaking-recording.webm">💾 {bl("Download", "حمّل")}</a>
+</div></div></div>
+<div class="done-section" id="record-required-note"><p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6">🎙️ {bl("This is a recording task", "دي مهمة تسجيل")}: {bl("record yourself above, then tap", "سجّل نفسك فوق، بعدين اضغط")} <b>{bl("Send to Discord", "أرسل للديسكورد")}</b> {bl("to complete it (it posts to #showcase and marks your day).", "عشان تكمّلها (هتترفع في #showcase وتتحسب في يومك).")}</p></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="vocab.html">← {bl("Vocab", "المفردات")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
+{bottom_nav('speaking')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+
 def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
     """Grounded listening comprehension: hear a vocabulary word, choose its
     correct Arabic meaning. Distractors are drawn from other words in the
@@ -462,7 +510,7 @@ def gen_vocab(level, week, day, theme, words):
 <div id="quiz-section" style="display:none"></div>
 <div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> {bl("Done", "تم")} ✅</label></div>
 {swipe_hint()}
-<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="speaking.html">{bl("Speaking", "التحدث")} →</a></div></div>
 {bottom_nav('vocab')}
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
@@ -506,6 +554,7 @@ def gen_day_index(level, week, day, pattern=None):
 <a href="shadowing.html">🎧 Shadowing — المحاكاة</a>
 <a href="listening.html">👂 Listening — الاستماع</a>
 <a href="vocab.html">📖 Vocabulary — المفردات</a>
+<a href="speaking.html">🎙️ Speaking — التحدث</a>
 </div></div>
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
@@ -601,14 +650,20 @@ def generate_level(level, audio_manifest):
                 f.write(gen_listening(level, week, day, theme, day_vocab, vocab))
             with open(day_dir / "vocab.html", "w", encoding="utf-8") as f:
                 f.write(gen_vocab(level, week, day, theme, day_vocab))
+            # E1: Speaking page. Speaking missions are keyed by day-name in
+            # the weekly JSON (Sat..Fri = day 1..7), same mapping the bot uses.
+            _day_names = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+            _mission = (week_data.get("speaking_missions", {}) or {}).get(_day_names[day - 1])
+            with open(day_dir / "speaking.html", "w", encoding="utf-8") as f:
+                f.write(gen_speaking(level, week, day, theme, _mission))
 
             audio_manifest[shadow_aid] = {
                 "level": level, "week": week, "day": day,
                 "text": norm["primary_text"],
             }
-            total += 5  # index + 4 exercise pages
+            total += 6  # index + 5 exercise pages
 
-        print(f"  [{level}] Week {week}: 35 pages ✅")
+        print(f"  [{level}] Week {week}: 42 pages ✅")
 
     return total
 

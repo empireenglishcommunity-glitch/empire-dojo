@@ -45,7 +45,7 @@ html.has-token .gated-content{display:block}
 <div class="swipe-hint">← Swipe to navigate <span class="ar-inline" lang="ar" dir="rtl">/ اسحب للتنقل</span> →</div>
 <div class="nav page-nav" style="margin-top:20px"><a href="shadowing.html">← Shadowing <span class="ar-inline" lang="ar" dir="rtl">/ المحاكاة</span></a><a href="vocab.html">Vocab <span class="ar-inline" lang="ar" dir="rtl">/ المفردات</span> →</a></div></div>
 <nav class="bottom-nav" id="bottom-nav"><a href="accent.html"><span class="nav-icon">🎯</span>Accent</a><a href="shadowing.html"><span class="nav-icon">🎧</span>Shadow</a><a href="listening.html" class="active"><span class="nav-icon">👂</span>Listen</a><a href="vocab.html"><span class="nav-icon">📖</span>Vocab</a></nav>
-<script src="/js/app.js"></script>
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const dictationWords=["want", "have", "this", "that", "here"];document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));function checkAnswer(el,c){el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}</script><script>
 (function(){
   const API='https://bot.empireenglish.online/api/validate-token';

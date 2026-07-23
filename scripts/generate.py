@@ -424,7 +424,7 @@ def gen_accent(level, week, day, focus, norm):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="index.html">← {bl("Today", "اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
 {bottom_nav('accent')}
-<script src="/js/app.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_shadowing(level, week, day, theme, norm, aid):
@@ -465,7 +465,7 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
 {bottom_nav('shadowing')}
-<script src="/js/app.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
@@ -525,7 +525,7 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('listening')}
-<script src="/js/app.js"></script>
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
@@ -557,7 +557,7 @@ def gen_vocab(level, week, day, theme, words):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="index.html">{bl("Today", "اليوم")}</a></div></div>
 {bottom_nav('vocab')}
-<script src="/js/app.js"></script>
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
@@ -603,7 +603,7 @@ def gen_day_index(level, week, day, pattern=None):
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
 </div>
-<script src="/js/app.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 # ============================================================

@@ -98,20 +98,21 @@ def verify_file(filepath: Path) -> list[str]:
     # so we need to check differently).
     #
     # Better approach: count <script in the original, compare to expected.
-    # generate.py produces at most 4 <script tags per page:
+    # generate.py produces at most 5 <script tags per page:
     #   1. <script>...has-token no-flash gate check...</script> (in <head>,
     #      always — Darb Phase 0's flash fix; runs before first paint)
     #   2. <script src="/js/app.js"></script>  (always present)
-    #   3. <script>...content-gate token validation...</script> (always)
-    #   4. ONE page-specific inline <script> (vocab flashcards, or
+    #   3. <script src="/js/darb.js"></script> (always — Darb Phase 2)
+    #   4. <script>...content-gate token validation...</script> (always)
+    #   5. ONE page-specific inline <script> (vocab flashcards, or
     #      listening dictation + checkAnswer) — only on those page types.
-    # So base pages (accent/shadowing/day-index) have 3; vocab/listening
-    # have 4. Anything above 4 is suspicious (possible injection).
+    # So base pages (accent/shadowing/day-index) have 4; vocab/listening
+    # have 5. Anything above 5 is suspicious (possible injection).
     script_count = len(re.findall(r"<script", content, re.IGNORECASE))
-    if script_count > 4:
+    if script_count > 5:
         errors.append(
             f"  Unexpected number of <script> tags: found {script_count} "
-            f"(expected at most 4 — possible injection from curriculum data)"
+            f"(expected at most 5 — possible injection from curriculum data)"
         )
 
     return errors

@@ -15,236 +15,224 @@
 </head>
 <body>
   <div class="container">
+    <!-- Header -->
     <div class="header">
       <img src="logo.png" alt="Empire English" class="logo" style="width:48px;height:48px;border-radius:50%;box-shadow:0 0 15px rgba(212,175,55,0.3)">
       <h1>Empire English Practice</h1>
-      <p class="subtitle">Your daily practice hub — built for Arabic speakers</p>
+      <p class="subtitle">Your personal daily practice calendar</p>
     </div>
 
-    <!-- Level Selector -->
-    <div class="nav" id="level-nav">
-      <a href="#" class="active" onclick="selectLevel('l0')">🌱 Level 0</a>
-      <a href="#" onclick="selectLevel('l1')">💪 Level 1</a>
-      <a href="#" onclick="selectLevel('l2')">🚀 Level 2</a>
-      <a href="#" onclick="selectLevel('l3')">👑 Level 3</a>
+    <!-- Session bar (shown when connected) -->
+    <div class="darb-session-bar" id="session-bar" style="display:none">
+      <div>
+        <span class="student-name" id="student-name"></span>
+        <span class="student-level" id="student-level"></span>
+      </div>
+      <button class="btn btn-sm btn-outline" style="padding:6px 12px;font-size:0.7rem" onclick="DarbHome.disconnect()">Disconnect</button>
     </div>
 
-    <!-- Week Navigation -->
-    <div class="week-nav" id="week-nav"></div>
-
-    <!-- Day Grid -->
-    <div class="card">
-      <h2>📅 Choose Your Day <span class="ar-inline" lang="ar" dir="rtl">/ اختار يومك</span></h2>
-      <div class="day-grid" id="day-grid"></div>
+    <!-- Loading state -->
+    <div id="loading-state" class="darb-loading" style="display:none">
+      <div class="spinner"></div>
+      <p>Loading your calendar...</p>
     </div>
 
-    <!-- Exercise Types -->
-    <div class="card" id="exercises" style="display:none;">
-      <h2>📋 Today's Exercises <span class="ar-inline" lang="ar" dir="rtl">/ تمارين اليوم</span></h2>
-      <div class="nav" id="exercise-nav"></div>
+    <!-- Calendar view (shown when session is valid) -->
+    <div id="calendar-view" style="display:none">
+      <div id="calendar-container"></div>
     </div>
 
-    <!-- Arabic instruction -->
-    <div class="arabic-text">
-      اختار المستوى → الأسبوع → اليوم → ثم ابدأ التمرين.<br>
-      كل تمرين فيه صوت + نص + مكان تسجل فيه نفسك.
+    <!-- Gate / Claim view (shown when no session) -->
+    <div id="gate-view" style="display:none">
+      <div class="card" style="text-align:center;padding:40px 24px">
+        <h2 style="color:var(--accent);margin-bottom:16px">🔒 Access Required</h2>
+        <p style="color:var(--text-secondary);margin-bottom:8px">This practice platform is exclusive to Empire English students.</p>
+        <p class="arabic-text" style="text-align:center;border-right:none;margin:16px 0" lang="ar" dir="rtl">
+          للوصول: اذهب لـ Discord واكتب <code style="background:var(--bg-primary);padding:2px 6px;border-radius:4px">!link</code> في <code style="background:var(--bg-primary);padding:2px 6px;border-radius:4px">#bot-commands</code>
+        </p>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px">
+            Paste your claim code below <span class="ar-inline" lang="ar" dir="rtl">/ الصق الكود هنا</span>
+          </p>
+          <input type="text" id="claim-input" class="quiz-input" placeholder="Paste code..." style="margin-bottom:10px;text-align:center;max-width:320px">
+          <br>
+          <button class="btn" id="claim-btn" onclick="DarbHome.claim()">
+            🔗 Connect <span class="ar-inline" lang="ar" dir="rtl">/ ربط</span>
+          </button>
+          <p id="claim-error" style="font-size:0.8rem;color:var(--danger);margin-top:10px;display:none"></p>
+          <p id="claim-success" style="font-size:0.8rem;color:var(--success);margin-top:10px;display:none"></p>
+        </div>
+      </div>
+
+      <!-- Legacy token migration hint -->
+      <div class="card" id="legacy-hint" style="display:none">
+        <p style="font-size:0.8rem;color:var(--text-muted);text-align:center">
+          Previously connected via <code>!link</code>? Your access has been upgraded.<br>
+          Run <code>!link</code> again in Discord for a new claim code.
+        </p>
+      </div>
     </div>
 
-    <!-- Weekly Progress Chart (Sahel S5.3) -->
-    <div class="card" id="weekly-progress-card">
-      <h2>📊 Weekly Progress <span class="ar-inline" lang="ar" dir="rtl">/ تقدم الأسبوع</span></h2>
-      <div class="weekly-chart" id="weekly-chart"></div>
-      <p style="text-align:center;color:var(--text-muted);font-size:0.75rem;margin-top:10px" id="weekly-summary"></p>
-    </div>
-
-    <!-- Connected Progress / Review Link -->
-    <div class="card" id="connect-card">
-      <h2>🔗 Discord + Review <span class="ar-inline" lang="ar" dir="rtl">/ الربط والمراجعة</span></h2>
+    <!-- Dashboard links (shown when connected) -->
+    <div class="card" id="links-card" style="display:none">
+      <h2>🔗 Quick Links <span class="ar-inline" lang="ar" dir="rtl">/ روابط سريعة</span></h2>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
         <a href="/dash/" class="btn btn-sm">📊 My Dashboard</a>
         <a href="/review/" class="btn btn-sm btn-outline">📝 Vocab Review</a>
-        <button class="btn btn-sm btn-outline" id="connect-discord-btn" onclick="document.getElementById('connect-modal').style.display='block'">🔗 Connect Discord</button>
-      </div>
-      <div id="connect-modal" style="display:none;margin-top:16px">
-        <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:8px">Type <code>!link</code> in Discord, then paste your token here:</p>
-        <input type="text" id="home-token-input" class="quiz-input" placeholder="Paste token..." style="margin-bottom:8px">
-        <button class="btn btn-sm" onclick="ConnectedProgress.connect(document.getElementById('home-token-input').value);document.getElementById('connect-modal').style.display='none'">✓ Connect</button>
       </div>
     </div>
 
     <!-- Footer -->
     <div style="text-align:center; padding:30px 0; color:var(--text-muted); font-size:0.8rem;">
-      <p>Empire English Community — Common Sense First 🏛️</p>
+      <p>Empire English Community — Common Sense First</p>
       <p style="margin-top:5px;">practice.empireenglish.online</p>
     </div>
   </div>
 
-  <script src="js/app.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/darb.js"></script>
   <script>
-    let currentLevel = 'l0';
-    let currentWeek = 1;
-    const WEEKS = { l0: 8, l1: 10, l2: 12, l3: 8 };
+    /**
+     * DarbHome — Homepage controller
+     * Orchestrates: session check → calendar load → render, or show gate
+     */
+    const DarbHome = {
+      async init() {
+        DarbSession.init();
 
-    function selectLevel(level) {
-      currentLevel = level;
-      document.querySelectorAll('#level-nav a').forEach(a => a.classList.remove('active'));
-      event.target.classList.add('active');
-      renderWeeks();
-      renderWeeklyChart();
-    }
-
-    function renderWeeks() {
-      const nav = document.getElementById('week-nav');
-      const max = WEEKS[currentLevel];
-      nav.innerHTML = '';
-      for (let w = 1; w <= max; w++) {
-        const a = document.createElement('a');
-        a.href = '#';
-        a.textContent = `Week ${w}`;
-        if (w === currentWeek) a.classList.add('active');
-        a.onclick = (e) => { e.preventDefault(); currentWeek = w; renderWeeks(); renderDays(); renderWeeklyChart(); };
-        nav.appendChild(a);
-      }
-      renderDays();
-    }
-
-    // Hisn D030: same day-of-week -> day-number convention already used
-    // throughout this ecosystem (the bot's daily_task_post/!week/the
-    // practice-platform link generator all use this exact
-    // Sat=1..Fri=7 ordering) -- NOT a new convention invented here.
-    // Computing it here too lets the homepage know "today" the same
-    // way Discord already does, instead of showing 7 generic
-    // unlabeled day cards with no relationship to the real calendar.
-    // NOTE: uses the student's own device/browser timezone, NOT the
-    // bot's configured Asia/Dubai timezone (tasks.py's _now()) -- this
-    // is a client-side static site with no server-side "current time"
-    // to ask. For students in/near that timezone this will normally
-    // agree with Discord's daily task post, but could disagree for a
-    // short window near midnight for a student in a very different
-    // timezone. Acceptable for a "helps you find today faster" UX
-    // nicety (doesn't affect verification/points, which are entirely
-    // server-side and already correct) -- flagged in defect_log.md
-    // D030 rather than silently assumed away.
-    function todaysDayNumber() {
-      const days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-      const jsDay = new Date().getDay();  // 0=Sun..6=Sat (JS's own convention)
-      const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][jsDay];
-      return days.indexOf(dayName) + 1;  // 1-indexed, matching day1/day2/... URLs
-    }
-
-    function renderDays() {
-      const grid = document.getElementById('day-grid');
-      const days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-      const today = todaysDayNumber();
-      grid.innerHTML = '';
-      for (let d = 1; d <= 7; d++) {
-        const a = document.createElement('a');
-        a.href = `${currentLevel}/week${currentWeek}/day${d}/`;
-        a.textContent = `${days[d-1]}\nDay ${d}`;
-        a.style.whiteSpace = 'pre-line';
-        if (Progress.isDone(currentLevel, currentWeek, d, 'accent')) {
-          a.classList.add('done');
+        // Check for a claim code in the URL (from !link DM)
+        const urlCode = new URLSearchParams(window.location.search).get('code');
+        if (urlCode) {
+          // Clean URL
+          history.replaceState({}, '', window.location.pathname);
+          this._showLoading();
+          const result = await DarbSession.claim(urlCode.trim());
+          if (result.ok) {
+            await this._loadCalendar();
+            return;
+          }
+          // Claim failed — fall through to gate
         }
-        // Hisn D030: found live during H6 -- the owner correctly pointed
-        // out that a student landing here has no way to tell which of
-        // the 7 generic day cards is actually "today" without doing the
-        // date math themselves, even though the system already knows.
-        if (d === today) {
-          a.classList.add('today');
-          a.title = "Today's tasks / تمارين اليوم";
+
+        if (DarbSession.hasSession()) {
+          this._showLoading();
+          // Validate session is still active on server
+          const valid = await DarbSession.validate();
+          if (valid) {
+            await this._loadCalendar();
+          } else {
+            // Session expired/revoked — show gate
+            DarbSession.clear();
+            this._showGate();
+          }
+        } else {
+          this._showGate();
         }
-        grid.appendChild(a);
+      },
+
+      async claim() {
+        const input = document.getElementById('claim-input');
+        const errorEl = document.getElementById('claim-error');
+        const successEl = document.getElementById('claim-success');
+        const btn = document.getElementById('claim-btn');
+        if (!input) return;
+
+        const code = input.value.trim();
+        if (!code) {
+          this._showError('Please paste your claim code');
+          return;
+        }
+
+        // Disable button during request
+        btn.disabled = true;
+        btn.textContent = '...';
+        errorEl.style.display = 'none';
+        successEl.style.display = 'none';
+
+        const result = await DarbSession.claim(code);
+        btn.disabled = false;
+        btn.innerHTML = '🔗 Connect <span class="ar-inline" lang="ar" dir="rtl">/ ربط</span>';
+
+        if (result.ok) {
+          successEl.textContent = `Welcome, ${result.name || 'Student'}! Loading your calendar...`;
+          successEl.style.display = 'block';
+          // Also store the legacy token for backward compat with exercise page gates
+          // (Phase 3 removes this; for now exercise pages still check empire_link_token)
+          localStorage.setItem('empire_link_token', DarbSession.getToken());
+          setTimeout(() => this._loadCalendar(), 800);
+        } else {
+          this._showError(result.error === 'invalid or expired code'
+            ? 'Code invalid or expired. Run !link again in Discord for a fresh code.'
+            : result.error || 'Something went wrong');
+        }
+      },
+
+      disconnect() {
+        DarbSession.clear();
+        this._showGate();
+      },
+
+      async _loadCalendar() {
+        this._showLoading();
+        const data = await DarbCalendar.load();
+        if (!data) {
+          // API down or session issue
+          DarbSession.clear();
+          this._showGate();
+          return;
+        }
+        this._showCalendar(data);
+      },
+
+      _showCalendar(data) {
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('gate-view').style.display = 'none';
+        document.getElementById('calendar-view').style.display = 'block';
+        document.getElementById('links-card').style.display = 'block';
+
+        // Session bar
+        const sessionBar = document.getElementById('session-bar');
+        sessionBar.style.display = 'flex';
+        const payload = DarbSession.getPayload();
+        document.getElementById('student-name').textContent = payload ? `Level ${(payload.lvl || 'L0').replace('L', '')}` : '';
+        document.getElementById('student-level').textContent = ` — ${data.days.filter(d => d.state === 'done').length}/${data.days.length} days done`;
+
+        // Render the calendar
+        DarbCalendar.render('calendar-container');
+      },
+
+      _showGate() {
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('calendar-view').style.display = 'none';
+        document.getElementById('links-card').style.display = 'none';
+        document.getElementById('session-bar').style.display = 'none';
+        document.getElementById('gate-view').style.display = 'block';
+
+        // Show legacy hint if they have an old token
+        if (localStorage.getItem('empire_link_token') && !DarbSession.hasSession()) {
+          document.getElementById('legacy-hint').style.display = 'block';
+        }
+      },
+
+      _showLoading() {
+        document.getElementById('gate-view').style.display = 'none';
+        document.getElementById('calendar-view').style.display = 'none';
+        document.getElementById('loading-state').style.display = 'block';
+      },
+
+      _showError(msg) {
+        const el = document.getElementById('claim-error');
+        if (el) {
+          el.textContent = msg;
+          el.style.display = 'block';
+        }
       }
-      document.getElementById('exercises').style.display = 'block';
-      renderExercises();
-    }
+    };
 
-    function renderExercises() {
-      const nav = document.getElementById('exercise-nav');
-      const types = [
-        { id: 'accent', emoji: '🎯', name: 'Accent' },
-        { id: 'shadowing', emoji: '🎧', name: 'Shadow' },
-        { id: 'listening', emoji: '👂', name: 'Listen' },
-        { id: 'vocab', emoji: '📖', name: 'Vocab' },
-      ];
-      nav.innerHTML = '';
-      types.forEach(t => {
-        const a = document.createElement('a');
-        // Extensionless, matching every other link on the site (and what
-        // the Discord bot itself generates) -- see .kiro/steering/
-        // project-rules.md's "Known quirk" section for why this matters.
-        a.href = `${currentLevel}/week${currentWeek}/day1/${t.id}`;
-        a.textContent = `${t.emoji} ${t.name}`;
-        nav.appendChild(a);
-      });
-    }
-
-    // Initialize
-    renderWeeks();
-    renderWeeklyChart();
-
-    // Hisn D029: auto-select the connected student's REAL level/week
-    // once their progress data arrives, instead of always sitting at
-    // the hardcoded L0/Week 1 defaults regardless of who's visiting.
-    // Confirmed live during Hisn H6: Discord correctly knew the owner
-    // was on Week 3, but this picker started at Week 1 every time,
-    // with no connection to the actually-linked account's real data
-    // at all. Listens for the event ConnectedProgress fires (in
-    // app.js) once /api/progress returns -- this fires on the initial
-    // page load if a token is already saved/passed via the !link URL
-    // (see app.js's init() for that half of the fix), and again on
-    // any later successful fetch.
-    window.addEventListener('empire:progress-loaded', (e) => {
-      const data = e.detail;
-      if (!data || !data.level) return;
-      const level = data.level.toLowerCase();
-      if (!WEEKS[level]) return;  // unknown level — ignore, keep defaults
-      currentLevel = level;
-      currentWeek = Math.min(WEEKS[level], Math.max(1, data.week || 1));
-      document.querySelectorAll('#level-nav a').forEach(a => a.classList.remove('active'));
-      const matchingLevelLink = document.querySelector(`#level-nav a[onclick*="'${level}'"]`);
-      if (matchingLevelLink) matchingLevelLink.classList.add('active');
-      renderWeeks();
-      renderWeeklyChart();
-
-      // Darb Phase 0: the old D030 "auto-jump to today's day page on a
-      // fresh !link click" was removed — it made the homepage render and
-      // then immediately redirect, which looked like a broken flash. The
-      // student now lands cleanly on the homepage (their level/week is
-      // still auto-selected above); Phase 2 replaces this with the
-      // personal calendar as the landing view.
+    // Boot
+    document.addEventListener('DOMContentLoaded', () => {
+      DarbHome.init();
     });
-
-    function renderWeeklyChart() {
-      const chart = document.getElementById('weekly-chart');
-      const summary = document.getElementById('weekly-summary');
-      if (!chart) return;
-
-      const days = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-      const types = ['accent', 'shadowing', 'listening', 'vocab'];
-      let totalDone = 0;
-      let html = '';
-
-      for (let d = 1; d <= 7; d++) {
-        let dayDone = 0;
-        types.forEach(t => {
-          if (Progress.isDone(currentLevel, currentWeek, d, t)) dayDone++;
-        });
-        totalDone += dayDone;
-        const pct = (dayDone / 4) * 100;
-        const barClass = pct === 100 ? 'bar-complete' : pct > 0 ? 'bar-partial' : '';
-        html += `<div class="chart-day ${barClass}">` +
-          `<div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.max(pct, 4)}%"></div></div>` +
-          `<span class="chart-label">${days[d-1]}</span>` +
-          `<span class="chart-count">${dayDone}/4</span>` +
-          `</div>`;
-      }
-
-      chart.innerHTML = html;
-      const totalPossible = 28;
-      const pct = Math.round((totalDone / totalPossible) * 100);
-      summary.textContent = `${totalDone}/${totalPossible} exercises this week (${pct}%)`;
-    }
   </script>
 </body>
 </html>

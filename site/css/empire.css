@@ -1040,3 +1040,270 @@ body::before {
   .bottom-nav a { min-width: 50px; font-size: 0.6rem; }
   .bottom-nav a .nav-icon { font-size: 1.2rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DARB PHASE 2 — Personal Calendar + Mastery Tiers
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Calendar Grid ──────────────────────────────────────── */
+
+.darb-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.darb-cal-cell {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 6px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 500;
+  transition: all 0.3s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 62px;
+}
+
+.darb-cal-cell .cal-date {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.darb-cal-cell .cal-day {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* State: Today — yellow glow + dot */
+.darb-cal-cell.state-today {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+.darb-cal-cell.state-today .cal-day {
+  color: var(--accent);
+}
+
+.darb-cal-cell.state-today::after {
+  content: "●";
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  color: var(--accent);
+  font-size: 0.55rem;
+}
+
+/* State: Done — green */
+.darb-cal-cell.state-done {
+  background: rgba(46, 204, 113, 0.08);
+  border-color: var(--success);
+}
+
+.darb-cal-cell.state-done .cal-day {
+  color: var(--success);
+}
+
+/* State: Missed — amber, catch-up allowed */
+.darb-cal-cell.state-missed {
+  background: rgba(243, 156, 18, 0.06);
+  border-color: rgba(243, 156, 18, 0.4);
+}
+
+.darb-cal-cell.state-missed .cal-day {
+  color: #F39C12;
+}
+
+/* State: Locked — muted, not clickable */
+.darb-cal-cell.state-locked {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.darb-cal-cell.state-locked .cal-day {
+  color: var(--text-muted);
+}
+
+/* Hover for openable cells */
+.darb-cal-cell:not(.state-locked):hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-gold-sm);
+}
+
+/* ─── Mastery Tier Colors (applied to calendar cells + exercise badges) ─── */
+
+.tier-bronze { --tier-color: #CD7F32; }
+.tier-silver { --tier-color: #C0C0C0; }
+.tier-gold   { --tier-color: #FFD700; }
+.tier-platinum { --tier-color: #8BE0E0; }
+.tier-diamond { --tier-color: #B9F2FF; }
+
+/* Calendar cell tier indicator strip at bottom */
+.darb-cal-cell[data-tier]:not([data-tier="0"]) {
+  border-bottom: 3px solid var(--tier-color, var(--border));
+}
+
+.darb-cal-cell.tier-bronze { border-bottom-color: #CD7F32; }
+.darb-cal-cell.tier-silver { border-bottom-color: #C0C0C0; }
+.darb-cal-cell.tier-gold   { border-bottom-color: #FFD700; }
+.darb-cal-cell.tier-platinum { border-bottom-color: #8BE0E0; }
+.darb-cal-cell.tier-diamond { border-bottom-color: #B9F2FF; }
+
+/* Tier badge (shown in exercise page after completion) */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tier-badge.tier-bronze  { background: rgba(205,127,50,0.15); color: #CD7F32; }
+.tier-badge.tier-silver  { background: rgba(192,192,192,0.15); color: #C0C0C0; }
+.tier-badge.tier-gold    { background: rgba(255,215,0,0.12); color: #FFD700; }
+.tier-badge.tier-platinum { background: rgba(139,224,224,0.12); color: #8BE0E0; }
+.tier-badge.tier-diamond { background: rgba(185,242,255,0.12); color: #B9F2FF; }
+
+/* ─── Calendar Week Header ───────────────────────────────── */
+
+.darb-week-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 8px;
+}
+
+.darb-week-header h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--accent-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.darb-week-header .week-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── Calendar Legend ────────────────────────────────────── */
+
+.darb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 14px 0;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.darb-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.darb-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.darb-legend .dot-today { background: var(--accent); box-shadow: 0 0 4px var(--accent); }
+.darb-legend .dot-done { background: var(--success); }
+.darb-legend .dot-missed { background: #F39C12; }
+.darb-legend .dot-locked { background: var(--text-muted); opacity: 0.4; }
+
+/* ─── Session Status Bar ─────────────────────────────────── */
+
+.darb-session-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+  font-size: 0.8rem;
+}
+
+.darb-session-bar .student-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.darb-session-bar .student-level {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+/* ─── Level complete banner ──────────────────────────────── */
+
+.darb-complete-banner {
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(145deg, rgba(46,204,113,0.08), var(--bg-card));
+  border: 1px solid var(--success);
+  border-radius: var(--radius);
+  margin: 20px 0;
+}
+
+.darb-complete-banner h2 {
+  color: var(--success);
+  margin-bottom: 8px;
+}
+
+/* ─── Loading spinner ────────────────────────────────────── */
+
+.darb-loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.darb-loading .spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Darb Calendar — Responsive ─────────────────────────── */
+
+@media (max-width: 600px) {
+  .darb-calendar { gap: 6px; }
+  .darb-cal-cell { padding: 8px 4px; min-height: 56px; font-size: 0.68rem; }
+  .darb-cal-cell .cal-date { font-size: 0.6rem; }
+  .darb-cal-cell .cal-day { font-size: 0.72rem; }
+}
+
+@media (max-width: 380px) {
+  .darb-calendar { grid-template-columns: repeat(4, 1fr); }
+  .darb-cal-cell { min-height: 50px; }
+}

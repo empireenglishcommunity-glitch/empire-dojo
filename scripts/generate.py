@@ -243,7 +243,18 @@ def watermark_comment():
 
 
 def content_gate_css():
-    """Hissar P3: CSS for content gating overlay."""
+    """Hissar P3 / Darb Phase 0: gating overlay CSS + a synchronous
+    <head> script that eliminates the lock-screen flash.
+
+    The flash: previously the overlay was visible by default and only
+    hidden AFTER an async token-validation fetch resolved — so a
+    returning, authorized student saw the 🔒 screen for a few hundred
+    ms on EVERY page load. Now a tiny synchronous script in <head>
+    checks localStorage BEFORE the body paints and adds `html.has-token`,
+    which the CSS below uses to hide the overlay and show content
+    immediately — zero flash. content_gate_js() then validates the
+    saved token in the background and re-locks only if it's actually
+    invalid. (Interim until Phase 3's edge gate removes this JS gate.)"""
     return '''<style>
 .gate-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
 background:var(--bg,#1a1a2e);transition:opacity .3s}
@@ -256,7 +267,10 @@ background:var(--card-bg,#16213e);border:1px solid var(--border,#2d3748);box-sha
 color:#000;font-weight:700;border-radius:8px;text-decoration:none;font-size:0.95rem}
 .gated-content{display:none}
 .gated-content.unlocked{display:block}
-</style>'''
+html.has-token .gate-overlay{display:none!important}
+html.has-token .gated-content{display:block}
+</style>
+<script>if(window.localStorage&&localStorage.getItem('empire_link_token')){document.documentElement.classList.add('has-token');}</script>'''
 
 
 def content_gate_overlay():
@@ -275,7 +289,6 @@ def content_gate_overlay():
 <button id="gate-connect-btn" onclick="window._gateConnect()" style="padding:10px 20px;background:#D4AF37;color:#000;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;width:100%">🔗 Connect / ربط</button>
 <p id="gate-error" style="font-size:0.75rem;color:#E74C3C;margin-top:6px;display:none">Token invalid — توكن غلط</p>
 </div>
-<a class="gate-link" href="https://discord.gg/kbucwYU3ee" style="margin-top:12px">انضم إلى Discord</a>
 </div></div>'''
 
 
@@ -290,28 +303,27 @@ def content_gate_js():
   const content=document.getElementById('gated-content');
   if(!overlay||!content)return;
 
-  function unlock(token){
-    fetch(API+'?token='+encodeURIComponent(token))
+  function reveal(){document.documentElement.classList.add('has-token');overlay.classList.add('hidden');content.classList.add('unlocked');}
+  function lock(){document.documentElement.classList.remove('has-token');overlay.classList.remove('hidden');content.classList.remove('unlocked');}
+  function showError(){const err=document.getElementById('gate-error');if(err)err.style.display='block';}
+
+  function validate(token){
+    return fetch(API+'?token='+encodeURIComponent(token))
       .then(r=>{if(r.ok)return r.json();throw new Error('invalid')})
-      .then(d=>{
-        if(d.valid){
-          localStorage.setItem('empire_link_token',token);
-          overlay.classList.add('hidden');
-          content.classList.add('unlocked');
-        } else { showError(); }
-      })
-      .catch(()=>{ showError(); });
+      .then(d=>!!d.valid);
   }
 
-  function showError(){
-    const err=document.getElementById('gate-error');
-    if(err) err.style.display='block';
+  // Fresh token from the !link URL, or a manual paste: validate FIRST,
+  // then reveal (these are new unlocks, so a brief check is fine).
+  function unlock(token){
+    validate(token).then(function(ok){
+      if(ok){localStorage.setItem('empire_link_token',token);reveal();}
+      else{lock();showError();}
+    }).catch(function(){lock();showError();});
   }
 
-  // Check URL token first (from !link DM), then localStorage
   const urlToken=new URLSearchParams(location.search).get('token');
   if(urlToken){
-    // Clean URL (remove token from address bar for privacy)
     const cleanUrl=location.pathname+location.hash;
     history.replaceState({},'',cleanUrl);
     unlock(urlToken);
@@ -319,22 +331,28 @@ def content_gate_js():
   }
 
   const savedToken=localStorage.getItem('empire_link_token');
-  if(savedToken){ unlock(savedToken); return; }
+  if(savedToken){
+    // The <head> script already revealed content instantly (no flash).
+    // Just confirm the saved token is still valid in the background;
+    // re-lock ONLY if it turns out invalid (expired/revoked).
+    validate(savedToken).then(function(ok){
+      if(!ok){localStorage.removeItem('empire_link_token');lock();}
+    }).catch(function(){/* network hiccup: leave content shown */});
+    return;
+  }
 
-  // Manual paste handler (gate overlay input)
+  // No token at all: the gate is visible by default. Wire the paste box.
   window._gateConnect=function(){
     const input=document.getElementById('gate-token-input');
     if(!input)return;
     const t=input.value.trim();
     if(!t)return;
-    // Support pasting full URL or just the token
     let token=t;
-    try{ const u=new URL(t); token=u.searchParams.get('token')||t; }catch(e){}
+    try{const u=new URL(t);token=u.searchParams.get('token')||t;}catch(e){}
     unlock(token);
   };
-  // Allow Enter key in the input
   const inp=document.getElementById('gate-token-input');
-  if(inp) inp.addEventListener('keydown',function(e){if(e.key==='Enter')window._gateConnect();});
+  if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter')window._gateConnect();});
 })();
 </script>'''
 

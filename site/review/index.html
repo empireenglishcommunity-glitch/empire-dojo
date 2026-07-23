@@ -17,58 +17,45 @@
   <div class="container">
     <div class="header">
       <img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px">
-      <h1>📝 Vocabulary Review</h1>
-      <p class="subtitle">SRS Flashcards <span class="ar-inline" lang="ar" dir="rtl">/ مراجعة المفردات</span></p>
+      <h1>📚 Review Past Words</h1>
+      <p class="subtitle">Spaced repetition <span class="ar-inline" lang="ar" dir="rtl">/ مراجعة المفردات</span></p>
     </div>
 
-    <!-- Connect to Discord section -->
-    <div id="connect-section">
-      <div class="card" id="not-connected-card">
-        <h2>🔗 Connect to Discord <span class="ar-inline" lang="ar" dir="rtl">/ اربط حسابك</span></h2>
-        <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">
-          اكتب <code>!link</code> في Discord عشان تاخد رابطك الشخصي.
-          بعدين الصقه هنا.
-        </div>
-        <input type="text" id="token-input" class="quiz-input" placeholder="Paste your token here..." style="margin-bottom:12px">
-        <button class="btn" onclick="ReviewPage.connect()">🔗 Connect</button>
-        <p style="color:var(--text-muted);font-size:0.8rem;margin-top:12px">
-          No token? Type <code>!link</code> or <code>!ربط</code> in Discord.
-        </p>
-      </div>
+    <!-- Loading -->
+    <div id="review-loading" class="darb-loading">
+      <div class="spinner"></div>
+      <p>Loading your words...</p>
     </div>
 
-    <!-- Review area (shown when connected OR in offline mode) -->
+    <!-- Review area -->
     <div id="review-area" style="display:none">
       <div class="gamification-bar">
         <span class="streak" id="streak-display">🔥 0</span>
         <span id="review-counter" style="color:var(--text-secondary);font-size:0.85rem">0 cards due</span>
       </div>
 
-      <div id="review-card-area">
-        <!-- Flashcard rendered here by JS -->
-      </div>
+      <div id="review-card-area"></div>
 
       <div id="review-complete" style="display:none" class="card">
         <h2 style="text-align:center">🎉 All Done!</h2>
         <p style="text-align:center;color:var(--text-secondary);margin:12px 0">
-          No more cards to review right now.
-          <span class="ar-inline" lang="ar" dir="rtl">/ مافيش بطاقات تاني دلوقتي</span>
+          No words to review right now — come back after more daily practice.
+          <span class="ar-inline" lang="ar" dir="rtl">/ مافيش كلمات للمراجعة دلوقتي، ارجع بعد ما تتمرن أكتر.</span>
         </p>
         <div style="text-align:center;margin-top:16px">
-          <a href="/" class="btn btn-outline">🏠 Home</a>
+          <a href="/" class="btn">🏠 Home <span class="ar-inline" lang="ar" dir="rtl">/ الرئيسية</span></a>
         </div>
       </div>
     </div>
 
-    <!-- Offline mode button -->
-    <div id="offline-mode-section" style="display:none">
-      <div class="card">
-        <h2>📖 Practice Mode <span class="ar-inline" lang="ar" dir="rtl">/ وضع التمرين</span></h2>
-        <p style="color:var(--text-secondary);margin:12px 0">
-          Not connected — showing random vocabulary from this week for practice.
-          No SRS scheduling, just review.
-        </p>
-      </div>
+    <!-- No session fallback (edge gate normally prevents reaching here without one) -->
+    <div id="review-nosession" style="display:none" class="card" style="text-align:center">
+      <h2>🔒 Open from your calendar</h2>
+      <p style="color:var(--text-secondary);margin:12px 0">
+        Please open this from the practice homepage after logging in.
+        <span class="ar-inline" lang="ar" dir="rtl">/ افتحها من الصفحة الرئيسية بعد تسجيل الدخول.</span>
+      </p>
+      <a href="/" class="btn">🏠 Home</a>
     </div>
 
     <div class="nav" style="margin-top:20px">
@@ -77,77 +64,49 @@
   </div>
 
   <script src="/js/app.js"></script>
+  <script src="/js/darb.js"></script>
   <script>
   const ReviewPage = {
     words: [],
     currentIndex: 0,
-    connected: false,
 
-    init() {
-      const token = localStorage.getItem('empire_link_token');
-      if (token) {
-        this.connected = true;
-        this._loadConnectedReview(token);
+    async init() {
+      DarbSession.init();
+      if (!DarbSession.hasSession()) {
+        document.getElementById('review-loading').style.display = 'none';
+        document.getElementById('review-nosession').style.display = 'block';
+        return;
+      }
+      await this._load();
+    },
+
+    async _load() {
+      const res = await DarbSession.fetch('/api/darb/srs');
+      document.getElementById('review-loading').style.display = 'none';
+
+      if (!res) {
+        // Session invalid/expired — the edge gate will handle re-auth on Home
+        document.getElementById('review-nosession').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('review-area').style.display = 'block';
+      let data = {};
+      try { data = await res.json(); } catch (e) { data = {}; }
+
+      const streakEl = document.getElementById('streak-display');
+      if (streakEl) streakEl.textContent = `🔥 ${data.streak || 0}`;
+
+      if (data.srs_words && data.srs_words.length > 0) {
+        this.words = data.srs_words;
+        document.getElementById('review-counter').textContent =
+          `${data.srs_due || data.srs_words.length} ${(data.srs_due === 1) ? 'card' : 'cards'} due`;
+        this._renderCard();
       } else {
-        this._showOfflineMode();
+        document.getElementById('review-card-area').style.display = 'none';
+        document.getElementById('review-counter').textContent = '0 cards due';
+        document.getElementById('review-complete').style.display = 'block';
       }
-    },
-
-    connect() {
-      const input = document.getElementById('token-input');
-      const token = (input && input.value || '').trim();
-      if (!token) return;
-      ConnectedProgress.connect(token);
-      this.connected = true;
-      this._loadConnectedReview(token);
-    },
-
-    async _loadConnectedReview(token) {
-      document.getElementById('connect-section').style.display = 'none';
-      document.getElementById('review-area').style.display = 'block';
-
-      try {
-        const res = await fetch(`${ConnectedProgress.API_BASE}/api/progress?token=${token}`);
-        if (!res.ok) {
-          this._showOfflineMode();
-          return;
-        }
-        const data = await res.json();
-
-        // Update streak
-        const streakEl = document.getElementById('streak-display');
-        if (streakEl) streakEl.textContent = `🔥 ${data.streak}`;
-
-        if (data.srs_words && data.srs_words.length > 0) {
-          this.words = data.srs_words;
-          document.getElementById('review-counter').textContent = `${data.srs_due} cards due`;
-          this._renderCard();
-        } else {
-          document.getElementById('review-card-area').style.display = 'none';
-          document.getElementById('review-complete').style.display = 'block';
-        }
-      } catch (e) {
-        this._showOfflineMode();
-      }
-    },
-
-    _showOfflineMode() {
-      document.getElementById('connect-section').style.display = 'none';
-      document.getElementById('review-area').style.display = 'block';
-      document.getElementById('offline-mode-section').style.display = 'block';
-
-      // Load vocab from current level's week 1 as sample
-      // (In practice, this would load from a static JSON — for now show a message)
-      document.getElementById('review-card-area').innerHTML = `
-        <div class="card">
-          <h2>💡 Tip</h2>
-          <p style="color:var(--text-secondary)">
-            Connect your Discord account with <code>!link</code> to get personalized SRS review.
-            Without connection, visit any vocabulary page for practice.
-          </p>
-          <a href="/l0/week1/day1/vocab" class="btn btn-outline" style="margin-top:12px">📖 Practice Vocab</a>
-        </div>
-      `;
     },
 
     _renderCard() {
@@ -167,7 +126,7 @@
             <div class="instruction" style="margin-top:16px">Tap to reveal / اضغط عشان تشوف</div>
           </div>
           <div id="review-buttons" style="display:none;margin-top:16px">
-            <p style="text-align:center;color:var(--text-secondary);margin-bottom:12px">How well did you know it?</p>
+            <p style="text-align:center;color:var(--text-secondary);margin-bottom:12px">How well did you know it? <span class="ar-inline" lang="ar" dir="rtl">/ عرفتها قد إيه؟</span></p>
             <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
               <button class="btn btn-sm btn-danger" onclick="ReviewPage._answer(1)">❌ Forgot</button>
               <button class="btn btn-sm btn-outline" onclick="ReviewPage._answer(3)">🤔 Hard</button>
@@ -182,7 +141,6 @@
       const fc = document.getElementById('review-flashcard');
       const btns = document.getElementById('review-buttons');
       if (fc && btns) {
-        // Show the word with TTS
         const word = this.words[this.currentIndex];
         TTS.speak(word.word, 0.7);
         fc.innerHTML = `
@@ -197,8 +155,13 @@
 
     async _answer(score) {
       const word = this.words[this.currentIndex];
-      // Submit to API
-      await ConnectedProgress.submitSrsReview(word.word, score);
+      // Record via the Darb session; move on regardless of network result
+      // (the review still progresses; a failed write just won't reschedule).
+      await DarbSession.fetch('/api/darb/srs-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word: word.word, score }),
+      });
       this.currentIndex++;
       this._renderCard();
     },

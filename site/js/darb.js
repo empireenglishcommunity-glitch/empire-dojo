@@ -472,18 +472,33 @@ const DarbRecording = {
           }
         }
 
-        // Show tier feedback
-        const tierNames = { 0:'none', 1:'bronze', 2:'silver', 3:'gold', 4:'platinum', 5:'diamond' };
-        const tierName = tierNames[data.exercise_tier] || 'none';
-        let msg = `<span class="tier-badge tier-${tierName}">⭐ ${tierName}</span>`;
-        if (data.posted) {
-          msg += ' <span style="color:var(--success);font-size:0.8rem">Posted to #showcase!</span>';
-        }
-        if (data.day_done) {
-          msg += ' <span style="color:var(--success);font-size:0.8rem;margin-left:4px">Day complete!</span>';
-        }
-        if (data.already_done) {
-          msg = '<span style="color:var(--text-muted);font-size:0.8rem">Already done today — posted to showcase anyway</span>';
+        // Show feedback. Speaking (E1) is an ADDITIVE exercise, not part of
+        // the calendar's tier/green (get_calendar_mastery filters it out), so
+        // the server returns exercise_tier 0 for it — the old code then showed
+        // a "⭐ none" badge, which looked like a failure right after a
+        // successful send. Give speaking its own clean confirmation instead of
+        // the tier / "Day complete!" chrome that only applies to the 4 core.
+        let msg;
+        if (this._exercise === 'speaking') {
+          if (data.already_done) {
+            msg = '<span style="color:var(--text-muted);font-size:0.8rem">Already sent today — posted to #showcase again 🎙️</span>';
+          } else {
+            msg = '🎙️ <span style="color:var(--success);font-size:0.85rem;font-weight:600">Speaking sent!</span>';
+            if (data.posted) msg += ' <span style="color:var(--success);font-size:0.8rem">Posted to #showcase.</span>';
+          }
+        } else {
+          const tierNames = { 0:'none', 1:'bronze', 2:'silver', 3:'gold', 4:'platinum', 5:'diamond' };
+          const tierName = tierNames[data.exercise_tier] || 'none';
+          msg = `<span class="tier-badge tier-${tierName}">⭐ ${tierName}</span>`;
+          if (data.posted) {
+            msg += ' <span style="color:var(--success);font-size:0.8rem">Posted to #showcase!</span>';
+          }
+          if (data.day_done) {
+            msg += ' <span style="color:var(--success);font-size:0.8rem;margin-left:4px">Day complete!</span>';
+          }
+          if (data.already_done) {
+            msg = '<span style="color:var(--text-muted);font-size:0.8rem">Already done today — posted to showcase anyway</span>';
+          }
         }
         this._showFeedback(msg, 'success');
       } else {

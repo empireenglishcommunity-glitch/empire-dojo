@@ -672,8 +672,10 @@ const SwipeNav = {
   threshold: 60, // minimum px to count as a swipe
 
   init() {
-    // Only on exercise pages (accent, shadowing, listening, vocab)
-    const pages = ['accent', 'shadowing', 'listening', 'vocab'];
+    // Only on exercise pages. 'speaking' (E1, the 5th exercise) was missing
+    // here, so students couldn't swipe to/from the Speaking page even though
+    // it appears in the bottom nav and page nav — added for consistency.
+    const pages = ['accent', 'shadowing', 'listening', 'vocab', 'speaking'];
     const path = window.location.pathname;
     const current = pages.find(p => path.endsWith('/' + p) || path.endsWith('/' + p + '.html'));
     if (!current) return;
@@ -721,7 +723,8 @@ const BottomNav = {
   init() {
     const nav = document.getElementById('bottom-nav');
     if (!nav) return;
-    const pages = ['accent', 'shadowing', 'listening', 'vocab'];
+    // Include 'speaking' (E1) so the Speak tab highlights on its own page.
+    const pages = ['accent', 'shadowing', 'listening', 'vocab', 'speaking'];
     const path = window.location.pathname;
     const current = pages.find(p => path.endsWith('/' + p) || path.endsWith('/' + p + '.html'));
     if (!current) return;
@@ -853,12 +856,23 @@ const InteractiveVocab = {
     let t = String(s || '').toLowerCase().trim()
       .replace(/^[^a-z]+|[^a-z]+$/g, '')   // strip surrounding punctuation
       .replace(/\s+/g, ' ');
-    // Common British → American normalisations (both sides get canonicalised)
-    t = t.replace(/our\b/g, 'or')          // colour→color, favour→favor
-         .replace(/ise\b/g, 'ize')         // realise→realize
-         .replace(/isation\b/g, 'ization')
-         .replace(/re\b/g, 'er')           // centre→center, metre→meter
-         .replace(/ll/g, 'l');             // travelling→traveling
+    // Curated, collision-GUARDED British→American normalisations so both
+    // spellings canonicalise identically. Each pattern requires enough
+    // leading letters that common short words are NOT swept up: the old
+    // unanchored rules (/our\b/, /ise\b/, /re\b/, /ll/) mangled everyday
+    // words and silently accepted WRONG answers — e.g. "for" was accepted
+    // for "four" (four→"for"), "well"→"wel", "here"→"heer". Since both the
+    // student's answer and the correct word pass through here, an exact
+    // correct answer can never be rejected; the only risk is over-accepting
+    // a wrong one, which these guards remove for the common collisions.
+    t = t
+      .replace(/([a-z]{2,})our\b/g, '$1or')       // colour→color, favour→favor (not four/hour/your/pour/tour/sour)
+      .replace(/([a-z]{3,})isation\b/g, '$1ization') // organisation→organization
+      .replace(/([a-z]{3,})ise\b/g, '$1ize')      // realise→realize (not wise/rise)
+      .replace(/([a-z]{2,})re\b/g, '$1er')        // centre→center, metre→meter
+      .replace(/([a-z]{3,})lling\b/g, '$1ling')   // travelling→traveling (not selling/telling stay-equal both sides anyway)
+      .replace(/([a-z]{3,})lled\b/g, '$1led')     // travelled→traveled
+      .replace(/([a-z]{3,})ller\b/g, '$1ler');    // traveller→traveler
     return t;
   },
 

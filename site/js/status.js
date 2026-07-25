@@ -19,23 +19,26 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  function etaLine(eta) {
-    if (!eta) return '';
-    return '<div class="maint-eta">🕒 <b>' + esc(eta) + '</b></div>';
+  // Optional reason on its OWN line so it never mixes direction with the
+  // bilingual copy. Note: no time/ETA is shown by default — we never promise
+  // a duration (maintenance "might take minutes, maybe longer").
+  function reasonLine(s) {
+    var reason = s.message || s.reason || '';
+    if (!reason) return '';
+    return '<div class="maint-reason" dir="auto">' + esc(reason) + '</div>';
   }
 
   function renderSoft(s) {
     if (document.getElementById('maint-banner')) return;
-    var reason = s.message || s.reason || '';
     var bar = document.createElement('div');
     bar.id = 'maint-banner';
     bar.className = 'maint-banner';
+    // Each language is a SEPARATE block with its own dir → no bidi jumble.
     bar.innerHTML =
       '<div class="maint-banner-text">' +
-        '🔧 <b>Updates in progress</b> — you can keep practicing; you may see small glitches. ' +
-        '<span dir="rtl" lang="ar">جاري تحديثات بسيطة — كمّل تمرينك عادي، وممكن تشوف خلل بسيط.</span>' +
-        (reason ? ' <span class="maint-reason">' + esc(reason) + '</span>' : '') +
-        (s.eta ? ' 🕒 ' + esc(s.eta) : '') +
+        '<div class="maint-line" dir="ltr" lang="en">🔧 We\'re improving the platform — you can keep practicing. Your progress is safe.</div>' +
+        '<div class="maint-line" dir="rtl" lang="ar">🔧 بنطوّر المنصة دلوقتي — كمّل تمرينك عادي، وتقدّمك محفوظ.</div>' +
+        reasonLine(s) +
       '</div>' +
       '<button class="maint-close" aria-label="Dismiss" onclick="this.parentNode.remove()">✕</button>';
     document.body.appendChild(bar);
@@ -44,20 +47,28 @@
 
   function renderHard(s) {
     if (document.getElementById('maint-overlay')) return;
-    var reason = s.message || s.reason || '';
     var ov = document.createElement('div');
     ov.id = 'maint-overlay';
     ov.className = 'maint-overlay';
+    // English block and Arabic block are fully separate (own dir) — clean,
+    // no bidi mixing. No countdown / no promised time; a calm "check back
+    // shortly" instead.
     ov.innerHTML =
       '<div class="maint-card">' +
         '<div class="maint-emoji">🔧</div>' +
-        '<h1>We\'re making things better</h1>' +
-        '<p class="maint-sub">Empire English is under a quick maintenance. We\'ll be right back.</p>' +
-        '<p class="maint-ar" dir="rtl" lang="ar">إمباير إنجلش في صيانة سريعة دلوقتي، وهنرجع حالًا بإذن الله.</p>' +
-        (reason ? '<p class="maint-reason">' + esc(reason) + '</p>' : '') +
-        etaLine(s.eta) +
-        '<div class="maint-safe">🔒 Your streak &amp; progress are 100% safe.' +
-          '<br><span dir="rtl" lang="ar">تقدّمك وسلسلة أيامك محفوظة بالكامل.</span></div>' +
+        '<div class="maint-en" dir="ltr" lang="en">' +
+          '<h1>We\'ll be back shortly</h1>' +
+          '<p class="maint-sub">Empire English is getting a quick upgrade. Please check back a little later.</p>' +
+        '</div>' +
+        '<div class="maint-ar" dir="rtl" lang="ar">' +
+          '<h2>هنرجع قريب</h2>' +
+          '<p>إمباير إنجلش بيتحسّن دلوقتي. من فضلك ارجع بعد شوية.</p>' +
+        '</div>' +
+        reasonLine(s) +
+        '<div class="maint-safe">' +
+          '<div dir="ltr" lang="en">🔒 Your streak &amp; progress are 100% safe.</div>' +
+          '<div dir="rtl" lang="ar">🔒 تقدّمك وسلسلة أيامك محفوظة بالكامل.</div>' +
+        '</div>' +
       '</div>';
     document.body.appendChild(ov);
     document.body.classList.add('has-maint-overlay');

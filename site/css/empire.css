@@ -1420,3 +1420,29 @@ body.has-maint-banner { padding-top: 46px; }
   font-weight: 600;
   line-height: 1.6;
 }
+
+
+/* Maintenance bidi fix: each language on its own line/block */
+.maint-banner { align-items: flex-start; }
+.maint-line { font-size: 0.85rem; line-height: 1.5; }
+.maint-line + .maint-line { margin-top: 2px; }
+.maint-banner .maint-reason {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+  font-style: italic;
+}
+body.has-maint-banner { padding-top: 66px; }
+.maint-card .maint-en h1 { margin: 4px 0 8px; }
+.maint-card .maint-ar {
+  margin: 6px 0 4px;
+  font-family: 'Cairo', sans-serif;
+}
+.maint-card .maint-ar h2 {
+  color: var(--accent, #D4AF37);
+  font-size: 1.15rem;
+  margin: 6px 0 4px;
+}
+.maint-card .maint-ar p { color: var(--text-secondary, #c7ccd6); margin: 0; }
+.maint-safe > div { margin: 3px 0; }

@@ -89,9 +89,58 @@
     } catch (e) { /* fail-open */ }
   }
 
+  // ---- "✨ What's New" one-time toast ------------------------------------
+  // Shows the latest changelog entry once per student. On the very first
+  // visit we silently baseline to the current latest (so we never dump the
+  // whole history at a returning student) — only genuinely NEW entries after
+  // that trigger the toast. Fail-open: any error shows nothing.
+  var SEEN_KEY = 'empire_whatsnew_seen';
+
+  function showWhatsNew(entry) {
+    if (document.getElementById('whatsnew-toast')) return;
+    var t = document.createElement('div');
+    t.id = 'whatsnew-toast';
+    t.className = 'whatsnew-toast';
+    t.innerHTML =
+      '<div class="whatsnew-head">✨ What\'s New · جديد</div>' +
+      '<div class="whatsnew-body" dir="auto">' + esc(entry.text) + '</div>' +
+      '<button class="whatsnew-close" aria-label="Dismiss">Got it · تمام</button>';
+    document.body.appendChild(t);
+    requestAnimationFrame(function () { t.classList.add('whatsnew-in'); });
+    function dismiss() {
+      try { localStorage.setItem(SEEN_KEY, String(entry.id)); } catch (e) {}
+      t.classList.remove('whatsnew-in');
+      setTimeout(function () { t.remove(); }, 400);
+    }
+    t.querySelector('.whatsnew-close').addEventListener('click', dismiss);
+  }
+
+  function checkChangelog() {
+    try {
+      fetch(API_BASE + '/api/changelog', { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (!data || !data.entries || !data.entries.length) return;
+          var latest = data.entries[0];
+          if (!latest || latest.id == null) return;
+          var seen;
+          try { seen = localStorage.getItem(SEEN_KEY); } catch (e) { return; }
+          if (seen === null || seen === undefined) {
+            // First visit ever: baseline silently, don't show history.
+            try { localStorage.setItem(SEEN_KEY, String(latest.id)); } catch (e) {}
+            return;
+          }
+          if (String(latest.id) !== String(seen)) showWhatsNew(latest);
+        })
+        .catch(function () { /* fail-open */ });
+    } catch (e) { /* fail-open */ }
+  }
+
+  function init() { check(); checkChangelog(); }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', check);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    check();
+    init();
   }
 })();

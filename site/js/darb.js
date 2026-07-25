@@ -155,6 +155,20 @@ const DarbCalendar = {
     }
   },
 
+  // Per-page-load cache so the several components that need calendar data
+  // (calendar grid, per-exercise tier badge, the day progress counter) share
+  // ONE /api/calendar call instead of each firing their own.
+  _cache: undefined,
+  async loadOnce() {
+    if (this._cache === undefined) this._cache = await this.load();
+    return this._cache;
+  },
+  /** Drop the cache so the next loadOnce() re-fetches (after a completion). */
+  invalidate() {
+    this._cache = undefined;
+    this.data = null;
+  },
+
   /** Render the full calendar into a container element */
   render(containerId) {
     this.container = document.getElementById(containerId);
@@ -307,6 +321,7 @@ const DarbExercise = {
       const data = await res.json();
       if (data.ok) {
         this._showTierFeedback(data);
+        DarbDayProgress.refresh();  // update the day counter from server truth
       }
     } catch (e) {
       // Non-fatal — localStorage still works as cache
@@ -345,12 +360,9 @@ const DarbExercise = {
 
   /** Load existing mastery state for this exercise (from calendar data) */
   async _loadExistingState() {
-    // Quick check via calendar API
-    const res = await DarbSession.fetch('/api/calendar');
-    if (!res) return;
+    const cal = await DarbCalendar.loadOnce();
+    if (!cal || !cal.days) return;
     try {
-      const cal = await res.json();
-      if (!cal || !cal.days) return;
       const dayData = cal.days.find(d => d.week === this._week && d.day === this._day);
       if (!dayData) return;
 
@@ -460,6 +472,7 @@ const DarbRecording = {
       if (data.ok) {
         btn.innerHTML = '✅ Sent!';
         btn.style.background = 'var(--success)';
+        DarbDayProgress.refresh();  // update the day counter from server truth
 
         // Auto-check the Done checkbox (visual feedback)
         const checkbox = document.querySelector('.done-section .checkbox');
@@ -532,10 +545,68 @@ const DarbRecording = {
 
 
 // ============================================================
+//  DARB DAY PROGRESS — server-authoritative "done/N" counter + checkboxes
+// ============================================================
+// The exercise-page header shows a "✅ done/N" counter and each page has a
+// "Done" checkbox. Historically both were driven by per-device localStorage
+// (app.js Gamification), hardcoded to /4 and blind to speaking — so a student
+// who practised on their phone saw "not done" on their laptop, the count was
+// stuck at 4 even though the day has 5 exercises, and a stray local tick stuck
+// forever. This makes the SERVER (the calendar / practice_mastery) the source
+// of truth whenever the student is signed in: it shows the real done/N (4 or 5,
+// date-aware) and reflects the same state on every device. Fail-open: if the
+// student isn't signed in or the API is unreachable, app.js's localStorage view
+// is left untouched (never traps anyone behind a false "not done").
+const DarbDayProgress = {
+  async apply() {
+    if (!DarbSession.hasSession()) return;
+    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)/);
+    if (!match) return;
+    const w = parseInt(match[2]);
+    const d = parseInt(match[3]);
+
+    const cal = await DarbCalendar.loadOnce();
+    if (!cal || !cal.days) return;  // fail-open: leave localStorage view
+    const dayData = cal.days.find(x => x.week === w && x.day === d);
+    if (!dayData) return;
+
+    const exercises = dayData.exercises || {};
+    const total = Object.keys(exercises).length || 4;
+    const done = Object.values(exercises).filter(t => t > 0).length;
+
+    // Header counter + progress bar → server truth (done/N).
+    const counter = document.getElementById('tasks-done');
+    if (counter) counter.textContent = `✅ ${done}/${total}`;
+    const bar = document.getElementById('daily-progress');
+    if (bar) {
+      const pct = total ? (done / total) * 100 : 0;
+      bar.innerHTML = `<div class="progress-fill" style="width:${pct}%"></div>`;
+      bar.title = `${done}/${total} exercises done today`;
+    }
+
+    // This exercise's own "Done" checkbox → server-authoritative.
+    const exMatch = window.location.pathname.match(/\/(accent|shadowing|listening|vocab|speaking)/);
+    if (exMatch) {
+      const exKey = exMatch[1] === 'shadowing' ? 'shadow' : exMatch[1];
+      const checkbox = document.querySelector('.done-section .checkbox');
+      if (checkbox) checkbox.checked = (exercises[exKey] || 0) > 0;
+    }
+  },
+
+  /** Re-pull from the server after a completion so the counter updates live. */
+  refresh() {
+    DarbCalendar.invalidate();
+    return this.apply();
+  }
+};
+
+
+// ============================================================
 //  INITIALIZATION (runs on every page that loads darb.js)
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   DarbSession.init();
   DarbExercise.init();
   DarbRecording.init();
+  DarbDayProgress.apply();  // server-authoritative counter + checkbox (fail-open)
 });

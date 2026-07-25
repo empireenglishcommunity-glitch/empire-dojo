@@ -1330,3 +1330,93 @@ body::before {
   .darb-calendar { grid-template-columns: repeat(4, 1fr); }
   .darb-cal-cell { min-height: 50px; }
 }
+
+
+/* ============================================================
+   MAINTENANCE MODE (status.js) — soft banner + hard overlay
+   ============================================================ */
+.maint-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, #7a5c00, #b8860b);
+  color: #fff;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+.maint-banner-text { flex: 1; }
+.maint-banner .maint-reason { opacity: 0.9; font-style: italic; }
+.maint-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+.maint-close:hover { background: rgba(255, 255, 255, 0.35); }
+body.has-maint-banner { padding-top: 46px; }
+
+.maint-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(10, 12, 20, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.maint-card {
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  background: var(--bg-secondary, #16181f);
+  border: 1px solid var(--border, #2a2d38);
+  border-radius: 18px;
+  padding: 32px 24px;
+  box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5);
+}
+.maint-emoji { font-size: 3rem; margin-bottom: 8px; }
+.maint-card h1 {
+  color: var(--accent, #D4AF37);
+  font-size: 1.4rem;
+  margin: 4px 0 10px;
+}
+.maint-sub { color: var(--text-secondary, #c7ccd6); margin: 0 0 6px; }
+.maint-ar {
+  color: var(--text-secondary, #c7ccd6);
+  font-family: 'Cairo', sans-serif;
+  margin: 0 0 14px;
+}
+.maint-card .maint-reason {
+  color: var(--text-muted, #99a);
+  font-style: italic;
+  margin: 10px 0;
+}
+.maint-eta {
+  display: inline-block;
+  margin: 8px 0 16px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--accent, #D4AF37);
+}
+.maint-safe {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(46, 204, 113, 0.12);
+  color: var(--success, #2ecc71);
+  font-weight: 600;
+  line-height: 1.6;
+}

@@ -229,7 +229,8 @@ def pwa_head():
             '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'
             '<meta name="apple-mobile-web-app-title" content="Empire English">'
             '<link rel="apple-touch-icon" href="/logo.png">'
-            '<meta name="robots" content="noindex, nofollow">')
+            '<meta name="robots" content="noindex, nofollow">'
+            '<script src="/js/status.js"></script>')
 
 
 def copyright_footer():

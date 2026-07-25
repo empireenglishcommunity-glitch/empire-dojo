@@ -1552,3 +1552,13 @@ body.has-maint-banner { padding-top: 62px; }
   .maint-overlay .maint-card { transform: none; opacity: 1; }
   .maint-banner { transform: none; }
 }
+
+
+.maint-card .maint-hint {
+  margin-top: 16px;
+  font-size: 0.75rem;
+  color: var(--text-muted, #8a90a0);
+  opacity: 0.85;
+  animation: maintHintPulse 2s ease-in-out infinite;
+}
+@keyframes maintHintPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 0.95; } }

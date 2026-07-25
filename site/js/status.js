@@ -59,7 +59,9 @@
       '<div class="maint-safe">' +
         '<div dir="ltr" lang="en">' + COPY.safe_en + '</div>' +
         '<div dir="rtl" lang="ar">' + COPY.safe_ar + '</div>' +
-      '</div>';
+      '</div>' +
+      (isHard ? '' :
+        '<div class="maint-hint" dir="auto">Tap anywhere to continue · اضغط في أي مكان للمتابعة</div>');
     return card;
   }
 
@@ -107,8 +109,8 @@
         showBanner();                            // slim top banner drops in
       }, 650);
     }
-    // Auto-dock after the reveal holds; allow click/tap to skip.
-    var timer = setTimeout(dock, 2600);
+    // Auto-dock after a comfortable read (bilingual); allow click/tap to skip.
+    var timer = setTimeout(dock, 6500);
     ov.addEventListener('click', function () { clearTimeout(timer); dock(); });
   }
 

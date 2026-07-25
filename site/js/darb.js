@@ -622,10 +622,15 @@ const DarbDone = {
     if (fb) {
       fb.style.display = 'none';
       fb.addEventListener('click', () => this.mark());
-      // Reveal the fallback only after real interaction (or a 20s dwell), so
-      // it's never a zero-effort one-tap the instant the page loads.
+      // Reveal the fallback only after a genuine TAP/CLICK (answering a quiz,
+      // flipping a card, a button) — or a 20s dwell as a backstop. We listen
+      // for 'click', NOT 'pointerdown': on touch devices a scroll fires
+      // pointerdown, which was revealing the button the instant a student
+      // scrolled down to look — turning it back into a near-zero-effort tap.
+      // Scrolling never produces a 'click', so this keeps it hidden until the
+      // student actually interacts.
       const reveal = () => { if (fb.style.display === 'none') fb.style.display = ''; };
-      document.addEventListener('pointerdown', reveal, { once: true });
+      document.addEventListener('click', reveal, { once: true });
       setTimeout(reveal, 20000);
     }
     const cb = section.querySelector('.checkbox');

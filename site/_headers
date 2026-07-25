@@ -16,6 +16,18 @@
 /sw.js
   Cache-Control: no-cache, no-store, must-revalidate
 
+# The core app logic — app.js drives progress/quizzes, darb.js drives the
+# session, calendar, server-authoritative completion and the day counter.
+# We iterate on these often, and a stale copy means students keep old
+# behaviour (e.g. the wrong exercise count or a fixed bug) for up to the
+# cache lifetime. Always fetch fresh — they're small and load rarely enough
+# that the cost is negligible next to shipping fixes instantly.
+/js/app.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/js/darb.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
 # The web app manifest — small; keep it fresh so icon/name changes apply.
 /manifest.json
   Cache-Control: no-cache

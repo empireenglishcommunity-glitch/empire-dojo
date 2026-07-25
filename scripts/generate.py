@@ -477,12 +477,12 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 {q_html}
 </div>
 <div id="dictation-section" style="display:none"></div>
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'listening')"> {bl("Done", "تم")} ✅</label></div>
+<div class="done-section" data-exercise="listening"><div id="done-status" class="done-status" style="color:var(--text-secondary);font-size:0.85rem">{bl("Completes automatically when you answer the quiz.", "بيتقفل تلقائيًا لما تجاوب على الاختبار.")}</div><input type="checkbox" class="checkbox" style="display:none" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'listening')"><button class="btn btn-sm btn-outline done-fallback" style="margin-top:8px">✔️ {bl("I've finished — mark done", "خلصت — علّم تم")}</button></div>
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('listening')}
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>
-<script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));function checkAnswer(el,c){{el.closest('.options').querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');el.closest('.options').querySelector('[data-correct]').classList.add('correct')}}}}</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));var _lqTotal={len(questions)},_lqAnswered=0;function checkAnswer(el,c){{var opts=el.closest('.options');if(opts.dataset.answered)return;opts.dataset.answered='1';opts.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');opts.querySelector('[data-correct]').classList.add('correct')}}_lqAnswered++;if(_lqTotal>0&&_lqAnswered>=_lqTotal&&window.ExerciseComplete)window.ExerciseComplete();}}</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_vocab(level, week, day, theme, words):
@@ -509,7 +509,7 @@ def gen_vocab(level, week, day, theme, words):
 <button class="btn btn-sm btn-outline" onclick="Flashcard.next()">→</button></div></div>
 </div>
 <div id="quiz-section" style="display:none"></div>
-<div class="done-section"><label><input type="checkbox" class="checkbox" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"> {bl("Done", "تم")} ✅</label></div>
+<div class="done-section" data-exercise="vocab"><div id="done-status" class="done-status" style="color:var(--text-secondary);font-size:0.85rem">{bl("Completes automatically when you finish the quiz or review all the cards.", "بيتقفل تلقائيًا لما تخلّص الاختبار أو تراجع كل البطاقات.")}</div><input type="checkbox" class="checkbox" style="display:none" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'vocab')"><button class="btn btn-sm btn-outline done-fallback" style="margin-top:8px">✔️ {bl("I've finished — mark done", "خلصت — علّم تم")}</button></div>
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="speaking.html">{bl("Speaking", "التحدث")} →</a></div></div>
 {bottom_nav('vocab')}

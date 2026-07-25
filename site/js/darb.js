@@ -588,8 +588,10 @@ const DarbDayProgress = {
     const exMatch = window.location.pathname.match(/\/(accent|shadowing|listening|vocab|speaking)/);
     if (exMatch) {
       const exKey = exMatch[1] === 'shadowing' ? 'shadow' : exMatch[1];
+      const done = (exercises[exKey] || 0) > 0;
       const checkbox = document.querySelector('.done-section .checkbox');
-      if (checkbox) checkbox.checked = (exercises[exKey] || 0) > 0;
+      if (checkbox) checkbox.checked = done;
+      if (typeof DarbDone !== 'undefined') DarbDone.render(done);
     }
   },
 
@@ -602,6 +604,63 @@ const DarbDayProgress = {
 
 
 // ============================================================
+//  DARB DONE — completion UI for vocab/listening (Level 2)
+// ============================================================
+// vocab & listening auto-complete on GENUINE engagement (quiz finished, or
+// all flashcards reviewed) via window.ExerciseComplete(), called from app.js /
+// the listening quiz. A manual "I've finished" fallback exists ONLY as a
+// safety net and is revealed after the student interacts (or after 20s) — so
+// honest work is auto-credited, the old blind one-tap checkbox is gone, and no
+// technical edge case can ever trap a student. Completion reuses the existing
+// checkbox wiring (localStorage + DarbExercise → /api/practice-complete) by
+// dispatching a real 'change' event, so the server sync path is unchanged.
+const DarbDone = {
+  init() {
+    const section = document.querySelector('.done-section[data-exercise]');
+    if (!section) return;  // only the new vocab/listening done-sections
+    const fb = section.querySelector('.done-fallback');
+    if (fb) {
+      fb.style.display = 'none';
+      fb.addEventListener('click', () => this.mark());
+      // Reveal the fallback only after real interaction (or a 20s dwell), so
+      // it's never a zero-effort one-tap the instant the page loads.
+      const reveal = () => { if (fb.style.display === 'none') fb.style.display = ''; };
+      document.addEventListener('pointerdown', reveal, { once: true });
+      setTimeout(reveal, 20000);
+    }
+    const cb = section.querySelector('.checkbox');
+    if (cb && cb.checked) this.render(true);
+  },
+
+  /** Mark the current exercise done (auto or via the fallback button). */
+  mark() {
+    const cb = document.querySelector('.done-section .checkbox');
+    if (cb && !cb.checked) {
+      cb.checked = true;
+      cb.dispatchEvent(new Event('change', { bubbles: true }));  // localStorage + server sync
+    }
+    this.render(true);
+  },
+
+  /** Show the "completed" state + hide the fallback. When not done, leave
+   *  the page's default hint untouched. */
+  render(done) {
+    if (!done) return;
+    const status = document.getElementById('done-status');
+    if (status) {
+      status.innerHTML = '<span style="color:var(--success);font-weight:600">✅ Completed today <span class="ar-inline" lang="ar" dir="rtl">/ اتعمل النهارده</span></span>';
+    }
+    const fb = document.querySelector('.done-fallback');
+    if (fb) fb.style.display = 'none';
+  }
+};
+
+// Called by app.js (vocab quiz finished / all flashcards reviewed) and by the
+// listening quiz (all questions answered). Safe if darb.js loaded first.
+window.ExerciseComplete = function () { DarbDone.mark(); };
+
+
+// ============================================================
 //  INITIALIZATION (runs on every page that loads darb.js)
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -609,4 +668,5 @@ document.addEventListener('DOMContentLoaded', () => {
   DarbExercise.init();
   DarbRecording.init();
   DarbDayProgress.apply();  // server-authoritative counter + checkbox (fail-open)
+  DarbDone.init();          // vocab/listening completion UI (Level 2)
 });

@@ -1,0 +1,11 @@
+# Cloudflare Pages headers.
+# JS/CSS must always revalidate (cheap 304 when unchanged) so a maintenance
+# banner / bug fix / style change is NEVER served stale from the browser HTTP
+# cache. This is the root cause behind "the old banner kept showing" and the
+# earlier stale-CSS report. Media stays long-cached (immutable content).
+/js/*
+  Cache-Control: no-cache
+/css/*
+  Cache-Control: no-cache
+/audio/*
+  Cache-Control: public, max-age=31536000, immutable

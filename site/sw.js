@@ -14,7 +14,7 @@
  * activate, so this deploy also clears any stale empire-v1 assets.
  */
 
-const CACHE_NAME = 'empire-v3';
+const CACHE_NAME = 'empire-v4';
 const OFFLINE_URL = '/offline';
 
 // Pre-cache only the offline fallback + icons (NOT css/js — those are
@@ -67,8 +67,17 @@ self.addEventListener('fetch', (event) => {
 
   // NETWORK-FIRST for everything else (CSS, JS, HTML, JSON) — always fresh,
   // fall back to cache (then the offline page) only when the network fails.
+  //
+  // CRITICAL (PWA fix): use { cache: 'no-store' } so the fetch BYPASSES the
+  // browser HTTP cache and truly hits the network. Plain fetch(request)
+  // honors HTTP cache headers (e.g. max-age), so a long-cached file like
+  // status.js was returned stale even under "network-first" — which is why
+  // installed home-screen apps kept showing the OLD maintenance banner with
+  // no way to hard-refresh. Bypassing the HTTP cache makes network-first
+  // actually mean network-first; we still keep a copy in the SW cache for
+  // true offline fallback.
   event.respondWith(
-    fetch(request).then((response) => {
+    fetch(request, { cache: 'no-store' }).then((response) => {
       if (response.ok) {
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));

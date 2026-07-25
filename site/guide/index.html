@@ -67,6 +67,33 @@
       </div>
     </div>
 
+    <!-- Latest updates / What's New (auto-filled from the bot changelog) -->
+    <div class="card" id="guide-changelog-card" style="display:none;border-color:var(--accent)">
+      <h2>🆕 آخر التحديثات / Latest updates</h2>
+      <div id="guide-changelog"></div>
+    </div>
+    <script>
+      (function () {
+        var API = 'https://bot.empireenglish.online';
+        function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+        try {
+          fetch(API + '/api/changelog', { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
+              if (!d || !d.entries || !d.entries.length) return;
+              var html = d.entries.slice(0, 8).map(function (e) {
+                return '<div style="padding:8px 0;border-top:1px solid var(--border,#2a2d38)" dir="auto">' +
+                       '<span style="color:var(--text-muted,#8a90a0);font-size:0.8rem">' + esc(e.date) + '</span><br>' +
+                       esc(e.text) + '</div>';
+              }).join('');
+              document.getElementById('guide-changelog').innerHTML = html;
+              document.getElementById('guide-changelog-card').style.display = 'block';
+            })
+            .catch(function () { /* fail quietly */ });
+        } catch (e) { /* fail quietly */ }
+      })();
+    </script>
+
     <!-- 2. Access -->
     <div class="card">
       <h2>🔑 كيف تدخل إلى المنصة</h2>

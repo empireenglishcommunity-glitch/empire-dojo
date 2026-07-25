@@ -1446,3 +1446,54 @@ body.has-maint-banner { padding-top: 66px; }
 }
 .maint-card .maint-ar p { color: var(--text-secondary, #c7ccd6); margin: 0; }
 .maint-safe > div { margin: 3px 0; }
+
+
+/* ============================================================
+   "What's New" toast (status.js checkChangelog)
+   ============================================================ */
+.whatsnew-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9997;
+  max-width: 340px;
+  width: calc(100% - 32px);
+  background: var(--bg-secondary, #16181f);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(24px);
+  opacity: 0;
+  transition: transform .4s cubic-bezier(.2, .9, .2, 1), opacity .4s ease;
+}
+.whatsnew-toast.whatsnew-in { transform: none; opacity: 1; }
+.whatsnew-head {
+  color: var(--accent, #D4AF37);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+.whatsnew-body {
+  color: var(--text-secondary, #c7ccd6);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+.whatsnew-close {
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: var(--accent, #D4AF37);
+  color: #1a1a1a;
+  font-weight: 600;
+  cursor: pointer;
+}
+.whatsnew-close:hover { filter: brightness(1.05); }
+@media (max-width: 480px) {
+  .whatsnew-toast { right: 16px; left: 16px; width: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .whatsnew-toast { transition: none !important; transform: none; }
+}

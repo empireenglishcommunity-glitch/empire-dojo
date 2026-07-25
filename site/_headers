@@ -1,0 +1,21 @@
+# Cloudflare Pages custom headers.
+#
+# Goal: maintenance mode and "What's New" must flip INSTANTLY for every
+# student — including those who added the practice page to their phone home
+# screen (PWA). The status poller and the service worker must therefore never
+# be served from cache; otherwise a student can sit behind a stale banner (or
+# miss a real one) for up to the CDN/browser cache lifetime.
+
+# The maintenance/status poller — always fetch fresh so toggling maintenance
+# is immediate. (It's tiny; no-store costs nothing.)
+/js/status.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# The service worker itself — never cache, so a new SW (e.g. a cache-version
+# bump) is picked up on the very next visit instead of being pinned.
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# The web app manifest — small; keep it fresh so icon/name changes apply.
+/manifest.json
+  Cache-Control: no-cache

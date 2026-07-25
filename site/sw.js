@@ -14,7 +14,7 @@
  * activate, so this deploy also clears any stale empire-v1 assets.
  */
 
-const CACHE_NAME = 'empire-v3';
+const CACHE_NAME = 'empire-v4';
 const OFFLINE_URL = '/offline';
 
 // Pre-cache only the offline fallback + icons (NOT css/js — those are
@@ -67,8 +67,10 @@ self.addEventListener('fetch', (event) => {
 
   // NETWORK-FIRST for everything else (CSS, JS, HTML, JSON) — always fresh,
   // fall back to cache (then the offline page) only when the network fails.
+  // { cache: 'no-store' } bypasses the browser HTTP cache too, so a home-screen
+  // PWA can never be pinned to a stale banner/CSS by an earlier max-age.
   event.respondWith(
-    fetch(request).then((response) => {
+    fetch(request, { cache: 'no-store' }).then((response) => {
       if (response.ok) {
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));

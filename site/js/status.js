@@ -51,18 +51,18 @@
     ov.id = 'maint-overlay';
     ov.className = 'maint-overlay';
     // English block and Arabic block are fully separate (own dir) — clean,
-    // no bidi mixing. No countdown / no promised time; a calm "check back
-    // shortly" instead.
+    // no bidi mixing. No countdown and no promised time (no "quick"/"shortly"
+    // or Arabic قريب/شوية): it's back "as soon as it's ready", never a duration.
     ov.innerHTML =
       '<div class="maint-card">' +
         '<div class="maint-emoji">🔧</div>' +
         '<div class="maint-en" dir="ltr" lang="en">' +
-          '<h1>We\'ll be back shortly</h1>' +
-          '<p class="maint-sub">Empire English is getting a quick upgrade. Please check back a little later.</p>' +
+          '<h1>Maintenance in progress</h1>' +
+          '<p class="maint-sub">The practice page is paused while we make an improvement. It\'ll be back as soon as it\'s ready.</p>' +
         '</div>' +
         '<div class="maint-ar" dir="rtl" lang="ar">' +
-          '<h2>هنرجع قريب</h2>' +
-          '<p>إمباير إنجلش بيتحسّن دلوقتي. من فضلك ارجع بعد شوية.</p>' +
+          '<h2>جاري الصيانة</h2>' +
+          '<p>الصفحة متوقفة مؤقتًا وإحنا بنعمل تحسين، وهترجع أول ما تجهز.</p>' +
         '</div>' +
         reasonLine(s) +
         '<div class="maint-safe">' +

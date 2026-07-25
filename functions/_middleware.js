@@ -40,6 +40,17 @@ const LEVEL_FREE_PATHS = [
   '/review/',
 ];
 
+// SHA-256 of the owner/admin ops-guide passcode.
+// The plaintext passcode is NEVER stored in this repo — only its hash.
+// Knowing the hash does not grant access (it can't be reversed to the passcode).
+// To rotate: run `printf 'NEW_PASSCODE' | sha256sum` and paste the hex here.
+// May be overridden at runtime via env.OPS_GUIDE_PASSCODE_SHA256.
+const OPS_GUIDE_PASSCODE_SHA256 =
+  '0831461bf087b915122824136b7e8bce064536c503decbb6698b56ee6a5857ec';
+
+// How long a correct passcode keeps the ops guide unlocked on that device.
+const OPS_COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
+
 /**
  * Main middleware handler
  */
@@ -47,6 +58,12 @@ export async function onRequest(context) {
   const { request, env, next } = context;
   const url = new URL(request.url);
   const path = url.pathname;
+
+  // 0. Owner/admin ops guide — passcode-gated, INDEPENDENT of student sessions.
+  //    Intercept early so the student session logic never applies here.
+  if (path === '/ops-guide' || path.startsWith('/ops-guide/')) {
+    return handleOpsGuide(context);
+  }
 
   // 1. Public assets — always pass through
   if (path === '/' || PUBLIC_PATHS.some(p => path.startsWith(p) || path === p)) {
@@ -113,6 +130,95 @@ export async function onRequest(context) {
   }
 
   return response;
+}
+
+
+// ============================================================
+//  OPS GUIDE — PASSCODE GATE (owner/admin only)
+// ============================================================
+//
+// Server-side gate: the guide HTML is NEVER served unless the request
+// carries a cookie whose value hashes to the stored passcode hash.
+// The plaintext passcode lives only in the visitor's cookie (client side)
+// and in the owner's head — never in this repo.
+
+async function handleOpsGuide(context) {
+  const { request, env, next } = context;
+
+  const expectedHash =
+    (env && env.OPS_GUIDE_PASSCODE_SHA256) || OPS_GUIDE_PASSCODE_SHA256;
+
+  const cookieHeader = request.headers.get('Cookie') || '';
+  const supplied = parseCookie(cookieHeader, 'ops_pass');
+
+  if (supplied) {
+    const suppliedHash = await sha256hex(supplied);
+    if (timingSafeEqual(suppliedHash, expectedHash)) {
+      // Correct passcode — serve the actual guide (static asset).
+      return next();
+    }
+  }
+
+  // No/incorrect passcode — serve the passcode entry page (200, never cached).
+  // `wrong=1` when a bad passcode was submitted, so we can show an error.
+  const wrong = supplied ? '1' : '';
+  return new Response(opsGateHTML(wrong), {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  });
+}
+
+// SHA-256 of a string -> lowercase hex (Web Crypto, available at the edge).
+async function sha256hex(str) {
+  const data = new TextEncoder().encode(str);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  const bytes = new Uint8Array(digest);
+  let hex = '';
+  for (const b of bytes) hex += b.toString(16).padStart(2, '0');
+  return hex;
+}
+
+function opsGateHTML(wrong) {
+  const err = wrong
+    ? '<p style="color:#e74c3c;font-family:Cairo,sans-serif;margin-top:12px">رمز غير صحيح — حاول مرة أخرى.<br>Incorrect passcode — try again.</p>'
+    : '';
+  const maxAge = OPS_COOKIE_MAX_AGE;
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Empire English — Ops Guide</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="theme-color" content="#D4AF37">
+<link rel="stylesheet" href="/css/empire.css">
+<meta name="robots" content="noindex,nofollow">
+</head><body>
+<div class="container" style="max-width:440px;margin:0 auto;padding:60px 20px;text-align:center">
+  <img src="/logo.png" alt="Empire English" style="width:64px;height:64px;border-radius:50%;box-shadow:0 0 15px rgba(212,175,55,0.3)">
+  <h1 style="color:var(--accent);font-family:Cinzel,serif;margin-top:16px">Ops Guide</h1>
+  <p style="color:var(--text-secondary);font-family:Cairo,sans-serif">هذه الصفحة للمالك والإداريين فقط.<br>Owner &amp; admins only — enter the passcode.</p>
+  <form id="pf" style="margin-top:24px" onsubmit="return unlock(event)">
+    <input id="pc" type="password" autocomplete="off" autofocus placeholder="Passcode"
+      style="width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);
+             background:var(--bg-primary);color:var(--text-primary);font-size:1.1rem;text-align:center;direction:ltr">
+    <button class="btn" type="submit" style="margin-top:16px;width:100%">🔓 دخول / Unlock</button>
+  </form>
+  ${err}
+  <p style="color:var(--text-muted);font-size:0.8rem;margin-top:22px;font-family:Cairo,sans-serif">Empire English Community — Common Sense First 🏛️</p>
+</div>
+<script>
+function unlock(e){
+  e.preventDefault();
+  var v=document.getElementById('pc').value;
+  if(!v)return false;
+  // Store the passcode in a cookie; the edge verifies it by hash on reload.
+  document.cookie='ops_pass='+encodeURIComponent(v)+';path=/;max-age=${maxAge};SameSite=Lax;Secure';
+  location.reload();
+  return false;
+}
+</script>
+</body></html>`;
 }
 
 

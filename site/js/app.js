@@ -302,6 +302,8 @@ const Flashcard = {
     this.words = words;
     this.index = 0;
     this.flipped = false;
+    this._viewed = new Set();   // Level 2: distinct cards reviewed this session
+    this._completed = false;
     this.render();
   },
 
@@ -366,6 +368,18 @@ const Flashcard = {
     // Update counter
     const counter = document.getElementById('card-counter');
     if (counter) counter.textContent = `${this.index + 1} / ${this.words.length}`;
+
+    // Level 2: auto-complete the day's vocab once the student has reviewed
+    // every flashcard at least once (a genuine full pass). Covers students
+    // who study by cards rather than the quiz, so neither path blocks them.
+    if (this._viewed) {
+      this._viewed.add(this.index);
+      if (!this._completed && this.words.length > 0 &&
+          this._viewed.size >= this.words.length && window.ExerciseComplete) {
+        this._completed = true;
+        window.ExerciseComplete();
+      }
+    }
   },
 
   hearWord() {
@@ -784,6 +798,8 @@ const InteractiveVocab = {
 
     if (this.currentIndex >= this.words.length) {
       // Results screen — clearly the END, not a wrong answer.
+      // Level 2: finishing the quiz (answered every word) auto-completes vocab.
+      if (window.ExerciseComplete) window.ExerciseComplete();
       const pct = Math.round((this.score / this.words.length) * 100);
       const praise = pct >= 80 ? 'أحسنت! ممتاز! / Excellent!'
         : pct >= 50 ? 'جيد! واصل التمرين / Good — keep going!'

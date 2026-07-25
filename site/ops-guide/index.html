@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل المالك والإدارة | Empire English Ops</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta name="theme-color" content="#D4AF37">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="/css/empire.css">
+  <style>
+    .guide-body { font-family: 'Cairo', sans-serif; line-height: 1.9; }
+    .guide-body .card { text-align: right; }
+    .guide-body h2 { justify-content: flex-start; }
+    .step { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0; }
+    .step .num {
+      flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg,#D4AF37,#cd7f32); color: #0A0A0F;
+      font-weight: 700; display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; margin-top: 2px;
+    }
+    .step .txt { flex: 1; }
+    .en { direction: ltr; unicode-bidi: isolate; color: var(--accent-light); font-weight: 600; }
+    .callout {
+      background: rgba(212,175,55,0.06); border-right: 3px solid var(--accent);
+      border-radius: 10px; padding: 14px 18px; margin: 16px 0;
+    }
+    .warn { background: rgba(231,76,60,0.07); border-right-color: #e74c3c; }
+    .cmd {
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 12px 14px; margin: 9px 0; display: flex; gap: 12px; align-items: flex-start;
+    }
+    .cmd .name { flex: 0 0 auto; }
+    .cmd .desc { flex: 1; }
+    .cmd code, code { background: var(--bg-primary); padding: 2px 8px; border-radius: 6px; direction: ltr; display: inline-block; }
+    pre {
+      background: var(--bg-primary); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 16px; overflow-x: auto; direction: ltr; text-align: left;
+      font-size: 0.86rem; line-height: 1.7; margin: 12px 0;
+    }
+    pre code { background: none; padding: 0; }
+    .mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+    .mv-grid > div { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; }
+    .mv-grid h3 { color: var(--accent); margin-bottom: 8px; }
+    .eco { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; margin: 10px 0; }
+    .eco h3 { color: var(--accent); margin-bottom: 6px; }
+    .tag { display:inline-block; font-size:0.72rem; font-weight:700; padding:2px 9px; border-radius:999px; border:1px solid var(--border); color:var(--text-secondary); margin-inline-start:6px }
+    @media (max-width: 620px) { .mv-grid { grid-template-columns: 1fr; } }
+    .print-btn { position: sticky; top: 10px; z-index: 5; }
+    .toolbar { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:20px }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+      .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+      pre { background:#f4f4f4 !important; color:#000 !important }
+    }
+  </style>
+</head>
+<body>
+  <div class="container guide-body">
+
+    <div class="header">
+      <img src="/logo.png" alt="Empire English" class="logo" style="width:56px;height:56px;border-radius:50%;box-shadow:0 0 15px rgba(212,175,55,0.3)">
+      <h1>دليل المالك والإدارة — Ops Guide</h1>
+      <p class="subtitle">المرجع الكامل لتشغيل منظومة Empire English وإدارتها</p>
+    </div>
+
+    <div class="no-print toolbar">
+      <button class="btn print-btn" onclick="window.print()">🖨️ احفظ كـ PDF / اطبع</button>
+      <button class="btn btn-outline" onclick="if(confirm('تسجيل الخروج من دليل الإدارة على هذا الجهاز؟')){document.cookie='ops_pass=;path=/;max-age=0';location.reload();}">🔒 قفل / تسجيل الخروج</button>
+    </div>
+
+    <div class="card warn callout" style="border:1px solid #e74c3c">
+      🔐 <b>سرّي.</b> هذه الصفحة محميّة بكلمة مرور على مستوى الخادم وللمالك والإداريين فقط. لا تشارك رمز الدخول <span class="en">(BioRoMa)</span> مع الطلاب. لا يحتوي هذا الدليل على أي مفاتيح أو رموز سرّية — كل الأوامر تستخدم متغيّرات بديلة.
+    </div>
+
+    <!-- Mission & Vision -->
+    <div class="card" style="border-color:var(--accent)">
+      <h2>🏛️ الرسالة والرؤية</h2>
+      <div class="mv-grid">
+        <div>
+          <h3>🎯 الرسالة / Mission</h3>
+          <p>مساعدة المتعلّم العربي على بناء لغة إنجليزية حقيقية وواثقة وقابلة للاستخدام — عبر ممارسة يومية بسيطة، ومتابعة صادقة، ومجتمع داعم.</p>
+        </div>
+        <div>
+          <h3>🌅 الرؤية / Vision</h3>
+          <p>مجتمع من المتعلّمين يحضرون كل يوم، يدعمون بعضهم، ويحوّلون الجهد الثابت إلى طلاقة — حيث يكون التقدّم شخصياً ومُتتبَّعاً ويُحتفى به.</p>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:14px">
+        <b>القيم التشغيلية:</b> صفر إزعاج للطلاب • أي تغيير عبر PR يوافق عليه المالك • اختبارات خضراء قبل الدفع • نسخ احتياطية خارج الموقع • لا حذف لتاريخ Git. <span style="color:var(--accent)"><b>Common Sense First 🏛️</b></span>
+      </div>
+    </div>
+
+    <!-- Ecosystem map -->
+    <div class="card">
+      <h2>🗺️ خريطة المنظومة</h2>
+      <p>ثلاث مستودعات تحت منظّمة <span class="en">empireenglishcommunity-glitch</span>:</p>
+
+      <div class="eco">
+        <h3>🤖 empire-nexus <span class="tag">القلب / Backend</span></h3>
+        <p>بوت Discord التعليمي + بوت التليجرام للإدارة (Empire Ops) + الـ API والخادم. يعمل داخل حاوية <code>empire-english-bot</code> على الخادم (<span class="en">Docker Compose</span>). يخدم <span class="en">bot.empireenglish.online</span> (التغييرات، الجلسات، التقدّم).</p>
+      </div>
+      <div class="eco">
+        <h3>📚 empire-dojo <span class="tag">صفحة التمرين / Frontend</span></h3>
+        <p>منصة التمرين <span class="en">practice.empireenglish.online</span> على <span class="en">Cloudflare Pages</span> (مشروع <code>empire-practice</code>). تتضمّن بوابة الحافة <code>functions/_middleware.js</code> ودليل الطالب <code>/guide</code> ودليل الإدارة <code>/ops-guide</code> (هذه الصفحة).</p>
+      </div>
+      <div class="eco">
+        <h3>📖 empire-chronicle <span class="tag">الذاكرة / Docs</span></h3>
+        <p>التوثيق، استمرارية الجلسات، الخطط، عمليات التدقيق، ونظام ذاكرة الذكاء الاصطناعي. المرجع التاريخي للقرارات والإجراءات.</p>
+      </div>
+    </div>
+
+    <!-- Student journey recap -->
+    <div class="card">
+      <h2>🧭 رحلة الطالب (ملخّص)</h2>
+      <div class="step"><div class="num">1</div><div class="txt"><b>الربط:</b> الطالب يكتب <code>!link</code> في Discord → كود لمرة واحدة (15 دقيقة) → يفتح <span class="en">practice.empireenglish.online</span> → جلسة 60 يوماً.</div></div>
+      <div class="step"><div class="num">2</div><div class="txt"><b>المهام اليومية (7):</b> 5 على المنصة (Accent, Shadowing, Speaking = تسجيل؛ Listening, Vocabulary = تلقائي) + 2 على Discord (Writing, Community).</div></div>
+      <div class="step"><div class="num">3</div><div class="txt"><b>التقدّم:</b> عدّاد موثوق من الخادم؛ إكمال المهام الخمس = يوم أخضر. تزامن عبر الأجهزة.</div></div>
+      <div class="step"><div class="num">4</div><div class="txt"><b>الإتقان + المراجعة:</b> ترقية المستويات (Bronze→Diamond) + مراجعة الكلمات السابقة عبر نظام التكرار المتباعد (SRS).</div></div>
+    </div>
+
+    <!-- Commands: student -->
+    <div class="card">
+      <h2>💬 أوامر الطالب (Discord)</h2>
+      <div class="cmd"><div class="name"><code>!link</code></div><div class="desc">توليد كود دخول للمنصة (لمرة واحدة، صلاحية 15 دقيقة).</div></div>
+      <div class="cmd"><div class="name"><code>!progress</code></div><div class="desc">عرض تقدّم الطالب الحالي وحالة مهام اليوم.</div></div>
+      <div class="cmd"><div class="name"><code>!resetme</code></div><div class="desc">طلب الطالب إعادة ضبط سجلّه — يبدأ سير الموافقة (يتطلّب توثيق الموافقة + موافقة المالك).</div></div>
+    </div>
+
+    <!-- Commands: admin discord -->
+    <div class="card">
+      <h2>🛠️ أوامر الإدارة (Discord)</h2>
+      <div class="cmd"><div class="name"><code>!reset-student &lt;@user&gt;</code></div><div class="desc">بدء إعادة ضبط سجلّ طالب (يأخذ لقطة snapshot أولاً ويسجّل الموافقة).</div></div>
+      <div class="cmd"><div class="name"><code>!restore-student &lt;@user&gt;</code></div><div class="desc">استعادة سجلّ طالب من آخر لقطة (شبكة أمان بعد إعادة الضبط).</div></div>
+      <div class="cmd"><div class="name"><code>!approve-reset &lt;id&gt;</code></div><div class="desc">الموافقة على طلب إعادة ضبط معلّق.</div></div>
+      <div class="cmd"><div class="name"><code>!deny-reset &lt;id&gt;</code></div><div class="desc">رفض طلب إعادة ضبط معلّق.</div></div>
+      <div class="cmd"><div class="name"><code>!setlevel &lt;@user&gt; &lt;L0-L?&gt;</code></div><div class="desc">تعيين/تغيير مستوى الطالب.</div></div>
+      <div class="cmd"><div class="name"><code>!announce &lt;msg&gt;</code></div><div class="desc">إرسال إعلان للطلاب.</div></div>
+    </div>
+
+    <!-- Commands: telegram ops -->
+    <div class="card">
+      <h2>📟 أوامر بوت الإدارة (Telegram — Empire Ops)</h2>
+      <div class="cmd"><div class="name"><code>/status</code></div><div class="desc">صحّة النظام: الحاوية، الـ API، آخر نسخة احتياطية.</div></div>
+      <div class="cmd"><div class="name"><code>/students</code></div><div class="desc">عدد الطلاب ونشاطهم.</div></div>
+      <div class="cmd"><div class="name"><code>/maintenance</code></div><div class="desc">تفعيل/إيقاف وضع الصيانة.</div></div>
+      <div class="cmd"><div class="name"><code>/announce &lt;msg&gt;</code></div><div class="desc">بثّ إعلان.</div></div>
+      <div class="cmd"><div class="name"><code>/flag</code></div><div class="desc">مراجعة العناصر المعلّمة/المشبوهة.</div></div>
+      <div class="cmd"><div class="name"><code>/approve &lt;id&gt;</code> · <code>/deny &lt;id&gt;</code></div><div class="desc">الموافقة/الرفض على طلبات إعادة الضبط من التليجرام مباشرة.</div></div>
+      <div class="callout">🔔 يصلك إشعار على هذا البوت تلقائياً عند أي طلب إعادة ضبط أو حدث مهم — لا شيء يحدث لتاريخ طالب دون علمك.</div>
+    </div>
+
+    <!-- Governance -->
+    <div class="card" style="border-color:var(--accent)">
+      <h2>⚖️ الحوكمة — إعادة ضبط سجلّ الطالب</h2>
+      <p>هذا أهمّ سير عمل حسّاس. القاعدة: <b>لا حذف بلا موافقة موثّقة، ولا تنفيذ بلا موافقتك.</b></p>
+      <div class="step"><div class="num">1</div><div class="txt"><b>الطلب:</b> الطالب <code>!resetme</code> (أو الإدارة <code>!reset-student</code>).</div></div>
+      <div class="step"><div class="num">2</div><div class="txt"><b>الموافقة الموثّقة (Consent):</b> تُسجَّل موافقة الطالب في سجلّ الموافقات — دليل دائم أن الحذف تمّ بطلبه.</div></div>
+      <div class="step"><div class="num">3</div><div class="txt"><b>لقطة (Snapshot):</b> يُؤخذ نسخ كامل لسجلّ الطالب قبل أي تغيير (يتيح الاستعادة).</div></div>
+      <div class="step"><div class="num">4</div><div class="txt"><b>موافقة المالك:</b> يدخل الطلب قائمة الانتظار وتصلك إشعارات؛ توافق عبر <code>/approve</code> (تليجرام) أو <code>!approve-reset</code> (Discord).</div></div>
+      <div class="step"><div class="num">5</div><div class="txt"><b>التنفيذ:</b> بعد موافقتك تُنفَّذ إعادة الضبط. الاستعادة ممكنة عبر <code>!restore-student</code> من اللقطة عند الحاجة.</div></div>
+    </div>
+
+    <!-- Ops runbook -->
+    <div class="card">
+      <h2>🚀 دليل التشغيل (Runbook)</h2>
+      <p class="callout warn">⚠️ كل التغييرات عبر PR يوافق عليها المالك. الاختبارات يجب أن تكون خضراء قبل الدفع. لا دفع مباشر إلى <code>main</code>. لا إعادة كتابة لتاريخ Git.</p>
+
+      <h3 style="color:var(--accent);margin-top:14px">1) نشر البوت (empire-nexus)</h3>
+      <pre><code>ssh -i &lt;deploy_key&gt; root@&lt;SERVER_IP&gt; \
+  "cd /opt/empire-english-bot && git pull --ff-only && docker compose up -d --build"</code></pre>
+
+      <h3 style="color:var(--accent);margin-top:14px">2) نشر صفحة التمرين (empire-dojo)</h3>
+      <pre><code>cd empire-dojo
+CLOUDFLARE_ACCOUNT_ID=&lt;account_id&gt; CLOUDFLARE_API_TOKEN=&lt;token&gt; \
+  npx wrangler pages deploy site --project-name=empire-practice --branch=main</code></pre>
+
+      <h3 style="color:var(--accent);margin-top:14px">3) الاختبارات</h3>
+      <pre><code>cd empire-nexus/bots/discord-learning-bot
+python3.12 -m pytest tests/ -q   # يجب أن تمرّ كلها قبل أي دفع</code></pre>
+
+      <h3 style="color:var(--accent);margin-top:14px">4) مطابقة/مصالحة البيانات (Reconcile)</h3>
+      <pre><code>docker exec empire-english-bot python3 -m src.reconcile</code></pre>
+
+      <h3 style="color:var(--accent);margin-top:14px">5) النسخ الاحتياطي والاستعادة</h3>
+      <div class="step"><div class="num">•</div><div class="txt"><b>محلي:</b> نسخة يومية على الخادم (cron).</div></div>
+      <div class="step"><div class="num">•</div><div class="txt"><b>خارج الموقع (R2):</b> رفع تلقائي إلى Cloudflare R2 — bucket <code>empire-english-backups</code> عبر remote <code>r2</code> (cron 03:20).</div></div>
+      <div class="step"><div class="num">•</div><div class="txt"><b>تنبيه الحداثة:</b> فحص يومي (cron 04:00) — لو غابت النسخة أو تقادمت، يصلك تنبيه على تليجرام الإدارة.</div></div>
+      <div class="step"><div class="num">•</div><div class="txt"><b>اختبار الاستعادة:</b> جُرِّب واستُعيدت النسخة بنجاح؛ كرّر الاختبار دورياً.</div></div>
+      <div class="callout">🔑 كل الأسرار (مفاتيح النشر، رموز Cloudflare، مفاتيح R2) تُحفظ خارج المستودعات (على الخادم / أسرار المنصة) — لا تُكتب في أي صفحة أو كود.</div>
+    </div>
+
+    <!-- Roles & rules -->
+    <div class="card">
+      <h2>👑 الأدوار والقواعد</h2>
+      <p>• <b>المالك</b> (<span class="en">mahmoudashri66-star</span>): القرار النهائي، يوافق على كل PR، ويعتمد إعادة الضبط.</p>
+      <p>• <b>الإدارة/المشرفون:</b> الدعم اليومي، الإعلانات، مساعدة الطلاب، تصعيد الطلبات الحسّاسة للمالك.</p>
+      <p>• <b>قاعدة ذهبية:</b> صفر إزعاج للطلاب — أي تغيير يُختبر ويُراجَع أولاً. تحديث الدليل في نفس PR الخاص بأي ميزة.</p>
+      <p>• <b>الأمان:</b> لا تشارك رمز هذه الصفحة؛ دوّر الرمز عند الحاجة (حدّث الهاش في <code>_middleware.js</code>).</p>
+    </div>
+
+    <div class="no-print" style="text-align:center;margin:24px 0">
+      <a href="/guide" class="btn btn-outline">📗 دليل الطالب</a>
+    </div>
+
+    <div class="footer">Empire English Community — Ops Guide (Confidential) — Common Sense First 🏛️</div>
+  </div>
+</body>
+</html>

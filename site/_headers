@@ -28,6 +28,10 @@
 /js/darb.js
   Cache-Control: no-cache, no-store, must-revalidate
 
+# The weekly-assessment (Itqan) runner — iterate freely, always fresh.
+/js/assessment.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
 # The web app manifest — small; keep it fresh so icon/name changes apply.
 /manifest.json
   Cache-Control: no-cache

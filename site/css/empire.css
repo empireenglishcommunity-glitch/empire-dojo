@@ -1183,6 +1183,45 @@ body::before {
 .darb-cal-cell.tier-platinum { border-bottom-color: #8BE0E0; }
 .darb-cal-cell.tier-diamond { border-bottom-color: #B9F2FF; }
 
+/* ─── Itqan weekly-assessment stop ───────────────────────── */
+/* The per-week "Weekly Test" marker that sits under each week's days.
+   Only rendered when the itqan_weekly_assessment flag is on server-side. */
+.darb-assessment-stop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 4px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--text-muted);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+a.darb-assessment-stop:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+}
+.darb-assessment-stop .asmt-icon { font-size: 1.3rem; line-height: 1; }
+.darb-assessment-stop .asmt-text { display: flex; flex-direction: column; gap: 2px; }
+.darb-assessment-stop .asmt-title { font-weight: 600; font-size: 0.85rem; }
+.darb-assessment-stop .asmt-sub { font-size: 0.72rem; color: var(--text-muted); }
+
+/* State accents */
+.darb-assessment-stop.asmt-locked { opacity: 0.72; cursor: default; }
+.darb-assessment-stop.asmt-available { border-left-color: var(--accent); }
+.darb-assessment-stop.asmt-available .asmt-title { color: var(--accent-light); }
+.darb-assessment-stop.asmt-cooldown { border-left-color: #F39C12; opacity: 0.85; cursor: default; }
+.darb-assessment-stop.asmt-retake { border-left-color: #F39C12; }
+.darb-assessment-stop.asmt-mastered {
+  border-left-color: var(--success);
+  background: linear-gradient(145deg, rgba(46,204,113,0.08), var(--bg-card));
+  cursor: default;
+}
+.darb-assessment-stop.asmt-mastered .asmt-title { color: var(--success); }
+
 /* Tier badge (shown in exercise page after completion) */
 .tier-badge {
   display: inline-flex;

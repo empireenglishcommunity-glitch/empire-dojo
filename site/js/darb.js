@@ -176,6 +176,11 @@ const DarbCalendar = {
 
     const { days, level, tier_names, level_complete, today_index } = this.data;
 
+    // Itqan weekly-assessment stops (present only when the flag is on server-
+    // side; absent → nothing renders, so the calendar is unchanged).
+    const asmtByWeek = {};
+    (this.data.assessments || []).forEach(a => { asmtByWeek[a.week] = a; });
+
     // Group days by week
     const weeks = {};
     days.forEach(d => {
@@ -251,9 +256,58 @@ const DarbCalendar = {
         </a>`;
       }
       html += `</div>`;
+
+      // Itqan: the weekly-assessment "stop" sits right after its week's days.
+      if (asmtByWeek[w]) {
+        html += this._assessmentStopHtml(asmtByWeek[w], level);
+      }
     }
 
     this.container.innerHTML = html;
+  },
+
+  /** Render one weekly-assessment stop under its week. States:
+   *  locked | available | in_progress | cooldown | not_yet | mastered. */
+  _assessmentStopHtml(a, level) {
+    const w = a.week;
+    const map = {
+      locked:      { icon: '🔒', cls: 'asmt-locked',    en: 'Weekly Test — locked',  ar: 'الاختبار الأسبوعي — مقفول',
+                     sub: 'Finish every day of this week to unlock', subAr: 'خلّص كل أيام الأسبوع علشان يفتح', link: false },
+      available:   { icon: '📝', cls: 'asmt-available',  en: 'Weekly Test — Start',   ar: 'الاختبار الأسبوعي — ابدأ',
+                     sub: 'Show what you mastered this week', subAr: 'ورّينا اللي اتعلمته الأسبوع ده', link: true },
+      in_progress: { icon: '▶️', cls: 'asmt-available',  en: 'Resume your test',      ar: 'كمّل اختبارك',
+                     sub: '', subAr: '', link: true },
+      cooldown:    { icon: '⏳', cls: 'asmt-cooldown',   en: 'Weekly Test',           ar: 'الاختبار الأسبوعي',
+                     sub: 'You can try again soon', subAr: 'تقدر تعيد قريّب', link: false },
+      not_yet:     { icon: '🔁', cls: 'asmt-retake',     en: 'Weekly Test — Retake',  ar: 'الاختبار الأسبوعي — أعِد',
+                     sub: 'Review this week, then try again', subAr: 'راجع الأسبوع وبعدين أعِد', link: true },
+      mastered:    { icon: '🏅', cls: 'asmt-mastered',   en: 'Week Mastered!',        ar: 'أتقنت الأسبوع!',
+                     sub: '', subAr: '', link: false },
+    };
+    const s = map[a.state] || map.locked;
+
+    // Locked: if we know exactly which days remain, say how many.
+    let sub = s.sub, subAr = s.subAr;
+    if (a.state === 'locked' && Array.isArray(a.days_remaining) && a.days_remaining.length) {
+      const n = a.days_remaining.length;
+      sub = `${n} day${n > 1 ? 's' : ''} left to unlock`;
+      subAr = `فاضل ${n} ${n > 1 ? 'أيام' : 'يوم'} علشان يفتح`;
+    }
+
+    const href = s.link ? `/assessment/?week=${w}` : null;
+    const tag = href ? 'a' : 'div';
+    const attrs = href ? `href="${href}"` : '';
+    const subHtml = (sub || subAr)
+      ? `<span class="asmt-sub">${sub}${subAr ? ` <span class="ar-inline" lang="ar" dir="rtl">/ ${subAr}</span>` : ''}</span>`
+      : '';
+
+    return `<${tag} class="darb-assessment-stop ${s.cls}" ${attrs} data-week="${w}" data-state="${a.state}">
+      <span class="asmt-icon">${s.icon}</span>
+      <span class="asmt-text">
+        <span class="asmt-title">${s.en} <span class="ar-inline" lang="ar" dir="rtl">/ ${s.ar}</span></span>
+        ${subHtml}
+      </span>
+    </${tag}>`;
   },
 
   /** Format ISO date to short display (e.g. "23 Jul") */

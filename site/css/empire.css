@@ -1536,3 +1536,95 @@ body.has-maint-banner { padding-top: 66px; }
 @media (prefers-reduced-motion: reduce) {
   .whatsnew-toast { transition: none !important; transform: none; }
 }
+
+
+/* ============================================================
+   ITQAN — Weekly Assessment page (/assessment/)
+   ============================================================ */
+
+/* Intro */
+.asmt-rules { list-style: none; padding: 0; margin: 0 0 16px; }
+.asmt-rules li {
+  padding: 10px 12px; margin-bottom: 8px;
+  background: var(--bg-primary); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 0.9rem; color: var(--text-secondary);
+}
+.asmt-sample {
+  border: 1px dashed var(--border); border-radius: var(--radius-sm);
+  padding: 14px; margin-top: 8px; background: rgba(212,175,55,0.05);
+}
+.asmt-sample-label { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin: 0 0 6px; }
+.asmt-sample-q { margin: 4px 0; color: var(--text-primary); }
+.asmt-sample-a { margin: 4px 0; color: var(--text-muted); font-size: 0.88rem; }
+
+/* Runner top bar */
+.asmt-runbar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.asmt-progress { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+.asmt-timer {
+  font-size: 1.05rem; font-weight: 700; color: var(--text-primary);
+  font-variant-numeric: tabular-nums; padding: 4px 10px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-card);
+}
+.asmt-timer-warn { color: #fff; background: #e74c3c; border-color: #e74c3c; animation: asmtpulse 1s infinite; }
+@keyframes asmtpulse { 50% { opacity: 0.6; } }
+
+.asmt-progressbar { height: 6px; background: var(--bg-primary); border-radius: 4px; overflow: hidden; margin-bottom: 14px; }
+.asmt-progressfill { height: 100%; background: var(--accent); transition: width 0.25s ease; }
+
+/* Item */
+.asmt-skill-tag {
+  display: inline-block; font-size: 0.72rem; font-weight: 600;
+  color: var(--accent-light); background: rgba(212,175,55,0.1);
+  border-radius: 999px; padding: 3px 10px; margin-bottom: 10px;
+}
+.asmt-q { font-size: 1.05rem; color: var(--text-primary); margin: 4px 0 6px; line-height: 1.5; }
+.asmt-q-en { font-size: 0.86rem; color: var(--text-muted); margin: 0 0 8px; }
+.asmt-prompt-big {
+  font-size: 2rem; font-weight: 700; text-align: center; color: var(--accent);
+  margin: 14px 0; word-break: break-word;
+}
+.asmt-pron { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin: -6px 0 6px; }
+
+.asmt-input {
+  width: 100%; padding: 13px 14px; font-size: 1rem;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--bg-primary); color: var(--text-primary); box-sizing: border-box;
+}
+.asmt-input:focus { outline: none; border-color: var(--accent); }
+.asmt-textarea { resize: vertical; min-height: 90px; font-family: inherit; }
+
+.asmt-targets { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.asmt-targets-label { font-size: 0.8rem; color: var(--text-muted); margin-right: 4px; }
+.asmt-chip {
+  font-size: 0.82rem; padding: 3px 10px; border-radius: 999px;
+  background: rgba(212,175,55,0.12); color: var(--accent-light); border: 1px solid rgba(212,175,55,0.25);
+}
+
+/* Recorder */
+.asmt-recorder { text-align: center; margin-top: 12px; }
+.asmt-rec-timer { display: inline-block; margin-left: 10px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+.asmt-rec-hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; }
+
+.asmt-item-msg { text-align: center; color: #e74c3c; font-size: 0.85rem; margin-top: 10px; min-height: 1em; }
+
+/* Results — scores */
+.asmt-scores { margin: 16px 0 4px; text-align: left; }
+.asmt-score { margin-bottom: 12px; }
+.asmt-score-top { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px; }
+.asmt-bar { height: 10px; background: var(--bg-primary); border-radius: 6px; overflow: hidden; }
+.asmt-bar-fill { height: 100%; background: var(--text-muted); transition: width 0.5s ease; }
+.asmt-bar-fill.asmt-bar-pass { background: var(--success); }
+.asmt-bar-fill.asmt-bar-low { background: #e67e22; }
+.asmt-celebrate { background: linear-gradient(150deg, rgba(46,204,113,0.10), var(--bg-card)); }
+
+/* Results — per-item review */
+.asmt-review { margin-top: 6px; }
+.asmt-review-row { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.asmt-review-row:last-child { border-bottom: none; }
+.asmt-ok { color: var(--success); font-weight: 700; }
+.asmt-bad { color: #e74c3c; font-weight: 700; }
+.asmt-review-skill { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+.asmt-review-detail { font-size: 0.85rem; color: var(--text-muted); margin-top: 3px; }

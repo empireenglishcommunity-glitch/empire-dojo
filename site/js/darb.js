@@ -379,24 +379,17 @@ const DarbExercise = {
           doneSection.appendChild(div);
         }
 
-        // Redo path (fix): vocabulary + listening complete via the "Done"
-        // checkbox, which is restored to CHECKED on revisit — so re-ticking
-        // it (and thus re-submitting) is impossible, and the tier could never
-        // climb past bronze on a repeat day. (Recording exercises don't need
-        // this — re-recording + Send already re-submits.) Give these two an
-        // explicit "redo to earn the next tier" button that re-invokes the
-        // same completion call. The server still guards same-day repeats.
+        // Redo hint (vocab + listening): re-doing the flashcards / quiz now
+        // levels the tier up instantly (DarbDone.mark always re-submits).
+        // Show a hint pointing at the real-work redo — NOT a one-tap button
+        // (that would let the tier be farmed without practice).
         if ((this._exercise === 'vocab' || this._exercise === 'listening')
-            && doneSection && !doneSection.querySelector('.darb-redo-btn')) {
-          const redo = document.createElement('button');
-          redo.className = 'btn btn-sm btn-outline darb-redo-btn';
-          redo.style.cssText = 'margin-top:10px;display:block;margin-left:auto;margin-right:auto';
-          redo.innerHTML = '🔄 Redo — earn next tier <span class="ar-inline" lang="ar" dir="rtl">/ راجع تاني علشان ترتقي</span>';
-          redo.onclick = () => {
-            redo.disabled = true;
-            Promise.resolve(this._submitCompletion()).finally(() => { redo.disabled = false; });
-          };
-          doneSection.appendChild(redo);
+            && tier < 5 && doneSection && !doneSection.querySelector('.darb-redo-hint')) {
+          const hint = document.createElement('div');
+          hint.className = 'darb-redo-hint';
+          hint.style.cssText = 'margin-top:8px;text-align:center;color:var(--text-muted);font-size:0.8rem';
+          hint.innerHTML = '🔄 Do it again to earn the next tier <span class="ar-inline" lang="ar" dir="rtl">/ اعمله تاني علشان ترتقي للمستوى اللي بعده</span>';
+          doneSection.appendChild(hint);
         }
       }
     } catch (e) {
@@ -660,8 +653,13 @@ const DarbDone = {
   /** Mark the current exercise done (auto or via the fallback button). */
   mark() {
     const cb = document.querySelector('.done-section .checkbox');
-    if (cb && !cb.checked) {
-      cb.checked = true;
+    if (cb) {
+      // Instant-tiers model: ALWAYS (re-)submit on a genuine completion —
+      // even when the box was already checked from a previous visit — so
+      // re-doing the flashcards / quiz actually levels the tier up. (The old
+      // `!cb.checked` guard silently skipped every redo, freezing vocab/
+      // listening at bronze.) The server caps the tier at Diamond.
+      if (!cb.checked) cb.checked = true;
       cb.dispatchEvent(new Event('change', { bubbles: true }));  // localStorage + server sync
     }
     this.render(true);

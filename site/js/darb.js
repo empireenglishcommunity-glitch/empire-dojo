@@ -378,6 +378,26 @@ const DarbExercise = {
           div.innerHTML = `<span class="tier-badge tier-${tierNames[tier]}">&#x2B50; ${tierNames[tier]}</span>`;
           doneSection.appendChild(div);
         }
+
+        // Redo path (fix): vocabulary + listening complete via the "Done"
+        // checkbox, which is restored to CHECKED on revisit — so re-ticking
+        // it (and thus re-submitting) is impossible, and the tier could never
+        // climb past bronze on a repeat day. (Recording exercises don't need
+        // this — re-recording + Send already re-submits.) Give these two an
+        // explicit "redo to earn the next tier" button that re-invokes the
+        // same completion call. The server still guards same-day repeats.
+        if ((this._exercise === 'vocab' || this._exercise === 'listening')
+            && doneSection && !doneSection.querySelector('.darb-redo-btn')) {
+          const redo = document.createElement('button');
+          redo.className = 'btn btn-sm btn-outline darb-redo-btn';
+          redo.style.cssText = 'margin-top:10px;display:block;margin-left:auto;margin-right:auto';
+          redo.innerHTML = '🔄 Redo — earn next tier <span class="ar-inline" lang="ar" dir="rtl">/ راجع تاني علشان ترتقي</span>';
+          redo.onclick = () => {
+            redo.disabled = true;
+            Promise.resolve(this._submitCompletion()).finally(() => { redo.disabled = false; });
+          };
+          doneSection.appendChild(redo);
+        }
       }
     } catch (e) {
       // Non-fatal

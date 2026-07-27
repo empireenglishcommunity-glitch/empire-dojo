@@ -224,11 +224,12 @@ const ItqanAssessment = {
           autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="English word / الكلمة بالإنجليزي">`;
     } else if (item.skill === 'listening') {
       html += `
-        <p class="asmt-q">Listen, then write what it means (Arabic). <span class="ar-inline" lang="ar" dir="rtl">/ اسمع، وبعدين اكتب المعنى بالعربي.</span></p>
+        <p class="asmt-q">Listen, then type the English word you heard. <span class="ar-inline" lang="ar" dir="rtl">/ اسمع، واكتب الكلمة الإنجليزية اللي سمعتها.</span></p>
         <div style="text-align:center;margin:14px 0">
           <button id="asmt-play" class="btn btn-outline" type="button">🔊 Play <span class="ar-inline" lang="ar" dir="rtl">/ اسمع</span></button>
         </div>
-        <input id="asmt-text" class="asmt-input" type="text" autocomplete="off" lang="ar" dir="rtl" placeholder="المعنى بالعربي">`;
+        <input id="asmt-text" class="asmt-input" type="text" autocomplete="off"
+          autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="the word you heard / الكلمة اللي سمعتها">`;
     } else if (item.skill === 'pronunciation') {
       html += `
         <p class="asmt-q">Listen, then record yourself saying this word. <span class="ar-inline" lang="ar" dir="rtl">/ اسمع، وبعدين سجّل نفسك بتقولها.</span></p>

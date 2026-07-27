@@ -1678,3 +1678,77 @@ body.has-maint-banner { padding-top: 66px; }
   .cert { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border-color: #b8962e; }
   .cert-actions, .nav, .header, .darb-wm { display: none !important; }
 }
+
+
+/* ============================================================
+   ITQAN — pilot polish: bidi, results redesign, honesty banner
+   ============================================================ */
+
+/* Bidi safety: isolate every inline-Arabic span so mixing EN/AR on one line
+   never reorders slashes/punctuation. Applies site-wide. */
+.ar-inline { unicode-bidi: isolate; }
+.asmt-ans { unicode-bidi: isolate; font-weight: 600; }
+
+/* Honesty banner (runner) — animated scan line + Arabic reminder */
+.asmt-honesty {
+  position: relative;
+  margin: 0 0 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  overflow: hidden;
+}
+.asmt-honesty-track {
+  position: absolute; top: 0; left: 0; height: 3px; width: 100%;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background-size: 40% 100%; background-repeat: no-repeat;
+  animation: asmt-scan 2.6s linear infinite;
+}
+@keyframes asmt-scan { 0% { background-position: -40% 0; } 100% { background-position: 140% 0; } }
+.asmt-honesty-text { margin: 2px 0 0; font-size: 0.8rem; color: var(--text-secondary); text-align: center; }
+
+/* Results hero + seal */
+.asmt-result-hero { text-align: center; }
+.asmt-seal { font-size: 3.4rem; line-height: 1; animation: asmt-pop 0.5s ease; }
+@keyframes asmt-pop { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+.asmt-result-title { margin: 8px 0 4px; }
+.asmt-pass .asmt-result-title { color: var(--success); }
+.asmt-result-sub { color: var(--text-secondary); font-size: 0.9rem; margin: 0 0 6px; }
+.asmt-distinction { background: linear-gradient(150deg, rgba(212,175,55,0.14), var(--bg-card)); border-color: var(--accent); }
+.asmt-flag-note {
+  font-size: 0.82rem; color: var(--text-secondary);
+  background: var(--bg-primary); border-radius: 8px; padding: 8px 10px; margin: 10px 0 0;
+}
+
+/* Score rings (conic-gradient, filled by JS) */
+.asmt-rings { display: flex; justify-content: center; gap: 30px; margin: 18px 0; padding-bottom: 34px; }
+.asmt-ring {
+  width: 104px; height: 104px; border-radius: 50%;
+  background: conic-gradient(var(--text-muted) 0, var(--bg-primary) 0);
+  display: flex; align-items: center; justify-content: center; position: relative;
+  transition: background 0.3s ease;
+}
+.asmt-ring-face {
+  width: 80px; height: 80px; border-radius: 50%; background: var(--bg-card);
+  display: flex; align-items: center; justify-content: center;
+}
+.asmt-ring-num { font-weight: 700; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.asmt-ring.ring-pass .asmt-ring-num { color: var(--success); }
+.asmt-ring.ring-low .asmt-ring-num { color: #e67e22; }
+.asmt-ring-label {
+  position: absolute; bottom: -32px; left: -8px; right: -8px;
+  text-align: center; font-size: 0.72rem; color: var(--text-secondary); line-height: 1.15;
+}
+
+/* Confetti on a pass */
+.asmt-confetti { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+.asmt-confetti span {
+  position: absolute; top: -12px; width: 9px; height: 14px; border-radius: 2px; opacity: 0.9;
+  animation: asmt-fall 3.2s linear forwards;
+}
+@keyframes asmt-fall { to { transform: translateY(106vh) rotate(560deg); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .asmt-honesty-track, .asmt-seal, .asmt-confetti span { animation: none; }
+}

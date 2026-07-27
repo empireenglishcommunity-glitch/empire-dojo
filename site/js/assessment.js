@@ -263,12 +263,15 @@ const ItqanAssessment = {
       playBtn.onclick = () => TTS.speak(p.word, 0.8);
     }
 
-    // Wire recorder for audio items.
+    // Gate "Next": audio items need a recording; text items need a typed answer.
     if (item.skill === 'pronunciation' || item.skill === 'speaking') {
       this._wireRecorder();
       this._setNextEnabled(false); // require a recording first
     } else {
-      this._setNextEnabled(true);
+      const input = document.getElementById('asmt-text');
+      const sync = () => this._setNextEnabled(!!(input && input.value.trim()));
+      if (input) input.addEventListener('input', sync);
+      sync(); // start disabled until they type something
     }
 
     // Last item → change the button label.
@@ -463,52 +466,46 @@ const ItqanAssessment = {
     const v = data.verdict || {};
     const items = data.items || [];
     const el = document.getElementById('asmt-results');
-    let html = '';
+    const passed = v.result === 'mastered';
+    const dist = passed && v.distinction;
 
+    // A flagged attempt is always a not-yet now — add a gentle, hopeful note
+    // (no more blank "being reviewed" limbo; the student always sees a result).
+    let flagNote = '';
     if (v.status === 'flagged') {
-      html += `
-        <div class="card" style="text-align:center">
-          <div style="font-size:2.6rem">🧑‍🏫</div>
-          <h2>Being reviewed</h2>
-          <p style="color:var(--text-secondary);margin:12px 0">
-            Thanks! Your test was submitted and your teacher is reviewing it. You'll hear back soon.
-            <span class="ar-inline" lang="ar" dir="rtl">/ شكراً! تم تسليم اختبارك والمُعلّم بيراجعه. هيتواصل معاك قريّب.</span>
-          </p>
-        </div>`;
-    } else if (v.result === 'mastered') {
-      const dist = v.distinction;
-      html += `
-        <div class="card asmt-celebrate" style="text-align:center">
-          <div style="font-size:3.2rem">${dist ? '⭐🏅' : '🏅'}</div>
-          <h2 style="color:var(--success)">${dist ? 'Distinction!' : 'Week Mastered!'}</h2>
-          <p style="color:var(--text-secondary);margin:10px 0">
-            You passed week ${this.week}. ${dist ? 'Outstanding work!' : 'Great work!'}
-            <span class="ar-inline" lang="ar" dir="rtl">/ عديت اختبار الأسبوع ${this.week}. ${dist ? 'مستوى ممتاز!' : 'شغل رائع!'}</span>
-          </p>
-          ${this._scoresHtml(v)}
-        </div>`;
-    } else {
-      html += `
-        <div class="card" style="text-align:center">
-          <div style="font-size:2.8rem">💪</div>
-          <h2>Not yet — you're close</h2>
-          <p style="color:var(--text-secondary);margin:10px 0">
-            Review the notes below, then try again after a short break. Your daily progress is safe.
-            <span class="ar-inline" lang="ar" dir="rtl">/ راجع الملاحظات تحت وأعِد بعد شوية. تقدّمك اليومي في أمان.</span>
-          </p>
-          ${this._scoresHtml(v)}
-        </div>`;
+      flagNote = (v.flag_reason === 'ai_error')
+        ? `<p class="asmt-flag-note">🧑‍🏫 Your recorded answers are being double-checked by your teacher — your result may improve. <span class="ar-inline" lang="ar" dir="rtl">/ تسجيلاتك بيراجعها المعلّم، ونتيجتك ممكن تتحسّن.</span></p>`
+        : `<p class="asmt-flag-note">🧑‍🏫 So close! Your teacher will take a look — you might just make it. <span class="ar-inline" lang="ar" dir="rtl">/ قربت جدًا! المعلّم هيبص على نتيجتك.</span></p>`;
     }
 
-    // Per-item review (skip for flagged — teacher will handle it).
-    if (v.status !== 'flagged' && items.length) {
+    const seal = dist ? '⭐🏅' : (passed ? '🏅' : '💪');
+    const title = dist ? 'Distinction!' : (passed ? 'Week Mastered!' : "Not yet — you're close");
+    const titleAr = dist ? 'امتياز!' : (passed ? 'أتقنت الأسبوع!' : 'لسه — قربت');
+    const sub = passed
+      ? `You passed Week ${this.week}. ${dist ? 'Outstanding work!' : 'Great work!'}`
+      : `Review the notes below, then try again after a short break. Your daily progress is safe.`;
+    const subAr = passed
+      ? `عدّيت اختبار الأسبوع ${this.week}. ${dist ? 'مستوى ممتاز!' : 'شغل رائع!'}`
+      : `راجع الملاحظات تحت وأعِد بعد شوية. تقدّمك اليومي في أمان.`;
+
+    let html = `
+      <div class="card asmt-result-hero ${passed ? 'asmt-pass' : 'asmt-notyet'}${dist ? ' asmt-distinction' : ''}">
+        <div class="asmt-seal">${seal}</div>
+        <h2 class="asmt-result-title">${title} <span class="ar-inline" lang="ar" dir="rtl">/ ${titleAr}</span></h2>
+        <p class="asmt-result-sub">${sub} <span class="ar-inline" lang="ar" dir="rtl">/ ${subAr}</span></p>
+        ${flagNote}
+        ${this._scoresHtml(v)}
+      </div>`;
+
+    // Per-item review (always shown now — students always get their feedback).
+    if (items.length) {
       html += `<div class="card"><h3 style="margin-top:0">📋 Review <span class="ar-inline" lang="ar" dir="rtl">/ المراجعة</span></h3><div class="asmt-review">`;
       items.forEach(it => {
         const ok = it.correct === 1 || it.correct === true;
         const mark = ok ? '<span class="asmt-ok">✓</span>' : '<span class="asmt-bad">✗</span>';
         let detail = it.feedback ? this._esc(it.feedback) : (ok ? 'Correct!' : '');
         if (!ok && it.expected) {
-          detail = `Correct answer: <strong>${this._esc(it.expected)}</strong>` + (it.feedback ? ` — ${this._esc(it.feedback)}` : '');
+          detail = `Correct answer: <bdi class="asmt-ans">${this._esc(it.expected)}</bdi>` + (it.feedback ? ` — ${this._esc(it.feedback)}` : '');
         }
         html += `
           <div class="asmt-review-row">
@@ -527,24 +524,63 @@ const ItqanAssessment = {
     el.innerHTML = html;
     this._show('asmt-results');
     window.scrollTo(0, 0);
+    requestAnimationFrame(() => this._animateScores(v));
+    if (passed) this._confetti();
   },
 
   _scoresHtml(v) {
-    const bar = (label, ar, val, pass) => {
-      const pct = Math.max(0, Math.min(100, Math.round(val || 0)));
-      const cls = (pass == null) ? '' : (pass ? 'asmt-bar-pass' : 'asmt-bar-low');
-      return `
-        <div class="asmt-score">
-          <div class="asmt-score-top"><span>${label} <span class="ar-inline" lang="ar" dir="rtl">/ ${ar}</span></span><span>${pct}%</span></div>
-          <div class="asmt-bar"><div class="asmt-bar-fill ${cls}" style="width:${pct}%"></div></div>
-        </div>`;
-    };
     const mp = (this.config && this.config.mastery_pass_pct) || 70;
     const cp = (this.config && this.config.consistency_pass_pct) || 70;
-    return `<div class="asmt-scores">
-      ${bar('Mastery', 'الإتقان', v.mastery_pct, v.mastery_pct >= mp)}
-      ${bar('Consistency', 'الالتزام', v.consistency_pct, v.consistency_pct >= cp)}
+    const ring = (id, label, ar) => `
+      <div class="asmt-ring" id="${id}">
+        <div class="asmt-ring-face"><span class="asmt-ring-num">0%</span></div>
+        <div class="asmt-ring-label">${label}<br><span class="ar-inline" lang="ar" dir="rtl">${ar}</span></div>
+      </div>`;
+    return `<div class="asmt-rings" data-mp="${mp}" data-cp="${cp}">
+      ${ring('ring-mastery', 'Mastery', 'الإتقان')}
+      ${ring('ring-consistency', 'Consistency', 'الالتزام')}
     </div>`;
+  },
+
+  /** Count-up + fill the two circular score rings (conic-gradient). */
+  _animateScores(v) {
+    const mp = (this.config && this.config.mastery_pass_pct) || 70;
+    const cp = (this.config && this.config.consistency_pass_pct) || 70;
+    this._animateRing('ring-mastery', Math.round(v.mastery_pct || 0), (v.mastery_pct || 0) >= mp);
+    this._animateRing('ring-consistency', Math.round(v.consistency_pct || 0), (v.consistency_pct || 0) >= cp);
+  },
+
+  _animateRing(id, target, pass) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add(pass ? 'ring-pass' : 'ring-low');
+    const num = el.querySelector('.asmt-ring-num');
+    const color = pass ? 'var(--success)' : '#e67e22';
+    let cur = 0;
+    const step = Math.max(1, Math.round(target / 24));
+    const tick = () => {
+      cur = Math.min(target, cur + step);
+      el.style.background = `conic-gradient(${color} ${cur}%, var(--bg-primary) 0)`;
+      if (num) num.textContent = cur + '%';
+      if (cur < target) requestAnimationFrame(tick);
+    };
+    tick();
+  },
+
+  /** Lightweight confetti burst on a pass. */
+  _confetti() {
+    const colors = ['#D4AF37', '#2ecc71', '#3498db', '#e67e22', '#e74c3c'];
+    const wrap = document.createElement('div');
+    wrap.className = 'asmt-confetti';
+    for (let i = 0; i < 40; i++) {
+      const s = document.createElement('span');
+      s.style.left = Math.random() * 100 + '%';
+      s.style.background = colors[i % colors.length];
+      s.style.animationDelay = (Math.random() * 0.6) + 's';
+      wrap.appendChild(s);
+    }
+    document.body.appendChild(wrap);
+    setTimeout(() => wrap.remove(), 4200);
   },
 
   // ---- anti-cheat (client signal only; server enforces the real rules) ---

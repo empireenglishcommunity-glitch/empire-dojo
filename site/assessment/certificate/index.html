@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>Certificate | Empire English</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#D4AF37">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="stylesheet" href="/css/empire.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px">
+      <h1>🎓 Certificate</h1>
+      <p class="subtitle">Level completion <span class="ar-inline" lang="ar" dir="rtl">/ شهادة إتمام المستوى</span></p>
+    </div>
+
+    <div id="cert-loading" class="darb-loading">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <div id="cert-nosession" class="card" style="display:none;text-align:center">
+      <h2>🔒 Open from your calendar</h2>
+      <p style="color:var(--text-secondary);margin:12px 0">
+        Please open this after logging in.
+        <span class="ar-inline" lang="ar" dir="rtl">/ افتحها بعد تسجيل الدخول.</span>
+      </p>
+      <a href="/" class="btn">🏠 Home</a>
+    </div>
+
+    <div id="cert-locked" class="card" style="display:none;text-align:center">
+      <div style="font-size:2.6rem">🎓</div>
+      <h2>Not yet unlocked</h2>
+      <p id="cert-locked-msg" style="color:var(--text-secondary);margin:12px 0"></p>
+      <a href="/" class="btn">📅 Back to calendar <span class="ar-inline" lang="ar" dir="rtl">/ التقويم</span></a>
+    </div>
+
+    <div id="cert-ready" class="cert-wrap" style="display:none">
+      <div class="cert">
+        <div class="cert-seal">🏛️🎓</div>
+        <div class="cert-title">Certificate of Mastery</div>
+        <div class="cert-sub">Empire English Community <span class="ar-inline" lang="ar" dir="rtl">/ شهادة إتقان</span></div>
+        <div class="cert-line">This certifies that</div>
+        <div class="cert-name" id="cert-name">—</div>
+        <div class="cert-line">has mastered every week of</div>
+        <div class="cert-level" id="cert-level">—</div>
+        <div class="cert-meta">
+          <span id="cert-weeks">— weeks mastered</span>
+          <span id="cert-distinction" style="display:none">⭐ — distinctions</span>
+          <span id="cert-date"></span>
+        </div>
+        <div class="cert-foot">Empire English Community — a result-driven system 🏛️</div>
+      </div>
+      <div class="cert-actions">
+        <button class="btn" onclick="window.print()">💾 Save / Print <span class="ar-inline" lang="ar" dir="rtl">/ احفظ</span></button>
+      </div>
+    </div>
+
+    <div class="nav" style="margin-top:20px">
+      <a href="/">← Home <span class="ar-inline" lang="ar" dir="rtl">/ الرئيسية</span></a>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/darb.js"></script>
+  <script>
+  const CertPage = {
+    _show(id) {
+      ['cert-loading', 'cert-nosession', 'cert-locked', 'cert-ready']
+        .forEach(s => { const el = document.getElementById(s); if (el) el.style.display = (s === id) ? '' : 'none'; });
+    },
+    _esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); },
+
+    async init() {
+      DarbSession.init();
+      if (!DarbSession.hasSession()) { this._show('cert-nosession'); return; }
+      const params = new URLSearchParams(location.search);
+      const level = params.get('level') || (DarbSession.getLevel() || '');
+      const q = level ? ('?level=' + encodeURIComponent(level)) : '';
+      // The certificate endpoint scopes to the session's level; the query is
+      // only a hint. Server is the source of truth for eligibility.
+      const res = await DarbSession.fetch('/api/assessment/certificate' + q);
+      if (!res) { this._show('cert-nosession'); return; }
+      let d = {};
+      try { d = await res.json(); } catch (e) { d = {}; }
+      if (res.status === 403 || d.enabled === false || !d.ok) {
+        this._lockedMsg('The certificate isn\'t available yet.', 'الشهادة مش متاحة دلوقتي.');
+        return;
+      }
+      if (!d.eligible) {
+        const left = Math.max(0, (d.total_weeks || 0) - (d.weeks_mastered || 0));
+        this._lockedMsg(
+          `Master all ${d.total_weeks} weeks of ${d.level} to unlock your certificate — ${d.weeks_mastered}/${d.total_weeks} done, ${left} to go.`,
+          `أتقن كل أسابيع ${d.level} علشان تفتح شهادتك — خلّصت ${d.weeks_mastered} من ${d.total_weeks}.`);
+        return;
+      }
+      this._render(d);
+    },
+
+    _lockedMsg(en, ar) {
+      document.getElementById('cert-locked-msg').innerHTML =
+        this._esc(en) + ` <span class="ar-inline" lang="ar" dir="rtl">/ ${this._esc(ar)}</span>`;
+      this._show('cert-locked');
+    },
+
+    _render(d) {
+      document.getElementById('cert-name').textContent = d.name || 'Student';
+      document.getElementById('cert-level').textContent =
+        `${d.level}${d.level_name ? ' — ' + d.level_name : ''}`;
+      document.getElementById('cert-weeks').textContent =
+        `${d.weeks_mastered} of ${d.total_weeks} weeks mastered`;
+      if (d.distinction_count > 0) {
+        const el = document.getElementById('cert-distinction');
+        el.textContent = `⭐ ${d.distinction_count} distinction${d.distinction_count > 1 ? 's' : ''}`;
+        el.style.display = '';
+      }
+      if (d.completed_at) {
+        const day = String(d.completed_at).slice(0, 10);
+        document.getElementById('cert-date').textContent = `📅 ${day}`;
+      }
+      this._show('cert-ready');
+    }
+  };
+  document.addEventListener('DOMContentLoaded', () => CertPage.init());
+  </script>
+</body>
+</html>

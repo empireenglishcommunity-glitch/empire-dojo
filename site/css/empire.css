@@ -1628,3 +1628,53 @@ body.has-maint-banner { padding-top: 66px; }
 .asmt-bad { color: #e74c3c; font-weight: 700; }
 .asmt-review-skill { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
 .asmt-review-detail { font-size: 0.85rem; color: var(--text-muted); margin-top: 3px; }
+
+
+/* ============================================================
+   ITQAN — progress map (calendar) + certificate page (Phase 8)
+   ============================================================ */
+
+.itqan-progress-card {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(150deg, rgba(46,204,113,0.06), var(--bg-card));
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+.itqan-progress-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.itqan-progress-title { font-weight: 600; font-size: 0.9rem; }
+.itqan-progress-count { font-size: 0.82rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.itqan-progress-bar { height: 8px; background: var(--bg-primary); border-radius: 5px; overflow: hidden; margin: 8px 0; }
+.itqan-progress-fill { height: 100%; background: var(--success); transition: width 0.5s ease; }
+.itqan-progress-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 4px; }
+.itqan-progress-streak { font-size: 0.8rem; color: #e67e22; font-weight: 600; }
+.itqan-cert-btn { margin-left: auto; }
+
+/* Certificate page */
+.cert-wrap { max-width: 640px; margin: 0 auto; }
+.cert {
+  border: 3px solid var(--accent);
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(212,175,55,0.08), var(--bg-card));
+  padding: 32px 26px;
+  text-align: center;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.25);
+}
+.cert-seal { font-size: 3rem; line-height: 1; }
+.cert-title { font-family: Cinzel, serif; color: var(--accent); font-size: 1.5rem; margin: 10px 0 4px; letter-spacing: 0.04em; }
+.cert-sub { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 18px; }
+.cert-name { font-size: 1.9rem; font-weight: 700; color: var(--text-primary); margin: 6px 0; }
+.cert-line { color: var(--text-secondary); margin: 4px 0; }
+.cert-level { font-size: 1.15rem; color: var(--accent-light); font-weight: 600; margin: 8px 0; }
+.cert-meta { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); }
+.cert-foot { margin-top: 20px; color: var(--text-muted); font-size: 0.8rem; }
+.cert-actions { text-align: center; margin-top: 18px; }
+
+/* Print: show only the certificate, full-bleed. */
+@media print {
+  body * { visibility: hidden; }
+  .cert, .cert * { visibility: visible; }
+  .cert { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border-color: #b8962e; }
+  .cert-actions, .nav, .header, .darb-wm { display: none !important; }
+}

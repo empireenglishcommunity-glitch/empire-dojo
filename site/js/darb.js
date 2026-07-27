@@ -180,6 +180,8 @@ const DarbCalendar = {
     // side; absent → nothing renders, so the calendar is unchanged).
     const asmtByWeek = {};
     (this.data.assessments || []).forEach(a => { asmtByWeek[a.week] = a; });
+    // Itqan R16 progression gate: the highest week the student may access.
+    const gateAllowed = (this.data.gate && this.data.gate.allowed_week) || 0;
 
     // Group days by week
     const weeks = {};
@@ -228,7 +230,8 @@ const DarbCalendar = {
         const stateClass = `state-${d.state}`;
         const dateStr = this._formatDate(d.date);
         const dayLabel = `D${d.day}`;
-        const href = d.state !== 'locked'
+        const nonClickable = (d.state === 'locked' || d.state === 'gate_locked');
+        const href = !nonClickable
           ? `/${level.toLowerCase()}/week${d.week}/day${d.day}/`
           : '#';
 
@@ -255,7 +258,7 @@ const DarbCalendar = {
           data-tier="${d.day_tier}"
           data-done="${doneCount}"
           data-week="${d.week}" data-day="${d.day}"
-          ${d.state === 'locked' ? `title="Opens ${d.date}"` : (isPartial ? `title="${doneCount} of ${totalEx} exercises done — finish the rest to complete this day"` : '')}>
+          ${d.state === 'gate_locked' ? `title="🔒 Pass Week ${gateAllowed}'s test to open this week / اجتَز اختبار الأسبوع ${gateAllowed} علشان يفتح"` : (d.state === 'locked' ? `title="Opens ${d.date}"` : (isPartial ? `title="${doneCount} of ${totalEx} exercises done — finish the rest to complete this day"` : ''))}>
           <span class="cal-day">${dayLabel}</span>
           <span class="cal-date">${dateStr}</span>
           ${badge}

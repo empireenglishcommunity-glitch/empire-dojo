@@ -1754,3 +1754,15 @@ body.has-maint-banner { padding-top: 66px; }
 @media (prefers-reduced-motion: reduce) {
   .asmt-honesty-track, .asmt-seal, .asmt-confetti span { animation: none; }
 }
+
+
+/* Itqan R16 progression gate — a week locked until the previous week's test
+   is passed (distinct from a plain date-lock: amber, dashed, not-allowed). */
+.darb-cal-cell.state-gate_locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-style: dashed;
+  border-color: #e67e22;
+  background: var(--bg-primary);
+}
+.darb-cal-cell.state-gate_locked .cal-day { color: #e67e22; }

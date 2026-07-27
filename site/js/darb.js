@@ -190,6 +190,12 @@ const DarbCalendar = {
 
     let html = '';
 
+    // Itqan weekly-assessment progress map (present only when the flag is on
+    // server-side → absent → nothing renders, calendar unchanged).
+    if (this.data.itqan_progress) {
+      html += this._itqanProgressHtml(this.data.itqan_progress, level);
+    }
+
     // Level complete banner
     if (level_complete) {
       html += `<div class="darb-complete-banner">
@@ -308,6 +314,27 @@ const DarbCalendar = {
         ${subHtml}
       </span>
     </${tag}>`;
+  },
+
+  /** Weeks-mastered progress map + (when the level is complete) a link to the
+   *  certificate. Rendered above the calendar when the Itqan flag is on. */
+  _itqanProgressHtml(p, level) {
+    const pct = Math.max(0, Math.min(100, Math.round(p.pct || 0)));
+    const streak = p.streak || 0;
+    const streakLine = streak > 1
+      ? `<span class="itqan-progress-streak">🔥 ${streak} in a row</span>` : '';
+    const cert = p.level_complete
+      ? `<a class="btn btn-sm itqan-cert-btn" href="/assessment/certificate/?level=${encodeURIComponent(level)}">🎓 View certificate <span class="ar-inline" lang="ar" dir="rtl">/ شهادتك</span></a>`
+      : '';
+    return `
+      <div class="itqan-progress-card">
+        <div class="itqan-progress-top">
+          <span class="itqan-progress-title">🏅 Weekly Mastery <span class="ar-inline" lang="ar" dir="rtl">/ الإتقان الأسبوعي</span></span>
+          <span class="itqan-progress-count">${p.mastered_count} / ${p.total_weeks} weeks</span>
+        </div>
+        <div class="itqan-progress-bar"><div class="itqan-progress-fill" style="width:${pct}%"></div></div>
+        <div class="itqan-progress-foot">${streakLine}${cert}</div>
+      </div>`;
   },
 
   /** Format ISO date to short display (e.g. "23 Jul") */

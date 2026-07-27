@@ -118,6 +118,7 @@
       <div class="step"><div class="num">2</div><div class="txt"><b>المهام اليومية (7):</b> 5 على المنصة (Accent, Shadowing, Speaking = تسجيل؛ Listening, Vocabulary = تلقائي) + 2 على Discord (Writing, Community).</div></div>
       <div class="step"><div class="num">3</div><div class="txt"><b>التقدّم:</b> عدّاد موثوق من الخادم؛ إكمال المهام الخمس = يوم أخضر. تزامن عبر الأجهزة.</div></div>
       <div class="step"><div class="num">4</div><div class="txt"><b>الإتقان + المراجعة:</b> ترقية المستويات (Bronze→Diamond) + مراجعة الكلمات السابقة عبر نظام التكرار المتباعد (SRS).</div></div>
+      <div class="step"><div class="num">5</div><div class="txt"><b>الاختبار الأسبوعي (Itqan):</b> نهاية كل أسبوع يثبت الطالب إتقانه؛ النجاح يفتح الأسبوع التالي (بوابة منع التخطّي). التفاصيل في بطاقة Itqan أدناه.</div></div>
     </div>
 
     <!-- Commands: student -->
@@ -149,6 +150,62 @@
       <div class="cmd"><div class="name"><code>/flag</code></div><div class="desc">مراجعة العناصر المعلّمة/المشبوهة.</div></div>
       <div class="cmd"><div class="name"><code>/approve &lt;id&gt;</code> · <code>/deny &lt;id&gt;</code></div><div class="desc">الموافقة/الرفض على طلبات إعادة الضبط من التليجرام مباشرة.</div></div>
       <div class="callout">🔔 يصلك إشعار على هذا البوت تلقائياً عند أي طلب إعادة ضبط أو حدث مهم — لا شيء يحدث لتاريخ طالب دون علمك.</div>
+    </div>
+
+    <!-- Itqan: control & commands -->
+    <div class="card" style="border-color:var(--accent)">
+      <h2>📝 الاختبار الأسبوعي (Itqan) — التحكّم والأوامر</h2>
+      <p>اختبار نهاية الأسبوع يثبت أن الطالب <b>أتقن</b> محتوى الأسبوع فعلاً. يظهر في تقويمه بعد إنهاء أيام الأسبوع، ويقيس المهارات الخمسة، ويعطي نتيجة على بُعدين: <span class="en">Consistency</span> (الالتزام اليومي) + <span class="en">Mastery</span> (الاختبار).</p>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">🚩 العَلَمان (Feature Flags)</h3>
+      <div class="cmd"><div class="name"><code>itqan_weekly_assessment</code></div><div class="desc">يُشغّل ميزة الاختبار الأسبوعي بالكامل (الصفحة + الأوامر + الإشعارات + التقارير).</div></div>
+      <div class="cmd"><div class="name"><code>itqan_progression_gate</code></div><div class="desc">يقفل الأسبوع التالي حتى يجتاز الطالب اختبار الأسبوع الحالي (منع التخطّي). <b>آمن:</b> يُختم لكل طالب «أساس» (baseline) = أسبوعه الحالي أول مرة يدخل بعد التفعيل، فلا يُقفل أبداً أسبوع وصل إليه — يُقفل فقط ما هو <b>أمامه</b>.</div></div>
+      <div class="callout">التحكّم: في Discord <code>!flag enable &lt;name&gt;</code> / <code>!flag disable &lt;name&gt;</code> (للجميع) أو <code>!flag beta &lt;name&gt; @students…</code> (تجربة مصغّرة). في تليجرام <code>/flag &lt;name&gt; on|off</code>. <code>!flag</code> وحده يعرض كل الأعلام وحالتها.</div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">🛠️ أوامر الإدارة (Discord)</h3>
+      <div class="cmd"><div class="name"><code>!itqan [L0-L3]</code></div><div class="desc">تقرير الإتقان الأسبوعي (نظرة عامة لكل مستوى).</div></div>
+      <div class="cmd"><div class="name"><code>!itqan-due [L0-L3]</code></div><div class="desc"><b>التقرير الشامل:</b> مَن عليه اختبار مستحقّ ولم يؤدِّه، ومَن أنهى/رسب/نجح، والأيام المتبقّية. هذا هو تقرير «مَن لم يختبر بعد».</div></div>
+      <div class="cmd"><div class="name"><code>!itqan-review &lt;attempt_id&gt;</code></div><div class="desc">ملف مراجعة مفصّل لمحاولة واحدة + تسجيلاتها الصوتية. رقم المحاولة (<span class="en">attempt_id</span>) يصلك <b>جاهزاً</b> داخل إشعار المحاولة المعلّمة.</div></div>
+      <div class="cmd"><div class="name"><code>!itqan-pass @user &lt;week&gt;</code></div><div class="desc">تجاوز يدوي: اعتماد إتقان الأسبوع للطالب + الاحتفاء به تلقائياً (DM + قناة الأبطال + شهادة عند إتمام المستوى).</div></div>
+      <div class="cmd"><div class="name"><code>!itqan-reset @user &lt;week&gt;</code></div><div class="desc">مسح محاولات الطالب لأسبوع معيّن ليعيد الاختبار من جديد.</div></div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">⌨️ نسخة الـ Slash (منتقي بالاسم)</h3>
+      <p>من قناة <code>#admin-commands</code> الخاصة لا يظهر منتقي الـ <span class="en">@</span> للطلاب (قيد Discord للقنوات الخاصة). لذلك استخدم أوامر الـ Slash التي تقترح الطالب بالاسم تلقائياً:</p>
+      <div class="cmd"><div class="name"><code>/itqan</code> · <code>/itqan-due</code></div><div class="desc">نفس التقريرين أعلاه.</div></div>
+      <div class="cmd"><div class="name"><code>/itqan-review</code></div><div class="desc">اكتب أول حروف اسم الطالب → اختره → يظهر ملف المراجعة الكامل (بدون حفظ رقم محاولة).</div></div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">📟 عبر تليجرام (Empire Ops)</h3>
+      <div class="cmd"><div class="name"><code>/itqan</code> · <code>/itqan-due</code> · <code>/itqan-review</code></div><div class="desc">نفس التقارير والمراجعة من هاتفك مباشرة دون فتح Discord.</div></div>
+    </div>
+
+    <!-- Itqan: flagged-review workflow + tuning -->
+    <div class="card">
+      <h2>🔎 مراجعة المحاولات المعلّمة + الضبط</h2>
+      <p>الفلسفة: <b>النجاح الواضح يُحتفى به فوراً</b> (تلقائياً، بدون تدخّلك)، و<b>الرسوب الواضح</b> يذهب للطالب كرسالة خاصة داعمة بقائمة المراجعة (بدون فضيحة). يصلك تنبيه <b>فقط</b> عندما تحتاج المحاولة عيناً بشرية.</p>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">متى يصلني تنبيه؟</h3>
+      <p>عندما <b>لا</b> تنجح المحاولة و(وُجد خطأ يحتاج تقدير الذكاء الاصطناعي <b>أو</b> كانت النتيجة على حافّة النجاح ضمن ±5 نقاط). التنبيه يصل إلى <b>تليجرام الإدارة</b> (وسجلّ تنبيهات Ops) ويحتوي:</p>
+      <div class="step"><div class="num">•</div><div class="txt">اسم الطالب + المستوى + الأسبوع + رقم المحاولة.</div></div>
+      <div class="step"><div class="num">•</div><div class="txt">نسبتَي <span class="en">Mastery</span> و<span class="en">Consistency</span> + سبب التعليم.</div></div>
+      <div class="step"><div class="num">•</div><div class="txt"><b>الأوامر جاهزة للنسخ</b> لهذا الطالب تحديداً (<code>!itqan-review</code> / <code>!itqan-pass</code> / <code>!itqan-reset</code>) — لا حاجة لحفظ أي أمر.</div></div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">ماذا أفعل (السيناريو)</h3>
+      <div class="step"><div class="num">1</div><div class="txt">شغّل <code>!itqan-review &lt;attempt_id&gt;</code> (أو <code>/itqan-review</code> واختر الطالب). يصلك ملف منظّم: <b>ماذا كان خطأ في كل مهارة، وما يحتاج انتباهاً، وما الذي تقوله للطالب</b> — إرشاد كامل.</div></div>
+      <div class="step"><div class="num">2</div><div class="txt">استمع إلى <b>التسجيلات الصوتية المرفقة</b> (نطق/تحدّث) لتحكم بنفسك على الأداء الحقيقي.</div></div>
+      <div class="step"><div class="num">3</div><div class="txt">قرارك: إمّا <code>!itqan-pass @user &lt;week&gt;</code> (يستحقّ النجاح → احتفاء تلقائي)، أو اتركه يعيد المحاولة / <code>!itqan-reset @user &lt;week&gt;</code> لإتاحة إعادة نظيفة.</div></div>
+      <div class="callout">🎧 <b>الاحتفاظ بالتسجيلات:</b> تُحفظ صوتيات المحاولات <b>14 يوماً للمالك فقط</b> ثم تُمسح تلقائياً يومياً. بعد النافذة تكون المراجعة نصّية فقط.</div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">⚙️ ضبط الإعدادات (متقدّم — على مستوى قاعدة البيانات)</h3>
+      <p>القيم الافتراضية تعمل جيداً؛ عدّلها فقط عند الحاجة عبر <code>docker exec</code>:</p>
+      <pre><code>docker exec empire-english-bot python3 -c \
+ "import src.database as d; d.set_itqan_config('itqan_mastery_pass_pct', 70)"</code></pre>
+      <div class="cmd"><div class="name"><code>itqan_mastery_pass_pct</code></div><div class="desc">درجة الاختبار اللازمة للنجاح — الافتراضي <b>70</b>.</div></div>
+      <div class="cmd"><div class="name"><code>itqan_consistency_pass_pct</code></div><div class="desc">درجة الالتزام اليومي اللازمة — الافتراضي <b>70</b>.</div></div>
+      <div class="cmd"><div class="name"><code>itqan_distinction_pct</code></div><div class="desc">درجة الإتقان لوسام ⭐ التميّز — الافتراضي <b>90</b>.</div></div>
+      <div class="cmd"><div class="name"><code>itqan_retake_cooldown_min</code></div><div class="desc">دقائق الانتظار قبل إعادة المحاولة — الافتراضي <b>720</b> (12 ساعة).</div></div>
+      <div class="cmd"><div class="name"><code>itqan_spiral_recent_weight</code></div><div class="desc">نسبة أسئلة الأسبوع الأحدث (الباقي مراجعة حلزونية) — الافتراضي <b>0.65</b>.</div></div>
+      <div class="cmd"><div class="name"><code>itqan_time_limit_min</code></div><div class="desc">الحدّ الزمني الكلّي للاختبار بالدقائق — الافتراضي <b>15</b>.</div></div>
+      <div class="callout">هامش الحافّة للتعليم (<span class="en">borderline margin</span>) ثابت عند ±5 نقاط حول خط النجاح. أي مفتاح غير معروف يُرفض تلقائياً لمنع الأخطاء الإملائية.</div>
     </div>
 
     <!-- Governance -->

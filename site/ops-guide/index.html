@@ -118,7 +118,7 @@
       <div class="step"><div class="num">2</div><div class="txt"><b>المهام اليومية (7):</b> 5 على المنصة (Accent, Shadowing, Speaking = تسجيل؛ Listening, Vocabulary = تلقائي) + 2 على Discord (Writing, Community).</div></div>
       <div class="step"><div class="num">3</div><div class="txt"><b>التقدّم:</b> عدّاد موثوق من الخادم؛ إكمال المهام الخمس = يوم أخضر. تزامن عبر الأجهزة.</div></div>
       <div class="step"><div class="num">4</div><div class="txt"><b>الإتقان + المراجعة:</b> ترقية المستويات (Bronze→Diamond) + مراجعة الكلمات السابقة عبر نظام التكرار المتباعد (SRS).</div></div>
-      <div class="step"><div class="num">5</div><div class="txt"><b>الاختبار الأسبوعي (Itqan):</b> نهاية كل أسبوع يثبت الطالب إتقانه؛ النجاح يفتح الأسبوع التالي (بوابة منع التخطّي). التفاصيل في بطاقة Itqan أدناه.</div></div>
+      <div class="step"><div class="num">5</div><div class="txt"><b>الاختبار الأسبوعي (Itqan):</b> نهاية كل أسبوع يثبت الطالب إتقانه؛ النجاح يمنحه الإتقان + قناة الأبطال + الشهادة. المهام اليومية تبقى مفتوحة دائمًا (لا تجميد). التفاصيل في بطاقة Itqan أدناه.</div></div>
     </div>
 
     <!-- Commands: student -->
@@ -159,8 +159,9 @@
 
       <h3 style="color:var(--accent);margin:16px 0 8px">🚩 العَلَمان (Feature Flags)</h3>
       <div class="cmd"><div class="name"><code>itqan_weekly_assessment</code></div><div class="desc">يُشغّل ميزة الاختبار الأسبوعي بالكامل (الصفحة + الأوامر + الإشعارات + التقارير).</div></div>
-      <div class="cmd"><div class="name"><code>itqan_progression_gate</code></div><div class="desc">يقفل الأسبوع التالي حتى يجتاز الطالب اختبار الأسبوع الحالي (منع التخطّي). <b>آمن:</b> يُختم لكل طالب «أساس» (baseline) = أسبوعه الحالي أول مرة يدخل بعد التفعيل، فلا يُقفل أبداً أسبوع وصل إليه — يُقفل فقط ما هو <b>أمامه</b>.</div></div>
+      <div class="cmd"><div class="name"><code>itqan_progression_gate</code></div><div class="desc"><b>ناعم (منذ 2026-07-28):</b> لم يعُد يُجمّد المهام اليومية إطلاقًا — التمرين اليومي مفتوح دائمًا حسب التاريخ لحماية العادة اليومية. يبقى كمعلومة إرشادية (<code>allowed_week</code>) لخريطة التقدّم؛ ومنع «التخطّي الأجوف» مضمون لأن <b>الإتقان + قناة الأبطال + الشهادة</b> كلها تتطلّب اجتياز اختبار كل أسبوع فعليًا. (كان يُجمّد أيام الأسابيع المتقدّمة — أُزيل هذا التجميد.)</div></div>
       <div class="callout">التحكّم: في Discord <code>!flag enable &lt;name&gt;</code> / <code>!flag disable &lt;name&gt;</code> (للجميع) أو <code>!flag beta &lt;name&gt; @students…</code> (تجربة مصغّرة). في تليجرام <code>/flag &lt;name&gt; on|off</code>. <code>!flag</code> وحده يعرض كل الأعلام وحالتها.</div>
+      <div class="callout">⏳ <b>محاولة انتهى وقتها قبل أي إجابة تُلغى تلقائيًا</b> (لا نتيجة، لا رسوب، لا فترة انتظار) — فلن ترى «رسوبًا وهميًا» من طالب فتح الاختبار وتركه. كذلك تنبيه «غير نشِط» يُرسَل <b>مرة واحدة يوميًا</b> كحدّ أقصى لكل طالب (بدل كل ساعة سابقًا).</div>
 
       <h3 style="color:var(--accent);margin:16px 0 8px">🛠️ أوامر الإدارة (Discord)</h3>
       <div class="cmd"><div class="name"><code>!itqan [L0-L3]</code></div><div class="desc">تقرير الإتقان الأسبوعي (نظرة عامة لكل مستوى).</div></div>

@@ -295,12 +295,21 @@ const DarbCalendar = {
     };
     const s = map[a.state] || map.locked;
 
-    // Locked: if we know exactly which days remain, say how many.
+    // Locked: tell the student exactly WHAT to finish. When only a few days
+    // remain, name them (so a reached-but-incomplete week is actionable, not a
+    // mystery); otherwise show a count.
     let sub = s.sub, subAr = s.subAr;
     if (a.state === 'locked' && Array.isArray(a.days_remaining) && a.days_remaining.length) {
-      const n = a.days_remaining.length;
-      sub = `${n} day${n > 1 ? 's' : ''} left to unlock`;
-      subAr = `فاضل ${n} ${n > 1 ? 'أيام' : 'يوم'} علشان يفتح`;
+      const dr = a.days_remaining;
+      if (dr.length <= 3) {
+        const list = dr.join(', ');
+        sub = `Finish day${dr.length > 1 ? 's' : ''} ${list} of this week to unlock`;
+        subAr = `خلّص ${dr.length > 1 ? 'أيام' : 'يوم'} ${list} من الأسبوع ده علشان يفتح`;
+      } else {
+        const n = dr.length;
+        sub = `Finish ${n} more day${n > 1 ? 's' : ''} of this week to unlock`;
+        subAr = `فاضل ${n} ${n > 1 ? 'أيام' : 'يوم'} من الأسبوع ده علشان يفتح`;
+      }
     }
 
     const href = s.link ? `/assessment/?week=${w}` : null;

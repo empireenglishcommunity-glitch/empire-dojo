@@ -455,6 +455,24 @@ const ItqanAssessment = {
 
     this._clearProgress(this.attempt.attempt_id);
 
+    // An attempt that ran out of time before ANY answer was voided by the
+    // server (no score, no penalty, no cooldown). Send the student back to a
+    // clean intro with a reassuring note instead of showing a 0% "fail".
+    if (data && data.voided) {
+      this.finishing = false;
+      this.attempt = null; this.answers = {}; this.idx = 0;
+      this._showIntro();
+      const t = document.getElementById('asmt-intro-title');
+      if (t && t.parentNode && !document.getElementById('asmt-intro-note')) {
+        const n = document.createElement('p');
+        n.id = 'asmt-intro-note';
+        n.className = 'asmt-flag-note';
+        n.innerHTML = '⏳ Your previous attempt ran out of time before you answered, so we set it aside — no score, no penalty. Take your time and start fresh. <span class="ar-inline" lang="ar" dir="rtl">/ محاولتك السابقة خلص وقتها قبل ما تجاوب، فشِلناها من غير أي خصم. خد وقتك وابدأ من جديد.</span>';
+        t.parentNode.insertBefore(n, t.nextSibling);
+      }
+      return;
+    }
+
     if (!data || !data.ok) {
       this._unavailable("We saved your answers but couldn't show the result. Please check back from your calendar.",
                         "حفظنا إجاباتك بس معرفناش نعرض النتيجة. راجع من التقويم.");

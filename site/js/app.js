@@ -428,6 +428,24 @@ const ConnectedProgress = {
       window.history.replaceState({}, document.title, cleanUrl);
       return;
     }
+    // R1 fix (2026-07-28): prefer the CURRENT active Darb session token over
+    // the legacy empire_link_token. That legacy key can hold a stale/cap-
+    // evicted session token (a revoked device) — which makes /api/progress
+    // 404 and then self-disconnect, wiping the streak header for a student
+    // who is otherwise perfectly signed in via their active Darb session
+    // (confirmed live 2026-07-28). Using the live session token (whose device
+    // IS active) fixes the 404, and we keep empire_link_token in sync so the
+    // exercise-page gates that still read it stay consistent. Falls back to
+    // the legacy token only when there's no active Darb session.
+    if (typeof DarbSession !== 'undefined') {
+      try { DarbSession.init(); } catch (e) { /* no-op */ }
+      if (DarbSession.hasSession && DarbSession.hasSession()) {
+        this.token = DarbSession.getToken();
+        localStorage.setItem('empire_link_token', this.token);
+        this._fetchProgress();
+        return;
+      }
+    }
     this.token = localStorage.getItem('empire_link_token');
     if (this.token) {
       this._fetchProgress();

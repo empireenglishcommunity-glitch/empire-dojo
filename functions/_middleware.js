@@ -46,7 +46,7 @@ const LEVEL_FREE_PATHS = [
 // To rotate: run `printf 'NEW_PASSCODE' | sha256sum` and paste the hex here.
 // May be overridden at runtime via env.OPS_GUIDE_PASSCODE_SHA256.
 const OPS_GUIDE_PASSCODE_SHA256 =
-  '0831461bf087b915122824136b7e8bce064536c503decbb6698b56ee6a5857ec';
+  '5c3bcfc017eba74777b75fb3153c901df02f735162be4e8f366ff956f09e608d';
 
 // How long a correct passcode keeps the ops guide unlocked on that device.
 const OPS_COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days

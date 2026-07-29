@@ -620,6 +620,15 @@ const DarbRecording = {
           }
         }
         this._showFeedback(msg, 'success');
+
+        // Nutq (pronunciation-feedback): show the score + kind feedback for
+        // accent/shadow. Deliberately a no-op (renders nothing) unless the
+        // server actually scored (data.pronunciation.scored === true), so
+        // NOTHING confusing appears while the feature flag is off (pre-pilot)
+        // or when scoring was unavailable that time — completion is unaffected.
+        if (this._exercise !== 'speaking') {
+          this._renderPronunciation(data.pronunciation);
+        }
       } else {
         btn.disabled = false;
         btn.innerHTML = '📤 Send to Discord <span class="ar-inline" lang="ar" dir="rtl">/ أرسل للديسكورد</span>';
@@ -646,6 +655,64 @@ const DarbRecording = {
 
     fb.innerHTML = html;
     fb.style.background = type === 'error' ? 'rgba(231,76,60,0.1)' : 'rgba(46,204,113,0.08)';
+  },
+
+  /** Nutq (pronunciation-feedback) Phase 2: render the pronunciation score +
+   *  warm bilingual feedback in the recorder card after a successful
+   *  accent/shadow send. Shows NOTHING unless the server actually scored
+   *  (p.scored === true) — so while the flag is off, or if scoring was
+   *  unavailable that time, no confusing message appears. Beginner grace →
+   *  warm note with no number. Private to this page (never posted publicly). */
+  _renderPronunciation(p) {
+    if (!p || p.scored !== true) return;
+    const card = document.querySelector('.recorder-card');
+    if (!card) return;
+
+    const esc = (s) => String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    let panel = card.querySelector('.darb-nutq-panel');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'darb-nutq-panel';
+      panel.style.cssText = 'margin-top:14px;padding:14px;border-radius:12px;' +
+        'background:rgba(212,175,55,0.06);border:1px solid var(--border);text-align:center';
+      card.appendChild(panel);
+    }
+
+    let html = '<div style="font-weight:600;color:var(--accent);margin-bottom:8px">' +
+      '🎯 Pronunciation <span class="ar-inline" lang="ar" dir="rtl">/ النطق</span></div>';
+
+    if (p.is_beginner_grace) {
+      html += '<div style="font-size:2rem;line-height:1">🌟</div>';
+    } else {
+      const score = Math.round(p.score || 0);
+      const color = score >= 80 ? '#2ecc71' : (score >= 60 ? '#e0a800' : '#e67e22');
+      html += '<div style="width:64px;height:64px;border-radius:50%;margin:0 auto 8px;' +
+        'display:flex;align-items:center;justify-content:center;font-size:1.2rem;' +
+        'font-weight:700;color:#fff;background:' + color + '">' + score + '%</div>';
+    }
+
+    if (p.feedback_en) {
+      html += '<div dir="ltr" lang="en" style="font-size:0.9rem;margin-top:4px">' +
+        esc(p.feedback_en) + '</div>';
+    }
+    if (p.feedback_ar) {
+      html += '<div dir="rtl" lang="ar" style="font-size:0.9rem;margin-top:4px;' +
+        'color:var(--text-secondary)">' + esc(p.feedback_ar) + '</div>';
+    }
+
+    if (!p.is_beginner_grace && Array.isArray(p.missed_words) && p.missed_words.length) {
+      const chips = p.missed_words.slice(0, 5).map((w) =>
+        '<span style="display:inline-block;background:rgba(230,126,34,0.15);' +
+        'color:#e67e22;border-radius:12px;padding:2px 10px;margin:3px;font-size:0.85rem">' +
+        esc(w) + '</span>').join('');
+      html += '<div style="margin-top:8px"><div style="font-size:0.8rem;color:var(--text-muted)">' +
+        'Focus on <span class="ar-inline" lang="ar" dir="rtl">/ ركّز على</span>:</div>' +
+        chips + '</div>';
+    }
+
+    panel.innerHTML = html;
   }
 };
 

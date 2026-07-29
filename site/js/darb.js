@@ -529,15 +529,24 @@ const DarbRecording = {
     }
   },
 
+  // Nutq Phase 3: once the student taps "Try again", subsequent sends of a
+  // new take are private score-only re-checks (no re-post to #showcase, no
+  // re-complete). Reset per page load (fresh object property).
+  _retryMode: false,
+
   _addSendButton(container) {
     if (container.querySelector('.darb-send-btn')) return;
 
     const actionsDiv = container.querySelector('.recorder-actions') || container;
     const btn = document.createElement('button');
     btn.className = 'btn btn-success btn-sm darb-send-btn';
-    btn.innerHTML = '📤 Send to Discord <span class="ar-inline" lang="ar" dir="rtl">/ أرسل للديسكورد</span>';
+    btn.innerHTML = this._retryMode
+      ? '🎯 Check pronunciation <span class="ar-inline" lang="ar" dir="rtl">/ افحص نطقك</span>'
+      : '📤 Send to Discord <span class="ar-inline" lang="ar" dir="rtl">/ أرسل للديسكورد</span>';
     btn.style.cssText = 'margin-top:8px';
-    btn.onclick = () => this._send(btn);
+    // Route on CLICK (not creation) so a mode change after this button was
+    // added still takes effect: retry mode → private re-check, else full send.
+    btn.onclick = () => (this._retryMode ? this._recheck(btn) : this._send(btn));
     actionsDiv.appendChild(btn);
   },
 
@@ -712,7 +721,97 @@ const DarbRecording = {
         chips + '</div>';
     }
 
+    // Phase 3 (R5): "heard vs. target" — show the target sentence with the
+    // missed word(s) highlighted + what the recognizer actually heard, so the
+    // fix is concrete. Only when we have a real comparison (not beginner grace).
+    if (!p.is_beginner_grace && p.expected) {
+      const norm = (w) => String(w).toLowerCase().replace(/[^\w']/g, '');
+      const missedSet = new Set((p.missed_words || []).map(norm));
+      const target = String(p.expected).split(/\s+/).map((w) => {
+        return missedSet.has(norm(w))
+          ? '<span style="background:rgba(230,126,34,0.28);border-radius:4px;padding:0 3px;font-weight:600">' + esc(w) + '</span>'
+          : esc(w);
+      }).join(' ');
+      html += '<div style="margin-top:10px;text-align:left;font-size:0.85rem;' +
+        'background:rgba(0,0,0,0.15);border-radius:8px;padding:8px">' +
+        '<div style="color:var(--text-muted);font-size:0.72rem;margin-bottom:2px">Target <span class="ar-inline" lang="ar" dir="rtl">/ المطلوب</span>:</div>' +
+        '<div dir="ltr">' + target + '</div>';
+      if (p.transcript) {
+        html += '<div style="color:var(--text-muted);font-size:0.72rem;margin:6px 0 2px">We heard <span class="ar-inline" lang="ar" dir="rtl">/ سمعنا</span>:</div>' +
+          '<div dir="ltr" style="color:var(--text-secondary)">' + esc(p.transcript) + '</div>';
+      }
+      html += '</div>';
+    }
+
+    // Phase 3 (R6): one-tap "try again" — record a fresh take and re-check in
+    // place (private, no re-post, no double-count).
+    html += '<button class="btn btn-sm darb-nutq-retry" style="margin-top:12px">' +
+      '🔄 Try again <span class="ar-inline" lang="ar" dir="rtl">/ جرّب تاني</span></button>';
+
     panel.innerHTML = html;
+
+    const retry = panel.querySelector('.darb-nutq-retry');
+    if (retry) retry.onclick = () => this._enterRetryMode(panel);
+  },
+
+  /** Phase 3: enter "try again" mode — the next send of a new take becomes a
+   *  private score-only re-check (no #showcase re-post, no re-complete). We
+   *  relabel the existing send button and prompt the student to record again. */
+  _enterRetryMode(panel) {
+    this._retryMode = true;
+    const btn = document.querySelector('.darb-send-btn');
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '🎯 Check pronunciation <span class="ar-inline" lang="ar" dir="rtl">/ افحص نطقك</span>';
+    }
+    if (panel) {
+      panel.innerHTML = '<div style="color:var(--text-secondary);font-size:0.9rem">' +
+        '🎙️ Record a new take above, then tap <strong>🎯 Check pronunciation</strong>.' +
+        '<div class="ar-inline" lang="ar" dir="rtl" style="margin-top:4px">سجّل محاولة جديدة فوق، وبعدين دوس <strong>🎯 افحص نطقك</strong>.</div></div>';
+    }
+  },
+
+  /** Phase 3: private score-only re-check (POST /api/pronunciation-check).
+   *  Gets fresh feedback for a new take WITHOUT posting to #showcase,
+   *  completing, or counting points/mastery. Never blocks anything. */
+  async _recheck(btn) {
+    if (!RecorderUI || !RecorderUI.blob) {
+      this._showFeedback('🎙️ Record a new take first, then check. / سجّل محاولة الأول وبعدين افحص.', 'error');
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Checking…';
+
+    const formData = new FormData();
+    formData.append('audio', RecorderUI.blob, RecorderUI._extensionFor
+      ? `recording.${RecorderUI._extensionFor(RecorderUI.blob.type)}`
+      : 'recording.webm');
+    formData.append('exercise', this._exercise);
+    formData.append('week', this._week.toString());
+    formData.append('day', this._day.toString());
+
+    const res = await DarbSession.fetch('/api/pronunciation-check', {
+      method: 'POST',
+      body: formData,
+    });
+
+    btn.disabled = false;
+    btn.innerHTML = '🎯 Check pronunciation <span class="ar-inline" lang="ar" dir="rtl">/ افحص نطقك</span>';
+
+    if (!res) {
+      this._showFeedback('Network error — try again. / مشكلة في الشبكة.', 'error');
+      return;
+    }
+    try {
+      const data = await res.json();
+      if (data.ok && data.pronunciation && data.pronunciation.scored === true) {
+        this._renderPronunciation(data.pronunciation);  // refreshes panel + a new "try again"
+      } else {
+        this._showFeedback("Couldn't check that one — record again and retry. / متقدرناش نفحصها، جرّب تاني.", 'error');
+      }
+    } catch (e) {
+      this._showFeedback('Something went wrong. / حصل خطأ.', 'error');
+    }
   }
 };
 

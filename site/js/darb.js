@@ -673,7 +673,17 @@ const DarbRecording = {
    *  unavailable that time, no confusing message appears. Beginner grace →
    *  warm note with no number. Private to this page (never posted publicly). */
   _renderPronunciation(p) {
-    if (!p || p.scored !== true) return;
+    if (!p) return;
+    // Nutq grade-best-read (Option A): a PRACTICE send carries no number —
+    // show warm encouragement + the "🏅 Grade my best read" button instead.
+    // The accurate Azure number only ever appears from the official grade
+    // (p.scored === true, set by /api/grade-best-read).
+    if (p.scored !== true) {
+      if (p.practice === true || p.can_official_grade || p.official_grade_used) {
+        this._renderPracticePanel(p);
+      }
+      return;
+    }
     const card = document.querySelector('.recorder-card');
     if (!card) return;
 
@@ -690,7 +700,7 @@ const DarbRecording = {
     }
 
     let html = '<div style="font-weight:600;color:var(--accent);margin-bottom:8px">' +
-      '🎯 Pronunciation <span class="ar-inline" lang="ar" dir="rtl">/ النطق</span></div>';
+      '🏅 Official score <span class="ar-inline" lang="ar" dir="rtl">/ الدرجة الرسمية</span></div>';
 
     if (p.is_beginner_grace) {
       html += '<div style="font-size:2rem;line-height:1">🌟</div>';
@@ -743,15 +753,106 @@ const DarbRecording = {
       html += '</div>';
     }
 
-    // Phase 3 (R6): one-tap "try again" — record a fresh take and re-check in
-    // place (private, no re-post, no double-count).
-    html += '<button class="btn btn-sm darb-nutq-retry" style="margin-top:12px">' +
-      '🔄 Try again <span class="ar-inline" lang="ar" dir="rtl">/ جرّب تاني</span></button>';
+    // This is the student's ONE accurate (Azure) score for the day.
+    html += '<div style="margin-top:12px;font-size:0.82rem;color:var(--success)">' +
+      '✅ Your official score for today <span class="ar-inline" lang="ar" dir="rtl">' +
+      '/ درجتك الرسمية النهارده</span></div>';
 
     panel.innerHTML = html;
+  },
 
-    const retry = panel.querySelector('.darb-nutq-retry');
-    if (retry) retry.onclick = () => this._enterRetryMode(panel);
+  /** Nutq grade-best-read (Option A): the PRACTICE panel shown after a normal
+   *  "Send to Discord" (including the up-to-5 tier redos). No number — warm
+   *  encouragement plus the one-tap "🏅 Grade my best read" button, which
+   *  spends the student's single daily Azure grade on the take they're proud
+   *  of. Once used, it shows a friendly "come back tomorrow" note instead. */
+  _renderPracticePanel(p) {
+    const card = document.querySelector('.recorder-card');
+    if (!card) return;
+    let panel = card.querySelector('.darb-nutq-panel');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'darb-nutq-panel';
+      panel.style.cssText = 'margin-top:14px;padding:14px;border-radius:12px;' +
+        'background:rgba(212,175,55,0.06);border:1px solid var(--border);text-align:center';
+      card.appendChild(panel);
+    }
+
+    if (p.official_grade_used) {
+      panel.innerHTML =
+        '<div style="font-size:0.9rem">🎙️ Great practice! ' +
+        '<span class="ar-inline" lang="ar" dir="rtl">/ تمرين ممتاز!</span></div>' +
+        '<div style="margin-top:8px;font-size:0.85rem;color:var(--success)">' +
+        '✅ You\'ve earned today\'s official score — come back tomorrow for a fresh one. ' +
+        '<span class="ar-inline" lang="ar" dir="rtl">/ خدت درجتك الرسمية النهارده — ارجع بكرة تاخد واحدة جديدة.</span></div>';
+      return;
+    }
+
+    panel.innerHTML =
+      '<div style="font-weight:600;color:var(--accent);margin-bottom:6px">🎙️ Keep practicing! ' +
+      '<span class="ar-inline" lang="ar" dir="rtl">/ استمر في التمرين!</span></div>' +
+      '<div style="font-size:0.85rem;color:var(--text-secondary)">Record as many times as you like. ' +
+      'When you nail it, get your accurate official score — once a day. ' +
+      '<span class="ar-inline" lang="ar" dir="rtl">/ سجّل زي ما تحب. لما تحس إنك ضبطتها، خُد درجتك الرسمية الدقيقة — مرة واحدة في اليوم.</span></div>' +
+      '<button class="btn btn-sm darb-nutq-grade" style="margin-top:12px;background:var(--accent);' +
+      'color:#1a1a1a;font-weight:700">🏅 Grade my best read ' +
+      '<span class="ar-inline" lang="ar" dir="rtl">/ قيّم أفضل قراءة</span></button>';
+
+    const gradeBtn = panel.querySelector('.darb-nutq-grade');
+    if (gradeBtn) gradeBtn.onclick = () => this._gradeBestRead(gradeBtn);
+  },
+
+  /** Nutq grade-best-read: spend today's ONE official Azure grade on the
+   *  current take (POST /api/grade-best-read). Accurate score → shown here +
+   *  posted to the owner's private teacher feed. Server enforces strict 1/day
+   *  (PR1 atomic cap); "already graded" flips the panel to the tomorrow note. */
+  async _gradeBestRead(btn) {
+    if (!RecorderUI || !RecorderUI.blob) {
+      this._showFeedback('🎙️ Record your best take first, then grade it. / سجّل أفضل محاولة الأول، وبعدين قيّمها.', 'error');
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Grading…';
+
+    const formData = new FormData();
+    formData.append('audio', RecorderUI.blob, RecorderUI._extensionFor
+      ? `recording.${RecorderUI._extensionFor(RecorderUI.blob.type)}`
+      : 'recording.webm');
+    formData.append('exercise', this._exercise);
+    formData.append('week', this._week.toString());
+    formData.append('day', this._day.toString());
+
+    const res = await DarbSession.fetch('/api/grade-best-read', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const relabel = () => {
+      btn.disabled = false;
+      btn.innerHTML = '🏅 Grade my best read <span class="ar-inline" lang="ar" dir="rtl">/ قيّم أفضل قراءة</span>';
+    };
+
+    if (!res) {
+      relabel();
+      this._showFeedback('Network error — try again. / مشكلة في الشبكة.', 'error');
+      return;
+    }
+    try {
+      const data = await res.json();
+      if (data.ok && data.already_graded) {
+        this._renderPracticePanel({ practice: true, official_grade_used: true });
+        return;
+      }
+      if (data.ok && data.pronunciation && data.pronunciation.scored === true) {
+        this._renderPronunciation(data.pronunciation);  // official score circle
+      } else {
+        relabel();
+        this._showFeedback("Couldn't grade that one — record again and retry. / متقدرناش نقيّمها، سجّل تاني.", 'error');
+      }
+    } catch (e) {
+      relabel();
+      this._showFeedback('Something went wrong. / حصل خطأ.', 'error');
+    }
   },
 
   /** Phase 3: enter "try again" mode — the next send of a new take becomes a

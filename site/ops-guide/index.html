@@ -147,7 +147,8 @@
       <div class="cmd"><div class="name"><code>/students</code></div><div class="desc">عدد الطلاب ونشاطهم.</div></div>
       <div class="cmd"><div class="name"><code>/maintenance</code></div><div class="desc">تفعيل/إيقاف وضع الصيانة.</div></div>
       <div class="cmd"><div class="name"><code>/announce &lt;msg&gt;</code></div><div class="desc">بثّ إعلان.</div></div>
-      <div class="cmd"><div class="name"><code>/flag</code></div><div class="desc">مراجعة العناصر المعلّمة/المشبوهة.</div></div>
+      <div class="cmd"><div class="name"><code>/flag</code></div><div class="desc">إدارة أعلام الميزات (تشغيل/إيقاف ميزة). <code>/flag</code> وحده يعرض كل الأعلام وحالتها؛ <code>/flag &lt;name&gt; on|off</code>.</div></div>
+      <div class="cmd"><div class="name"><code>/nutq</code></div><div class="desc">التحكّم بميزة تقييم النطق (مَن يحصل عليها + عدد الدرجات/اليوم) — راجع بطاقة «تقييم النطق» أدناه.</div></div>
       <div class="cmd"><div class="name"><code>/approve &lt;id&gt;</code> · <code>/deny &lt;id&gt;</code></div><div class="desc">الموافقة/الرفض على طلبات إعادة الضبط من التليجرام مباشرة.</div></div>
       <div class="callout">🔔 يصلك إشعار على هذا البوت تلقائياً عند أي طلب إعادة ضبط أو حدث مهم — لا شيء يحدث لتاريخ طالب دون علمك.</div>
     </div>
@@ -207,6 +208,32 @@
       <div class="cmd"><div class="name"><code>itqan_spiral_recent_weight</code></div><div class="desc">نسبة أسئلة الأسبوع الأحدث (الباقي مراجعة حلزونية) — الافتراضي <b>0.65</b>.</div></div>
       <div class="cmd"><div class="name"><code>itqan_time_limit_min</code></div><div class="desc">الحدّ الزمني الكلّي للاختبار بالدقائق — الافتراضي <b>15</b>.</div></div>
       <div class="callout">هامش الحافّة للتعليم (<span class="en">borderline margin</span>) ثابت عند ±5 نقاط حول خط النجاح. أي مفتاح غير معروف يُرفض تلقائياً لمنع الأخطاء الإملائية.</div>
+    </div>
+
+    <!-- Nutq: pronunciation feedback -->
+    <div class="card" style="border-color:var(--accent)">
+      <h2>🗣️ تقييم النطق (Nutq) — «Grade my best read»</h2>
+      <p>ميزة تُعطي الطالب <b>درجة نطق دقيقة واحدة في اليوم</b> على مهمة <b>Shadowing</b> فقط. الفلسفة: التمرين حرّ بلا أرقام، والدرجة الرسمية دقيقة وباختيار الطالب — فلا يرى المبتدئ رقماً «غير عادل» من محرّك ضعيف.</p>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">كيف تعمل للطالب</h3>
+      <div class="step"><div class="num">1</div><div class="txt">يسجّل ويضغط <span class="en">📤 Send to Discord</span> كالمعتاد → يظهر له <b>تشجيع بلا رقم</b> (يقدر يعيد قد ما يحب، وكل إعادة ترفع الـ tier).</div></div>
+      <div class="step"><div class="num">2</div><div class="txt">لمّا يرضى عن محاولته يضغط <span class="en">🏅 Grade my best read</span> — <b>مرة واحدة في اليوم</b> — فيحصل على <b>درجته الرسمية الدقيقة</b> (محرّك Azure السحابي) مع الكلمات التي يركّز عليها.</div></div>
+      <div class="step"><div class="num">3</div><div class="txt">تصلك نسخة من الدرجة الرسمية في قناة <b>التغذية الراجعة للمعلّم</b> (خاصّة بك وحدك) — لا شيء عامّ يُحرج المبتدئين.</div></div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">لماذا هكذا (التكلفة + الجودة)</h3>
+      <div class="callout">المحرّك الدقيق (Azure) له <b>طبقة مجانية</b> محدودة؛ لذلك نحدّه بـ <b>درجة رسمية واحدة لكل طالب يومياً</b>، والتمرين/الإعادة يستخدم المحرّك <b>المجاني المستضاف ذاتياً</b>. هكذا نتوسّع لعشرات الطلاب <b>مجاناً</b> دون كسر التجربة. الحدّ صارم ومضمون تقنياً حتى مع الضغط المتزامن؛ ولو نفدت الحصة الشهرية يتحوّل تلقائياً للمحرّك المجاني.</div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">🚩 العَلَم (Feature Flag)</h3>
+      <div class="cmd"><div class="name"><code>tatawwur_pronunciation</code></div><div class="desc">يُشغّل الميزة. <b>أنت تتحكّم بمن يحصل عليها</b> — طالب معيّن أو الجميع.</div></div>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">🎛️ أوامر التحكّم — <code>/nutq</code> (تليجرام + Discord Slash)</h3>
+      <div class="cmd"><div class="name"><code>/nutq</code></div><div class="desc">الحالة: مَن لديه الميزة + الحدّ اليومي لكل طالب.</div></div>
+      <div class="cmd"><div class="name"><code>/nutq grant &lt;اسم/id&gt;</code></div><div class="desc">إعطاء الميزة لطالب.</div></div>
+      <div class="cmd"><div class="name"><code>/nutq revoke &lt;اسم/id&gt;</code></div><div class="desc">سحب الميزة من طالب.</div></div>
+      <div class="cmd"><div class="name"><code>/nutq everyone</code> · <code>/nutq off</code></div><div class="desc">تشغيل للجميع · إيقاف للجميع.</div></div>
+      <div class="cmd"><div class="name"><code>/nutq cap &lt;اسم/id&gt; &lt;عدد&gt;</code></div><div class="desc">عدد الدرجات الرسمية/اليوم لطالب معيّن (الافتراضي <b>1</b>). <code>/nutq cap &lt;اسم/id&gt; default</code> للرجوع للافتراضي.</div></div>
+      <div class="callout">📟 في <b>تليجرام</b> اكتب الأوامر كما هي. في <b>Discord</b> استخدم أوامر الـ <b>Slash</b> من قناة <code>#admin-commands</code> (الـ <code>!</code> لا يعمل هناك) — وتقترح لك الطالب بالاسم تلقائياً: <code>/nutq grant</code>, <code>/nutq cap</code>…</div>
+      <div class="callout">🔒 <b>أمان التحكّم بمن (WHO):</b> إزالة <b>آخر</b> طالب من القائمة تُطفئ الميزة تلقائياً (حتى لا تُفتح للجميع بالخطأ). ولو كانت «للجميع» لا يمكن استثناء فرد واحد — استخدم <code>off</code> أو امنح أفراداً محدّدين.</div>
     </div>
 
     <!-- Governance -->

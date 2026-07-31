@@ -227,12 +227,14 @@
       <div class="cmd"><div class="name"><code>tatawwur_pronunciation</code></div><div class="desc">يُشغّل الميزة. <b>أنت تتحكّم بمن يحصل عليها</b> — طالب معيّن أو الجميع.</div></div>
 
       <h3 style="color:var(--accent);margin:16px 0 8px">🎛️ أوامر التحكّم — <code>/nutq</code> (تليجرام + Discord Slash)</h3>
-      <div class="cmd"><div class="name"><code>/nutq</code></div><div class="desc">الحالة: مَن لديه الميزة + الحدّ اليومي لكل طالب.</div></div>
-      <div class="cmd"><div class="name"><code>/nutq grant &lt;اسم/id&gt;</code></div><div class="desc">إعطاء الميزة لطالب.</div></div>
+      <div class="cmd"><div class="name"><code>/nutq status</code></div><div class="desc">الحالة: مَن لديه الميزة + الحدّ اليومي لكل طالب. <b>ملاحظة:</b> في تليجرام يكفي <code>/nutq</code> وحده؛ في Discord اكتب <code>/nutq status</code> (لأن <code>/nutq</code> مجموعة أوامر، فلا تعمل وحدها).</div></div>
+      <div class="cmd"><div class="name"><code>/nutq grant &lt;اسم/id&gt;</code></div><div class="desc">إعطاء الميزة لطالب — يبدأ تلقائياً بـ <b>1</b> درجة/يوم (لا حاجة لضبط cap).</div></div>
       <div class="cmd"><div class="name"><code>/nutq revoke &lt;اسم/id&gt;</code></div><div class="desc">سحب الميزة من طالب.</div></div>
       <div class="cmd"><div class="name"><code>/nutq everyone</code> · <code>/nutq off</code></div><div class="desc">تشغيل للجميع · إيقاف للجميع.</div></div>
-      <div class="cmd"><div class="name"><code>/nutq cap &lt;اسم/id&gt; &lt;عدد&gt;</code></div><div class="desc">عدد الدرجات الرسمية/اليوم لطالب معيّن (الافتراضي <b>1</b>). <code>/nutq cap &lt;اسم/id&gt; default</code> للرجوع للافتراضي.</div></div>
-      <div class="callout">📟 في <b>تليجرام</b> اكتب الأوامر كما هي. في <b>Discord</b> استخدم أوامر الـ <b>Slash</b> من قناة <code>#admin-commands</code> (الـ <code>!</code> لا يعمل هناك) — وتقترح لك الطالب بالاسم تلقائياً: <code>/nutq grant</code>, <code>/nutq cap</code>…</div>
+      <div class="cmd"><div class="name"><code>/nutq cap &lt;اسم/id&gt; &lt;عدد&gt;</code></div><div class="desc">تغيير عدد الدرجات الرسمية/اليوم لطالب معيّن (الافتراضي <b>1</b>) — اختياري، للاستثناءات فقط.</div></div>
+      <div class="cmd"><div class="name"><code>/nutq capreset &lt;اسم/id&gt;</code></div><div class="desc">إرجاع الطالب للحدّ الافتراضي (1/يوم). <b>في تليجرام</b> بدلاً منه: <code>/nutq cap &lt;اسم/id&gt; default</code>.</div></div>
+      <div class="callout">📟 في <b>تليجرام</b> اكتب الأوامر كما هي (و<code>/nutq</code> وحده = الحالة). في <b>Discord</b> استخدم أوامر الـ <b>Slash</b> من قناة <code>#admin-commands</code> (الـ <code>!</code> لا يعمل هناك) — واختر الطالب بالاسم من القائمة تلقائياً: <code>/nutq grant</code>, <code>/nutq cap</code>, <code>/nutq capreset</code>…</div>
+      <div class="callout">✅ <b>الاستخدام الأساسي:</b> فقط <code>/nutq grant &lt;الطالب&gt;</code> — وبكده ياخد زر 🏅 ودرجة واحدة يومياً. الـ <code>cap</code> اختياري للاستثناءات فقط.</div>
       <div class="callout">🔒 <b>أمان التحكّم بمن (WHO):</b> إزالة <b>آخر</b> طالب من القائمة تُطفئ الميزة تلقائياً (حتى لا تُفتح للجميع بالخطأ). ولو كانت «للجميع» لا يمكن استثناء فرد واحد — استخدم <code>off</code> أو امنح أفراداً محدّدين.</div>
     </div>
 

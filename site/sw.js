@@ -14,7 +14,7 @@
  * activate, so this deploy also clears any stale empire-v1 assets.
  */
 
-const CACHE_NAME = 'empire-v4';
+const CACHE_NAME = 'empire-v5';
 const OFFLINE_URL = '/offline';
 
 // Pre-cache only the offline fallback + icons (NOT css/js — those are

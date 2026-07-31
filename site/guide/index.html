@@ -8,11 +8,14 @@
   <meta name="theme-color" content="#D4AF37">
   <link rel="stylesheet" href="/css/empire.css">
   <script src="/js/status.js"></script>
+  <!-- guide-build: student-guide-v2 (2026-07-31) — bump on each deploy to verify live -->
   <style>
+    html { scroll-behavior: smooth; }
     /* Guide-specific, RTL-friendly */
     .guide-body { font-family: 'Cairo', sans-serif; line-height: 1.9; }
     .guide-body .card { text-align: right; }
     .guide-body h2 { justify-content: flex-start; }
+    .guide-section { scroll-margin-top: 84px; }
     .step { display: flex; gap: 12px; align-items: flex-start; margin: 12px 0; }
     .step .num {
       flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%;
@@ -55,6 +58,25 @@
     @media (max-width: 620px) { .mv-grid { grid-template-columns: 1fr; } }
     code { background: var(--bg-primary); padding: 2px 8px; border-radius: 6px; direction: ltr; display: inline-block; }
     .print-btn { position: sticky; top: 10px; z-index: 5; }
+    /* --- Navigation: search + table of contents --- */
+    .guide-search { width: 100%; padding: 12px 16px; border-radius: 12px; font-size: 1rem;
+      border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-primary);
+      font-family: inherit; }
+    .guide-search:focus { outline: none; border-color: var(--accent); }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .toc a { display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: 0.85rem;
+      border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; }
+    .toc a:hover { border-color: var(--accent); color: var(--accent-light); }
+    .cmd { display: flex; gap: 12px; align-items: flex-start; margin: 8px 0;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .cmd .name { flex: 0 0 40%; }
+    .cmd .desc { flex: 1; color: var(--text-secondary); font-size: 0.92rem; }
+    .faq-q { font-weight: 700; color: var(--accent-light); margin: 10px 0 2px; }
+    .faq-q a { color: inherit; text-decoration: none; border-bottom: 1px dashed var(--accent); }
+    #to-top { position: fixed; bottom: 20px; left: 20px; z-index: 20; display: none;
+      width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
+      background: var(--accent); color: #0A0A0F; font-size: 1.3rem; box-shadow: 0 4px 14px rgba(0,0,0,.4); }
+    .no-results { text-align: center; color: var(--text-muted); padding: 20px; display: none; }
     @media print {
       .no-print { display: none !important; }
       body { background: #fff !important; color: #000 !important; }
@@ -68,24 +90,66 @@
     <div class="header">
       <img src="/logo.png" alt="Empire English" class="logo" style="width:56px;height:56px;border-radius:50%;box-shadow:0 0 15px rgba(212,175,55,0.3)">
       <h1>دليل الطالب — رحلتك في Empire English</h1>
-      <p class="subtitle">مكان واحد يجمع كل ما تحتاجه: مهامك، حقوقك، قواعدنا، ورسالتنا</p>
+      <p class="subtitle">مكان واحد يجمع كل ما تحتاجه: مهامك، أوامرك، قنواتك، حقوقك، وقواعدنا</p>
     </div>
 
-    <div class="no-print" style="text-align:center;margin-bottom:20px">
+    <div class="no-print" style="text-align:center;margin-bottom:16px">
       <button class="btn print-btn" onclick="window.print()">🖨️ احفظ كـ PDF / اطبع الدليل</button>
     </div>
 
-    <!-- 1. Welcome -->
-    <div class="card">
+    <!-- Search -->
+    <div class="card no-print">
+      <input type="search" id="guide-search" class="guide-search" autocomplete="off"
+             placeholder="🔍 دوّر عن أي حاجة… (نطق، كود، سلسلة، أوامر، قناة…)"
+             aria-label="بحث في الدليل">
+    </div>
+    <div class="no-results" id="guide-no-results">مفيش نتيجة — جرّب كلمة تانية. / No match — try another word.</div>
+
+    <!-- Table of contents -->
+    <div class="card no-print" id="guide-toc-card">
+      <h2>📑 محتويات الدليل</h2>
+      <div class="toc">
+        <a href="#quickstart">🚀 ابدأ في 10 دقائق</a>
+        <a href="#faq">❓ أكثر سؤال</a>
+        <a href="#mission">🏛️ رسالتنا</a>
+        <a href="#access">🔑 الدخول</a>
+        <a href="#server">🗺️ قنوات Discord</a>
+        <a href="#tasks">🗓️ الـ7 مهام</a>
+        <a href="#calendar">📅 التقويم</a>
+        <a href="#mastery">🏅 مستويات الإتقان</a>
+        <a href="#itqan">📝 الاختبار الأسبوعي</a>
+        <a href="#review">📚 مراجعة الكلمات</a>
+        <a href="#commands">💬 أوامر البوت</a>
+        <a href="#rights">🛡️ حقوقك</a>
+        <a href="#rules">📜 القواعد</a>
+        <a href="#install">📱 تثبيت التطبيق</a>
+        <a href="#help">🆘 مساعدة</a>
+      </div>
+    </div>
+
+    <!-- Welcome -->
+    <div class="card guide-section" id="welcome">
       <h2>👋 أهلاً بك</h2>
-      <p>هذا الدليل هو <b>مرجعك الدائم</b>. في أي وقت تريد أن تعرف: كيف تسير رحلتك؟ ما هي مهامك اليومية؟ ما حقوقك؟ ما قواعدنا؟ — تجد الإجابة هنا. صُمّم كل شيء ليجعل تعلّمك <b>أوضح وأسهل وأكثر متعة</b>.</p>
+      <p>هذا الدليل هو <b>مرجعك الدائم</b>. في أي وقت تريد أن تعرف: كيف تسير رحلتك؟ ما هي مهامك اليومية؟ ما أوامرك؟ ما حقوقك؟ — تجد الإجابة هنا. استخدم <b>خانة البحث</b> بالأعلى أو <b>المحتويات</b> للوصول السريع.</p>
       <div class="callout">
         💡 كل ميزة هنا صُمّمت <b>لمصلحتك أنت</b> — لتساعدك على المتابعة اليومية وتتبّع تقدّمك دون تشتّت. ورأيك دائماً موضع ترحيب لنطوّر أكثر.
       </div>
     </div>
 
+    <!-- Quick Start -->
+    <div class="card guide-section" id="quickstart" style="border-color:var(--accent)">
+      <h2>🚀 ابدأ في 10 دقائق</h2>
+      <p>أول مرة معنا؟ اعمل الخطوات دي بالترتيب:</p>
+      <div class="step"><div class="num">1</div><div class="txt">في Discord، روح قناة <code>#bot-commands</code> واكتب <code>!link</code> → هيوصلك كود دخول في الخاص.</div></div>
+      <div class="step"><div class="num">2</div><div class="txt">افتح <span class="en">practice.empireenglish.online</span>، الصق الكود، وادخل. (دخولك محفوظ 60 يوم.)</div></div>
+      <div class="step"><div class="num">3</div><div class="txt">اعمل الـ<b>5 تمارين</b> بتاعة اليوم على المنصة (نطق، مفردات، محاكاة، استماع، تحدّث) → يومك يبقى <b>أخضر ✅</b>.</div></div>
+      <div class="step"><div class="num">4</div><div class="txt">كمّل مهمتين Discord: اكتب فقرة في <code>#l0-text-practice</code> ثم <code>!6</code>، وشارك في <code>#general-chat</code> + غرفة صوتية ثم <code>!7</code>.</div></div>
+      <div class="step"><div class="num">5</div><div class="txt">ارجع <b>بكرة</b> وكرّر — الاستمرارية اليومية هي سرّ التقدّم. 🔥</div></div>
+      <div class="callout">🧭 تايه؟ اكتب <code>!today</code> في أي وقت علشان تعرف إيه اللي فاضل عليك النهاردة.</div>
+    </div>
+
     <!-- Latest updates / What's New (auto-filled from the bot changelog) -->
-    <div class="card" id="guide-changelog-card" style="display:none;border-color:var(--accent)">
+    <div class="card no-print" id="guide-changelog-card" style="display:none;border-color:var(--accent)">
       <h2>🆕 آخر التحديثات / Latest updates</h2>
       <div id="guide-changelog"></div>
     </div>
@@ -111,8 +175,23 @@
       })();
     </script>
 
-    <!-- 2. Mission & Vision -->
-    <div class="card" style="border-color:var(--accent)">
+    <!-- FAQ / most-asked -->
+    <div class="card guide-section" id="faq" style="border-color:var(--accent)">
+      <h2>❓ أكثر الأسئلة شيوعاً</h2>
+      <div class="faq-q"><a href="#access">إزاي أدخل المنصة؟</a></div>
+      <p>اكتب <code>!link</code> في <code>#bot-commands</code> → خُد الكود → الصقه في المنصة. التفاصيل في <a href="#access">قسم الدخول</a>.</p>
+      <div class="faq-q"><a href="#tasks">ليه يومي مش بقى أخضر؟</a></div>
+      <p>اليوم بيبقى أخضر لما تخلّص <b>الـ5 تمارين</b> اللي على المنصة. شوف <a href="#tasks">المهام</a> و<a href="#calendar">ألوان التقويم</a>.</p>
+      <div class="faq-q"><a href="#access">نسيت/ضاع الدخول أو خلص الكود؟</a></div>
+      <p>عادي — اكتب <code>!link</code> تاني وخُد كود جديد (كل كود صالح 15 دقيقة ومرة واحدة).</p>
+      <div class="faq-q"><a href="#tasks">سجّلت التمرين بس مفيش درجة نطق؟</a></div>
+      <p>درجة النطق الرسمية 🏅 ميزة بتتفعّل لطلاب معيّنين. لو الزر ظاهر لك، اضغطه مرة في اليوم. شوف <a href="#tasks">المحاكاة</a>.</p>
+      <div class="faq-q"><a href="#commands">إزاي أعرف مهامي أو تقدّمي؟</a></div>
+      <p><code>!today</code> = اللي فاضل النهاردة · <code>!progress</code> = لوحة تقدّمك كاملة. كل الأوامر في <a href="#commands">قسم الأوامر</a>.</p>
+    </div>
+
+    <!-- Mission & Vision -->
+    <div class="card guide-section" id="mission" style="border-color:var(--accent)">
       <h2>🏛️ رسالتنا ورؤيتنا</h2>
       <div class="mv-grid">
         <div>
@@ -130,21 +209,92 @@
       </div>
     </div>
 
-    <!-- 3. Access -->
-    <div class="card">
+    <!-- Access -->
+    <div class="card guide-section" id="access">
       <h2>🔑 كيف تدخل إلى المنصة</h2>
       <p>المنصة خاصة بطلاب Empire English فقط. للدخول لأول مرة:</p>
-      <div class="step"><div class="num">1</div><div class="txt">اذهب إلى Discord، إلى قناة <code>#bot-commands</code>، واكتب الأمر <code>!link</code></div></div>
-      <div class="step"><div class="num">2</div><div class="txt">سيصلك من البوت في الرسائل الخاصة <b>كود دخول</b> مكوّن من 8 أحرف/أرقام (ورابط سريع).</div></div>
+      <div class="step"><div class="num">1</div><div class="txt">اذهب إلى Discord، إلى قناة <code>#bot-commands</code>، واكتب الأمر <code>!link</code> (أو بالعربي <code>!ربط</code>).</div></div>
+      <div class="step"><div class="num">2</div><div class="txt">سيصلك من البوت في الرسائل الخاصة <b>كود دخول</b> مكوّن من 8 أحرف/أرقام (ورابط سريع بيدخّلك على طول).</div></div>
       <div class="step"><div class="num">3</div><div class="txt">افتح <span class="en">practice.empireenglish.online</span> والصق الكود في الخانة، ثم اضغط <span class="en">Access / دخول</span>. أو اضغط الرابط السريع مباشرةً.</div></div>
       <div class="step"><div class="num">4</div><div class="txt">تم! سيفتح لك <b>تقويمك الشخصي</b>، ويبقى دخولك محفوظاً على جهازك لمدة <b>60 يوماً</b> — لن تحتاج إعادة الكود في كل مرة.</div></div>
       <div class="callout">
-        ⚠️ الكود يُستخدم <b>مرة واحدة</b> وينتهي خلال 15 دقيقة. لو انتهى أو فقدت الدخول، اكتب <code>!link</code> مرة أخرى للحصول على كود جديد.
+        ⚠️ الكود يُستخدم <b>مرة واحدة</b> وينتهي خلال <b>15 دقيقة</b>. لو انتهى أو فقدت الدخول، اكتب <code>!link</code> مرة أخرى للحصول على كود جديد.
+        <br>🔐 مسموح بجهازين نشطين لكل طالب — لو دخلت من جهاز ثالث، يُسجَّل خروج أقدم جهاز تلقائياً (والكود <b>خاص بك</b>، ما تشاركهوش).
       </div>
     </div>
 
-    <!-- 4. Calendar -->
-    <div class="card">
+    <!-- The Discord Server: channel map -->
+    <div class="card guide-section" id="server">
+      <h2>🗺️ سيرفر Discord — القنوات وأماكنها</h2>
+      <p>أول خطوة داخل السيرفر: اقرأ القواعد في <code>#rules</code> واكتب <code>!agree</code> علشان تُفتح لك القنوات. علامة <code>lN</code> في أسماء القنوات = رقم مستواك (مثلاً <code>l0</code> للمستوى صفر، <code>l1</code> للأول… إلخ).</p>
+      <div class="cmd"><div class="name"><code>#bot-commands</code></div><div class="desc">مكان كتابة أوامر البوت (<code>!link</code>، <code>!today</code>، <code>!6</code>، <code>!7</code>…).</div></div>
+      <div class="cmd"><div class="name"><code>#lN-daily-tasks</code></div><div class="desc">مهامك اليومية بتتنشر هنا كل صباح.</div></div>
+      <div class="cmd"><div class="name"><code>#lN-showcase</code></div><div class="desc">هنا تُرفع تسجيلاتك (النطق، المحاكاة، التحدّث) — تلقائياً لما تضغط <span class="en">Send to Discord</span>.</div></div>
+      <div class="cmd"><div class="name"><code>#lN-text-practice</code></div><div class="desc">مكان مهمة الكتابة — اكتب فقرتك هنا ثم سجّلها بأمر <code>!6</code>.</div></div>
+      <div class="cmd"><div class="name"><code>#general-chat</code></div><div class="desc">الدردشة العامة بالإنجليزي — جزء من مهمة المجتمع.</div></div>
+      <div class="cmd"><div class="name"><span class="en">Voice lounges 🔊</span></div><div class="desc">غرف صوتية — اقضِ فيها 10 دقايق كجزء من مهمة المجتمع.</div></div>
+      <div class="cmd"><div class="name"><code>#cheat-sheets</code></div><div class="desc">قوائم المفردات الكاملة لكل أسبوع.</div></div>
+      <div class="cmd"><div class="name"><code>#resources</code></div><div class="desc">مصادر وكليبات إضافية على مستواك.</div></div>
+      <div class="cmd"><div class="name"><code>#daily-word</code> · <code>#ask-nour</code></div><div class="desc">كلمة اليوم · مكان تسأل فيه وتطلب مساعدة.</div></div>
+      <div class="cmd"><div class="name"><span class="en">🏅 Week Champions</span></div><div class="desc">قناة الاحتفاء بمن يجتاز الاختبار الأسبوعي ويُتقن الأسبوع.</div></div>
+      <div class="cmd"><div class="name"><code>#announcements</code></div><div class="desc">إعلانات المجتمع المهمة.</div></div>
+    </div>
+
+    <!-- Daily program: the 7 tasks -->
+    <div class="card guide-section" id="tasks">
+      <h2>🗓️ منهجك اليومي — 7 مهام</h2>
+      <p>رحلتك اليومية <b>7 مهام</b>: <b>5 على المنصة</b> (هذه الصفحة) + <b>مهمتان في Discord</b>. لمّا تُنجز <b>الـ5 مهام</b> على المنصة، يتحوّل يومك في التقويم إلى <b>الأخضر ✅</b>. والمهمتان في Discord (كتابة + مجتمع) يكمّلان <b>حلقتك اليومية الكاملة</b> (نقاطك وسلسلتك 🔥).</p>
+
+      <h3 style="color:var(--accent);margin:16px 0 8px">على المنصة (5 مهام — تُحتسب تلقائياً)</h3>
+
+      <div class="task-item">
+        <div class="ico">🎯</div>
+        <div class="body"><b>Accent — النطق</b> <span class="pill pill-rec">تسجيل</span><br>
+          تدريب على أصوات الأسبوع. اسمع النموذج، اتمرّن، ثم <b>سجّل نفسك</b> في الصفحة واضغط <span class="en">📤 Send to Discord</span> — يُرفع تسجيلك إلى <code>#lN-showcase</code> ويُحتسب اليوم <b>تلقائياً</b>.</div>
+      </div>
+      <div class="task-item">
+        <div class="ico">📖</div>
+        <div class="body"><b>Vocabulary — المفردات</b> <span class="pill pill-auto">تلقائي</span><br>
+          كلمات اليوم بالبطاقات. أنهِ الاختبار القصير <b>أو</b> تصفّح كل البطاقات مرة واحدة — يُحتسب <b>تلقائياً</b> بمجرّد الانتهاء (بلا علامة يدوية). القائمة الكاملة في <code>#cheat-sheets</code>.</div>
+      </div>
+      <div class="task-item">
+        <div class="ico">🎧</div>
+        <div class="body"><b>Shadowing — المحاكاة</b> <span class="pill pill-rec">تسجيل</span><br>
+          اسمع المقطع، اقرأ النص، وكرّر خلف المتحدّث بنفس الإيقاع، ثم <b>سجّل</b> واضغط <span class="en">📤 Send to Discord</span>. يُحتسب <b>تلقائياً</b>.
+          <br><span style="color:#8b95ff">🏅 <b>تقييم النطق (لبعض الطلاب):</b> لو ظهر لك زر <span class="en">🏅 Grade my best read</span> — اتمرّن وأعِد قد ما تحب (بدون درجة، مجرّد تشجيع)، ولمّا تحس إنك ضبطتها اضغطه <b>مرة واحدة في اليوم</b> علشان تاخد <b>درجتك الرسمية الدقيقة</b> على نطقك مع الكلمات اللي تركّز عليها.</span></div>
+      </div>
+      <div class="task-item">
+        <div class="ico">👂</div>
+        <div class="body"><b>Listening — الاستماع</b> <span class="pill pill-auto">تلقائي</span><br>
+          اسمع المقطع وأجب على أسئلة الفهم. بمجرّد إجابة آخر سؤال، يتحوّل التمرين إلى <span class="en">✓ Completed today</span> <b>وحده</b>.</div>
+      </div>
+      <div class="task-item">
+        <div class="ico">🎙️</div>
+        <div class="body"><b>Speaking — التحدّث</b> <span class="pill pill-rec">تسجيل</span><br>
+          مهمة تحدّث يومية (تعريف بنفسك، وصف، سرد… بتتغيّر كل يوم). سجّل إجابتك واضغط <span class="en">📤 Send to Discord</span>. يُحتسب <b>تلقائياً</b>.</div>
+      </div>
+
+      <h3 style="color:#8b95ff;margin:18px 0 8px">في Discord (مهمتان — بأمر بسيط)</h3>
+
+      <div class="task-item">
+        <div class="ico">✍️</div>
+        <div class="body"><b>Writing — الكتابة</b> <span class="pill pill-dc">Discord</span><br>
+          اكتب فقرتك اليومية في <code>#lN-text-practice</code> (المستوى صفر: 4–5 جمل؛ المستويات الأعلى: 100 كلمة أو أكثر — <b>من غير مترجم</b>)، ثم اكتب <code>!6</code> في <code>#bot-commands</code> لتسجيلها. (الحد الأدنى ~20 حرفاً.)</div>
+      </div>
+      <div class="task-item">
+        <div class="ico">💬</div>
+        <div class="body"><b>Community — المجتمع</b> <span class="pill pill-dc">Discord</span><br>
+          اعمل <b>الاثنين معاً</b>: ادخل غرفة صوتية <b>10 دقايق</b> على الأقل، <b>و</b> اكتب رسالة في <code>#general-chat</code> (بالإنجليزي)، ثم اكتب <code>!7</code>. المجتمع بيكبر لما <b>إنت</b> تشارك. 🏛️</div>
+      </div>
+
+      <div class="callout">
+        🎙️ تمارين النطق والمحاكاة والتحدّث تتطلب <b>تسجيلاً فعلياً</b> — هذه طريقة إثبات إنجازك، ولمصلحتك حتى تتحسّن لغتك حقاً.
+        <br>💡 التمارين الخمسة تُحتسب <b>تلقائياً</b> على المنصة — <b>لا تحتاج</b> كتابة <code>!1</code>–<code>!5</code> في Discord؛ بس الكتابة (<code>!6</code>) والمجتمع (<code>!7</code>).
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card guide-section" id="calendar">
       <h2>📅 تقويمك الشخصي</h2>
       <p>الصفحة الرئيسية هي <b>تقويم خاص بك</b> يبدأ من يوم انضمامك — بتواريخ حقيقية. كل يوم له لون يوضّح حالته:</p>
       <div class="color-row"><span class="swatch sw-today"></span><span><b>أصفر + نقطة</b> = يومك الحالي (اليوم).</span></div>
@@ -157,70 +307,18 @@
       </div>
     </div>
 
-    <!-- 5. Daily program: the 7 tasks -->
-    <div class="card">
-      <h2>🗓️ منهجك اليومي — 7 مهام</h2>
-      <p>رحلتك اليومية <b>7 مهام</b>: <b>5 على المنصة</b> (هذه الصفحة) + <b>مهمتان في Discord</b>. عندما تُنجز مهام المنصة الخمس، يتحوّل يومك إلى الأخضر ✅.</p>
-
-      <h3 style="color:var(--accent);margin:16px 0 8px">على المنصة (5 مهام)</h3>
-
-      <div class="task-item">
-        <div class="ico">🎯</div>
-        <div class="body"><b>Accent — النطق</b> <span class="pill pill-rec">تسجيل</span><br>
-          سجّل نفسك في الصفحة ثم اضغط <span class="en">📤 Send to Discord</span>. يُرفع تسجيلك إلى <code>#showcase</code> ويُحتسب اليوم <b>تلقائياً</b>.</div>
-      </div>
-      <div class="task-item">
-        <div class="ico">🎧</div>
-        <div class="body"><b>Shadowing — المحاكاة</b> <span class="pill pill-rec">تسجيل</span><br>
-          استمع وكرّر خلف المتحدّث، سجّل، ثم <span class="en">📤 Send to Discord</span>. يُحتسب <b>تلقائياً</b> بعد الإرسال.
-          <br><span style="color:#8b95ff">🏅 <b>تقييم النطق:</b> لو ظهر لك زر <span class="en">🏅 Grade my best read</span> بعد الإرسال — اتمرّن وأعِد قد ما تحب (بدون درجة، مجرّد تشجيع)، ولمّا تحس إنك ضبطتها اضغطه <b>مرة واحدة في اليوم</b> علشان تاخد <b>درجتك الرسمية الدقيقة</b> على نطقك مع الكلمات اللي تركّز عليها.</span></div>
-      </div>
-      <div class="task-item">
-        <div class="ico">🗣️</div>
-        <div class="body"><b>Speaking — التحدّث</b> <span class="pill pill-rec">تسجيل</span><br>
-          تمرين التحدّث الجديد: سجّل إجابتك ثم <span class="en">📤 Send to Discord</span>. يُحتسب <b>تلقائياً</b> بعد الإرسال.</div>
-      </div>
-      <div class="task-item">
-        <div class="ico">👂</div>
-        <div class="body"><b>Listening — الاستماع</b> <span class="pill pill-auto">تلقائي</span><br>
-          أجب على أسئلة الاستماع. بمجرّد إنهاء آخر سؤال، يتحوّل التمرين إلى <span class="en">✓ Completed today</span> <b>وحده</b> — لا حاجة لأي علامة يدوية.</div>
-      </div>
-      <div class="task-item">
-        <div class="ico">📖</div>
-        <div class="body"><b>Vocabulary — المفردات</b> <span class="pill pill-auto">تلقائي</span><br>
-          أنهِ الاختبار أو تصفّح كل البطاقات مرة واحدة. يُحتسب <b>تلقائياً</b> بمجرّد الانتهاء — بلا علامة يدوية.</div>
-      </div>
-
-      <h3 style="color:#8b95ff;margin:18px 0 8px">في Discord (مهمتان)</h3>
-
-      <div class="task-item">
-        <div class="ico">✍️</div>
-        <div class="body"><b>Writing — الكتابة</b> <span class="pill pill-dc">Discord</span><br>
-          اكتب جملتك/فقرتك اليومية في قناة الكتابة. التذكير اليومي في Discord يوضّح لك <b>ماذا تكتب اليوم وأين</b>، خطوة بخطوة.</div>
-      </div>
-      <div class="task-item">
-        <div class="ico">💬</div>
-        <div class="body"><b>Community — التفاعل المجتمعي</b> <span class="pill pill-dc">Discord</span><br>
-          شارك، ردّ، أو شجّع زميلاً في القناة العامة. جزء أساسي من رحلتك — نتعلّم معاً، لا وحدنا.</div>
-      </div>
-
-      <div class="callout">
-        🎙️ تمارين النطق والمحاكاة والتحدّث تتطلب <b>تسجيلاً فعلياً</b> — هذه طريقة إثبات إنجازك، ولمصلحتك حتى تتحسّن لغتك حقاً.
-      </div>
-    </div>
-
-    <!-- 6. Mastery -->
-    <div class="card">
+    <!-- Mastery -->
+    <div class="card guide-section" id="mastery">
       <h2>🏅 ألوان الإتقان (المستويات)</h2>
       <p>كلما عُدت وكرّرت اليوم في أيام مختلفة، يرتقي مستوى إتقانك ويتغيّر لون شارتك:</p>
       <p style="text-align:center;font-size:1.05rem;margin:14px 0">
         🥉 <b>Bronze</b> ← 🥈 <b>Silver</b> ← 🥇 <b>Gold</b> ← 💠 <b>Platinum</b> ← 💎 <b>Diamond</b>
       </p>
-      <p>الترقية تحدث <b>مرة واحدة في اليوم</b> لكل تمرين — راجع بانتظام لتصل إلى الماسة 💎.</p>
+      <p>كل مرة تعيد فيها تمريناً بجدّية يرتقي مستواه درجة، حتى يصل إلى الماسة 💎. راجع بانتظام لتصل للأعلى.</p>
     </div>
 
-    <!-- 6b. Weekly Assessment (Itqan) -->
-    <div class="card" style="border-color:var(--accent)">
+    <!-- Weekly Assessment (Itqan) -->
+    <div class="card guide-section" id="itqan" style="border-color:var(--accent)">
       <h2>📝 الاختبار الأسبوعي (Itqan)</h2>
       <p>في نهاية كل أسبوع، يظهر في تقويمك <b>اختبار أسبوعي</b> يثبت أنك <b>أتقنت</b> محتوى الأسبوع فعلاً — مش بس حضرت. ده قلب فكرتنا: <b>نتيجة حقيقية، مش مجرّد متابعة</b>.</p>
 
@@ -237,20 +335,44 @@
       </div>
     </div>
 
-    <!-- 7. Navigation + review -->
-    <div class="card">
-      <h2>🏠 التنقّل ومراجعة الكلمات</h2>
+    <!-- Navigation + review -->
+    <div class="card guide-section" id="review">
+      <h2>📚 التنقّل ومراجعة الكلمات</h2>
       <p>• في أي صفحة تمرين، اضغط زر <span class="en">🏠 Home</span> (في الأسفل على الهاتف) للعودة إلى تقويمك فوراً.</p>
-      <p>• من الصفحة الرئيسية، ستجد بطاقة <span class="en">📚 Review Past Words</span> — لمراجعة الكلمات من الأيام السابقة حتى تثبت في ذاكرتك (نظام تكرار متباعد يذكّرك بالكلمة في الوقت المناسب قبل أن تنساها).</p>
+      <p>• من الصفحة الرئيسية، ستجد بطاقة <span class="en">📚 Review Past Words</span> — لمراجعة الكلمات من الأيام السابقة حتى تثبت في ذاكرتك (نظام <b>تكرار متباعد</b> يذكّرك بالكلمة في الوقت المناسب قبل أن تنساها).</p>
+      <p>• تقدر تشوف مفرداتك في أي وقت بأمر <code>!words</code> (أو <code>!كلماتي</code>)، وتركيز الأسبوع بأمر <code>!week</code> (أو <code>!أسبوع</code>).</p>
     </div>
 
-    <!-- 8. Your rights -->
-    <div class="card" style="border-color:var(--accent)">
+    <!-- Student commands cheat-sheet -->
+    <div class="card guide-section" id="commands">
+      <h2>💬 أوامر البوت (للطالب)</h2>
+      <p>تُكتب في قناة <code>#bot-commands</code> داخل Discord. لكل أمر <b>اختصار بالعربي</b> أيضاً.</p>
+      <div class="cmd"><div class="name"><code>!link</code> · <code>!ربط</code></div><div class="desc">يفتح لك المنصة (كود دخول لمرة واحدة، صالح 15 دقيقة).</div></div>
+      <div class="cmd"><div class="name"><code>!today</code> · <code>!اليوم</code></div><div class="desc">إيه المهام اللي فاضلة عليك النهاردة.</div></div>
+      <div class="cmd"><div class="name"><code>!progress</code> · <code>!تقدم</code></div><div class="desc">لوحتك الكاملة: المستوى، الأسبوع، النقاط، السلسلة 🔥، ونسبة الإنجاز.</div></div>
+      <div class="cmd"><div class="name"><code>!6</code></div><div class="desc">تسجيل مهمة <b>الكتابة</b> — بعد ما تكتب فقرتك في <code>#lN-text-practice</code>.</div></div>
+      <div class="cmd"><div class="name"><code>!7</code></div><div class="desc">تسجيل مهمة <b>المجتمع</b> — بعد 10 دقايق voice ورسالة في <code>#general-chat</code>.</div></div>
+      <div class="cmd"><div class="name"><code>!top</code> · <code>!ترتيب</code></div><div class="desc">لوحة المتصدّرين بالنقاط.</div></div>
+      <div class="cmd"><div class="name"><code>!week</code> · <code>!أسبوع</code></div><div class="desc">تركيز الأسبوع (الأصوات، موضوع المفردات، القواعد).</div></div>
+      <div class="cmd"><div class="name"><code>!words</code> · <code>!كلماتي</code></div><div class="desc">مفرداتك.</div></div>
+      <div class="cmd"><div class="name"><code>!help</code> · <code>!مساعدة</code></div><div class="desc">قائمة الأوامر (نسخة عربية كاملة عبر <code>!مساعدة</code>).</div></div>
+      <div class="cmd"><div class="name"><code>!notifications</code></div><div class="desc">إعدادات التنبيهات والتذكيرات.</div></div>
+      <div class="cmd"><div class="name"><code>!join &lt;هدفك&gt;</code></div><div class="desc">تسجيلك في المجتمع وتحديد هدفك التعليمي.</div></div>
+      <div class="cmd"><div class="name"><code>!gender male|female</code></div><div class="desc">علشان «نور» تخاطبك بالصيغة الصحيحة (اختياري).</div></div>
+      <div class="cmd"><div class="name"><code>!agree</code></div><div class="desc">قبول القواعد وفتح قنوات السيرفر (أول خطوة).</div></div>
+      <div class="cmd"><div class="name"><code>!tutorial</code></div><div class="desc">إعادة جولة التعريف التفاعلية للمبتدئين.</div></div>
+      <div class="cmd"><div class="name"><code>!resetme</code></div><div class="desc">طلب إعادة ضبط سجلّك التعليمي (بموافقتك — شوف <a href="#rights">حقوقك</a>).</div></div>
+      <div class="cmd"><div class="name"><code>!delete</code></div><div class="desc">طلب حذف كل بياناتك.</div></div>
+      <div class="callout">💡 التمارين الخمسة على المنصة تُحتسب <b>لوحدها</b> — أنت بس بتكتب <code>!6</code> و<code>!7</code> للمهمتين اللي في Discord.</div>
+    </div>
+
+    <!-- Your rights -->
+    <div class="card guide-section" id="rights" style="border-color:var(--accent)">
       <h2>🛡️ حقوقك</h2>
       <p>رحلتك ملكك، ونحن نحترم ذلك:</p>
       <div class="step"><div class="num">1</div><div class="txt"><b>خصوصيتك:</b> بياناتك (تقدّمك وتسجيلاتك) تُستخدم <b>فقط</b> لمتابعة رحلتك التعليمية داخل Empire — لا شيء آخر.</div></div>
       <div class="step"><div class="num">2</div><div class="txt"><b>حق التعويض:</b> يمكنك العودة وإكمال أي يوم فائت في أي وقت. لا عقوبات، لا حرمان.</div></div>
-      <div class="step"><div class="num">3</div><div class="txt"><b>حق إعادة الضبط (Reset):</b> يمكنك طلب حذف سجلّك التعليمي والبدء من جديد في أي وقت ولأي سبب — عبر أمر بسيط في Discord.</div></div>
+      <div class="step"><div class="num">3</div><div class="txt"><b>حق إعادة الضبط (Reset):</b> يمكنك طلب حذف سجلّك التعليمي والبدء من جديد في أي وقت ولأي سبب — عبر أمر <code>!resetme</code>.</div></div>
       <div class="step"><div class="num">4</div><div class="txt"><b>موافقة موثّقة:</b> قبل أي حذف، نُسجّل موافقتك بوضوح — <b>لحمايتك وحمايتنا معاً</b>، حتى يبقى دليل واضح أن الحذف تمّ بطلبك أنت.</div></div>
       <div class="step"><div class="num">5</div><div class="txt"><b>حق الدعم:</b> تحصل على مساعدة في أي وقت عبر قناة الدعم أو مجموعة التليجرام.</div></div>
       <div class="callout">
@@ -258,19 +380,20 @@
       </div>
     </div>
 
-    <!-- 9. Community rules -->
-    <div class="card">
+    <!-- Community rules -->
+    <div class="card guide-section" id="rules">
       <h2>📜 قواعد المجتمع</h2>
       <p>قواعد بسيطة تحافظ على مجتمعنا داعماً للجميع:</p>
       <p>• 🤝 <b>الاحترام المتبادل</b> — نتعامل بلطف؛ لا سخرية من تسجيلات أو أخطاء أحد. الخطأ جزء من التعلّم.</p>
       <p>• 🎯 <b>الالتزام اليومي</b> — اجتهد للحضور كل يوم قدر استطاعتك؛ الاستمرارية هي سرّ التقدّم.</p>
       <p>• 🔒 <b>كودك خاص بك</b> — لا تشارك كود الدخول أو رابطك مع أحد.</p>
-      <p>• 📍 <b>القناة الصحيحة</b> — التسجيلات في <code>#showcase</code>، الأسئلة في قناة الدعم، الكتابة في قناتها.</p>
+      <p>• 📍 <b>القناة الصحيحة</b> — التسجيلات في <code>#lN-showcase</code>، الكتابة في <code>#lN-text-practice</code>، الأوامر في <code>#bot-commands</code>، الأسئلة في <code>#ask-nour</code>.</p>
+      <p>• 🇬🇧 <b>الإنجليزي في القنوات العامة</b> — تدرّب على استخدام الإنجليزي في <code>#general-chat</code> قدر ما تقدر.</p>
       <p>• 🏛️ <b>المحتوى ملك Empire English</b> — للاستخدام الشخصي التعليمي فقط، دون إعادة نشر خارج المجتمع.</p>
     </div>
 
-    <!-- 10. Add to home screen -->
-    <div class="card">
+    <!-- Add to home screen -->
+    <div class="card guide-section" id="install">
       <h2>📱 ضع المنصة كأيقونة تطبيق على هاتفك</h2>
       <p>لتفتح المنصة بضغطة واحدة مثل أي تطبيق (بدون فتح المتصفح في كل مرة):</p>
 
@@ -297,17 +420,17 @@
       </div>
     </div>
 
-    <!-- 11. Help -->
-    <div class="card">
+    <!-- Help -->
+    <div class="card guide-section" id="help">
       <h2>🆘 تحتاج مساعدة؟</h2>
       <p>نحن معك في كل خطوة. إن واجهت أي صعوبة:</p>
-      <p>• اكتب سؤالك في <b>قناة الدعم</b> داخل Discord.</p>
+      <p>• اكتب سؤالك في قناة <code>#ask-nour</code> أو <b>قناة الدعم</b> داخل Discord.</p>
       <p>• أو تواصل معنا في <b>مجموعة التليجرام</b> الخاصة بطلاب Empire.</p>
       <p>اكتب سؤالك وسنساعدك في أسرع وقت. 💛</p>
     </div>
 
-    <!-- 12. Feedback -->
-    <div class="card" style="border-color:var(--success)">
+    <!-- Feedback -->
+    <div class="card guide-section" id="feedback" style="border-color:var(--success)">
       <h2>💛 رأيك يهمّنا</h2>
       <p>كل هذه التحسينات من أجلك. إن كان لديك أي ملاحظة أو اقتراح لجعل تجربتك أفضل، شاركنا في قناة الدعم أو مجموعة التليجرام — رأيك يساعدنا على التطوير باستمرار.</p>
       <p style="text-align:center;margin-top:14px;color:var(--accent)"><b>بالتوفيق في رحلتك مع Empire English 🏛️</b></p>
@@ -319,5 +442,38 @@
 
     <div class="footer">Empire English Community — Common Sense First 🏛️<br>practice.empireenglish.online</div>
   </div>
+
+  <button id="to-top" class="no-print" aria-label="أعلى الصفحة" title="أعلى الصفحة">↑</button>
+
+  <script>
+    (function () {
+      // --- In-guide search: filter section cards by keyword ---
+      var search = document.getElementById('guide-search');
+      var sections = Array.prototype.slice.call(document.querySelectorAll('.guide-section'));
+      var toc = document.getElementById('guide-toc-card');
+      var noResults = document.getElementById('guide-no-results');
+      if (search) {
+        search.addEventListener('input', function () {
+          var q = search.value.trim().toLowerCase();
+          var anyShown = false;
+          sections.forEach(function (sec) {
+            var match = !q || (sec.textContent || '').toLowerCase().indexOf(q) !== -1;
+            sec.style.display = match ? '' : 'none';
+            if (match) anyShown = true;
+          });
+          if (toc) toc.style.display = q ? 'none' : '';
+          if (noResults) noResults.style.display = (q && !anyShown) ? 'block' : 'none';
+        });
+      }
+      // --- Back to top ---
+      var toTop = document.getElementById('to-top');
+      window.addEventListener('scroll', function () {
+        if (toTop) toTop.style.display = window.scrollY > 500 ? 'block' : 'none';
+      });
+      if (toTop) toTop.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
 </body>
 </html>

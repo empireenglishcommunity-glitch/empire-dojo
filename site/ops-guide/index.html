@@ -116,6 +116,9 @@
         <a href="#nutq">🗣️ تقييم النطق</a>
         <a href="#governance">⚖️ الحوكمة</a>
         <a href="#runbook">🚀 التشغيل</a>
+        <a href="#monitoring">🛰️ المراقبة والتنبيهات</a>
+        <a href="#cost">💰 التكلفة</a>
+        <a href="#owner-troubleshoot">🛠️ حل المشاكل</a>
         <a href="#roles">👑 الأدوار</a>
       </div>
     </div>
@@ -488,6 +491,44 @@ python3.12 -m pytest tests/ -q   # يجب أن تمرّ كلها قبل أي د�
       <div class="step"><div class="num">•</div><div class="txt"><b>تنبيه الحداثة:</b> فحص يومي (cron 04:00) — لو غابت النسخة أو تقادمت، يصلك تنبيه على تليجرام الإدارة.</div></div>
       <div class="step"><div class="num">•</div><div class="txt"><b>اختبار الاستعادة:</b> جُرِّب واستُعيدت النسخة بنجاح؛ كرّر الاختبار دورياً.</div></div>
       <div class="callout">🔑 كل الأسرار (مفاتيح النشر، رموز Cloudflare، مفاتيح R2) تُحفظ خارج المستودعات (على الخادم / أسرار المنصة) — لا تُكتب في أي صفحة أو كود.</div>
+      <div class="callout warn">⚠️ <b>دمج PR ≠ نشر مباشر لصفحة التمرين.</b> بعد دمج أي PR يمسّ <code>site/</code> لازم تشغّل أمر النشر (خطوة 2) — مفيش نشر تلقائي لـ Cloudflare Pages. تأكّد إن الصفحة الحيّة اتحدّثت فعلاً (مش مجرّد نجاح الأمر).</div>
+    </div>
+
+    <!-- Monitoring & alerts -->
+    <div class="card guide-section" id="monitoring">
+      <h2>🛰️ المراقبة والتنبيهات</h2>
+      <p>النظام بيراقب نفسه ويصلك على <b>تليجرام الإدارة (Empire Ops)</b> فقط لما تحتاج انتباهك — مش ضوضاء:</p>
+      <div class="cmd"><div class="name">♻️ إعادة ضبط</div><div class="desc">أي طلب <code>!resetme</code> من طالب يصلك للموافقة (لا حذف بدون موافقتك).</div></div>
+      <div class="cmd"><div class="name">📝 محاولة اختبار تحتاج مراجعة</div><div class="desc">لما محاولة Itqan ترسب على الحافّة/تحتاج عين بشرية — بالأوامر جاهزة للنسخ.</div></div>
+      <div class="cmd"><div class="name">📱 تجاوز حدّ الأجهزة</div><div class="desc">لو طالب دخل من جهاز ثالث (طرد أقدم جهاز) — احتمال مشاركة حساب.</div></div>
+      <div class="cmd"><div class="name">🌐 كشف IP (Hissar)</div><div class="desc">تنبيه لو توكن طالب ظهر من 5+ عناوين IP مختلفة.</div></div>
+      <div class="cmd"><div class="name">📉 خطر تسرّب / 🎯 جاهزية تحويل (Markaz)</div><div class="desc">طالب قيّم صامت / طالب بلغ سلسلة 7 أيام.</div></div>
+      <div class="cmd"><div class="name">💾 حداثة النسخة الاحتياطية</div><div class="desc">فحص يومي (4ص) — لو غابت/تقادمت النسخة يصلك تنبيه فوري.</div></div>
+      <div class="callout">🩺 فحوص سريعة: <code>!status</code> / <code>/status</code> (صحّة الحاوية والـ API) · <code>!pulse</code> (نشاط التنبيهات) · <code>!attention</code> (مَن يحتاج تدخّلاً بشريًا الآن).</div>
+    </div>
+
+    <!-- Cost model -->
+    <div class="card guide-section" id="cost">
+      <h2>💰 نموذج التكلفة (مبني على الطبقات المجانية)</h2>
+      <p>المنظومة مصمّمة لتعمل <b>مجانًا</b> على نطاق عشرات الطلاب — بحواجز تمنع أي فاتورة مفاجئة:</p>
+      <div class="cmd"><div class="name">🗣️ Azure (النطق)</div><div class="desc">طبقة مجانية ~5 ساعات صوت/شهر. محميّة بـ: قصّ الصوت لـ 20 ثانية + <b>درجة رسمية واحدة/طالب/يوم</b> + حارس شهري يتحوّل للمحرّك المجاني عند 90%. التمرين/الإعادة يستخدم المحرّك المجاني المستضاف ذاتيًا.</div></div>
+      <div class="cmd"><div class="name">📚 Cloudflare Pages</div><div class="desc">استضافة صفحة التمرين — مجانية.</div></div>
+      <div class="cmd"><div class="name">💾 Cloudflare R2</div><div class="desc">نسخ احتياطية خارج الموقع — ضمن الطبقة المجانية.</div></div>
+      <div class="cmd"><div class="name">🤖 خادم البوت</div><div class="desc">حاوية Docker على خادم (VPS) — التكلفة الثابتة الوحيدة تقريبًا.</div></div>
+      <div class="cmd"><div class="name">🧠 Gemini / Groq (اختياري)</div><div class="desc">للمهام الذكية (تغذية راجعة/محتوى) — طبقات مجانية؛ معظم الميزات الذكية اختيارية/مُطفأة.</div></div>
+      <div class="callout">📈 <b>مساحة النمو:</b> الحدّ الصارم 1 Azure/طالب/يوم يكفي ~30–40 طالبًا داخل الطبقة المجانية. لو اقتربنا، الحارس يحوّل تلقائيًا للمجاني بلا انقطاع.</div>
+    </div>
+
+    <!-- Owner troubleshooting -->
+    <div class="card guide-section" id="owner-troubleshoot">
+      <h2>🛠️ حل المشاكل (للمالك)</h2>
+      <div class="cmd"><div class="name">البوت أوفلاين / مبيردّش</div><div class="desc">تأكّد إن الحاوية شغّالة: <code>docker ps</code> على الخادم؛ لو محتاج: <code>docker compose up -d --build empire-english-bot</code>. راجع <code>docker logs</code>.</div></div>
+      <div class="cmd"><div class="name">أوامر الـ Slash مش ظاهرة</div><div class="desc">بتتزامن عند تشغيل البوت — بعد أي نشر، انتظر إعادة التشغيل. لو استمرّت، أعد تشغيل الحاوية.</div></div>
+      <div class="cmd"><div class="name">تعديلاتي على الدليل/الصفحة مش ظاهرة</div><div class="desc"><b>الأكثر شيوعًا:</b> نسيت أمر النشر — Cloudflare Pages <b>مالوش نشر تلقائي</b>. شغّل خطوة 2 في <a href="#runbook">التشغيل</a> وتأكّد من الصفحة الحيّة.</div></div>
+      <div class="cmd"><div class="name">طالب مش قادر يدخل المنصة</div><div class="desc">الكود صالح 15 دقيقة ومرة واحدة (بحدّ 6/ساعة). خلّيه يكتب <code>!link</code> تاني. لو مش شايف القنوات: <code>!agree</code> في <code>#rules</code>.</div></div>
+      <div class="cmd"><div class="name">تقييم النطق مش شغّال</div><div class="desc">تأكّد إن العَلَم <code>tatawwur_pronunciation</code> مفعّل للطالب (<code>/nutq status</code>)، وإن الحصة الشهرية لـ Azure لسه متاحة (وإلا يتحوّل للمجاني تلقائيًا).</div></div>
+      <div class="cmd"><div class="name">ميزة بتزعج الطلاب</div><div class="desc">أطفئها فورًا: <code>!flag disable &lt;name&gt;</code> (أو <code>/flag &lt;name&gt; off</code>) — بدون إعادة نشر.</div></div>
+      <div class="callout">🧰 قاعدة ذهبية: أي طوارئ = <b>أطفئ العَلَم</b> أولًا (فوري وآمن)، وبعدين شخّص بهدوء.</div>
     </div>
 
     <!-- Roles & rules -->

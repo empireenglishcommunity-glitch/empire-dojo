@@ -108,6 +108,10 @@
         <a href="#cmd-admin">🛠️ أوامر الإدارة</a>
         <a href="#cmd-telegram">📟 أوامر تليجرام</a>
         <a href="#flags">🚩 أعلام الميزات</a>
+        <a href="#subsystems">🧩 الأنظمة الفرعية</a>
+        <a href="#levels">🎓 المستويات</a>
+        <a href="#maintenance">🧰 وضع الصيانة</a>
+        <a href="#schedule">⏰ المهام المجدولة</a>
         <a href="#itqan">📝 الاختبار الأسبوعي</a>
         <a href="#nutq">🗣️ تقييم النطق</a>
         <a href="#governance">⚖️ الحوكمة</a>
@@ -301,6 +305,64 @@
       <h3 style="color:var(--accent);margin:14px 0 6px">🎓 ITQAN — الاختبار الأسبوعي</h3>
       <div class="cmd"><div class="name"><code>itqan_weekly_assessment</code> <span class="flag-off">🟠</span></div><div class="desc">الاختبار الأسبوعي كاملًا (راجع <a href="#itqan">قسم Itqan</a>).</div></div>
       <div class="cmd"><div class="name"><code>itqan_progression_gate</code> <span class="flag-off">🟠</span></div><div class="desc">قفل الأسبوع التالي حتى اجتياز الحالي (ناعم — لا يجمّد المهام اليومية).</div></div>
+    </div>
+
+    <!-- Subsystems -->
+    <div class="card guide-section" id="subsystems">
+      <h2>🧩 الأنظمة الفرعية (المبادرات)</h2>
+      <p>النظام مبني كمبادرات مستقلّة، كل واحدة تتحكّم فيها أعلامها (راجع <a href="#flags">قسم الأعلام</a>). ملخّص وظيفة كل واحدة:</p>
+
+      <div class="cmd"><div class="name">🌍 <b>BAWABA</b></div><div class="desc"><b>إدماج بدون إنجليزي:</b> أوامر عربية وأرقام (<code>!تم</code>، <code>!1</code>–<code>!7</code>)، تسجيل بالتفاعل ✅، جولة تعريف 5 خطوات، ولغة ردود تتدرّج من العربي للإنجليزي حسب أسبوع الطالب. (أعلام <code>bawaba_*</code>)</div></div>
+      <div class="cmd"><div class="name">🔔 <b>NABD</b></div><div class="desc"><b>تنبيهات الطلاب:</b> رسائل صباح/مساء، تنبيه السلسلة، احتفالات، ملخّص أسبوعي، سلّم استرجاع الغائبين. متابعة صحّتها بأمر <code>!pulse</code>؛ الطالب يتحكّم عبر <code>!notifications</code>.</div></div>
+      <div class="cmd"><div class="name">💬 <b>NOUR</b></div><div class="desc"><b>الإدماج + الصوت:</b> رحلة تعريف مُنظّمة 7 أيام للطالب الجديد، وشخصية تتكلّم بالفصحى. (<code>nour_journey</code>, <code>nour_msa</code>)</div></div>
+      <div class="cmd"><div class="name">📡 <b>MARKAZ</b></div><div class="desc"><b>مركز عمليات تليجرام:</b> مُلخّص يومي (7ص)، تقرير أسبوعي (الأحد 9ص)، ملخّص شهري، وتنبيهات تسرّب/جاهزية تحويل — كلها تصلك على بوت Empire Ops.</div></div>
+      <div class="cmd"><div class="name">🔗 <b>WUSLAH</b></div><div class="desc"><b>تناغم الويب مع البوت:</b> واجهات لوحة التقدّم والمتصدّرين، تأكيد المهام من الويب، نصائح أسبوعية، وتوصيات تكيّفية على المنصة.</div></div>
+      <div class="cmd"><div class="name">🧭 <b>MASAR</b></div><div class="desc"><b>سردية النمو:</b> مؤشّر الزخم، رسالة النمو الأسبوعية من نور (الأربعاء 11ص)، ولحظات الإنجاز. (افتراضيًا مُطفأة — فعّلها لما تكون جاهز)</div></div>
+      <div class="cmd"><div class="name">🏰 <b>HISSAR</b></div><div class="desc"><b>الأمان ومكافحة الغش:</b> بوابة القواعد (<code>!agree</code>)، فترات تهدئة ضد التكرار، وكشف الـ IP (يصلك تنبيه عند 5+ عناوين لنفس التوكن = مشاركة حساب محتملة).</div></div>
+      <div class="cmd"><div class="name">🎉 <b>HAFIZ</b></div><div class="desc"><b>التحفيز:</b> ردود تشجيعية متنوّعة (بدون تصحيح) في قنوات الكتابة والعرض. (افتراضيًا مُطفأة)</div></div>
+      <div class="cmd"><div class="name">🦅 <b>SAHIN</b></div><div class="desc"><b>تجربة القنوات:</b> ورقة مفردات أسبوعية في <code>#cheat-sheets</code>. (افتراضيًا مُطفأة)</div></div>
+      <div class="callout">💡 كل نظام يُشغّل/يُطفأ فورًا عبر <code>!flag</code> بدون إعادة نشر — لو أي ميزة أزعجت الطلاب، أطفئها في ثانية.</div>
+    </div>
+
+    <!-- Levels & advancement -->
+    <div class="card guide-section" id="levels">
+      <h2>🎓 المستويات والترقية</h2>
+      <p>4 مستويات، لكل واحد منهج وأسابيع:</p>
+      <div class="cmd"><div class="name">🌱 <b>L0</b></div><div class="desc">للمبتدئين تمامًا — 8 أسابيع.</div></div>
+      <div class="cmd"><div class="name">💪 <b>L1</b> — Survival English</div><div class="desc">10 أسابيع.</div></div>
+      <div class="cmd"><div class="name">🚀 <b>L2</b> — Communication</div><div class="desc">12 أسبوعًا.</div></div>
+      <div class="cmd"><div class="name">👑 <b>L3</b> — Fluency &amp; Native Accent</div><div class="desc">مستمر.</div></div>
+      <div class="callout">
+        <b>الترقية يدوية بقرارك</b> — مفيش ترقية آلية. رقّي طالبًا عبر:
+        <br>Discord: <code>!setlevel &lt;@user&gt; &lt;L0-L3&gt;</code> أو <code>/setlevel</code> (منتقي بالاسم). يتم تحديث رتبة الطالب في Discord تلقائيًا.
+      </div>
+    </div>
+
+    <!-- Maintenance mode -->
+    <div class="card guide-section" id="maintenance">
+      <h2>🧰 وضع الصيانة</h2>
+      <p>لما تحتاج توقف الخدمة مؤقتًا (نشر كبير، صيانة) بدون ما تكسر ثقة الطلاب أو سلاسلهم:</p>
+      <div class="cmd"><div class="name"><code>!maintenance start [soft|hard] [minutes] [reason]</code></div><div class="desc">يبدأ الصيانة: <b>soft</b> = تحذير لطيف مع استمرار العمل؛ <b>hard</b> = إيقاف فعلي. يُخطر الطلاب تلقائيًا.</div></div>
+      <div class="cmd"><div class="name"><code>!maintenance end [what's new]</code></div><div class="desc">إنهاء الصيانة + إعلان العودة (وممكن تذكر الجديد).</div></div>
+      <div class="cmd"><div class="name"><code>/maintenance</code> (تليجرام)</div><div class="desc">نفس التحكّم من هاتفك.</div></div>
+      <div class="callout">🔥 <b>حماية السلاسل:</b> أيام الصيانة تُسجَّل ولا تكسر سلسلة أي طالب — اليوم يُتجاوز تلقائيًا في حساب السلسلة.</div>
+    </div>
+
+    <!-- Scheduled jobs -->
+    <div class="card guide-section" id="schedule">
+      <h2>⏰ المهام المجدولة (بتوقيت دبي)</h2>
+      <p>الأشياء اللي بتحصل تلقائيًا كل يوم/أسبوع — عشان تعرف مصدر أي رسالة تلقائية:</p>
+      <div class="cmd"><div class="name">🗓️ 6:00 ص</div><div class="desc">نشر مهام اليوم في <code>#lN-daily-tasks</code>.</div></div>
+      <div class="cmd"><div class="name">🌅 6:05 ص</div><div class="desc">رسالة الصباح (Nabd) لمن لم يبدأ بعد.</div></div>
+      <div class="cmd"><div class="name">📡 7:00 ص</div><div class="desc">مُلخّص Markaz اليومي على تليجرام.</div></div>
+      <div class="cmd"><div class="name">📨 10:05 ص</div><div class="desc">فحص الغياب اليومي (سلّم الاسترجاع).</div></div>
+      <div class="cmd"><div class="name">⏰ 8:00 م</div><div class="desc">تذكير المساء لمن لديه مهام ناقصة.</div></div>
+      <div class="cmd"><div class="name">🔥 9:00 م</div><div class="desc">تنبيه خطر انكسار السلسلة.</div></div>
+      <div class="cmd"><div class="name">📊 الجمعة 8:30 م</div><div class="desc">ملخّص Nabd الأسبوعي للطالب.</div></div>
+      <div class="cmd"><div class="name">🧭 الأربعاء 11:00 ص</div><div class="desc">رسالة النمو الأسبوعية من نور (Masar).</div></div>
+      <div class="cmd"><div class="name">📈 الأحد 9:00 ص / 10:00 ص</div><div class="desc">تقرير Markaz الأسبوعي / خلاصة الطالب الأسبوعية الصادقة.</div></div>
+      <div class="cmd"><div class="name">💾 3:20 ص / 4:00 ص</div><div class="desc">رفع النسخة الاحتياطية إلى R2 / فحص حداثة النسخة + تنبيهك لو تأخّرت.</div></div>
+      <div class="callout">🎧 كذلك يوميًا: حذف تسجيلات الاختبار الأسبوعي الأقدم من 14 يومًا (خصوصية).</div>
     </div>
 
     <!-- Itqan: control & commands -->

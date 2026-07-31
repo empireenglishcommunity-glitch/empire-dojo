@@ -8,6 +8,7 @@
   <meta name="theme-color" content="#D4AF37">
   <meta name="robots" content="noindex,nofollow">
   <link rel="stylesheet" href="/css/empire.css">
+  <!-- ops-guide-build: ops-guide-v2 (2026-07-31) — bump on each deploy to verify live -->
   <style>
     .guide-body { font-family: 'Cairo', sans-serif; line-height: 1.9; }
     .guide-body .card { text-align: right; }
@@ -48,6 +49,21 @@
     @media (max-width: 620px) { .mv-grid { grid-template-columns: 1fr; } }
     .print-btn { position: sticky; top: 10px; z-index: 5; }
     .toolbar { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:20px }
+    /* Navigation: search + TOC + back-to-top (ops-guide-v2) */
+    html { scroll-behavior: smooth; }
+    .guide-section { scroll-margin-top: 84px; }
+    .guide-search { width: 100%; padding: 12px 16px; border-radius: 12px; font-size: 1rem;
+      border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-primary); font-family: inherit; }
+    .guide-search:focus { outline: none; border-color: var(--accent); }
+    .toc { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .toc a { display: inline-block; padding: 6px 12px; border-radius: 999px; font-size: 0.85rem;
+      border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; }
+    .toc a:hover { border-color: var(--accent); color: var(--accent-light); }
+    .flag-on { color:#2ECC71; font-weight:700 } .flag-off { color:#e67e22; font-weight:700 }
+    #to-top { position: fixed; bottom: 20px; left: 20px; z-index: 20; display: none;
+      width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
+      background: var(--accent); color: #0A0A0F; font-size: 1.3rem; box-shadow: 0 4px 14px rgba(0,0,0,.4); }
+    .no-results { text-align:center; color: var(--text-muted); padding: 20px; display:none; }
     @media print {
       .no-print { display: none !important; }
       body { background: #fff !important; color: #000 !important; }
@@ -74,8 +90,34 @@
       🔐 <b>سرّي.</b> هذه الصفحة محميّة بكلمة مرور على مستوى الخادم وللمالك والإداريين فقط. لا تشارك رمز الدخول <span class="en">(BioRoMa)</span> مع الطلاب. لا يحتوي هذا الدليل على أي مفاتيح أو رموز سرّية — كل الأوامر تستخدم متغيّرات بديلة.
     </div>
 
+    <!-- Search -->
+    <div class="card no-print">
+      <input type="search" id="guide-search" class="guide-search" autocomplete="off"
+             placeholder="🔍 ابحث في الدليل… (أمر، عَلَم، نظام فرعي، نشر…)" aria-label="بحث">
+    </div>
+    <div class="no-results" id="guide-no-results">مفيش نتيجة — جرّب كلمة تانية.</div>
+
+    <!-- Table of contents -->
+    <div class="card no-print" id="guide-toc-card">
+      <h2>📑 المحتويات</h2>
+      <div class="toc">
+        <a href="#mission">🏛️ الرسالة</a>
+        <a href="#ecosystem">🗺️ المنظومة</a>
+        <a href="#journey">🧭 رحلة الطالب</a>
+        <a href="#cmd-student">💬 أوامر الطالب</a>
+        <a href="#cmd-admin">🛠️ أوامر الإدارة</a>
+        <a href="#cmd-telegram">📟 أوامر تليجرام</a>
+        <a href="#flags">🚩 أعلام الميزات</a>
+        <a href="#itqan">📝 الاختبار الأسبوعي</a>
+        <a href="#nutq">🗣️ تقييم النطق</a>
+        <a href="#governance">⚖️ الحوكمة</a>
+        <a href="#runbook">🚀 التشغيل</a>
+        <a href="#roles">👑 الأدوار</a>
+      </div>
+    </div>
+
     <!-- Mission & Vision -->
-    <div class="card" style="border-color:var(--accent)">
+    <div class="card guide-section" id="mission" style="border-color:var(--accent)">
       <h2>🏛️ الرسالة والرؤية</h2>
       <div class="mv-grid">
         <div>
@@ -93,7 +135,7 @@
     </div>
 
     <!-- Ecosystem map -->
-    <div class="card">
+    <div class="card guide-section" id="ecosystem">
       <h2>🗺️ خريطة المنظومة</h2>
       <p>ثلاث مستودعات تحت منظّمة <span class="en">empireenglishcommunity-glitch</span>:</p>
 
@@ -112,7 +154,7 @@
     </div>
 
     <!-- Student journey recap -->
-    <div class="card">
+    <div class="card guide-section" id="journey">
       <h2>🧭 رحلة الطالب (ملخّص)</h2>
       <div class="step"><div class="num">1</div><div class="txt"><b>الربط:</b> الطالب يكتب <code>!link</code> في Discord → كود لمرة واحدة (15 دقيقة) → يفتح <span class="en">practice.empireenglish.online</span> → جلسة 60 يوماً.</div></div>
       <div class="step"><div class="num">2</div><div class="txt"><b>المهام اليومية (7):</b> 5 على المنصة (Accent, Shadowing, Speaking = تسجيل؛ Listening, Vocabulary = تلقائي) + 2 على Discord (Writing, Community).</div></div>
@@ -122,26 +164,58 @@
     </div>
 
     <!-- Commands: student -->
-    <div class="card">
+    <div class="card guide-section" id="cmd-student">
       <h2>💬 أوامر الطالب (Discord)</h2>
-      <div class="cmd"><div class="name"><code>!link</code></div><div class="desc">توليد كود دخول للمنصة (لمرة واحدة، صلاحية 15 دقيقة).</div></div>
-      <div class="cmd"><div class="name"><code>!progress</code></div><div class="desc">عرض تقدّم الطالب الحالي وحالة مهام اليوم.</div></div>
-      <div class="cmd"><div class="name"><code>!resetme</code></div><div class="desc">طلب الطالب إعادة ضبط سجلّه — يبدأ سير الموافقة (يتطلّب توثيق الموافقة + موافقة المالك).</div></div>
+      <p>تُكتب في <code>#bot-commands</code>. لكل أمر اختصار عربي (مذكور بين قوسين).</p>
+      <div class="cmd"><div class="name"><code>!link</code> (<code>!ربط</code>)</div><div class="desc">كود دخول للمنصة (لمرة واحدة، 15 دقيقة).</div></div>
+      <div class="cmd"><div class="name"><code>!today</code> (<code>!اليوم</code>)</div><div class="desc">المهام المتبقّية اليوم.</div></div>
+      <div class="cmd"><div class="name"><code>!progress</code> (<code>!تقدم</code>)</div><div class="desc">لوحة الطالب: المستوى، الأسبوع، النقاط، السلسلة، نسبة الإنجاز.</div></div>
+      <div class="cmd"><div class="name"><code>!6</code> · <code>!7</code></div><div class="desc">تسجيل مهمتَي الكتابة والمجتمع (التمارين الخمسة على المنصة تُسجَّل تلقائياً).</div></div>
+      <div class="cmd"><div class="name"><code>!top</code> (<code>!ترتيب</code>)</div><div class="desc">لوحة المتصدّرين بالنقاط.</div></div>
+      <div class="cmd"><div class="name"><code>!week</code> · <code>!words</code></div><div class="desc">تركيز الأسبوع · مفردات الطالب (SRS).</div></div>
+      <div class="cmd"><div class="name"><code>!notifications</code></div><div class="desc">عرض/تغيير تفضيلات التنبيهات.</div></div>
+      <div class="cmd"><div class="name"><code>!help</code> / <code>!مساعدة</code></div><div class="desc">قائمة الأوامر (نسخة عربية كاملة عبر <code>!مساعدة</code>).</div></div>
+      <div class="cmd"><div class="name"><code>!join &lt;goal&gt;</code> · <code>!gender</code></div><div class="desc">التسجيل + الهدف · تحديد المخاطبة الصحيحة (نور).</div></div>
+      <div class="cmd"><div class="name"><code>!agree</code> · <code>!tutorial</code></div><div class="desc">قبول القواعد وفتح القنوات · إعادة جولة التعريف.</div></div>
+      <div class="cmd"><div class="name"><code>!resetme</code> · <code>!delete</code></div><div class="desc">طلب إعادة ضبط السجلّ (موافقة موثّقة + موافقتك) · طلب حذف كل البيانات.</div></div>
     </div>
 
     <!-- Commands: admin discord -->
-    <div class="card">
+    <div class="card guide-section" id="cmd-admin">
       <h2>🛠️ أوامر الإدارة (Discord)</h2>
-      <div class="cmd"><div class="name"><code>!reset-student &lt;@user&gt;</code></div><div class="desc">بدء إعادة ضبط سجلّ طالب (يأخذ لقطة snapshot أولاً ويسجّل الموافقة).</div></div>
-      <div class="cmd"><div class="name"><code>!restore-student &lt;@user&gt;</code></div><div class="desc">استعادة سجلّ طالب من آخر لقطة (شبكة أمان بعد إعادة الضبط).</div></div>
-      <div class="cmd"><div class="name"><code>!approve-reset &lt;id&gt;</code></div><div class="desc">الموافقة على طلب إعادة ضبط معلّق.</div></div>
-      <div class="cmd"><div class="name"><code>!deny-reset &lt;id&gt;</code></div><div class="desc">رفض طلب إعادة ضبط معلّق.</div></div>
-      <div class="cmd"><div class="name"><code>!setlevel &lt;@user&gt; &lt;L0-L?&gt;</code></div><div class="desc">تعيين/تغيير مستوى الطالب.</div></div>
-      <div class="cmd"><div class="name"><code>!announce &lt;msg&gt;</code></div><div class="desc">إرسال إعلان للطلاب.</div></div>
+      <p>للمالك/المشرفين فقط، وتُكتب في قناة <code>#admin-commands</code> الخاصة.</p>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">👀 المتابعة والاطّلاع</h3>
+      <div class="cmd"><div class="name"><code>!status</code></div><div class="desc">صحّة النظام (نفس <code>/status</code> في تليجرام).</div></div>
+      <div class="cmd"><div class="name"><code>!attention</code></div><div class="desc">قائمة مرتّبة بمن يحتاج تدخّلاً بشريًا الآن (خامل، متراجع، حِمل buddy).</div></div>
+      <div class="cmd"><div class="name"><code>!members</code></div><div class="desc">كل الطلاب مع الـ IDs.</div></div>
+      <div class="cmd"><div class="name"><code>!find &lt;name&gt;</code></div><div class="desc">إيجاد طالب + الـ ID بتاعه.</div></div>
+      <div class="cmd"><div class="name"><code>!pulse</code></div><div class="desc">إحصائيات نظام التنبيهات (Nabd): كام إشعار اتبعت النهاردة/الأسبوع.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🎚️ إدارة الطلاب</h3>
+      <div class="cmd"><div class="name"><code>!setlevel &lt;@user&gt; &lt;L0-L3&gt;</code></div><div class="desc">تعيين/ترقية مستوى الطالب (الترقية يدوية بقرارك).</div></div>
+      <div class="cmd"><div class="name"><code>!reset-student &lt;@user&gt;</code></div><div class="desc">إعادة ضبط سجلّ طالب (لقطة + موافقة أولاً).</div></div>
+      <div class="cmd"><div class="name"><code>!restore-student &lt;record#&gt;</code></div><div class="desc">التراجع عن إعادة الضبط من اللقطة.</div></div>
+      <div class="cmd"><div class="name"><code>!approve-reset &lt;id&gt;</code> · <code>!deny-reset &lt;id&gt;</code></div><div class="desc">الموافقة/الرفض على طلب إعادة ضبط.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">📣 التواصل والمحتوى</h3>
+      <div class="cmd"><div class="name"><code>!announce &lt;msg&gt;</code></div><div class="desc">إعلان للطلاب.</div></div>
+      <div class="cmd"><div class="name"><code>!recruit ar/en</code></div><div class="desc">قالب رسالة تجنيد/دعوة.</div></div>
+      <div class="cmd"><div class="name"><code>!resources L0-L3</code></div><div class="desc">نشر مصادر المحاكاة للمستوى.</div></div>
+      <div class="cmd"><div class="name"><code>!orient &lt;date/time&gt;</code></div><div class="desc">إرسال دعوة جلسة تعريفية.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">⚙️ النظام والميزات</h3>
+      <div class="cmd"><div class="name"><code>!flag list/enable/disable/beta</code></div><div class="desc">إدارة أعلام الميزات (راجع <a href="#flags">قسم الأعلام</a>). <code>beta</code> = تفعيل لأفراد محدّدين.</div></div>
+      <div class="cmd"><div class="name"><code>!maintenance start [soft|hard] [min] [reason]</code> · <code>!maintenance end</code></div><div class="desc">وضع الصيانة: إيقاف/تحذير + إشعار الطلاب، ثم العودة + إعلان (أيام الصيانة لا تكسر السلاسل).</div></div>
+      <div class="cmd"><div class="name"><code>!checkgate</code> · <code>!postgate</code></div><div class="desc">تدقيق بوابة القواعد (role-gate) · نشر رسالة الموافقة في <code>#rules</code>.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">⌨️ أوامر Slash (منتقي الطالب بالاسم — تعمل في #admin-commands)</h3>
+      <div class="cmd"><div class="name"><code>/reset-student</code> · <code>/restore-student</code> · <code>/setlevel</code> · <code>/find</code></div><div class="desc">نفس الأوامر أعلاه لكن باختيار الطالب من قائمة (الـ <code>!</code> قد لا يعمل في القناة الخاصة).</div></div>
+      <div class="cmd"><div class="name"><code>/nutq …</code> · <code>/itqan …</code></div><div class="desc">تحكّم تقييم النطق (<a href="#nutq">Nutq</a>) والاختبار الأسبوعي (<a href="#itqan">Itqan</a>).</div></div>
     </div>
 
     <!-- Commands: telegram ops -->
-    <div class="card">
+    <div class="card guide-section" id="cmd-telegram">
       <h2>📟 أوامر بوت الإدارة (Telegram — Empire Ops)</h2>
       <div class="cmd"><div class="name"><code>/status</code></div><div class="desc">صحّة النظام: الحاوية، الـ API، آخر نسخة احتياطية.</div></div>
       <div class="cmd"><div class="name"><code>/students</code></div><div class="desc">عدد الطلاب ونشاطهم.</div></div>
@@ -153,8 +227,84 @@
       <div class="callout">🔔 يصلك إشعار على هذا البوت تلقائياً عند أي طلب إعادة ضبط أو حدث مهم — لا شيء يحدث لتاريخ طالب دون علمك.</div>
     </div>
 
+    <!-- Feature flags reference -->
+    <div class="card guide-section" id="flags" style="border-color:var(--accent)">
+      <h2>🚩 أعلام الميزات (Feature Flags) — المرجع الكامل</h2>
+      <p>كل ميزة في النظام لها «عَلَم» يقدر يشغّلها/يطفيها <b>فورًا بدون إعادة نشر</b> — ده مفتاح الأمان والطوارئ. <span class="flag-on">🟢</span> = مُفعّل افتراضيًا · <span class="flag-off">🟠</span> = مُطفأ افتراضيًا.</p>
+      <div class="callout">
+        <b>التحكّم:</b> Discord <code>!flag list</code> (يعرض الكل بحالتها) · <code>!flag enable &lt;name&gt;</code> / <code>!flag disable &lt;name&gt;</code> (للجميع) · <code>!flag beta &lt;name&gt; @user…</code> (لأفراد محدّدين). تليجرام: <code>/flag</code> · <code>/flag &lt;name&gt; on|off</code>.
+      </div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">⚙️ AEGIS — أمان الإنتاج</h3>
+      <div class="cmd"><div class="name"><code>systemstatus</code> <span class="flag-on">🟢</span></div><div class="desc">أمر صحّة النظام العام (<code>!systemstatus</code>).</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🌍 BAWABA — الإدماج بدون إنجليزي</h3>
+      <div class="cmd"><div class="name"><code>bawaba_aliases</code> <span class="flag-on">🟢</span></div><div class="desc">أوامر عربية + أرقام (<code>!تم</code>، <code>!1</code>–<code>!7</code>).</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_reactions</code> <span class="flag-on">🟢</span></div><div class="desc">التسجيل بالتفاعل (✅) وإتمام المهام (1️⃣–7️⃣).</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_tutorial</code> <span class="flag-on">🟢</span></div><div class="desc">جولة تعريف تفاعلية (5 خطوات) عند الانضمام.</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_multimedia</code> <span class="flag-on">🟢</span></div><div class="desc">دليل نصّي + مقاطع صوتية في رسالة الترحيب.</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_buddy_prompt</code> <span class="flag-on">🟢</span></div><div class="desc">رسالة buddy مع اقتراح رسالة صوتية.</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_gradual_english</code> <span class="flag-on">🟢</span></div><div class="desc">لغة ردود البوت تتطوّر بالأسبوع (عربي → ثنائي).</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_start_channel</code> <span class="flag-on">🟢</span></div><div class="desc">ذكر <code>#start-here</code> في رسالة الترحيب.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🔔 NABD — تنبيهات الطلاب</h3>
+      <div class="cmd"><div class="name"><code>nabd_preferences</code> <span class="flag-on">🟢</span></div><div class="desc">أمر إعدادات التنبيهات (<code>!notifications</code>).</div></div>
+      <div class="cmd"><div class="name"><code>nabd_morning</code> <span class="flag-on">🟢</span></div><div class="desc">رسالة صباحية (6:05ص).</div></div>
+      <div class="cmd"><div class="name"><code>nabd_evening</code> <span class="flag-on">🟢</span></div><div class="desc">تذكير مسائي بالمهام الناقصة (8م).</div></div>
+      <div class="cmd"><div class="name"><code>nabd_streak_alert</code> <span class="flag-on">🟢</span></div><div class="desc">تنبيه خطر انكسار السلسلة (9م).</div></div>
+      <div class="cmd"><div class="name"><code>nabd_celebrations</code> <span class="flag-on">🟢</span></div><div class="desc">احتفالات لحظية بالإنجازات.</div></div>
+      <div class="cmd"><div class="name"><code>nabd_weekly_summary</code> <span class="flag-on">🟢</span></div><div class="desc">ملخّص أسبوعي (الجمعة مساءً).</div></div>
+      <div class="cmd"><div class="name"><code>nabd_absence_recovery</code> <span class="flag-on">🟢</span></div><div class="desc">سلّم استرجاع الغائبين (يوم 2/3/5/7).</div></div>
+      <div class="cmd"><div class="name"><code>nabd_social_proof</code> <span class="flag-on">🟢</span></div><div class="desc">إشعارات نشاط الزملاء (اختياري للطالب).</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🚀 TATAWWUR — تطوّر النظام</h3>
+      <div class="cmd"><div class="name"><code>tatawwur_patterns</code> <span class="flag-on">🟢</span></div><div class="desc">أنماط محادثة يومية في المهام.</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_srs</code> <span class="flag-on">🟢</span></div><div class="desc">التكرار المتباعد لمراجعة المفردات.</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_pronunciation</code> <span class="flag-off">🟠</span></div><div class="desc"><b>تقييم النطق «Grade my best read»</b> (Azure + المحرّك المجاني). راجع <a href="#nutq">Nutq</a> و<code>/nutq</code>.</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_showcase</code> <span class="flag-on">🟢</span></div><div class="desc">نشر قصص النجاح تلقائيًا في قنوات العرض.</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_adaptive</code> <span class="flag-off">🟠</span></div><div class="desc">ضبط الصعوبة التكيّفي.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">💬 NOUR — رحلة الإدماج + الشخصية</h3>
+      <div class="cmd"><div class="name"><code>nour_msa</code> <span class="flag-on">🟢</span></div><div class="desc">نور تتكلّم بالفصحى بدل العامّية.</div></div>
+      <div class="cmd"><div class="name"><code>nour_journey</code> <span class="flag-on">🟢</span></div><div class="desc">رحلة إدماج مُنظّمة 7 أيام للطلاب الجدد.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">📡 MARKAZ — مركز عمليات تليجرام</h3>
+      <div class="cmd"><div class="name"><code>markaz_daily_digest</code> <span class="flag-on">🟢</span></div><div class="desc">مُلخّص صباحي على تليجرام (7ص).</div></div>
+      <div class="cmd"><div class="name"><code>markaz_weekly_report</code> <span class="flag-on">🟢</span></div><div class="desc">تقرير أسبوعي (الأحد 9ص).</div></div>
+      <div class="cmd"><div class="name"><code>markaz_monthly_summary</code> <span class="flag-on">🟢</span></div><div class="desc">ملخّص شهري (أول الشهر).</div></div>
+      <div class="cmd"><div class="name"><code>markaz_churn_alerts</code> <span class="flag-on">🟢</span></div><div class="desc">تنبيهات خطر تسرّب الطلاب الصامتين.</div></div>
+      <div class="cmd"><div class="name"><code>markaz_conversion_alerts</code> <span class="flag-on">🟢</span></div><div class="desc">تنبيه جاهزية التحويل عند بلوغ سلسلة 7 أيام.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🔗 WUSLAH — تناغم المنظومة</h3>
+      <div class="cmd"><div class="name"><code>wuslah_dashboard_api</code> <span class="flag-on">🟢</span></div><div class="desc">تفعيل واجهات لوحة التقدّم + المتصدّرين.</div></div>
+      <div class="cmd"><div class="name"><code>wuslah_exercise_confirm</code> <span class="flag-on">🟢</span></div><div class="desc">تأكيد المهام من الويب إلى Discord.</div></div>
+      <div class="cmd"><div class="name"><code>wuslah_nour_tips</code> <span class="flag-on">🟢</span></div><div class="desc">نصائح دراسة أسبوعية مُولّدة (W4).</div></div>
+      <div class="cmd"><div class="name"><code>wuslah_adaptive</code> <span class="flag-on">🟢</span></div><div class="desc">توصيات تمرين تكيّفية على الويب (W3).</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🧭 MASAR — سردية النمو الشخصي</h3>
+      <div class="cmd"><div class="name"><code>masar_momentum_score</code> <span class="flag-off">🟠</span></div><div class="desc">مؤشّر الزخم على اللوحة + <code>!progress</code>.</div></div>
+      <div class="cmd"><div class="name"><code>masar_growth_letter</code> <span class="flag-off">🟠</span></div><div class="desc">رسالة النمو الأسبوعية من نور (الأربعاء 11ص).</div></div>
+      <div class="cmd"><div class="name"><code>masar_milestone_moments</code> <span class="flag-off">🟠</span></div><div class="desc">رسائل خاصة عند فتح إنجاز.</div></div>
+      <div class="cmd"><div class="name"><code>masar_difficulty_notes</code> <span class="flag-off">🟠</span></div><div class="desc">شفافية تغيّر الصعوبة عبر رسائل.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🦅 SAHIN — تجربة قنوات Discord</h3>
+      <div class="cmd"><div class="name"><code>vocab_cheat_sheet</code> <span class="flag-off">🟠</span></div><div class="desc">ورقة مفردات أسبوعية في <code>#cheat-sheets</code>.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🏰 HISSAR — الأمان ومكافحة الغش</h3>
+      <div class="cmd"><div class="name"><code>hissar_role_gate</code> <span class="flag-on">🟢</span></div><div class="desc">بوابة القواعد: العضو الجديد يقبل القواعد قبل رؤية القنوات.</div></div>
+      <div class="cmd"><div class="name"><code>hissar_anti_cheat</code> <span class="flag-on">🟢</span></div><div class="desc">فترات تهدئة أطول + استمرارها بعد إعادة التشغيل + تأخير تدريجي للاختبارات.</div></div>
+      <div class="cmd"><div class="name"><code>hissar_ip_detection</code> <span class="flag-on">🟢</span></div><div class="desc">تسجيل الـ IP لكل توكن + تنبيهك عند 5+ عناوين مختلفة (مشاركة حساب محتملة).</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🎉 HAFIZ — التحفيز</h3>
+      <div class="cmd"><div class="name"><code>hafiz_motivation</code> <span class="flag-off">🟠</span></div><div class="desc">ردود تحفيزية مُولّدة ومتنوّعة (بدون تصحيح) في قنوات الكتابة/العرض.</div></div>
+
+      <h3 style="color:var(--accent);margin:14px 0 6px">🎓 ITQAN — الاختبار الأسبوعي</h3>
+      <div class="cmd"><div class="name"><code>itqan_weekly_assessment</code> <span class="flag-off">🟠</span></div><div class="desc">الاختبار الأسبوعي كاملًا (راجع <a href="#itqan">قسم Itqan</a>).</div></div>
+      <div class="cmd"><div class="name"><code>itqan_progression_gate</code> <span class="flag-off">🟠</span></div><div class="desc">قفل الأسبوع التالي حتى اجتياز الحالي (ناعم — لا يجمّد المهام اليومية).</div></div>
+    </div>
+
     <!-- Itqan: control & commands -->
-    <div class="card" style="border-color:var(--accent)">
+    <div class="card guide-section" id="itqan" style="border-color:var(--accent)">
       <h2>📝 الاختبار الأسبوعي (Itqan) — التحكّم والأوامر</h2>
       <p>اختبار نهاية الأسبوع يثبت أن الطالب <b>أتقن</b> محتوى الأسبوع فعلاً. يظهر في تقويمه بعد إنهاء أيام الأسبوع، ويقيس المهارات الخمسة، ويعطي نتيجة على بُعدين: <span class="en">Consistency</span> (الالتزام اليومي) + <span class="en">Mastery</span> (الاختبار).</p>
 
@@ -181,7 +331,7 @@
     </div>
 
     <!-- Itqan: flagged-review workflow + tuning -->
-    <div class="card">
+    <div class="card guide-section" id="itqan-review">
       <h2>🔎 مراجعة المحاولات المعلّمة + الضبط</h2>
       <p>الفلسفة: <b>النجاح الواضح يُحتفى به فوراً</b> (تلقائياً، بدون تدخّلك)، و<b>الرسوب الواضح</b> يذهب للطالب كرسالة خاصة داعمة بقائمة المراجعة (بدون فضيحة). يصلك تنبيه <b>فقط</b> عندما تحتاج المحاولة عيناً بشرية.</p>
 
@@ -211,7 +361,7 @@
     </div>
 
     <!-- Nutq: pronunciation feedback -->
-    <div class="card" style="border-color:var(--accent)">
+    <div class="card guide-section" id="nutq" style="border-color:var(--accent)">
       <h2>🗣️ تقييم النطق (Nutq) — «Grade my best read»</h2>
       <p>ميزة تُعطي الطالب <b>درجة نطق دقيقة واحدة في اليوم</b> على مهمة <b>Shadowing</b> فقط. الفلسفة: التمرين حرّ بلا أرقام، والدرجة الرسمية دقيقة وباختيار الطالب — فلا يرى المبتدئ رقماً «غير عادل» من محرّك ضعيف.</p>
 
@@ -239,7 +389,7 @@
     </div>
 
     <!-- Governance -->
-    <div class="card" style="border-color:var(--accent)">
+    <div class="card guide-section" id="governance" style="border-color:var(--accent)">
       <h2>⚖️ الحوكمة — إعادة ضبط سجلّ الطالب</h2>
       <p>هذا أهمّ سير عمل حسّاس. القاعدة: <b>لا حذف بلا موافقة موثّقة، ولا تنفيذ بلا موافقتك.</b></p>
       <div class="step"><div class="num">1</div><div class="txt"><b>الطلب:</b> الطالب <code>!resetme</code> (أو الإدارة <code>!reset-student</code>).</div></div>
@@ -250,7 +400,7 @@
     </div>
 
     <!-- Ops runbook -->
-    <div class="card">
+    <div class="card guide-section" id="runbook">
       <h2>🚀 دليل التشغيل (Runbook)</h2>
       <p class="callout warn">⚠️ كل التغييرات عبر PR يوافق عليها المالك. الاختبارات يجب أن تكون خضراء قبل الدفع. لا دفع مباشر إلى <code>main</code>. لا إعادة كتابة لتاريخ Git.</p>
 
@@ -279,7 +429,7 @@ python3.12 -m pytest tests/ -q   # يجب أن تمرّ كلها قبل أي د�
     </div>
 
     <!-- Roles & rules -->
-    <div class="card">
+    <div class="card guide-section" id="roles">
       <h2>👑 الأدوار والقواعد</h2>
       <p>• <b>المالك</b> (<span class="en">mahmoudashri66-star</span>): القرار النهائي، يوافق على كل PR، ويعتمد إعادة الضبط.</p>
       <p>• <b>الإدارة/المشرفون:</b> الدعم اليومي، الإعلانات، مساعدة الطلاب، تصعيد الطلبات الحسّاسة للمالك.</p>
@@ -293,5 +443,36 @@ python3.12 -m pytest tests/ -q   # يجب أن تمرّ كلها قبل أي د�
 
     <div class="footer">Empire English Community — Ops Guide (Confidential) — Common Sense First 🏛️</div>
   </div>
+
+  <button id="to-top" class="no-print" aria-label="أعلى الصفحة" title="أعلى الصفحة">↑</button>
+
+  <script>
+    (function () {
+      var search = document.getElementById('guide-search');
+      var sections = Array.prototype.slice.call(document.querySelectorAll('.guide-section'));
+      var toc = document.getElementById('guide-toc-card');
+      var noResults = document.getElementById('guide-no-results');
+      if (search) {
+        search.addEventListener('input', function () {
+          var q = search.value.trim().toLowerCase();
+          var anyShown = false;
+          sections.forEach(function (sec) {
+            var match = !q || (sec.textContent || '').toLowerCase().indexOf(q) !== -1;
+            sec.style.display = match ? '' : 'none';
+            if (match) anyShown = true;
+          });
+          if (toc) toc.style.display = q ? 'none' : '';
+          if (noResults) noResults.style.display = (q && !anyShown) ? 'block' : 'none';
+        });
+      }
+      var toTop = document.getElementById('to-top');
+      window.addEventListener('scroll', function () {
+        if (toTop) toTop.style.display = window.scrollY > 500 ? 'block' : 'none';
+      });
+      if (toTop) toTop.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
 </body>
 </html>

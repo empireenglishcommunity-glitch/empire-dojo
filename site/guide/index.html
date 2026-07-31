@@ -116,10 +116,15 @@
         <a href="#server">🗺️ قنوات Discord</a>
         <a href="#tasks">🗓️ الـ7 مهام</a>
         <a href="#calendar">📅 التقويم</a>
-        <a href="#mastery">🏅 مستويات الإتقان</a>
+        <a href="#mastery">🏅 ألوان الإتقان</a>
+        <a href="#levels">🎓 مستوياتك L0–L3</a>
+        <a href="#streaks">🔥 السلسلة</a>
+        <a href="#points">🏆 النقاط والترتيب</a>
+        <a href="#pronunciation">🗣️ تقييم النطق</a>
         <a href="#itqan">📝 الاختبار الأسبوعي</a>
         <a href="#review">📚 مراجعة الكلمات</a>
         <a href="#commands">💬 أوامر البوت</a>
+        <a href="#notifications">🔔 التنبيهات</a>
         <a href="#rights">🛡️ حقوقك</a>
         <a href="#rules">📜 القواعد</a>
         <a href="#install">📱 تثبيت التطبيق</a>
@@ -317,6 +322,55 @@
       <p>كل مرة تعيد فيها تمريناً بجدّية يرتقي مستواه درجة، حتى يصل إلى الماسة 💎. راجع بانتظام لتصل للأعلى.</p>
     </div>
 
+    <!-- Levels L0-L3 -->
+    <div class="card guide-section" id="levels">
+      <h2>🎓 مستوياتك (L0 إلى L3)</h2>
+      <p>رحلتك في Empire على <b>4 مستويات</b>، كل مستوى له منهج وأسابيع خاصة به:</p>
+      <div class="task-item"><div class="ico">🌱</div><div class="body"><b>L0 — للمبتدئين تمامًا</b><br>الأساس: الأصوات، أول 500 كلمة، جمل بسيطة. <b>8 أسابيع</b>.</div></div>
+      <div class="task-item"><div class="ico">💪</div><div class="body"><b>L1 — Survival English / إنجليزية النجاة</b><br>تتعامل في المواقف اليومية. <b>10 أسابيع</b>.</div></div>
+      <div class="task-item"><div class="ico">🚀</div><div class="body"><b>L2 — Communication / التواصل</b><br>تتكلم وتكتب بثقة أكبر. <b>12 أسبوعاً</b>.</div></div>
+      <div class="task-item"><div class="ico">👑</div><div class="body"><b>L3 — Fluency &amp; Native Accent / الطلاقة واللهجة</b><br>الطلاقة واللهجة القريبة من الأصلية. <b>مستمر</b>.</div></div>
+      <div class="callout">
+        🎯 <b>إزاي تترقّى؟</b> الترقية بين المستويات بيقرّرها <b>مدرّبك</b> لمّا يشوف إنك جاهز فعلاً — مش رقم آلي. ركّز على إتقان أسبوعك (الاختبار الأسبوعي)، والباقي علينا. مستواك الحالي وأسبوعك دايمًا ظاهرين في <code>!progress</code>.
+      </div>
+    </div>
+
+    <!-- Streaks -->
+    <div class="card guide-section" id="streaks">
+      <h2>🔥 السلسلة (Streak)</h2>
+      <p>السلسلة هي عدد <b>الأيام المتتالية</b> اللي عملت فيها <b>مهمة واحدة على الأقل</b>. مش لازم الـ7 مهام — أي مهمة واحدة في اليوم بتحافظ على سلسلتك. 🔥</p>
+      <div class="step"><div class="num">1</div><div class="txt"><b>الحفاظ عليها:</b> اعمل مهمة واحدة كل يوم على الأقل. لو فاتك يوم كامل من غير أي مهمة، السلسلة بتبدأ من جديد.</div></div>
+      <div class="step"><div class="num">2</div><div class="txt"><b>تنبيه قبل ما تنكسر:</b> لو سلسلتك 3 أيام أو أكثر وما عملتش أي مهمة، بنبعتلك تذكير الساعة 9 مساءً — مهمة واحدة صغيرة تنقذها.</div></div>
+      <div class="step"><div class="num">3</div><div class="txt"><b>أيام الصيانة مش بتكسرها:</b> لو المنصة كانت في صيانة يوم ما، اليوم ده بيتعدّى تلقائيًا ومبيكسرش سلسلتك.</div></div>
+      <p style="margin-top:12px"><b>🎁 مكافآت السلسلة (نقاط إضافية تلقائية):</b></p>
+      <p style="text-align:center;line-height:2">
+        7 أيام = <b>+200</b> · 14 يوم = <b>+400</b> · 30 يوم = <b>+1000</b> · 60 يوم = <b>+2500</b> · 100 يوم = <b>+5000</b>
+      </p>
+      <div class="callout">💡 شوف سلسلتك الحالية وأطول سلسلة وصلتها في <code>!progress</code>.</div>
+    </div>
+
+    <!-- Points & leaderboard -->
+    <div class="card guide-section" id="points">
+      <h2>🏆 النقاط والترتيب</h2>
+      <p>بتكسب نقاط على كل مجهود يومي:</p>
+      <div class="cmd"><div class="name">✅ كل مهمة</div><div class="desc"><b>+15</b> نقطة.</div></div>
+      <div class="cmd"><div class="name">🎉 إنهاء الـ7 مهام في يوم</div><div class="desc"><b>+100</b> نقطة إضافية.</div></div>
+      <div class="cmd"><div class="name">🔥 مكافآت السلسلة</div><div class="desc">من +200 إلى +5000 (شوف قسم <a href="#streaks">السلسلة</a>).</div></div>
+      <p style="margin-top:12px">🥇 اكتب <code>!top</code> (أو <code>!ترتيب</code>) علشان تشوف <b>لوحة المتصدّرين</b> — أعلى الطلاب بالنقاط. المنافسة الشريفة بتحمّس، بس تذكّر: <b>الاستمرارية أهم من السرعة</b>.</p>
+    </div>
+
+    <!-- Pronunciation (Nutq) -->
+    <div class="card guide-section" id="pronunciation" style="border-color:var(--accent)">
+      <h2>🗣️ تقييم النطق — «Grade my best read»</h2>
+      <p>ميزة تديك <b>درجة نطق دقيقة</b> على تمرين <b>المحاكاة (Shadowing)</b>. <span style="color:#8b95ff">(بتتفعّل لطلاب معيّنين — لو ظهر لك زر 🏅 يبقى عندك الميزة.)</span></p>
+      <div class="step"><div class="num">1</div><div class="txt"><b>اتمرّن براحتك:</b> سجّل واضغط <span class="en">📤 Send to Discord</span> قد ما تحب — هتشوف <b>تشجيع من غير رقم</b>، وكل إعادة بترفع مستوى إتقانك.</div></div>
+      <div class="step"><div class="num">2</div><div class="txt"><b>لمّا تضبطها:</b> اضغط <span class="en">🏅 Grade my best read</span> — <b>مرة واحدة في اليوم</b> — فتاخد <b>درجتك الرسمية الدقيقة</b> مع الكلمات اللي تركّز عليها.</div></div>
+      <div class="step"><div class="num">3</div><div class="txt">بعد ما تستخدمها، الزر بيقول لك «ارجع بكرة» — علشان الدرجة الرسمية <b>مرة واحدة يوميًا</b>.</div></div>
+      <div class="callout">
+        🎯 ليه من غير رقم في التمرين؟ علشان الرقم الوحيد اللي تشوفه يكون <b>دقيق وعادل</b> — على القراءة اللي إنت مقتنع بيها، مش أي محاولة.
+      </div>
+    </div>
+
     <!-- Weekly Assessment (Itqan) -->
     <div class="card guide-section" id="itqan" style="border-color:var(--accent)">
       <h2>📝 الاختبار الأسبوعي (Itqan)</h2>
@@ -364,6 +418,22 @@
       <div class="cmd"><div class="name"><code>!resetme</code></div><div class="desc">طلب إعادة ضبط سجلّك التعليمي (بموافقتك — شوف <a href="#rights">حقوقك</a>).</div></div>
       <div class="cmd"><div class="name"><code>!delete</code></div><div class="desc">طلب حذف كل بياناتك.</div></div>
       <div class="callout">💡 التمارين الخمسة على المنصة تُحتسب <b>لوحدها</b> — أنت بس بتكتب <code>!6</code> و<code>!7</code> للمهمتين اللي في Discord.</div>
+    </div>
+
+    <!-- Notifications (Nabd) -->
+    <div class="card guide-section" id="notifications">
+      <h2>🔔 التنبيهات والتذكيرات</h2>
+      <p>البوت بيبعتلك <b>رسائل خاصة</b> تساعدك تلتزم — وكلها <b>تحت تحكّمك</b>:</p>
+      <div class="cmd"><div class="name">🌅 رسالة الصباح</div><div class="desc">تذكير بمهام اليوم (لو لسه ما بدأتش).</div></div>
+      <div class="cmd"><div class="name">⏰ تذكير المساء (8م)</div><div class="desc">لو خلّصت بعض المهام ولسه فاضل، نفكّرك تكمّل.</div></div>
+      <div class="cmd"><div class="name">🔥 تنبيه السلسلة (9م)</div><div class="desc">لو سلسلتك في خطر النهاردة، ننبّهك قبل ما تنكسر.</div></div>
+      <div class="cmd"><div class="name">🏆 احتفالات</div><div class="desc">لما تخلّص الـ7 مهام أو توصل لمكافأة سلسلة.</div></div>
+      <div class="cmd"><div class="name">📊 ملخص أسبوعي (الجمعة)</div><div class="desc">نسبة إنجازك، سلسلتك، ونقاطك للأسبوع.</div></div>
+      <div class="cmd"><div class="name">👥 نشاط الزملاء</div><div class="desc">اختياري (متوقف افتراضيًا) — فعّله لو حابب تعرف نشاط زمايلك.</div></div>
+      <p style="margin-top:12px"><b>تحكّم فيها بأمر <code>!notifications</code></b> (أو <code>!إشعارات</code>):</p>
+      <div class="cmd"><div class="name"><code>!notifications</code></div><div class="desc">يعرض إعداداتك الحالية.</div></div>
+      <div class="cmd"><div class="name"><code>!notifications morning off</code></div><div class="desc">مثال: يوقف رسالة الصباح. (الإعدادات: <code>morning · evening · streak · celebrations · social · weekly</code> + <code>on/off</code>.)</div></div>
+      <div class="callout">🌙 <b>ساعات الهدوء</b> افتراضيًا من 11 مساءً لـ 5 صباحًا — مفيش رسائل في الوقت ده.</div>
     </div>
 
     <!-- Your rights -->

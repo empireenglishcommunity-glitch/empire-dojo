@@ -65,6 +65,16 @@ export async function onRequest(context) {
     return handleOpsGuide(context);
   }
 
+  // 0b. Guide screenshots were removed (owner request). Cloudflare Pages may
+  //     still retain the old image assets and serve them at their direct URL.
+  //     Return 404 for anything under /guide/img/ so those orphans are gone.
+  if (path.startsWith('/guide/img/')) {
+    return new Response('Not Found', {
+      status: 404,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },
+    });
+  }
+
   // 1. Public assets — always pass through
   if (path === '/' || PUBLIC_PATHS.some(p => path.startsWith(p) || path === p)) {
     // The homepage (/) is gated too — but we handle it via gate.html redirect below

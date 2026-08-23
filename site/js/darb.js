@@ -428,7 +428,7 @@ const DarbExercise = {
     if (!DarbSession.hasSession()) return;
 
     // Detect level/week/day/exercise from URL
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking)/);
+    const match = window.location.pathname.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking)/);
     if (!match) return;
 
     const [, level, week, day, exercise] = match;
@@ -558,7 +558,7 @@ const DarbRecording = {
     if (!DarbSession.hasSession()) return;
 
     // Detect level/week/day/exercise from URL
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking)/);
+    const match = window.location.pathname.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking)/);
     if (!match) return;
 
     const [, level, week, day, exercise] = match;
@@ -990,7 +990,7 @@ const DarbRecording = {
 const DarbDayProgress = {
   async apply() {
     if (!DarbSession.hasSession()) return;
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d+)/);
+    const match = window.location.pathname.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)/);
     if (!match) return;
     const w = parseInt(match[2]);
     const d = parseInt(match[3]);

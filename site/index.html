@@ -196,7 +196,17 @@
         const sessionBar = document.getElementById('session-bar');
         sessionBar.style.display = 'flex';
         const payload = DarbSession.getPayload();
-        document.getElementById('student-name').textContent = payload ? `Level ${(payload.lvl || 'L0').replace('L', '')}` : '';
+        // CEFR label. Older session tokens (minted before the CEFR migration)
+        // still carry a legacy level (L0–L3), so map those to their CEFR level
+        // for display; a CEFR token (A1–C2) shows as-is.
+        (function () {
+          var el = document.getElementById('student-name');
+          if (!payload) { el.textContent = ''; return; }
+          var LEGACY_TO_CEFR = { L0: 'A1', L1: 'A2', L2: 'B1', L3: 'B2' };
+          var lvl = (payload.lvl || 'A1').toUpperCase();
+          lvl = LEGACY_TO_CEFR[lvl] || lvl;
+          el.textContent = `Level ${lvl}`;
+        })();
         document.getElementById('student-level').textContent = ` — ${data.days.filter(d => d.state === 'done').length}/${data.days.length} days done`;
 
         // Render the calendar

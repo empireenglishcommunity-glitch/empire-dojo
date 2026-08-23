@@ -49,6 +49,16 @@ OUTPUT_DIR = REPO_ROOT / "site"  # deployed site lives here, NOT in scripts/
 # must match bots/discord-learning-bot/src/curriculum.py's LEVEL_WEEK_COUNTS.
 LEVEL_WEEK_COUNTS = {"l0": 8, "l1": 10, "l2": 12, "l3": 8}
 
+# CEFR levels (Mi'yar) — must match curriculum.py's CEFR_WEEK_COUNTS. Generated
+# additively alongside the legacy levels; a CEFR level with no data files on
+# disk yet (e.g. b1–c2 today) is skipped gracefully in generate_level().
+CEFR_WEEK_COUNTS = {"a1": 10, "a2": 12, "b1": 14, "b2": 16, "c1": 18, "c2": 20}
+
+# Everything the generator knows how to build. Legacy + CEFR keys coexist so
+# the static site can serve both /l0/… (legacy, pre-migration) and /a1/…
+# (CEFR) paths during and after the migration.
+ALL_WEEK_COUNTS = {**LEVEL_WEEK_COUNTS, **CEFR_WEEK_COUNTS}
+
 # The manifest is build metadata, not a site asset — keep it in scripts/,
 # never in site/, so it's never deployed as a public file.
 AUDIO_MANIFEST_PATH = SCRIPT_DIR / "audio-manifest.json"
@@ -597,7 +607,7 @@ def load_patterns(level):
 
 
 def generate_level(level, audio_manifest):
-    max_week = LEVEL_WEEK_COUNTS[level]
+    max_week = ALL_WEEK_COUNTS[level]
     total = 0
     patterns = load_patterns(level)
     pattern_idx = 0
@@ -671,8 +681,9 @@ def generate_level(level, audio_manifest):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--level", choices=["l0", "l1", "l2", "l3"], default=None,
-                         help="Generate only this level (default: all 4 levels)")
+    parser.add_argument("--level", choices=list(ALL_WEEK_COUNTS), default=None,
+                         help="Generate only this level (default: every level "
+                              "that has curriculum data on disk)")
     args = parser.parse_args()
 
     if not DATA_DIR.exists():
@@ -686,7 +697,15 @@ def main():
     print(f"  Reading curriculum from: {BOT_DIR}")
     print(f"  Writing pages to:        {OUTPUT_DIR}")
 
-    levels = [args.level] if args.level else ["l0", "l1", "l2", "l3"]
+    # Default: every level that actually has curriculum data on disk — the
+    # legacy L0–L3 today, plus each CEFR level as its content ships (A1, A2,
+    # …). A level with no week-1 data file is skipped so we never emit empty
+    # directories for unauthored levels (b1–c2).
+    if args.level:
+        levels = [args.level]
+    else:
+        levels = [lvl for lvl in ALL_WEEK_COUNTS
+                  if (DATA_DIR / f"{lvl}_week1.json").exists()]
     audio_manifest = {}
     if AUDIO_MANIFEST_PATH.exists():
         try:

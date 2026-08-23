@@ -363,7 +363,12 @@
       } else {
         const pct = Math.max(0, Math.min(100, d.level_progress.pct));
         document.getElementById('level-progress').style.width = `${pct}%`;
-        const nextLevel = {'L0':'L1','L1':'L2','L2':'L3','L3':'MAX'}[d.level] || 'MAX';
+        // CEFR next-level chain (A1→A2→…→C2→MAX). Older records/tokens may still
+        // carry a legacy level, so normalize L0–L3 to their CEFR level first.
+        const LEGACY_TO_CEFR = {L0:'A1', L1:'A2', L2:'B1', L3:'B2'};
+        const CEFR_NEXT = {A1:'A2', A2:'B1', B1:'B2', B2:'C1', C1:'C2', C2:'MAX'};
+        const curCefr = LEGACY_TO_CEFR[d.level] || d.level;
+        const nextLevel = CEFR_NEXT[curCefr] || 'MAX';
         document.getElementById('level-progress-label').textContent =
           nextLevel === 'MAX' ? 'Maximum level reached!' : `${Math.round(pct)}% to ${nextLevel}`;
       }

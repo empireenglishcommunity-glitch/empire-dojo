@@ -109,11 +109,22 @@ export async function onRequest(context) {
     return serveGate(request, env, url);
   }
 
-  // 6. Level enforcement: /lX/ paths require matching session level
-  const levelMatch = path.match(/^\/(l\d)\//);
+  // 6. Level enforcement: /lX/ or /a1../c2/ paths require matching session
+  //    level. Both the path segment and the session's level are normalized to
+  //    their CEFR level first, so:
+  //      - CEFR content paths (/a1/…) are recognised and scoped, and
+  //      - a session token minted BEFORE the CEFR migration (lvl still "L0"–
+  //        "L3") can still open its CEFR content (L0→A1), instead of being
+  //        wrongly 403'd against the new /a1/ calendar links.
+  const levelMatch = path.match(/^\/(l\d|[abc][12])\//i);
   if (levelMatch) {
-    const pathLevel = levelMatch[1].toUpperCase(); // "L0", "L1", etc.
-    const sessionLevel = (payload.lvl || '').toUpperCase();
+    const LEGACY_TO_CEFR = { L0: 'A1', L1: 'A2', L2: 'B1', L3: 'B2' };
+    const cefrOf = (lvl) => {
+      lvl = (lvl || '').toUpperCase();
+      return LEGACY_TO_CEFR[lvl] || lvl;
+    };
+    const pathLevel = cefrOf(levelMatch[1]);
+    const sessionLevel = cefrOf(payload.lvl);
     if (pathLevel !== sessionLevel) {
       // Wrong level — serve a 403 with a message
       return new Response(

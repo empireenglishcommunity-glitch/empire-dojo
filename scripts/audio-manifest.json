@@ -1594,5 +1594,929 @@
     "week": 8,
     "day": 7,
     "text": "(Free speech: 5-10 minutes, spontaneous, reflecting on your full learning journey — what you started with, what was hardest, what changed, and what's next.)"
+  },
+  "a1-w1-d1-shadow": {
+    "level": "a1",
+    "week": 1,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w1-d2-shadow": {
+    "level": "a1",
+    "week": 1,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w1-d3-shadow": {
+    "level": "a1",
+    "week": 1,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w1-d4-shadow": {
+    "level": "a1",
+    "week": 1,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w1-d5-shadow": {
+    "level": "a1",
+    "week": 1,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w1-d6-shadow": {
+    "level": "a1",
+    "week": 1,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w1-d7-shadow": {
+    "level": "a1",
+    "week": 1,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w2-d1-shadow": {
+    "level": "a1",
+    "week": 2,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w2-d2-shadow": {
+    "level": "a1",
+    "week": 2,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w2-d3-shadow": {
+    "level": "a1",
+    "week": 2,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w2-d4-shadow": {
+    "level": "a1",
+    "week": 2,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w2-d5-shadow": {
+    "level": "a1",
+    "week": 2,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w2-d6-shadow": {
+    "level": "a1",
+    "week": 2,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w2-d7-shadow": {
+    "level": "a1",
+    "week": 2,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w3-d1-shadow": {
+    "level": "a1",
+    "week": 3,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w3-d2-shadow": {
+    "level": "a1",
+    "week": 3,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w3-d3-shadow": {
+    "level": "a1",
+    "week": 3,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w3-d4-shadow": {
+    "level": "a1",
+    "week": 3,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w3-d5-shadow": {
+    "level": "a1",
+    "week": 3,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w3-d6-shadow": {
+    "level": "a1",
+    "week": 3,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w3-d7-shadow": {
+    "level": "a1",
+    "week": 3,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w4-d1-shadow": {
+    "level": "a1",
+    "week": 4,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w4-d2-shadow": {
+    "level": "a1",
+    "week": 4,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w4-d3-shadow": {
+    "level": "a1",
+    "week": 4,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w4-d4-shadow": {
+    "level": "a1",
+    "week": 4,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w4-d5-shadow": {
+    "level": "a1",
+    "week": 4,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w4-d6-shadow": {
+    "level": "a1",
+    "week": 4,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w4-d7-shadow": {
+    "level": "a1",
+    "week": 4,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w5-d1-shadow": {
+    "level": "a1",
+    "week": 5,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w5-d2-shadow": {
+    "level": "a1",
+    "week": 5,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w5-d3-shadow": {
+    "level": "a1",
+    "week": 5,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w5-d4-shadow": {
+    "level": "a1",
+    "week": 5,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w5-d5-shadow": {
+    "level": "a1",
+    "week": 5,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w5-d6-shadow": {
+    "level": "a1",
+    "week": 5,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w5-d7-shadow": {
+    "level": "a1",
+    "week": 5,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w6-d1-shadow": {
+    "level": "a1",
+    "week": 6,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w6-d2-shadow": {
+    "level": "a1",
+    "week": 6,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w6-d3-shadow": {
+    "level": "a1",
+    "week": 6,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w6-d4-shadow": {
+    "level": "a1",
+    "week": 6,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w6-d5-shadow": {
+    "level": "a1",
+    "week": 6,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w6-d6-shadow": {
+    "level": "a1",
+    "week": 6,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w6-d7-shadow": {
+    "level": "a1",
+    "week": 6,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w7-d1-shadow": {
+    "level": "a1",
+    "week": 7,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w7-d2-shadow": {
+    "level": "a1",
+    "week": 7,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w7-d3-shadow": {
+    "level": "a1",
+    "week": 7,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w7-d4-shadow": {
+    "level": "a1",
+    "week": 7,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w7-d5-shadow": {
+    "level": "a1",
+    "week": 7,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w7-d6-shadow": {
+    "level": "a1",
+    "week": 7,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w7-d7-shadow": {
+    "level": "a1",
+    "week": 7,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w8-d1-shadow": {
+    "level": "a1",
+    "week": 8,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w8-d2-shadow": {
+    "level": "a1",
+    "week": 8,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w8-d3-shadow": {
+    "level": "a1",
+    "week": 8,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w8-d4-shadow": {
+    "level": "a1",
+    "week": 8,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w8-d5-shadow": {
+    "level": "a1",
+    "week": 8,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w8-d6-shadow": {
+    "level": "a1",
+    "week": 8,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w8-d7-shadow": {
+    "level": "a1",
+    "week": 8,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w9-d1-shadow": {
+    "level": "a1",
+    "week": 9,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w9-d2-shadow": {
+    "level": "a1",
+    "week": 9,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w9-d3-shadow": {
+    "level": "a1",
+    "week": 9,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w9-d4-shadow": {
+    "level": "a1",
+    "week": 9,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w9-d5-shadow": {
+    "level": "a1",
+    "week": 9,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w9-d6-shadow": {
+    "level": "a1",
+    "week": 9,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w9-d7-shadow": {
+    "level": "a1",
+    "week": 9,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a1-w10-d1-shadow": {
+    "level": "a1",
+    "week": 10,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a1-w10-d2-shadow": {
+    "level": "a1",
+    "week": 10,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a1-w10-d3-shadow": {
+    "level": "a1",
+    "week": 10,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a1-w10-d4-shadow": {
+    "level": "a1",
+    "week": 10,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a1-w10-d5-shadow": {
+    "level": "a1",
+    "week": 10,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a1-w10-d6-shadow": {
+    "level": "a1",
+    "week": 10,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a1-w10-d7-shadow": {
+    "level": "a1",
+    "week": 10,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w1-d1-shadow": {
+    "level": "a2",
+    "week": 1,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w1-d2-shadow": {
+    "level": "a2",
+    "week": 1,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w1-d3-shadow": {
+    "level": "a2",
+    "week": 1,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w1-d4-shadow": {
+    "level": "a2",
+    "week": 1,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w1-d5-shadow": {
+    "level": "a2",
+    "week": 1,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w1-d6-shadow": {
+    "level": "a2",
+    "week": 1,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w1-d7-shadow": {
+    "level": "a2",
+    "week": 1,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w2-d1-shadow": {
+    "level": "a2",
+    "week": 2,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w2-d2-shadow": {
+    "level": "a2",
+    "week": 2,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w2-d3-shadow": {
+    "level": "a2",
+    "week": 2,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w2-d4-shadow": {
+    "level": "a2",
+    "week": 2,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w2-d5-shadow": {
+    "level": "a2",
+    "week": 2,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w2-d6-shadow": {
+    "level": "a2",
+    "week": 2,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w2-d7-shadow": {
+    "level": "a2",
+    "week": 2,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w3-d1-shadow": {
+    "level": "a2",
+    "week": 3,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w3-d2-shadow": {
+    "level": "a2",
+    "week": 3,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w3-d3-shadow": {
+    "level": "a2",
+    "week": 3,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w3-d4-shadow": {
+    "level": "a2",
+    "week": 3,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w3-d5-shadow": {
+    "level": "a2",
+    "week": 3,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w3-d6-shadow": {
+    "level": "a2",
+    "week": 3,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w3-d7-shadow": {
+    "level": "a2",
+    "week": 3,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w4-d1-shadow": {
+    "level": "a2",
+    "week": 4,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w4-d2-shadow": {
+    "level": "a2",
+    "week": 4,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w4-d3-shadow": {
+    "level": "a2",
+    "week": 4,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w4-d4-shadow": {
+    "level": "a2",
+    "week": 4,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w4-d5-shadow": {
+    "level": "a2",
+    "week": 4,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w4-d6-shadow": {
+    "level": "a2",
+    "week": 4,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w4-d7-shadow": {
+    "level": "a2",
+    "week": 4,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w5-d1-shadow": {
+    "level": "a2",
+    "week": 5,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w5-d2-shadow": {
+    "level": "a2",
+    "week": 5,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w5-d3-shadow": {
+    "level": "a2",
+    "week": 5,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w5-d4-shadow": {
+    "level": "a2",
+    "week": 5,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w5-d5-shadow": {
+    "level": "a2",
+    "week": 5,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w5-d6-shadow": {
+    "level": "a2",
+    "week": 5,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w5-d7-shadow": {
+    "level": "a2",
+    "week": 5,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w6-d1-shadow": {
+    "level": "a2",
+    "week": 6,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w6-d2-shadow": {
+    "level": "a2",
+    "week": 6,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w6-d3-shadow": {
+    "level": "a2",
+    "week": 6,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w6-d4-shadow": {
+    "level": "a2",
+    "week": 6,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w6-d5-shadow": {
+    "level": "a2",
+    "week": 6,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w6-d6-shadow": {
+    "level": "a2",
+    "week": 6,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w6-d7-shadow": {
+    "level": "a2",
+    "week": 6,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w7-d1-shadow": {
+    "level": "a2",
+    "week": 7,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w7-d2-shadow": {
+    "level": "a2",
+    "week": 7,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w7-d3-shadow": {
+    "level": "a2",
+    "week": 7,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w7-d4-shadow": {
+    "level": "a2",
+    "week": 7,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w7-d5-shadow": {
+    "level": "a2",
+    "week": 7,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w7-d6-shadow": {
+    "level": "a2",
+    "week": 7,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w7-d7-shadow": {
+    "level": "a2",
+    "week": 7,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w8-d1-shadow": {
+    "level": "a2",
+    "week": 8,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w8-d2-shadow": {
+    "level": "a2",
+    "week": 8,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w8-d3-shadow": {
+    "level": "a2",
+    "week": 8,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w8-d4-shadow": {
+    "level": "a2",
+    "week": 8,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w8-d5-shadow": {
+    "level": "a2",
+    "week": 8,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w8-d6-shadow": {
+    "level": "a2",
+    "week": 8,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w8-d7-shadow": {
+    "level": "a2",
+    "week": 8,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w9-d1-shadow": {
+    "level": "a2",
+    "week": 9,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w9-d2-shadow": {
+    "level": "a2",
+    "week": 9,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w9-d3-shadow": {
+    "level": "a2",
+    "week": 9,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w9-d4-shadow": {
+    "level": "a2",
+    "week": 9,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w9-d5-shadow": {
+    "level": "a2",
+    "week": 9,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w9-d6-shadow": {
+    "level": "a2",
+    "week": 9,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w9-d7-shadow": {
+    "level": "a2",
+    "week": 9,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w10-d1-shadow": {
+    "level": "a2",
+    "week": 10,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w10-d2-shadow": {
+    "level": "a2",
+    "week": 10,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w10-d3-shadow": {
+    "level": "a2",
+    "week": 10,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w10-d4-shadow": {
+    "level": "a2",
+    "week": 10,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w10-d5-shadow": {
+    "level": "a2",
+    "week": 10,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w10-d6-shadow": {
+    "level": "a2",
+    "week": 10,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w10-d7-shadow": {
+    "level": "a2",
+    "week": 10,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w11-d1-shadow": {
+    "level": "a2",
+    "week": 11,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w11-d2-shadow": {
+    "level": "a2",
+    "week": 11,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w11-d3-shadow": {
+    "level": "a2",
+    "week": 11,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w11-d4-shadow": {
+    "level": "a2",
+    "week": 11,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w11-d5-shadow": {
+    "level": "a2",
+    "week": 11,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w11-d6-shadow": {
+    "level": "a2",
+    "week": 11,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w11-d7-shadow": {
+    "level": "a2",
+    "week": 11,
+    "day": 7,
+    "text": "I am practicing English."
+  },
+  "a2-w12-d1-shadow": {
+    "level": "a2",
+    "week": 12,
+    "day": 1,
+    "text": "I am practicing English."
+  },
+  "a2-w12-d2-shadow": {
+    "level": "a2",
+    "week": 12,
+    "day": 2,
+    "text": "I am practicing English."
+  },
+  "a2-w12-d3-shadow": {
+    "level": "a2",
+    "week": 12,
+    "day": 3,
+    "text": "I am practicing English."
+  },
+  "a2-w12-d4-shadow": {
+    "level": "a2",
+    "week": 12,
+    "day": 4,
+    "text": "I am practicing English."
+  },
+  "a2-w12-d5-shadow": {
+    "level": "a2",
+    "week": 12,
+    "day": 5,
+    "text": "I am practicing English."
+  },
+  "a2-w12-d6-shadow": {
+    "level": "a2",
+    "week": 12,
+    "day": 6,
+    "text": "I am practicing English."
+  },
+  "a2-w12-d7-shadow": {
+    "level": "a2",
+    "week": 12,
+    "day": 7,
+    "text": "I am practicing English."
   }
 }

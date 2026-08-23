@@ -200,7 +200,7 @@
       <div class="cmd"><div class="name"><code>!pulse</code></div><div class="desc">إحصائيات نظام التنبيهات (Nabd): كام إشعار اتبعت النهاردة/الأسبوع.</div></div>
 
       <h3 style="color:var(--accent);margin:14px 0 6px">🎚️ إدارة الطلاب</h3>
-      <div class="cmd"><div class="name"><code>!setlevel &lt;@user&gt; &lt;L0-L3&gt;</code></div><div class="desc">تعيين/ترقية مستوى الطالب (الترقية يدوية بقرارك).</div></div>
+      <div class="cmd"><div class="name"><code>!setlevel &lt;@user&gt; &lt;A1-C2&gt;</code></div><div class="desc">تعيين/ترقية مستوى الطالب (الترقية يدوية بقرارك).</div></div>
       <div class="cmd"><div class="name"><code>!reset-student &lt;@user&gt;</code></div><div class="desc">إعادة ضبط سجلّ طالب (لقطة + موافقة أولاً).</div></div>
       <div class="cmd"><div class="name"><code>!restore-student &lt;record#&gt;</code></div><div class="desc">التراجع عن إعادة الضبط من اللقطة.</div></div>
       <div class="cmd"><div class="name"><code>!approve-reset &lt;id&gt;</code> · <code>!deny-reset &lt;id&gt;</code></div><div class="desc">الموافقة/الرفض على طلب إعادة ضبط.</div></div>
@@ -208,7 +208,7 @@
       <h3 style="color:var(--accent);margin:14px 0 6px">📣 التواصل والمحتوى</h3>
       <div class="cmd"><div class="name"><code>!announce &lt;msg&gt;</code></div><div class="desc">إعلان للطلاب.</div></div>
       <div class="cmd"><div class="name"><code>!recruit ar/en</code></div><div class="desc">قالب رسالة تجنيد/دعوة.</div></div>
-      <div class="cmd"><div class="name"><code>!resources L0-L3</code></div><div class="desc">نشر مصادر المحاكاة للمستوى.</div></div>
+      <div class="cmd"><div class="name"><code>!resources A1-C2</code></div><div class="desc">نشر مصادر المحاكاة للمستوى.</div></div>
       <div class="cmd"><div class="name"><code>!orient &lt;date/time&gt;</code></div><div class="desc">إرسال دعوة جلسة تعريفية.</div></div>
 
       <h3 style="color:var(--accent);margin:14px 0 6px">⚙️ النظام والميزات</h3>
@@ -341,15 +341,25 @@
 
     <!-- Levels & advancement -->
     <div class="card guide-section" id="levels">
-      <h2>🎓 المستويات والترقية</h2>
-      <p>4 مستويات، لكل واحد منهج وأسابيع:</p>
-      <div class="cmd"><div class="name">🌱 <b>L0</b></div><div class="desc">للمبتدئين تمامًا — 8 أسابيع.</div></div>
-      <div class="cmd"><div class="name">💪 <b>L1</b> — Survival English</div><div class="desc">10 أسابيع.</div></div>
-      <div class="cmd"><div class="name">🚀 <b>L2</b> — Communication</div><div class="desc">12 أسبوعًا.</div></div>
-      <div class="cmd"><div class="name">👑 <b>L3</b> — Fluency &amp; Native Accent</div><div class="desc">مستمر.</div></div>
+      <h2>🎓 المستويات والترقية (CEFR — A1 إلى C2)</h2>
+      <p><b>6 مستويات</b> متوافقة مع الإطار الأوروبي المرجعي (CEFR)، لكل واحد منهج وعدد أسابيع خاص به. <span class="en">Mi'yar</span> — المحتوى كامل ومؤلَّف لكل المستويات:</p>
+      <div class="cmd"><div class="name">🌱 <b>A1</b> — Breakthrough / مبتدئ</div><div class="desc">للمبتدئين تمامًا — <b>10 أسابيع</b>.</div></div>
+      <div class="cmd"><div class="name">🌿 <b>A2</b> — Waystage / أساسي</div><div class="desc">الماضي، المقارنة، خطط المستقبل — <b>12 أسبوعًا</b>.</div></div>
+      <div class="cmd"><div class="name">🚀 <b>B1</b> — Threshold / متوسط</div><div class="desc">استقلالية في التعبير — <b>14 أسبوعًا</b>.</div></div>
+      <div class="cmd"><div class="name">💪 <b>B2</b> — Vantage / فوق المتوسط</div><div class="desc">طلاقة ونقاش وتفاصيل أدق — <b>16 أسبوعًا</b>.</div></div>
+      <div class="cmd"><div class="name">🏆 <b>C1</b> — Effective Operational Proficiency / متقدّم</div><div class="desc">استخدام مرن وفعّال — <b>18 أسبوعًا</b>.</div></div>
+      <div class="cmd"><div class="name">👑 <b>C2</b> — Mastery / إتقان</div><div class="desc">إتقان شبه كامل — <b>20 أسبوعًا</b>.</div></div>
       <div class="callout">
         <b>الترقية يدوية بقرارك</b> — مفيش ترقية آلية. رقّي طالبًا عبر:
-        <br>Discord: <code>!setlevel &lt;@user&gt; &lt;L0-L3&gt;</code> أو <code>/setlevel</code> (منتقي بالاسم). يتم تحديث رتبة الطالب في Discord تلقائيًا.
+        <br>Discord: <code>!setlevel &lt;@user&gt; &lt;A1-C2&gt;</code> أو <code>/setlevel</code> (منتقي بالاسم). يتم تحديث رتبة الطالب في Discord تلقائيًا.
+      </div>
+      <div class="callout">
+        🏛️ <b>مناطق السيرفر:</b> كل مستوى له <span class="en">ZONE</span> خاصة بقنواته
+        (<code>#a1-daily-tasks</code>، <code>#a1-text-practice</code>، <code>#a1-showcase</code>، <code>#a1-questions</code>، <code>a1-voice-1/2</code>) — وهكذا لكل مستوى حتى <code>c2</code>.
+        مناطق <span class="en">L0–L3</span> القديمة تمّت <b>أرشفتها</b> (مخفية ومقروءة للإدارة فقط) — التاريخ محفوظ ولم يُحذف شيء.
+      </div>
+      <div class="callout">
+        📜 <b>الصياغة المعتمدة:</b> نقول دائمًا <b>«متوافق مع CEFR» (CEFR-aligned)</b> — <b>وليس</b> «معتمد/مُصدَّق من CEFR»، لأن CEFR ليس جهة تصدر شهادات. الشهادة شهادة <b>Empire English</b> تُفيد بأن الطالب أظهر كفاءة عند مستوى CEFR المحدَّد.
       </div>
     </div>
 
@@ -367,7 +377,7 @@
     <div class="card guide-section" id="schedule">
       <h2>⏰ المهام المجدولة (بتوقيت دبي)</h2>
       <p>الأشياء اللي بتحصل تلقائيًا كل يوم/أسبوع — عشان تعرف مصدر أي رسالة تلقائية:</p>
-      <div class="cmd"><div class="name">🗓️ 6:00 ص</div><div class="desc">نشر مهام اليوم في <code>#lN-daily-tasks</code>.</div></div>
+      <div class="cmd"><div class="name">🗓️ 6:00 ص</div><div class="desc">نشر مهام اليوم في <code>#&lt;level&gt;-daily-tasks (مثال: #a1-daily-tasks)</code>.</div></div>
       <div class="cmd"><div class="name">🌅 6:05 ص</div><div class="desc">رسالة الصباح (Nabd) لمن لم يبدأ بعد.</div></div>
       <div class="cmd"><div class="name">📡 7:00 ص</div><div class="desc">مُلخّص Markaz اليومي على تليجرام.</div></div>
       <div class="cmd"><div class="name">📨 10:05 ص</div><div class="desc">فحص الغياب اليومي (سلّم الاسترجاع).</div></div>
@@ -392,8 +402,8 @@
       <div class="callout">⏳ <b>محاولة انتهى وقتها قبل أي إجابة تُلغى تلقائيًا</b> (لا نتيجة، لا رسوب، لا فترة انتظار) — فلن ترى «رسوبًا وهميًا» من طالب فتح الاختبار وتركه. كذلك تنبيه «غير نشِط» يُرسَل <b>مرة واحدة يوميًا</b> كحدّ أقصى لكل طالب (بدل كل ساعة سابقًا).</div>
 
       <h3 style="color:var(--accent);margin:16px 0 8px">🛠️ أوامر الإدارة (Discord)</h3>
-      <div class="cmd"><div class="name"><code>!itqan [L0-L3]</code></div><div class="desc">تقرير الإتقان الأسبوعي (نظرة عامة لكل مستوى).</div></div>
-      <div class="cmd"><div class="name"><code>!itqan-due [L0-L3]</code></div><div class="desc"><b>التقرير الشامل:</b> مَن عليه اختبار مستحقّ ولم يؤدِّه، ومَن أنهى/رسب/نجح، والأيام المتبقّية. هذا هو تقرير «مَن لم يختبر بعد».</div></div>
+      <div class="cmd"><div class="name"><code>!itqan [A1-C2]</code></div><div class="desc">تقرير الإتقان الأسبوعي (نظرة عامة لكل مستوى).</div></div>
+      <div class="cmd"><div class="name"><code>!itqan-due [A1-C2]</code></div><div class="desc"><b>التقرير الشامل:</b> مَن عليه اختبار مستحقّ ولم يؤدِّه، ومَن أنهى/رسب/نجح، والأيام المتبقّية. هذا هو تقرير «مَن لم يختبر بعد».</div></div>
       <div class="cmd"><div class="name"><code>!itqan-review &lt;attempt_id&gt;</code></div><div class="desc">ملف مراجعة مفصّل لمحاولة واحدة + تسجيلاتها الصوتية. رقم المحاولة (<span class="en">attempt_id</span>) يصلك <b>جاهزاً</b> داخل إشعار المحاولة المعلّمة.</div></div>
       <div class="cmd"><div class="name"><code>!itqan-pass @user &lt;week&gt;</code></div><div class="desc">تجاوز يدوي: اعتماد إتقان الأسبوع للطالب + الاحتفاء به تلقائياً (DM + قناة الأبطال + شهادة عند إتمام المستوى).</div></div>
       <div class="cmd"><div class="name"><code>!itqan-reset @user &lt;week&gt;</code></div><div class="desc">مسح محاولات الطالب لأسبوع معيّن ليعيد الاختبار من جديد.</div></div>

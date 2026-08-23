@@ -49,7 +49,19 @@ const ItqanAssessment = {
     if (!DarbSession.hasSession()) { this._show('asmt-nosession'); return; }
 
     const params = new URLSearchParams(location.search);
+
+    // Detect assessment type: weekly (default), monthly, or advancement
+    this.type = params.get('type') || 'weekly';
     this.week = parseInt(params.get('week'), 10);
+
+    if (this.type === 'monthly') {
+      return this._initMonthly();
+    }
+    if (this.type === 'advancement') {
+      return this._initAdvancement();
+    }
+
+    // Weekly (original flow)
     if (!this.week || this.week < 1) {
       this._unavailable("Open the weekly test from your calendar.",
                         "افتح الاختبار الأسبوعي من التقويم.");
@@ -69,6 +81,138 @@ const ItqanAssessment = {
 
     this.config = data.config || {};
     this._routeState(data);
+  },
+
+  // ---- Monthly Review init -----------------------------------------------
+
+  async _initMonthly() {
+    const res = await DarbSession.fetch('/api/assessment/monthly/status');
+    if (!res) { this._show('asmt-nosession'); return; }
+    let data = {};
+    try { data = await res.json(); } catch (e) { data = {}; }
+
+    if (!data.ok || data.state === 'disabled' || data.state === 'not_due') {
+      this._unavailable("Monthly review isn't available yet. Keep going!",
+                        "المراجعة الشهرية مش متاحة دلوقتي. كمّل تمرين!");
+      return;
+    }
+    if (data.state === 'passed') {
+      this._show('asmt-mastered');
+      document.getElementById('asmt-mastered').querySelector('h2').innerHTML =
+        '🌟 Monthly Review Passed! <span class="ar-inline" lang="ar" dir="rtl">/ المراجعة الشهرية ناجحة!</span>';
+      return;
+    }
+    if (data.state === 'cooldown') {
+      let when = '';
+      try { const t = new Date(data.cooldown_until); if (!isNaN(t)) when = t.toLocaleString(); } catch (e) {}
+      document.getElementById('asmt-cooldown-msg').innerHTML =
+        `You can retake the monthly review soon${when ? ` (after ${this._esc(when)})` : ''}. ` +
+        `<span class="ar-inline" lang="ar" dir="rtl">/ تقدر تعيد المراجعة قريب.</span>`;
+      this._show('asmt-cooldown');
+      return;
+    }
+
+    // available
+    this.config = { time_limit_min: 20 };
+    this._showMonthlyIntro();
+  },
+
+  _showMonthlyIntro() {
+    document.getElementById('asmt-intro-title').textContent = '📊 Monthly Progress Review';
+    document.getElementById('asmt-rule-time').textContent = 'About 20 minutes';
+    this._show('asmt-intro');
+    const btn = document.getElementById('asmt-start-btn');
+    btn.onclick = () => this._startMonthlyAttempt();
+  },
+
+  async _startMonthlyAttempt() {
+    const btn = document.getElementById('asmt-start-btn');
+    btn.disabled = true; btn.textContent = 'Starting...';
+    const res = await DarbSession.fetch('/api/assessment/monthly/start', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
+    });
+    if (!res) { this._show('asmt-nosession'); return; }
+    let data = {};
+    try { data = await res.json(); } catch (e) { data = {}; }
+    if (!data.ok) {
+      btn.disabled = false; btn.textContent = '🚀 Start';
+      this._unavailable("Monthly review isn't available right now.",
+                        "المراجعة مش متاحة دلوقتي.");
+      return;
+    }
+    this.attempt = { attempt_id: data.attempt_id, items: data.items || [],
+                     time_limit_min: data.time_limit_min || 20 };
+    this.answers = {};
+    this.idx = 0;
+    this.remaining = (data.time_limit_min || 20) * 60;
+    this._monthlyApiPrefix = '/api/assessment/monthly';
+    this._enterRunner();
+  },
+
+  // ---- Advancement Exam init ---------------------------------------------
+
+  async _initAdvancement() {
+    const res = await DarbSession.fetch('/api/assessment/advancement/status');
+    if (!res) { this._show('asmt-nosession'); return; }
+    let data = {};
+    try { data = await res.json(); } catch (e) { data = {}; }
+
+    if (!data.ok || data.state === 'disabled' || data.state === 'locked') {
+      this._unavailable("Advancement exam isn't available yet. Complete all weekly tests + a monthly review first.",
+                        "اختبار الترقية مش متاح — خلّص كل الاختبارات الأسبوعية + مراجعة شهرية الأول.");
+      return;
+    }
+    if (data.state === 'passed') {
+      this._show('asmt-mastered');
+      document.getElementById('asmt-mastered').querySelector('h2').innerHTML =
+        '🎓 Level Advanced! <span class="ar-inline" lang="ar" dir="rtl">/ اترقّيت!</span>';
+      return;
+    }
+    if (data.state === 'cooldown') {
+      let when = '';
+      try { const t = new Date(data.cooldown_until); if (!isNaN(t)) when = t.toLocaleString(); } catch (e) {}
+      document.getElementById('asmt-cooldown-msg').innerHTML =
+        `You can retake the advancement exam soon${when ? ` (after ${this._esc(when)})` : ''}. ` +
+        `<span class="ar-inline" lang="ar" dir="rtl">/ تقدر تعيد اختبار الترقية قريب.</span>`;
+      this._show('asmt-cooldown');
+      return;
+    }
+
+    // available
+    this.config = { time_limit_min: 20 };
+    this._showAdvancementIntro();
+  },
+
+  _showAdvancementIntro() {
+    document.getElementById('asmt-intro-title').textContent = '🎓 Level Advancement Exam';
+    document.getElementById('asmt-rule-time').textContent = 'Part A: ~20 min + Part B: ~10 min';
+    this._show('asmt-intro');
+    const btn = document.getElementById('asmt-start-btn');
+    btn.onclick = () => this._startAdvancementAttempt();
+  },
+
+  async _startAdvancementAttempt() {
+    const btn = document.getElementById('asmt-start-btn');
+    btn.disabled = true; btn.textContent = 'Starting...';
+    const res = await DarbSession.fetch('/api/assessment/advancement/start', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}',
+    });
+    if (!res) { this._show('asmt-nosession'); return; }
+    let data = {};
+    try { data = await res.json(); } catch (e) { data = {}; }
+    if (!data.ok) {
+      btn.disabled = false; btn.textContent = '🚀 Start';
+      this._unavailable("Advancement exam isn't available right now.",
+                        "اختبار الترقية مش متاح دلوقتي.");
+      return;
+    }
+    this.attempt = { attempt_id: data.attempt_id, items: data.items || [],
+                     time_limit_min: data.time_limit_min || 20 };
+    this.answers = {};
+    this.idx = 0;
+    this.remaining = (data.time_limit_min || 20) * 60;
+    this._advancementMode = true;
+    this._enterRunner();
   },
 
   _unavailable(en, ar) {
@@ -387,11 +531,17 @@ const ItqanAssessment = {
         }
         fd.append('attempt_id', String(this.attempt.attempt_id));
         fd.append('item_no', String(item.item_no));
-        res = await DarbSession.fetch('/api/assessment/item', { method: 'POST', body: fd });
+        const itemUrl = this.type === 'monthly' ? '/api/assessment/monthly/item'
+                      : this._advancementMode ? '/api/assessment/advancement/item'
+                      : '/api/assessment/item';
+        res = await DarbSession.fetch(itemUrl, { method: 'POST', body: fd });
       } else {
         const input = document.getElementById('asmt-text');
         const answer = input ? input.value : '';
-        res = await DarbSession.fetch('/api/assessment/item', {
+        const itemUrl = this.type === 'monthly' ? '/api/assessment/monthly/item'
+                      : this._advancementMode ? '/api/assessment/advancement/item'
+                      : '/api/assessment/item';
+        res = await DarbSession.fetch(itemUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ attempt_id: this.attempt.attempt_id, item_no: item.item_no, answer }),
@@ -443,9 +593,13 @@ const ItqanAssessment = {
     if (this.recording) { try { await Recorder.stop(); } catch (e) {} this.recording = false; }
     this._show('asmt-submitting');
 
+    let finishUrl = '/api/assessment/finish';
+    if (this.type === 'monthly') finishUrl = '/api/assessment/monthly/finish';
+    else if (this._advancementMode) finishUrl = '/api/assessment/advancement/finish-a';
+
     let data = {};
     try {
-      const res = await DarbSession.fetch('/api/assessment/finish', {
+      const res = await DarbSession.fetch(finishUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ attempt_id: this.attempt.attempt_id, integrity_flags: this.flags }),
@@ -478,7 +632,238 @@ const ItqanAssessment = {
                         "حفظنا إجاباتك بس معرفناش نعرض النتيجة. راجع من التقويم.");
       return;
     }
-    this._renderResults(data);
+
+    // Route to the correct results view based on type
+    if (this.type === 'monthly') {
+      this._renderMonthlyResults(data);
+    } else if (this._advancementMode) {
+      this._renderAdvancementPartAResults(data);
+    } else {
+      this._renderResults(data);
+    }
+  },
+
+  // ---- Monthly results ---------------------------------------------------
+
+  _renderMonthlyResults(data) {
+    const passed = data.result === 'passed';
+    const retention = data.retention_pct || 0;
+    const breakdown = data.skill_breakdown || {};
+    const reviewList = data.review_list || [];
+
+    const seal = passed ? '🌟' : '📊';
+    const title = passed ? 'Monthly Review Passed!' : 'Not yet — keep reviewing';
+    const titleAr = passed ? 'المراجعة الشهرية ناجحة!' : 'لسه — كمّل مراجعة';
+
+    let html = `
+      <div class="card asmt-result-hero ${passed ? 'asmt-pass' : 'asmt-notyet'}">
+        <div class="asmt-seal">${seal}</div>
+        <h2 class="asmt-result-title">${title} <span class="ar-inline" lang="ar" dir="rtl">/ ${titleAr}</span></h2>
+        <p class="asmt-result-sub">Retention Score: <strong>${retention}%</strong> ${passed ? '✅' : '(need 65%)'}</p>
+      </div>`;
+
+    // Skill breakdown radar
+    if (Object.keys(breakdown).length) {
+      html += `<div class="card"><h3 style="margin-top:0">📊 Skills <span class="ar-inline" lang="ar" dir="rtl">/ مهاراتك</span></h3>`;
+      for (const [skill, score] of Object.entries(breakdown)) {
+        const bar = '█'.repeat(Math.round(score / 10)) + '░'.repeat(10 - Math.round(score / 10));
+        html += `<div class="asmt-review-row"><span class="asmt-review-skill">${this._skillLabel(skill)}</span> ${bar} ${score}%</div>`;
+      }
+      html += `</div>`;
+    }
+
+    // Review list (weak items)
+    if (!passed && reviewList.length) {
+      html += `<div class="card"><h3 style="margin-top:0">📝 Review these <span class="ar-inline" lang="ar" dir="rtl">/ راجع دول</span></h3>`;
+      reviewList.slice(0, 8).forEach(item => {
+        html += `<div class="asmt-review-row">• ${this._esc(item.word)} (Week ${item.source_week}, ${this._skillLabel(item.skill)})</div>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `<div style="text-align:center;margin:8px 0 4px"><a href="/" class="btn">🏠 Home</a></div>`;
+    document.getElementById('asmt-results').innerHTML = html;
+    this._show('asmt-results');
+    window.scrollTo(0, 0);
+    if (passed) this._confetti();
+  },
+
+  // ---- Advancement Part A results → transition to Part B -----------------
+
+  _renderAdvancementPartAResults(data) {
+    if (data.voided) {
+      this.finishing = false;
+      this._showAdvancementIntro();
+      return;
+    }
+
+    const perSkill = data.per_skill || {};
+    const partAScore = data.part_a_score || 0;
+    const skillsMet = data.skill_mins_met;
+    const failedSkills = data.failed_skills || [];
+
+    let html = `
+      <div class="card asmt-result-hero">
+        <div class="asmt-seal">📝</div>
+        <h2 class="asmt-result-title">Part A Complete! <span class="ar-inline" lang="ar" dir="rtl">/ الجزء الأول خلص!</span></h2>
+        <p class="asmt-result-sub">Part A Score: <strong>${partAScore}%</strong></p>
+      </div>`;
+
+    // Per-skill breakdown
+    html += `<div class="card"><h3 style="margin-top:0">📊 Per-skill scores</h3>`;
+    for (const [skill, score] of Object.entries(perSkill)) {
+      const ok = score >= 60;
+      const mark = ok ? '✅' : '⚠️';
+      html += `<div class="asmt-review-row">${mark} ${this._skillLabel(skill)}: ${score}%</div>`;
+    }
+    if (failedSkills.length) {
+      html += `<p style="color:#e67e22">⚠️ Skills below 60%: ${failedSkills.join(', ')}</p>`;
+    }
+    html += `</div>`;
+
+    // Part B prompt
+    html += `
+      <div class="card" style="border-color:var(--accent)">
+        <h3 style="margin-top:0">🎙️ Part B — Record Yourself <span class="ar-inline" lang="ar" dir="rtl">/ الجزء التاني — سجّل نفسك</span></h3>
+        <p>Now record yourself speaking freely for 60 seconds:</p>
+        <p lang="ar" dir="rtl" style="font-size:1.1em"><strong>عرّف نفسك بالإنجليزي: اسمك، من فين، بتشتغل إيه، وليه بتتعلم إنجليزي.</strong></p>
+        <p><em>Introduce yourself in English: your name, where you're from, what you do, and why you're learning English.</em></p>
+        <p>⏱️ You have 60 seconds. Take a moment to think, then press Record.</p>
+        ${this._recorderHtml()}
+        <button id="asmt-partb-submit" class="btn" style="margin-top:12px" disabled>
+          Submit Part B <span class="ar-inline" lang="ar" dir="rtl">/ أرسل الجزء التاني</span>
+        </button>
+      </div>`;
+
+    document.getElementById('asmt-results').innerHTML = html;
+    this._show('asmt-results');
+    window.scrollTo(0, 0);
+
+    // Wire Part B recorder
+    this._wireRecorder();
+    const submitBtn = document.getElementById('asmt-partb-submit');
+    const recBtn = document.getElementById('asmt-rec-btn');
+    if (recBtn) {
+      const origOnclick = recBtn.onclick;
+      recBtn.onclick = async () => {
+        if (!this.recording) {
+          this.recording = true;
+          recBtn.innerHTML = '⏹️ Stop <span class="ar-inline" lang="ar" dir="rtl">/ إيقاف</span>';
+          await Recorder.start();
+        } else {
+          this.recording = false;
+          recBtn.innerHTML = '🎙️ Re-record <span class="ar-inline" lang="ar" dir="rtl">/ أعِد</span>';
+          this.blob = await Recorder.stop();
+          const pb = document.getElementById('asmt-rec-playback');
+          if (this.blob && pb) { pb.src = URL.createObjectURL(this.blob); pb.style.display = ''; }
+          if (this.blob && submitBtn) submitBtn.disabled = false;
+        }
+      };
+    }
+
+    if (submitBtn) {
+      submitBtn.onclick = () => this._submitPartB();
+    }
+  },
+
+  async _submitPartB() {
+    const btn = document.getElementById('asmt-partb-submit');
+    if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
+
+    // Transcribe via Whisper (send audio to the server which handles transcription)
+    // For now, send the audio to the existing recording submission endpoint,
+    // then call finish-b with the transcript. In practice, the server-side
+    // submit_item for audio items already transcribes via Whisper.
+    // Simpler approach: submit the blob to a dedicated endpoint that transcribes + scores.
+    let transcript = '';
+    if (this.blob) {
+      try {
+        const fd = new FormData();
+        fd.append('audio', this.blob, 'partb.webm');
+        fd.append('attempt_id', String(this.attempt.attempt_id));
+        fd.append('item_no', '0');  // Part B marker
+        const res = await DarbSession.fetch('/api/assessment/item', { method: 'POST', body: fd });
+        if (res) {
+          const d = await res.json().catch(() => ({}));
+          transcript = d.transcript || d.answer || '';
+        }
+      } catch (e) {}
+    }
+
+    // If we couldn't get a transcript from the audio endpoint, use a fallback
+    // (the server's finish-b will handle empty transcripts gracefully)
+    if (!transcript && this.blob) {
+      transcript = '[audio_submitted]';
+    }
+
+    // Call finish-b with the transcript
+    let data = {};
+    try {
+      const res = await DarbSession.fetch('/api/assessment/advancement/finish-b', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ attempt_id: this.attempt.attempt_id, transcript }),
+      });
+      if (res) data = await res.json().catch(() => ({}));
+    } catch (e) {}
+
+    if (!data.ok) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Submit Part B'; }
+      return;
+    }
+
+    this._renderAdvancementFinalResults(data);
+  },
+
+  _renderAdvancementFinalResults(data) {
+    const passed = data.passed;
+    const overall = data.overall_pct || 0;
+    const partA = data.part_a_score || 0;
+    const partB = data.part_b_score || 0;
+    const partBDetail = data.part_b_detail || {};
+    const perSkill = data.per_skill || {};
+
+    const seal = passed ? '🎓' : '💪';
+    const title = passed ? 'PROMOTED!' : 'Not yet — you\'re close';
+    const titleAr = passed ? 'مبروك! اترقّيت!' : 'لسه — قربت!';
+
+    let html = `
+      <div class="card asmt-result-hero ${passed ? 'asmt-pass asmt-distinction' : 'asmt-notyet'}">
+        <div class="asmt-seal">${seal}</div>
+        <h2 class="asmt-result-title">${title} <span class="ar-inline" lang="ar" dir="rtl">/ ${titleAr}</span></h2>
+        <p class="asmt-result-sub">Overall: <strong>${overall}%</strong> (need 75%) | Part A: ${partA}% | Part B: ${partB}/100</p>
+      </div>`;
+
+    // Part B breakdown
+    if (partBDetail.fluency !== undefined) {
+      html += `<div class="card"><h3 style="margin-top:0">🎙️ Part B Breakdown</h3>
+        <div class="asmt-review-row">Fluency: ${partBDetail.fluency}/25</div>
+        <div class="asmt-review-row">Accuracy: ${partBDetail.accuracy}/25</div>
+        <div class="asmt-review-row">Vocabulary: ${partBDetail.vocab_range}/25</div>
+        <div class="asmt-review-row">Pronunciation: ${partBDetail.pronunciation}/25</div>
+        <p><em>${this._esc(partBDetail.feedback || '')}</em></p>
+      </div>`;
+    }
+
+    // Per-skill (Part A)
+    if (Object.keys(perSkill).length) {
+      html += `<div class="card"><h3 style="margin-top:0">📊 Part A Skills</h3>`;
+      for (const [skill, score] of Object.entries(perSkill)) {
+        const ok = score >= 60;
+        html += `<div class="asmt-review-row">${ok ? '✅' : '⚠️'} ${this._skillLabel(skill)}: ${score}%</div>`;
+      }
+      html += `</div>`;
+    }
+
+    if (data.reason_if_failed) {
+      html += `<div class="card"><p>📝 ${this._esc(data.reason_if_failed)}</p></div>`;
+    }
+
+    html += `<div style="text-align:center;margin:8px 0 4px"><a href="/" class="btn">🏠 Home</a></div>`;
+    document.getElementById('asmt-results').innerHTML = html;
+    this._show('asmt-results');
+    window.scrollTo(0, 0);
+    if (passed) this._confetti();
   },
 
   _renderResults(data) {

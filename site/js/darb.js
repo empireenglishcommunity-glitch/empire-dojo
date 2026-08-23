@@ -198,6 +198,16 @@ const DarbCalendar = {
       html += this._itqanProgressHtml(this.data.itqan_progress, level);
     }
 
+    // Taqdeem: Monthly Review stop
+    if (this.data.monthly_review && this.data.monthly_review.state !== 'disabled') {
+      html += this._monthlyStopHtml(this.data.monthly_review);
+    }
+
+    // Taqdeem: Advancement Exam stop
+    if (this.data.advancement_exam && this.data.advancement_exam.state !== 'disabled') {
+      html += this._advancementStopHtml(this.data.advancement_exam);
+    }
+
     // Level complete banner
     if (level_complete) {
       html += `<div class="darb-complete-banner">
@@ -358,6 +368,53 @@ const DarbCalendar = {
     } catch (e) {
       return isoStr;
     }
+  },
+
+  /** Monthly Review stop on the calendar. */
+  _monthlyStopHtml(state) {
+    const st = state.state;
+    if (st === 'not_due') return '';
+    const cls = st === 'passed' ? 'darb-assessment-stop asmt-pass'
+              : st === 'available' ? 'darb-assessment-stop asmt-available'
+              : 'darb-assessment-stop asmt-locked';
+    const icon = st === 'passed' ? '🌟' : st === 'available' ? '📊' : '⏳';
+    const label = st === 'passed' ? 'Monthly Review Passed'
+                : st === 'available' ? 'Monthly Review — Ready!'
+                : st === 'cooldown' ? 'Monthly Review — Retake Soon'
+                : 'Monthly Review';
+    const link = st === 'available' ? '/assessment/?type=monthly' : null;
+    const tag = link ? 'a' : 'div';
+    const attrs = link ? `href="${link}"` : '';
+    return `<${tag} class="${cls}" ${attrs}>
+      <span class="darb-asmt-icon">${icon}</span>
+      <span class="darb-asmt-label">${label} <span class="ar-inline" lang="ar" dir="rtl">/ المراجعة الشهرية</span></span>
+    </${tag}>`;
+  },
+
+  /** Advancement Exam stop on the calendar. */
+  _advancementStopHtml(state) {
+    const st = state.state;
+    if (st === 'locked') return `
+      <div class="darb-assessment-stop asmt-locked">
+        <span class="darb-asmt-icon">🔒</span>
+        <span class="darb-asmt-label">🎓 Advancement Exam — Locked <span class="ar-inline" lang="ar" dir="rtl">/ اختبار الترقية — مقفول</span></span>
+      </div>`;
+    if (st === 'passed') return `
+      <div class="darb-assessment-stop asmt-pass">
+        <span class="darb-asmt-icon">🎓</span>
+        <span class="darb-asmt-label">Level Advanced! <span class="ar-inline" lang="ar" dir="rtl">/ اترقّيت!</span></span>
+      </div>`;
+    if (st === 'cooldown') return `
+      <div class="darb-assessment-stop asmt-locked">
+        <span class="darb-asmt-icon">⏳</span>
+        <span class="darb-asmt-label">Advancement Exam — Retake Soon <span class="ar-inline" lang="ar" dir="rtl">/ اختبار الترقية — إعادة قريب</span></span>
+      </div>`;
+    // available
+    return `
+      <a class="darb-assessment-stop asmt-available" href="/assessment/?type=advancement">
+        <span class="darb-asmt-icon">🎓</span>
+        <span class="darb-asmt-label">Advancement Exam — Ready! <span class="ar-inline" lang="ar" dir="rtl">/ اختبار الترقية — جاهز!</span></span>
+      </a>`;
   }
 };
 

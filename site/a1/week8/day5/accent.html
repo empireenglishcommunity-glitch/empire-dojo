@@ -3,16 +3,16 @@
 <!-- Empire English Community | Proprietary Content | Unauthorized reproduction prohibited -->
 
 <div id="gated-content" class="gated-content">
-<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 8 • Day 5 • Review</p></div>
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 8 • Day 5 • /æ/ (bad, hat) vs /e/ (bed) · /ɔː/ (tall, short) vs /ɒ/ (hot) · question-word stress (WHAT, WHERE) · /ɜː/ (girl, shirt) vs /ɔː/ (short) · adjective + noun stress and linking</p></div>
 <div class="gamification-bar"><span class="streak" id="streak-display">🔥 0</span><span id="pronunciation-stat" style="display:none;color:var(--accent);font-size:0.8rem;font-weight:600"></span><div class="progress-bar" id="daily-progress"></div><span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span></div>
-<div class="arabic-text" lang="ar" dir="rtl">تمرّن على النطق</div>
-<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: Review</h2>
-<button class="btn" onclick="TTS.speak('I am practicing English.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<div class="arabic-text" lang="ar" dir="rtl">في الوصف، الصفة والاسم الاتنين منبورين وبيتوصّلوا: a BLACK CAR. والمقارنة نهايتها خفيفة: TALL-er.</div>
+<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: Adjective + noun stress and linking</h2>
+<button class="btn" onclick="TTS.speak('She has a beautiful new car. He is taller than his brother, and that old house is much bigger than mine.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <div class="speed-control"><label>Speed <span class="ar-inline" lang="ar" dir="rtl">/ السرعة</span>:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
-
-
-<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"I am practicing English."</b></div>
-<button class="btn btn-outline" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
+<div class="card"><h2>📝 Minimal Pairs <span class="ar-inline" lang="ar" dir="rtl">/ أزواج التمييز</span></h2><div class="transcript"><b>a BLACK CAR ✅</b> / <b>a black CAR (flat) ❌</b><br><b>TALL-er ✅</b> / <b>tall-ER ❌</b><br><b>BIGG-er ✅</b> / <b>bigg-ER ❌</b><br><b>an OLD HOUSE ✅</b> / <b>an old house (flat) ❌</b><br><b>MORE beautiful ✅</b> / <b>more BEAUtiful (both ok)</b></div></div>
+<div class="card"><h2>🎯 Practice Words <span class="ar-inline" lang="ar" dir="rtl">/ كلمات للتمرين</span></h2><div class="transcript"><b>tall</b> &bull; <b>short</b> &bull; <b>big</b> &bull; <b>small</b> &bull; <b>old</b> &bull; <b>young</b> &bull; <b>new</b> &bull; <b>beautiful</b></div><button class="btn btn-outline btn-sm" onclick="TTS.speak('tall, short, big, small, old, young, new, beautiful', 0.6)">🔊 Hear Words <span class="ar-inline" lang="ar" dir="rtl">/ استمع للكلمات</span></button></div>
+<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"She has a beautiful new car. He is taller than his brother, and that old house is much bigger than mine."</b></div>
+<button class="btn btn-outline" onclick="TTS.speak('She has a beautiful new car. He is taller than his brother, and that old house is much bigger than mine.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
 <div class="card recorder-card"><h2>🎙️ Record Yourself <span class="ar-inline" lang="ar" dir="rtl">/ سجّل نفسك</span></h2>
 <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">سجّل نفسك وانت بتقول الجملة. بعدين قارن صوتك بالنموذج.</div>
 <div class="recorder-controls" id="recorder-controls">
@@ -27,7 +27,7 @@
 <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px">Listen to both, then rate yourself: <span class="ar-inline" lang="ar" dir="rtl">/ اسمع الاتنين وقيّم نفسك:</span></p>
 </div>
 <div class="ab-comparison">
-<button class="btn btn-outline btn-sm" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<button class="btn btn-outline btn-sm" onclick="TTS.speak('She has a beautiful new car. He is taller than his brother, and that old house is much bigger than mine.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 Listen to Yours <span class="ar-inline" lang="ar" dir="rtl">/ استمع لتسجيلك</span></button>
 </div>
 <div class="recorder-actions" style="margin-top:12px">

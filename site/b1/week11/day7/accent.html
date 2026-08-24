@@ -3,16 +3,16 @@
 <!-- Empire English Community | Proprietary Content | Unauthorized reproduction prohibited -->
 
 <div id="gated-content" class="gated-content">
-<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 11 • Day 7 • Review</p></div>
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 11 • Day 7 • Weak &#39;that&#39; /ðət/ after reporting verbs · &#39;said&#39; /sed/ vs &#39;told&#39; /təʊld/ · weak &#39;to&#39; in &#39;told me to&#39; · reporting-verb stress · backshift rhythm</p></div>
 <div class="gamification-bar"><span class="streak" id="streak-display">🔥 0</span><span id="pronunciation-stat" style="display:none;color:var(--accent);font-size:0.8rem;font-weight:600"></span><div class="progress-bar" id="daily-progress"></div><span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span></div>
-<div class="arabic-text" lang="ar" dir="rtl">تمرّن على النطق</div>
-<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: Review</h2>
-<button class="btn" onclick="TTS.speak('I am practicing English.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<div class="arabic-text" lang="ar" dir="rtl">سجّل نفسك وانت تنقل محادثة أو خبرًا، وبعدين اسمع وراجع كل نقطة.</div>
+<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: Self-assessment + extended practice</h2>
+<button class="btn" onclick="TTS.speak('Yesterday I met an old friend, and he told me some surprising news. He said that he had left his job and was starting his own business. He told me he had been planning it for years. I asked him why, and he explained that he wanted more freedom. He said it would be difficult at first, but he thought it was worth it. He told me not to worry about him and asked me to visit his new office soon. I said I would come next week. He seemed happy, and he told me he had never felt so sure about anything.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <div class="speed-control"><label>Speed <span class="ar-inline" lang="ar" dir="rtl">/ السرعة</span>:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
 
 
-<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"I am practicing English."</b></div>
-<button class="btn btn-outline" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
+<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"Yesterday I met an old friend, and he told me some surprising news. He said that he had left his job and was starting his own business. He told me he had been planning it for years. I asked him why, and he explained that he wanted more freedom. He said it would be difficult at first, but he thought it was worth it. He told me not to worry about him and asked me to visit his new office soon. I said I would come next week. He seemed happy, and he told me he had never felt so sure about anything."</b></div>
+<button class="btn btn-outline" onclick="TTS.speak('Yesterday I met an old friend, and he told me some surprising news. He said that he had left his job and was starting his own business. He told me he had been planning it for years. I asked him why, and he explained that he wanted more freedom. He said it would be difficult at first, but he thought it was worth it. He told me not to worry about him and asked me to visit his new office soon. I said I would come next week. He seemed happy, and he told me he had never felt so sure about anything.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
 <div class="card recorder-card"><h2>🎙️ Record Yourself <span class="ar-inline" lang="ar" dir="rtl">/ سجّل نفسك</span></h2>
 <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">سجّل نفسك وانت بتقول الجملة. بعدين قارن صوتك بالنموذج.</div>
 <div class="recorder-controls" id="recorder-controls">
@@ -27,7 +27,7 @@
 <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px">Listen to both, then rate yourself: <span class="ar-inline" lang="ar" dir="rtl">/ اسمع الاتنين وقيّم نفسك:</span></p>
 </div>
 <div class="ab-comparison">
-<button class="btn btn-outline btn-sm" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<button class="btn btn-outline btn-sm" onclick="TTS.speak('Yesterday I met an old friend, and he told me some surprising news. He said that he had left his job and was starting his own business. He told me he had been planning it for years. I asked him why, and he explained that he wanted more freedom. He said it would be difficult at first, but he thought it was worth it. He told me not to worry about him and asked me to visit his new office soon. I said I would come next week. He seemed happy, and he told me he had never felt so sure about anything.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 Listen to Yours <span class="ar-inline" lang="ar" dir="rtl">/ استمع لتسجيلك</span></button>
 </div>
 <div class="recorder-actions" style="margin-top:12px">

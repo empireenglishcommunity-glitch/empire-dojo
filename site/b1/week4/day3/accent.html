@@ -3,16 +3,16 @@
 <!-- Empire English Community | Proprietary Content | Unauthorized reproduction prohibited -->
 
 <div id="gated-content" class="gated-content">
-<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 4 • Day 3 • Review</p></div>
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 4 • Day 3 • Weak &#39;if&#39; /ɪf/ and &#39;ll /l/ · pausing at the comma between clauses · weak &#39;when/as soon as/unless&#39; · intonation across two clauses · linking &#39;if I&#39; → /ɪfaɪ/</p></div>
 <div class="gamification-bar"><span class="streak" id="streak-display">🔥 0</span><span id="pronunciation-stat" style="display:none;color:var(--accent);font-size:0.8rem;font-weight:600"></span><div class="progress-bar" id="daily-progress"></div><span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span></div>
-<div class="arabic-text" lang="ar" dir="rtl">تمرّن على النطق</div>
-<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: Review</h2>
-<button class="btn" onclick="TTS.speak('I am practicing English.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<div class="arabic-text" lang="ar" dir="rtl">جملة &#39;if&#39; ترتفع قليلًا عند الفاصلة ↗، وبعدين جملة النتيجة تهبط للنهاية ↘. اللحن ده بيدل على الشرط.</div>
+<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: conditional intonation (rise then fall)</h2>
+<button class="btn" onclick="TTS.speak('If you study hard, you\'ll pass the exam. If we hurry now, we\'ll make it on time. And if you practise every day, you\'ll definitely improve your English.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <div class="speed-control"><label>Speed <span class="ar-inline" lang="ar" dir="rtl">/ السرعة</span>:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
-
-
-<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"I am practicing English."</b></div>
-<button class="btn btn-outline" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
+<div class="card"><h2>📝 Minimal Pairs <span class="ar-inline" lang="ar" dir="rtl">/ أزواج التمييز</span></h2><div class="transcript"><b>rise ↗ then fall ↘ ✅</b> / <b>flat ↘↘ ❌</b><br><b>If..., ↗ result ↘</b> / <b>statement ↘ only</b><br><b>unfinished rise ↗</b> / <b>finished fall ↘</b><br><b>If you ask ↗</b> / <b>If you ask ↘ (abrupt)</b><br><b>two-part melody ✅</b> / <b>monotone ❌</b></div></div>
+<div class="card"><h2>🎯 Practice Words <span class="ar-inline" lang="ar" dir="rtl">/ كلمات للتمرين</span></h2><div class="transcript"><b>if you study</b> &bull; <b>if we hurry</b> &bull; <b>if it works</b> &bull; <b>if you try</b> &bull; <b>if they help</b> &bull; <b>if I pass</b> &bull; <b>if she comes</b> &bull; <b>if you practise</b></div><button class="btn btn-outline btn-sm" onclick="TTS.speak('if you study, if we hurry, if it works, if you try, if they help, if I pass, if she comes, if you practise', 0.6)">🔊 Hear Words <span class="ar-inline" lang="ar" dir="rtl">/ استمع للكلمات</span></button></div>
+<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"If you study hard, you&#39;ll pass the exam. If we hurry now, we&#39;ll make it on time. And if you practise every day, you&#39;ll definitely improve your English."</b></div>
+<button class="btn btn-outline" onclick="TTS.speak('If you study hard, you\'ll pass the exam. If we hurry now, we\'ll make it on time. And if you practise every day, you\'ll definitely improve your English.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
 <div class="card recorder-card"><h2>🎙️ Record Yourself <span class="ar-inline" lang="ar" dir="rtl">/ سجّل نفسك</span></h2>
 <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">سجّل نفسك وانت بتقول الجملة. بعدين قارن صوتك بالنموذج.</div>
 <div class="recorder-controls" id="recorder-controls">
@@ -27,7 +27,7 @@
 <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px">Listen to both, then rate yourself: <span class="ar-inline" lang="ar" dir="rtl">/ اسمع الاتنين وقيّم نفسك:</span></p>
 </div>
 <div class="ab-comparison">
-<button class="btn btn-outline btn-sm" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<button class="btn btn-outline btn-sm" onclick="TTS.speak('If you study hard, you\'ll pass the exam. If we hurry now, we\'ll make it on time. And if you practise every day, you\'ll definitely improve your English.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 Listen to Yours <span class="ar-inline" lang="ar" dir="rtl">/ استمع لتسجيلك</span></button>
 </div>
 <div class="recorder-actions" style="margin-top:12px">

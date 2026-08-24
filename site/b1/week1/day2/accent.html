@@ -3,16 +3,16 @@
 <!-- Empire English Community | Proprietary Content | Unauthorized reproduction prohibited -->
 
 <div id="gated-content" class="gated-content">
-<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 1 • Day 2 • Review</p></div>
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 1 • Day 2 • Contractions &#39;ve /v/ and &#39;s /z/ in connected speech · weak &#39;for&#39; /fə/ and &#39;since&#39; /sɪns/ · &#39;just/already/yet&#39; stress · linking &#39;have you&#39; → /həvjə/</p></div>
 <div class="gamification-bar"><span class="streak" id="streak-display">🔥 0</span><span id="pronunciation-stat" style="display:none;color:var(--accent);font-size:0.8rem;font-weight:600"></span><div class="progress-bar" id="daily-progress"></div><span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span></div>
-<div class="arabic-text" lang="ar" dir="rtl">تمرّن على النطق</div>
-<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: Review</h2>
-<button class="btn" onclick="TTS.speak('I am practicing English.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<div class="arabic-text" lang="ar" dir="rtl">&#39;for&#39; + مدة تخف لـ /fə/. &#39;since&#39; + نقطة زمنية تفضل /sɪns/ لكن غير منبورة. عبارة الزمن هي المنبورة.</div>
+<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: weak &#39;for&#39; /fə/ and &#39;since&#39; /sɪns/</h2>
+<button class="btn" onclick="TTS.speak('I\'ve lived in this city for ten years, and I\'ve worked at the same company since 2020. We haven\'t met for ages, since we left school.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <div class="speed-control"><label>Speed <span class="ar-inline" lang="ar" dir="rtl">/ السرعة</span>:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
-
-
-<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"I am practicing English."</b></div>
-<button class="btn btn-outline" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
+<div class="card"><h2>📝 Minimal Pairs <span class="ar-inline" lang="ar" dir="rtl">/ أزواج التمييز</span></h2><div class="transcript"><b>fə two years ✅</b> / <b>FOR two years ❌</b><br><b>for (period)</b> / <b>since (point)</b><br><b>for /fə/</b> / <b>four /fɔː/</b><br><b>since 2020 ✅</b> / <b>for 2020 ❌</b><br><b>for a while ✅</b> / <b>since a while ❌</b></div></div>
+<div class="card"><h2>🎯 Practice Words <span class="ar-inline" lang="ar" dir="rtl">/ كلمات للتمرين</span></h2><div class="transcript"><b>for two years</b> &bull; <b>for a long time</b> &bull; <b>for ages</b> &bull; <b>for a while</b> &bull; <b>since 2020</b> &bull; <b>since Monday</b> &bull; <b>since I was young</b> &bull; <b>since then</b></div><button class="btn btn-outline btn-sm" onclick="TTS.speak('for two years, for a long time, for ages, for a while, since 2020, since Monday, since I was young, since then', 0.6)">🔊 Hear Words <span class="ar-inline" lang="ar" dir="rtl">/ استمع للكلمات</span></button></div>
+<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"I&#39;ve lived in this city for ten years, and I&#39;ve worked at the same company since 2020. We haven&#39;t met for ages, since we left school."</b></div>
+<button class="btn btn-outline" onclick="TTS.speak('I\'ve lived in this city for ten years, and I\'ve worked at the same company since 2020. We haven\'t met for ages, since we left school.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
 <div class="card recorder-card"><h2>🎙️ Record Yourself <span class="ar-inline" lang="ar" dir="rtl">/ سجّل نفسك</span></h2>
 <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">سجّل نفسك وانت بتقول الجملة. بعدين قارن صوتك بالنموذج.</div>
 <div class="recorder-controls" id="recorder-controls">
@@ -27,7 +27,7 @@
 <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px">Listen to both, then rate yourself: <span class="ar-inline" lang="ar" dir="rtl">/ اسمع الاتنين وقيّم نفسك:</span></p>
 </div>
 <div class="ab-comparison">
-<button class="btn btn-outline btn-sm" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<button class="btn btn-outline btn-sm" onclick="TTS.speak('I\'ve lived in this city for ten years, and I\'ve worked at the same company since 2020. We haven\'t met for ages, since we left school.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 Listen to Yours <span class="ar-inline" lang="ar" dir="rtl">/ استمع لتسجيلك</span></button>
 </div>
 <div class="recorder-actions" style="margin-top:12px">

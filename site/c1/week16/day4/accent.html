@@ -3,16 +3,16 @@
 <!-- Empire English Community | Proprietary Content | Unauthorized reproduction prohibited -->
 
 <div id="gated-content" class="gated-content">
-<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 16 • Day 4 • Review</p></div>
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week 16 • Day 4 • Crisp formal enunciation (full forms, released consonants) · relaxed casual speech (contractions, elision) · the same message in two registers · presentational delivery · switching register mid-conversation</p></div>
 <div class="gamification-bar"><span class="streak" id="streak-display">🔥 0</span><span id="pronunciation-stat" style="display:none;color:var(--accent);font-size:0.8rem;font-weight:600"></span><div class="progress-bar" id="daily-progress"></div><span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span></div>
-<div class="arabic-text" lang="ar" dir="rtl">تمرّن على النطق</div>
-<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: Review</h2>
-<button class="btn" onclick="TTS.speak('I am practicing English.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<div class="arabic-text" lang="ar" dir="rtl">التقديم أسلوب ثالث: أبطأ قليلًا من المحادثة، ومدى نبرة أوسع، ووقفات مقصودة بعد النقاط المهمة. الوقفات هي ما ينظّم الكلام.</div>
+<div class="card"><h2>🔊 Target Sounds <span class="ar-inline" lang="ar" dir="rtl">/ الأصوات المستهدفة</span>: presentational delivery: projecting to a room</h2>
+<button class="btn" onclick="TTS.speak('First, I\'ll outline the problem as we understood it in January. Then I\'ll turn to the data and what it actually shows. The key point is this: almost nothing was documented at the time. To summarise, we have three realistic options and very little time.')">▶️ Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <div class="speed-control"><label>Speed <span class="ar-inline" lang="ar" dir="rtl">/ السرعة</span>:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
-
-
-<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"I am practicing English."</b></div>
-<button class="btn btn-outline" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
+<div class="card"><h2>📝 Minimal Pairs <span class="ar-inline" lang="ar" dir="rtl">/ أزواج التمييز</span></h2><div class="transcript"><b>First, | I&#39;ll outline… ↘</b> / <b>First I&#39;ll outline…</b><br><b>wide pitch range</b> / <b>flat monotone</b><br><b>pause after key point</b> / <b>no pause</b><br><b>The key point is this: | …</b> / <b>The key point is…</b><br><b>Let me turn to… ↘</b> / <b>So anyway…</b></div></div>
+<div class="card"><h2>🎯 Practice Words <span class="ar-inline" lang="ar" dir="rtl">/ كلمات للتمرين</span></h2><div class="transcript"><b>first, I&#39;ll outline</b> &bull; <b>then I&#39;ll turn to</b> &bull; <b>let me turn to</b> &bull; <b>the key point is this</b> &bull; <b>to summarise</b> &bull; <b>in conclusion</b> &bull; <b>I&#39;d like to highlight</b> &bull; <b>as you can see</b></div><button class="btn btn-outline btn-sm" onclick="TTS.speak('first, I\'ll outline, then I\'ll turn to, let me turn to, the key point is this, to summarise, in conclusion, I\'d like to highlight, as you can see', 0.6)">🔊 Hear Words <span class="ar-inline" lang="ar" dir="rtl">/ استمع للكلمات</span></button></div>
+<div class="card"><h2>🎙️ Say This <span class="ar-inline" lang="ar" dir="rtl">/ قول ده</span></h2><div class="transcript"><b>"First, I&#39;ll outline the problem as we understood it in January. Then I&#39;ll turn to the data and what it actually shows. The key point is this: almost nothing was documented at the time. To summarise, we have three realistic options and very little time."</b></div>
+<button class="btn btn-outline" onclick="TTS.speak('First, I\'ll outline the problem as we understood it in January. Then I\'ll turn to the data and what it actually shows. The key point is this: almost nothing was documented at the time. To summarise, we have three realistic options and very little time.', 0.7)">🔊 Model <span class="ar-inline" lang="ar" dir="rtl">/ نموذج</span></button></div>
 <div class="card recorder-card"><h2>🎙️ Record Yourself <span class="ar-inline" lang="ar" dir="rtl">/ سجّل نفسك</span></h2>
 <div class="arabic-text" lang="ar" dir="rtl" style="margin-bottom:16px">سجّل نفسك وانت بتقول الجملة. بعدين قارن صوتك بالنموذج.</div>
 <div class="recorder-controls" id="recorder-controls">
@@ -27,7 +27,7 @@
 <p style="color:var(--text-secondary);font-size:0.8rem;margin-top:6px">Listen to both, then rate yourself: <span class="ar-inline" lang="ar" dir="rtl">/ اسمع الاتنين وقيّم نفسك:</span></p>
 </div>
 <div class="ab-comparison">
-<button class="btn btn-outline btn-sm" onclick="TTS.speak('I am practicing English.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
+<button class="btn btn-outline btn-sm" onclick="TTS.speak('First, I\'ll outline the problem as we understood it in January. Then I\'ll turn to the data and what it actually shows. The key point is this: almost nothing was documented at the time. To summarise, we have three realistic options and very little time.', 0.7)">🔊 Listen to Model <span class="ar-inline" lang="ar" dir="rtl">/ استمع للنموذج</span></button>
 <button class="btn btn-sm" id="play-mine" onclick="RecorderUI.playMine()">🎧 Listen to Yours <span class="ar-inline" lang="ar" dir="rtl">/ استمع لتسجيلك</span></button>
 </div>
 <div class="recorder-actions" style="margin-top:12px">

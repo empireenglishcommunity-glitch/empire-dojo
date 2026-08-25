@@ -10,6 +10,14 @@
   <meta name="robots" content="noindex,nofollow">
   <link rel="apple-touch-icon" href="/logo.png">
   <link rel="stylesheet" href="/css/empire.css">
+  <style>
+    .cert-cando { text-align:left; margin:16px auto 4px; max-width:520px; }
+    .cert-cando-title { font-weight:700; margin-bottom:8px; text-align:center; }
+    .cert-cando ul { list-style:none; padding:0; margin:0; }
+    .cert-cando li { padding:4px 0; line-height:1.4; border-bottom:1px solid rgba(212,175,55,0.15); }
+    .cert-disclaimer { margin-top:14px; font-size:0.78rem; line-height:1.45;
+      color:var(--text-secondary,#8a8a8a); text-align:center; font-style:italic; }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -54,7 +62,20 @@
           <span id="cert-distinction" style="display:none">⭐ — distinctions</span>
           <span id="cert-date"></span>
         </div>
+        <div class="cert-cando" id="cert-cando" style="display:none">
+          <div class="cert-cando-title">✓ Can-do statements at this CEFR level
+            <span class="ar-inline" lang="ar" dir="rtl">/ ما يستطيع المتعلّم فعله في هذا المستوى</span></div>
+          <ul id="cert-cando-list"></ul>
+        </div>
         <div class="cert-foot">Empire English Community — a result-driven system 🏛️</div>
+        <div class="cert-disclaimer" id="cert-disclaimer">
+          Aligned to the CEFR (Companion Volume, 2020). This is an internal Empire English
+          certificate of level completion — CEFR-aligned by design, not an official or
+          empirically-validated certification.
+          <span class="ar-inline" lang="ar" dir="rtl">/ متوافقة مع الإطار الأوروبي المرجعي المشترك (CEFR).
+          دي شهادة إتمام مستوى داخلية من Empire English — متوافقة مع المعايير بالتصميم،
+          وليست شهادة رسمية معتمدة.</span>
+        </div>
       </div>
       <div class="cert-actions">
         <button class="btn" onclick="window.print()">💾 Save / Print <span class="ar-inline" lang="ar" dir="rtl">/ احفظ</span></button>
@@ -122,6 +143,16 @@
       if (d.completed_at) {
         const day = String(d.completed_at).slice(0, 10);
         document.getElementById('cert-date').textContent = `📅 ${day}`;
+      }
+      // Mi'yar Phase 8: descriptor-referenced can-do checklist (hidden if the
+      // server didn't send one, so the page stays backward-compatible).
+      const cando = Array.isArray(d.can_do) ? d.can_do : [];
+      if (cando.length) {
+        document.getElementById('cert-cando-list').innerHTML = cando.map(c =>
+          `<li>✓ ${this._esc(c.en || '')}` +
+          (c.ar ? ` <span class="ar-inline" lang="ar" dir="rtl">/ ${this._esc(c.ar)}</span>` : '') +
+          `</li>`).join('');
+        document.getElementById('cert-cando').style.display = '';
       }
       this._show('cert-ready');
     }

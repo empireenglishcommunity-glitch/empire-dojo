@@ -816,23 +816,53 @@ const ItqanAssessment = {
   },
 
   _renderAdvancementFinalResults(data) {
-    const passed = data.passed;
+    // Mi'yar CEFR exit exam: verdict is pass / fail / review. `decision` is the
+    // authoritative field; `passed` stays for backward compatibility.
+    const decision = data.decision || (data.passed ? 'pass' : 'fail');
+    const passed = decision === 'pass';
+    const review = decision === 'review';
+    const distinction = passed && data.distinction;
     const overall = data.overall_pct || 0;
     const partA = data.part_a_score || 0;
     const partB = data.part_b_score || 0;
     const partBDetail = data.part_b_detail || {};
     const perSkill = data.per_skill || {};
 
-    const seal = passed ? '🎓' : '💪';
-    const title = passed ? 'PROMOTED!' : 'Not yet — you\'re close';
-    const titleAr = passed ? 'مبروك! اترقّيت!' : 'لسه — قربت!';
+    // A boundary/low-confidence result is NOT decided by the machine — a human
+    // teacher reviews it. Show honest "under review" limbo, never a fake fail.
+    let seal, title, titleAr, heroClass;
+    if (review) {
+      seal = '📋';
+      title = 'Under review';
+      titleAr = 'تحت المراجعة';
+      heroClass = 'asmt-notyet';
+    } else if (passed) {
+      seal = '🎓';
+      title = distinction ? 'PROMOTED — with distinction!' : 'PROMOTED!';
+      titleAr = distinction ? 'مبروك! اترقّيت بامتياز!' : 'مبروك! اترقّيت!';
+      heroClass = distinction ? 'asmt-pass asmt-distinction' : 'asmt-pass';
+    } else {
+      seal = '💪';
+      title = 'Not yet — you\'re close';
+      titleAr = 'لسه — قربت!';
+      heroClass = 'asmt-notyet';
+    }
 
     let html = `
-      <div class="card asmt-result-hero ${passed ? 'asmt-pass asmt-distinction' : 'asmt-notyet'}">
+      <div class="card asmt-result-hero ${heroClass}">
         <div class="asmt-seal">${seal}</div>
         <h2 class="asmt-result-title">${title} <span class="ar-inline" lang="ar" dir="rtl">/ ${titleAr}</span></h2>
-        <p class="asmt-result-sub">Overall: <strong>${overall}%</strong> (need 75%) | Part A: ${partA}% | Part B: ${partB}/100</p>
+        <p class="asmt-result-sub">Part A: ${partA}% | Part B: ${partB}/100</p>
       </div>`;
+
+    if (review) {
+      html += `<div class="card"><p>📋 Your result was close to the boundary, so a
+        human teacher will review your speaking &amp; writing before the final decision.
+        We'll message you on Discord soon — your daily progress is safe.</p>
+        <p class="ar-inline" lang="ar" dir="rtl">نتيجتك قريبة من الحد الفاصل، فمُدرّس بشري
+        هيراجع أداءك في المحادثة والكتابة قبل القرار النهائي. هنبلّغك على ديسكورد قريب —
+        وتقدّمك اليومي في أمان.</p></div>`;
+    }
 
     // Part B breakdown
     if (partBDetail.fluency !== undefined) {
@@ -855,8 +885,23 @@ const ItqanAssessment = {
       html += `</div>`;
     }
 
+    // Honest "target to reach" on a not-yet (exit exam is criterion-referenced:
+    // fixed cut scores, not a curve). Legacy reason_if_failed still supported.
     if (data.reason_if_failed) {
       html += `<div class="card"><p>📝 ${this._esc(data.reason_if_failed)}</p></div>`;
+    } else if (!passed && !review && data.cut) {
+      html += `<div class="card"><p>🎯 To pass ${this._esc(data.level || '')}: Part A
+        ≥ ${data.cut.part_a_pct}% and Part B ≥ ${data.cut.part_b_min}/100.
+        Keep practising and retake soon. <span class="ar-inline" lang="ar" dir="rtl">/
+        عشان تعدّي: Part A ≥ ${data.cut.part_a_pct}% و Part B ≥ ${data.cut.part_b_min}.
+        كمّل تمرين وأعِد قريب.</span></p></div>`;
+    }
+
+    // Certificate link on a pass.
+    if (passed) {
+      html += `<div class="card" style="text-align:center"><p>📜 Your CEFR-aligned
+        certificate is ready.</p>
+        <a href="/assessment/certificate/" class="btn">📜 View certificate / شهادتك</a></div>`;
     }
 
     html += `<div style="text-align:center;margin:8px 0 4px"><a href="/" class="btn">🏠 Home</a></div>`;

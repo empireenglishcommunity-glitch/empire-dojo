@@ -943,8 +943,17 @@ const Dictation = {
   currentIndex: 0,
   score: 0,
 
+  /**
+   * Accepts either plain strings (legacy: spoken text == expected answer)
+   * or authored items {say, expected, hint} so the curriculum's curated
+   * listening targets can carry a separate spoken form and an Arabic hint.
+   */
   init(sentences) {
-    this.sentences = sentences;
+    this.sentences = (sentences || []).map(s => (
+      typeof s === 'string'
+        ? { say: s, expected: s, hint: '' }
+        : { say: s.say || s.expected || '', expected: s.expected || s.say || '', hint: s.hint || '' }
+    )).filter(s => s.say && s.expected);
     this.currentIndex = 0;
     this.score = 0;
   },
@@ -987,15 +996,19 @@ const Dictation = {
       return;
     }
 
-    const sentence = this.sentences[this.currentIndex];
+    const item = this.sentences[this.currentIndex];
+    const hintHtml = item.hint
+      ? `<p class="arabic-text" lang="ar" dir="rtl" style="font-size:0.9rem;margin:10px 0">💡 ${item.hint}</p>`
+      : '';
     section.innerHTML = `<div class="card"><h2>✍️ Dictation ${this.currentIndex + 1}/${this.sentences.length}</h2>` +
-      `<button class="btn" onclick="TTS.speak('${sentence.replace(/'/g,"\\'")}', 0.6)">🔊 Play Sentence</button>` +
+      `<button class="btn" onclick="TTS.speak('${item.say.replace(/'/g,"\\'")}', 0.6)">🔊 Play Sentence</button>` +
+      hintHtml +
       `<p style="color:var(--text-secondary);font-size:0.85rem;margin:12px 0">Type what you hear / اكتب اللي سمعته</p>` +
       `<textarea id="dictation-input" class="quiz-input" rows="2" style="width:100%;resize:vertical" placeholder="..."></textarea>` +
       `<button class="btn btn-sm" style="margin-top:12px" onclick="Dictation.check()">✓ Check</button>` +
       `<div id="dictation-feedback" style="margin-top:12px"></div></div>`;
 
-    setTimeout(() => TTS.speak(sentence, 0.6), 300);
+    setTimeout(() => TTS.speak(item.say, 0.6), 300);
     setTimeout(() => { const inp = document.getElementById('dictation-input'); if (inp) inp.focus(); }, 100);
   },
 
@@ -1004,9 +1017,8 @@ const Dictation = {
     const feedback = document.getElementById('dictation-feedback');
     if (!input || !feedback) return;
 
-    const sentence = this.sentences[this.currentIndex];
     const answer = input.value.trim().toLowerCase().replace(/[.,!?;:'"]/g, '');
-    const correct = sentence.toLowerCase().replace(/[.,!?;:'"]/g, '');
+    const correct = this.sentences[this.currentIndex].expected.toLowerCase().replace(/[.,!?;:'"]/g, '');
 
     // Simple word-by-word comparison
     const answerWords = answer.split(/\s+/).filter(Boolean);

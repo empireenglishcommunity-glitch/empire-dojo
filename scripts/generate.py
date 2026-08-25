@@ -434,7 +434,7 @@ def gen_speaking(level, week, day, theme, mission):
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
-def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
+def gen_listening(level, week, day, theme, day_vocab, all_week_vocab, day_listening=None):
     """Grounded listening comprehension: hear a vocabulary word, choose its
     correct Arabic meaning. Distractors are drawn from other words in the
     same week so this scales to every week with zero invented dialogue."""
@@ -467,9 +467,40 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab):
 
     theme = esc_html(theme)
 
-    # Build dictation sentences from vocab words for this day (S2.3)
-    dictation_words = [esc(w["word"]) for w in day_vocab[:5] if w.get("word")]
-    dictation_json = safe_json_for_script_tag([w["word"] for w in day_vocab[:5] if w.get("word")])
+    # Dictation set. The week file's authored `listening` array
+    # ({say_en, expected, hint_ar}, 5 per week, 450 across the 90 authored
+    # weeks) is the curriculum's CURATED dictation target -- but it had no
+    # consumer at all: this page used to build dictation from `vocabulary`
+    # instead, so the authored selection and all 450 Arabic hints reached
+    # nobody. Authored items now come first (they are the point of the
+    # exercise and carry the hint), then any of the day's vocabulary words
+    # not already covered, so the day still contributes something specific.
+    # Capped so a day never becomes a marathon.
+    dictation_items = []
+    seen = set()
+    for it in (day_listening or []):
+        expected = (it.get("expected") or it.get("say_en") or "").strip()
+        if not expected or expected.lower() in seen:
+            continue
+        seen.add(expected.lower())
+        dictation_items.append({
+            "say": it.get("say_en") or expected,
+            "expected": expected,
+            "hint": it.get("hint_ar") or "",
+        })
+    for w in day_vocab:
+        if len(dictation_items) >= 8:
+            break
+        word = (w.get("word") or "").strip()
+        if not word or word.lower() in seen:
+            continue
+        seen.add(word.lower())
+        dictation_items.append({
+            "say": word,
+            "expected": word,
+            "hint": w.get("arabic") or "",
+        })
+    dictation_json = safe_json_for_script_tag(dictation_items)
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Listening Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
@@ -624,6 +655,12 @@ def generate_level(level, audio_manifest):
         focus = accent_data.get("focus", "Review") if accent_data else "Review"
         theme = week_data.get("theme", "General")
         vocab = week_data.get("vocabulary", [])
+        # Authored listening/dictation targets for the week (5 per week).
+        # Must mirror nexus curriculum.get_listening_for_day(): every day
+        # surfaces the FULL set, rotated by day for variety, because 5 items
+        # cannot be split across 7 days without leaving days empty and
+        # making coverage depend on which days a student happens to do.
+        week_listening = week_data.get("listening") or []
 
         drills_by_day = {}
         if accent_data:
@@ -664,6 +701,12 @@ def generate_level(level, audio_manifest):
                 _start = (day - 1) * base + min(day - 1, remainder)
                 _size = base + (1 if (day - 1) < remainder else 0)
                 day_vocab = vocab[_start:_start + _size]
+
+            if week_listening:
+                _off = ((day - 1) % 7) % len(week_listening)
+                day_listening = week_listening[_off:] + week_listening[:_off]
+            else:
+                day_listening = []
             norm = normalize_drill(drills_by_day.get(day))
             shadow_aid = audio_id(level, week, day, "shadow")
 
@@ -676,7 +719,8 @@ def generate_level(level, audio_manifest):
             with open(day_dir / "shadowing.html", "w", encoding="utf-8") as f:
                 f.write(gen_shadowing(level, week, day, theme, norm, shadow_aid))
             with open(day_dir / "listening.html", "w", encoding="utf-8") as f:
-                f.write(gen_listening(level, week, day, theme, day_vocab, vocab))
+                f.write(gen_listening(level, week, day, theme, day_vocab, vocab,
+                                      day_listening=day_listening))
             with open(day_dir / "vocab.html", "w", encoding="utf-8") as f:
                 f.write(gen_vocab(level, week, day, theme, day_vocab))
             # E1: Speaking page. Speaking missions are keyed by day-name in

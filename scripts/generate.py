@@ -753,25 +753,64 @@ def gen_vocab(level, week, day, theme, words):
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
-def gen_day_index(level, week, day, pattern=None):
+def gen_day_index(level, week, day, grammar=None, can_do=None):
+    """The day's menu.
+
+    Phase 11A-4 fixed TWO holes here:
+
+    1. The "Today's Pattern" card was fed from content/patterns/{level}_patterns.json,
+       which only ever existed for the retired legacy levels (l0-l3). For every
+       CEFR level the loader returned [], so `pattern` was always None and the
+       card rendered NOTHING -- verified: the generated a1/week1/day1/index.html
+       contained zero occurrences of "Today's Pattern". It is now fed from the
+       week's real authored grammar pattern, which is the actual pattern of the
+       week, and links to the grammar exercise instead of dead-ending.
+    2. The week's CEFR can-do goals were never shown while studying (only on the
+       Phase-9 progress screen and the certificate, i.e. after the fact), so
+       students could not see WHY the day's tasks exist.
+    """
+    # --- This week's pattern (from the authored grammar, not the dead
+    #     legacy patterns file) ---
     pattern_card = ""
-    if pattern:
-        phrase = esc_html(pattern.get("phrase", ""))
-        when = esc_html(pattern.get("when", ""))
-        arabic = esc_html(pattern.get("arabic", ""))
-        example = esc_html(pattern.get("example", ""))
-        phrase_escaped = esc(pattern.get("phrase", ""))
-        today_pattern_label = bl("Today's Pattern", "نمط اليوم")
-        listen_label = bl("Listen", "استمع")
+    if grammar:
+        name = esc_html(grammar.get("pattern_name", ""))
+        name_ar = esc_html(grammar.get("pattern_name_ar", ""))
+        formula = esc_html(grammar.get("formula", ""))
+        when = esc_html(grammar.get("when_to_use", ""))
+        examples = [e for e in (grammar.get("examples") or []) if e.get("en")]
+        example = esc_html(examples[0]["en"]) if examples else ""
+        # Speak the EXAMPLE sentence, not the formula: "Subject + am / is /
+        # are + (complement)" is not something a student should hear read out.
+        speak_src = esc(examples[0]["en"]) if examples else esc(grammar.get("pattern_name", ""))
         pattern_card = (
             f'<div class="card" style="border-left:3px solid var(--accent)">'
-            f'<h2>💬 {today_pattern_label}</h2>'
-            f'<div class="transcript" style="font-size:1.3rem;line-height:1.6"><b>{phrase}</b></div>'
-            f'<p style="color:var(--text-secondary);margin:8px 0">📍 {when}</p>'
-            f'<p style="font-family:Cairo,sans-serif;direction:rtl;color:var(--accent-light);margin:8px 0">{arabic}</p>'
-            f'<p style="color:var(--text-secondary);font-size:0.85rem;margin:12px 0;font-style:italic">💡 "{example}"</p>'
-            f'<button class="btn btn-sm" onclick="TTS.speak(\'{phrase_escaped}\', 0.7)">🔊 {listen_label}</button>'
+            f'<h2>💬 {bl("This Week\'s Pattern", "نمط الأسبوع")}</h2>'
+            f'<div class="transcript" style="font-size:1.2rem;line-height:1.6"><b>{name}</b></div>'
+            + (f'<p class="arabic-text" lang="ar" dir="rtl" style="margin:6px 0">{name_ar}</p>' if name_ar else '')
+            + (f'<p style="color:var(--accent-light);margin:8px 0;font-family:monospace">{formula}</p>' if formula else '')
+            + (f'<p style="color:var(--text-secondary);margin:8px 0">📍 {when}</p>' if when else '')
+            + (f'<p style="color:var(--text-secondary);font-size:0.85rem;margin:12px 0;font-style:italic">💡 "{example}"</p>' if example else '')
+            + (f'<button class="btn btn-sm" onclick="TTS.speak(\'{speak_src}\', 0.7)">🔊 {bl("Listen", "استمع")}</button>' if speak_src else '')
+            + f'<a class="btn btn-sm btn-outline" style="margin-inline-start:8px" href="grammar.html">📐 {bl("Practise it", "اتمرن عليه")}</a>'
             f'</div>'
+        )
+
+    # --- This week's CEFR goals (the "I can ..." statements) ---
+    can_do_card = ""
+    if can_do:
+        rows = ""
+        for g in can_do:
+            en = esc_html(g.get("en", ""))
+            ar = esc_html(g.get("ar", ""))
+            rows += ('<li style="margin:8px 0">'
+                     + (f'<span class="arabic-text" lang="ar" dir="rtl">{ar}</span>' if ar else '')
+                     + (f'<br><span style="color:var(--text-secondary);font-size:0.9rem">{en}</span>' if en else '')
+                     + '</li>')
+        can_do_card = (
+            f'<div class="card"><h2>🎯 {bl("This week you will be able to", "بعد الأسبوع ده تقدر")}</h2>'
+            f'<ul style="padding-inline-start:18px;margin:8px 0">{rows}</ul>'
+            f'<p style="color:var(--text-muted);font-size:0.8rem;margin:8px 0 0">'
+            f'{bl("CEFR-aligned goals for this week.", "أهداف الأسبوع حسب معيار CEFR.")}</p></div>'
         )
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -784,6 +823,7 @@ def gen_day_index(level, week, day, pattern=None):
 <img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px">
 <h1>Week {week} — Day {day}</h1><p class="subtitle">{bl("Choose your exercise", "اختار التمرين")}</p></div>
 <div class="arabic-text" lang="ar" dir="rtl">اختار التمرين اللي عايز تعمله</div>
+{can_do_card}
 {pattern_card}
 <div class="card"><h2>📋 {bl("Today's Exercises", "تمارين اليوم")}</h2>
 <div class="nav" style="flex-direction:column;align-items:stretch">
@@ -832,31 +872,51 @@ def load_week_accent_data(level, week):
         return json.load(f)
 
 
-def load_patterns(level):
-    """Load patterns for a level, returning a flat list for round-robin."""
-    patterns_file = CONTENT_DIR / "patterns" / f"{level}_patterns.json"
-    if not patterns_file.exists():
-        return []
-    with open(patterns_file, encoding="utf-8") as f:
-        data = json.load(f)
-    # Flatten all categories into one list
-    flat = []
-    categories = list(data.keys())
-    # Interleave categories for variety (round-robin through categories)
-    max_per_cat = max((len(v) for v in data.values()), default=0)
-    for i in range(max_per_cat):
-        for cat in categories:
-            items = data[cat]
-            if i < len(items):
-                flat.append(items[i])
-    return flat
+_CAN_DO_CACHE = {}
+
+
+def load_can_do_library(level):
+    """{code: {code, en, ar, mode}} for a level from content/cefr/can_do.json.
+
+    Mirrors nexus curriculum.can_do_descriptor_map(). Note the per-level dict
+    mixes list-valued modes (reception/production/interaction/mediation) with
+    plain string keys (overview_en/overview_ar), so values MUST be
+    isinstance-checked. Returns {} on any failure -- a missing library means
+    "no goals card", never a broken build.
+    """
+    key = level.upper()
+    if key in _CAN_DO_CACHE:
+        return _CAN_DO_CACHE[key]
+    out = {}
+    path = CONTENT_DIR / "cefr" / "can_do.json"
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        for mode, items in (data.get(key) or {}).items():
+            if not isinstance(items, list):
+                continue
+            for item in items:
+                if isinstance(item, dict) and item.get("code"):
+                    out[item["code"]] = {
+                        "code": item["code"], "en": item.get("en", ""),
+                        "ar": item.get("ar", ""), "mode": mode,
+                    }
+    except Exception as e:
+        print(f"  ⚠️  can_do library for {level} unavailable: {e}")
+        out = {}
+    _CAN_DO_CACHE[key] = out
+    return out
 
 
 def generate_level(level, audio_manifest):
     max_week = ALL_WEEK_COUNTS[level]
     total = 0
-    patterns = load_patterns(level)
-    pattern_idx = 0
+    # The week's CEFR can-do goals are resolved from the shared descriptor
+    # library once per level. (The old content/patterns/*.json "pattern"
+    # source was removed in Phase 11A-4: it existed only for the retired
+    # legacy levels, so the day index's pattern card always rendered
+    # nothing. The card now comes from the week's authored grammar.)
+    can_do_library = load_can_do_library(level)
 
     for week in range(1, max_week + 1):
         week_file = DATA_DIR / f"{level}_week{week}.json"
@@ -877,6 +937,11 @@ def generate_level(level, audio_manifest):
         # cannot be split across 7 days without leaving days empty and
         # making coverage depend on which days a student happens to do.
         week_listening = week_data.get("listening") or []
+        # Resolve the week's can-do CODES ("A1.P.1") into the real bilingual
+        # "I can ..." descriptors. Unknown codes are skipped rather than
+        # shown raw -- a code means nothing to a student.
+        week_can_do = [can_do_library[c] for c in (week_data.get("can_do") or [])
+                       if c in can_do_library]
 
         drills_by_day = {}
         if accent_data:
@@ -927,9 +992,9 @@ def generate_level(level, audio_manifest):
             shadow_aid = audio_id(level, week, day, "shadow")
 
             with open(day_dir / "index.html", "w", encoding="utf-8") as f:
-                day_pattern = patterns[pattern_idx % len(patterns)] if patterns else None
-                pattern_idx += 1
-                f.write(gen_day_index(level, week, day, pattern=day_pattern))
+                f.write(gen_day_index(level, week, day,
+                                      grammar=grammar_data,
+                                      can_do=week_can_do))
             with open(day_dir / "accent.html", "w", encoding="utf-8") as f:
                 f.write(gen_accent(level, week, day, focus, norm))
             with open(day_dir / "shadowing.html", "w", encoding="utf-8") as f:

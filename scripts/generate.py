@@ -454,6 +454,142 @@ def gen_speaking(level, week, day, theme, mission):
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
+def gen_reading(level, week, day, theme, reading):
+    """Phase 11B: READING — the CEFR mode that had no task at all.
+
+    The 7 daily tasks covered listening, speaking, writing, interaction and the
+    enabling skills, but nothing ever asked a student to READ. That is why
+    A1-B2 each carried reading descriptors (.R.) that no week taught.
+
+    One authored passage per week (weekly, like grammar), rolled out level by
+    level behind the owner approval gate -- so a level with no authored
+    passages renders an honest "coming soon", never another level's text.
+
+    Completion is by genuine engagement: the comprehension questions must all
+    be answered before the exercise auto-completes.
+    """
+    theme = esc_html(theme)
+    if not reading:
+        return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Reading Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Reading</h1><p class="subtitle">Week {week} • Day {day}</p></div>
+<div class="card"><p>{bl("The reading passage for this week is not published yet.", "نص القراءة للأسبوع ده لسه مش منشور.")}</p></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
+{bottom_nav('reading')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+    title = esc_html(reading.get("title", ""))
+    title_ar = esc_html(reading.get("title_ar", ""))
+    gist_ar = esc_html(reading.get("gist_ar", ""))
+    word_count = int(reading.get("word_count") or 0)
+    # Render the passage as sentence-level blocks. A1.R.4 is literally "can
+    # understand very short, simple texts A SINGLE PHRASE AT A TIME", so each
+    # sentence is individually readable/playable rather than one dense wall.
+    # Split AFTER any closing quote so dialogue stays intact: splitting on
+    # (?<=[.!?])\s+ alone tore '"Good morning, Omar. How are you?"' apart at
+    # the full stop and left the closing quote stranded on the next block.
+    # Match each sentence INCLUDING any closing quote. A plain
+    # re.split(r'(?<=[.!?])\s+') tore '"Good morning, Omar. How are you?"'
+    # apart at the full stop and stranded the closing quote on the next
+    # block. (A lookbehind can't express "optional quote" -- Python requires
+    # fixed-width lookbehind -- hence findall.)
+    _text = reading.get("text", "")
+    sentences = [s.strip() for s in
+                 re.findall(r'[^.!?]*[.!?]+[\"\u201d\u2019\']*', _text) if s.strip()]
+    _matched = "".join(sentences)
+    if len(_matched.replace(" ", "")) < len(_text.replace(" ", "")):
+        # Trailing fragment with no final punctuation — never drop text.
+        sentences.append(_text[len(_matched):].strip())
+    sentences = [s for s in sentences if s]
+    passage = ""
+    for s in sentences:
+        passage += (f'<p style="margin:8px 0;line-height:1.9;font-size:1.05rem">{esc_html(s)}'
+                    f' <button class="btn btn-sm btn-outline" style="padding:2px 8px"'
+                    f' onclick="TTS.speak(\'{esc(s)}\', 0.75)">🔊</button></p>')
+
+    glossary = ""
+    gitems = [g for g in (reading.get("glossary") or []) if g.get("word")]
+    if gitems:
+        rows = "".join(
+            f'<div style="padding:6px 0;border-bottom:1px solid var(--border)">'
+            f'<b>{esc_html(g["word"])}</b>'
+            f'<span class="arabic-text" lang="ar" dir="rtl" style="margin-inline-start:10px">{esc_html(g.get("ar",""))}</span>'
+            f'</div>' for g in gitems)
+        glossary = (f'<div class="card"><h2>📕 {bl("Words to help you", "كلمات تساعدك")}</h2>{rows}</div>')
+
+    questions = [q for q in (reading.get("questions") or [])
+                 if q.get("q") and q.get("options")]
+    q_html = ""
+    for qi, q in enumerate(questions):
+        opts = "".join(
+            f'<div class="option" data-qi="{qi}" data-oi="{oi}"'
+            f' onclick="ReadingQuiz.pick({qi},{oi})">{esc_html(o)}</div>'
+            for oi, o in enumerate(q["options"]))
+        q_html += (f'<div class="card"><h2>❓ {bl("Question", "سؤال")} {qi+1}</h2>'
+                   f'<p style="line-height:1.7">{esc_html(q["q"])}</p>'
+                   + (f'<p class="arabic-text" lang="ar" dir="rtl" style="margin:6px 0">{esc_html(q.get("q_ar",""))}</p>'
+                      if q.get("q_ar") else '')
+                   + f'<div class="options" data-qi="{qi}">{opts}</div>'
+                   f'<div class="q-feedback" data-qi="{qi}" style="margin-top:8px"></div></div>')
+
+    answers_json = safe_json_for_script_tag([int(q.get("answer", 0)) for q in questions])
+    done_hint = (bl("Completes automatically when you answer every question.",
+                    "بيتقفل تلقائيًا لما تجاوب على كل الأسئلة.")
+                 if questions else
+                 bl("Read the passage, then mark it done.", "اقرا النص وبعدين علّمه تم."))
+
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Reading Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📖 Reading</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
+<div class="card" style="padding:10px 14px"><p style="color:var(--accent);font-weight:600;margin:0">📅 {bl("This week's passage", "نص الأسبوع")} · {word_count} {bl("words", "كلمة")}</p>
+<p style="color:var(--text-secondary);font-size:0.85rem;margin:4px 0 0">{bl("One passage per week — read it again each day to get faster.", "نص واحد كل أسبوع — اقراه كل يوم عشان تبقى أسرع.")}</p></div>
+<div class="card"><h2 style="margin:0">{title}</h2>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:6px">{title_ar}</p>' if title_ar else ''}</div>
+{f'<div class="arabic-text" lang="ar" dir="rtl">{gist_ar}</div>' if gist_ar else ''}
+<div class="card"><h2>📄 {bl("Read", "اقرا")}</h2>{passage}
+<button class="btn btn-sm" onclick="ReadingQuiz.playAll()">🔊 {bl("Listen to the whole passage", "استمع للنص كله")}</button></div>
+{glossary}
+{q_html}
+<div class="done-section" data-exercise="reading"><div id="done-status" class="done-status" style="color:var(--text-secondary);font-size:0.85rem">{done_hint}</div><input type="checkbox" class="checkbox" style="display:none" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'reading')"><button class="btn btn-sm btn-outline done-fallback" style="margin-top:8px">✔️ {bl("I've finished — mark done", "خلصت — علّم تم")}</button></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="grammar.html">📐 {bl("Grammar", "القواعد")} →</a></div></div>
+{bottom_nav('reading')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script>
+const readingAnswers={answers_json};
+const readingText={safe_json_for_script_tag(reading.get("text", ""))};
+const ReadingQuiz={{
+  _answered:new Set(),
+  playAll(){{ if(window.TTS) TTS.speak(readingText, 0.75); }},
+  pick(qi,oi){{
+    const box=document.querySelector('.options[data-qi="'+qi+'"]');
+    const fb=document.querySelector('.q-feedback[data-qi="'+qi+'"]');
+    if(!box||box.dataset.answered)return;
+    box.dataset.answered='1';
+    const correct=readingAnswers[qi];
+    box.querySelectorAll('.option').forEach(el=>{{
+      el.style.pointerEvents='none';
+      const i=parseInt(el.dataset.oi,10);
+      if(i===correct)el.classList.add('correct');
+      else if(i===oi)el.classList.add('wrong');
+    }});
+    if(fb)fb.innerHTML=(oi===correct)
+      ?'<span style="color:var(--success);font-weight:600">✅ '+{json.dumps(bl("Correct", "صح"))}+'</span>'
+      :'<span style="color:var(--danger)">❌ '+{json.dumps(bl("Look at the text again", "بصّ على النص تاني"))}+'</span>';
+    this._answered.add(qi);
+    if(this._answered.size>=readingAnswers.length&&window.ExerciseComplete)window.ExerciseComplete();
+  }}
+}};
+</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+
 def gen_grammar(level, week, day, theme, grammar, grammar_point=None):
     """Phase 11A-3: the WEEKLY grammar pattern as a real, tracked exercise.
 
@@ -782,7 +918,7 @@ def gen_vocab(level, week, day, theme, words):
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
-def gen_day_index(level, week, day, grammar=None, can_do=None):
+def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None):
     """The day's menu.
 
     Phase 11A-4 fixed TWO holes here:
@@ -824,6 +960,18 @@ def gen_day_index(level, week, day, grammar=None, can_do=None):
             f'</div>'
         )
 
+    # Reading is listed ONLY when the week actually has an authored passage.
+    # Phase 11B rolls out level by level behind the owner approval gate, so
+    # linking it unconditionally would send students of not-yet-authored
+    # levels to a "coming soon" dead end.
+    reading_link = ""
+    if reading:
+        reading_link = (
+            f'<a href="reading.html">📖 Reading — القراءة '
+            f'<span style="color:var(--text-muted);font-size:0.8rem">'
+            f'({bl("weekly", "أسبوعي")})</span></a>'
+        )
+
     # --- This week's CEFR goals (the "I can ..." statements) ---
     can_do_card = ""
     if can_do:
@@ -862,6 +1010,7 @@ def gen_day_index(level, week, day, grammar=None, can_do=None):
 <a href="vocab.html">📖 Vocabulary — المفردات</a>
 <a href="speaking.html">🎙️ Speaking — التحدث</a>
 <a href="grammar.html">📐 Grammar — القواعد <span style="color:var(--text-muted);font-size:0.8rem">({bl("weekly", "أسبوعي")})</span></a>
+{reading_link}
 </div></div>
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
@@ -872,6 +1021,24 @@ def gen_day_index(level, week, day, grammar=None, can_do=None):
 # ============================================================
 #  GENERATE
 # ============================================================
+
+def load_week_reading_data(level, week):
+    """The week's authored reading passage (content/{level}/reading/weekN_*.json).
+
+    Returns None when the level/week has no authored passage -- Phase 11B is
+    rolled out level by level behind the owner approval gate, so "not authored
+    yet" is a normal state and must render an honest empty page.
+    """
+    reading_dir = CONTENT_DIR / level / "reading"
+    if not reading_dir.exists():
+        return None
+    matches = (sorted(reading_dir.glob(f"week{week}_*.json"))
+               + sorted(reading_dir.glob(f"week{week}.json")))
+    if not matches:
+        return None
+    with open(matches[0], encoding="utf-8") as f:
+        return json.load(f)
+
 
 def load_week_grammar_data(level, week):
     """The week's authored grammar pattern (content/{level}/grammar/weekN_*.json).
@@ -957,6 +1124,7 @@ def generate_level(level, audio_manifest):
 
         accent_data = load_week_accent_data(level, week)
         grammar_data = load_week_grammar_data(level, week)
+        reading_data = load_week_reading_data(level, week)
         focus = accent_data.get("focus", "Review") if accent_data else "Review"
         theme = week_data.get("theme", "General")
         vocab = week_data.get("vocabulary", [])
@@ -1023,7 +1191,8 @@ def generate_level(level, audio_manifest):
             with open(day_dir / "index.html", "w", encoding="utf-8") as f:
                 f.write(gen_day_index(level, week, day,
                                       grammar=grammar_data,
-                                      can_do=week_can_do))
+                                      can_do=week_can_do,
+                                      reading=reading_data))
             with open(day_dir / "accent.html", "w", encoding="utf-8") as f:
                 f.write(gen_accent(level, week, day, focus, norm,
                                    phoneme_focus=week_data.get("phoneme_focus")))
@@ -1032,6 +1201,9 @@ def generate_level(level, audio_manifest):
             with open(day_dir / "listening.html", "w", encoding="utf-8") as f:
                 f.write(gen_listening(level, week, day, theme, day_vocab, vocab,
                                       day_listening=day_listening))
+
+            with open(day_dir / "reading.html", "w", encoding="utf-8") as f:
+                f.write(gen_reading(level, week, day, theme, reading_data))
 
             with open(day_dir / "grammar.html", "w", encoding="utf-8") as f:
                 f.write(gen_grammar(level, week, day, theme, grammar_data,
@@ -1049,8 +1221,9 @@ def generate_level(level, audio_manifest):
                 "level": level, "week": week, "day": day,
                 "text": norm["primary_text"],
             }
-            # index + accent, shadowing, listening, vocab, speaking, grammar
-            pages_per_day = 7
+            # index + accent, shadowing, listening, vocab, speaking, grammar,
+            # reading
+            pages_per_day = 8
             total += pages_per_day
 
         print(f"  [{level}] Week {week}: {pages_per_day * 7} pages ✅")

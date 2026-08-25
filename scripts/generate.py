@@ -292,11 +292,23 @@ def gamification_bar():
             '<span id="tasks-done" style="color:var(--text-secondary);font-size:0.8rem">✅ 0/4</span>'
             '</div>')
 
-def gen_accent(level, week, day, focus, norm):
+def gen_accent(level, week, day, focus, norm, phoneme_focus=None):
     sounds = esc_html(norm["sounds"] or "Review")
     focus = esc_html(focus)
     primary = norm["primary_text"]
     instr_ar = esc_html(norm["instr_ar"])
+
+    # The week file's own `phoneme_focus` statement. It is NOT the same text as
+    # the accent file's `focus` (they differ in all 90 weeks -- this one is the
+    # fuller description of what the week is training), and it had no
+    # student-facing surface anywhere: it was only ever referenced inside an
+    # ai_engine prompt template. Shown here so no authored field is kept
+    # without reaching the student.
+    phoneme_card = ""
+    if phoneme_focus:
+        phoneme_card = (f'<div class="card" style="border-left:3px solid var(--accent)">'
+                        f'<h2>🎧 {bl("This week\'s sound focus", "تركيز الأسبوع الصوتي")}</h2>'
+                        f'<p style="line-height:1.7">{esc_html(phoneme_focus)}</p></div>')
 
     pairs_card = ""
     if norm["pairs"]:
@@ -318,6 +330,7 @@ def gen_accent(level, week, day, focus, norm):
 <div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎯 Accent Drill</h1><p class="subtitle">Week {week} • Day {day} • {focus}</p></div>
 {gamification_bar()}
 <div class="arabic-text" lang="ar" dir="rtl">{instr_ar}</div>
+{phoneme_card}
 <div class="card"><h2>🔊 {bl("Target Sounds", "الأصوات المستهدفة")}: {sounds}</h2>
 <button class="btn" onclick="TTS.speak('{esc(primary)}')">▶️ {bl("Listen to Model", "استمع للنموذج")}</button>
 <div class="speed-control"><label>{bl("Speed", "السرعة")}:</label><select id="speed-select" onchange="TTS.setRate(this.value)"><option value="0.6">Slow / بطيء</option><option value="0.8" selected>Normal / عادي</option><option value="1.0">Fast / سريع</option></select></div></div>
@@ -441,7 +454,7 @@ def gen_speaking(level, week, day, theme, mission):
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
-def gen_grammar(level, week, day, theme, grammar):
+def gen_grammar(level, week, day, theme, grammar, grammar_point=None):
     """Phase 11A-3: the WEEKLY grammar pattern as a real, tracked exercise.
 
     The curriculum authors one rich bilingual pattern per week in
@@ -485,6 +498,21 @@ def gen_grammar(level, week, day, theme, grammar):
     quick_rule_ar = esc_html(grammar.get("quick_rule_ar", ""))
     mnemonic = esc_html(grammar.get("mnemonic", ""))
     connect = esc_html(grammar.get("connect_to_speaking", ""))
+
+    # --- The week file's own grammar_point gloss ---
+    # A short bilingual summary authored alongside the pattern. It had no
+    # student-facing surface at all (the title merely echoes grammar_pattern
+    # in 73 of 90 weeks, but the en/ar gloss is unique authored text). Shown
+    # so no authored field is kept without reaching the student.
+    point_card = ""
+    if isinstance(grammar_point, dict):
+        p_en = esc_html(grammar_point.get("en", ""))
+        p_ar = esc_html(grammar_point.get("ar", ""))
+        if p_en or p_ar:
+            point_card = (f'<div class="card"><h2>🔎 {bl("In short", "بإيجاز")}</h2>'
+                          + (f'<p style="line-height:1.7">{p_en}</p>' if p_en else '')
+                          + (f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:8px">{p_ar}</p>' if p_ar else '')
+                          + '</div>')
 
     # --- Formula / quick rule ---
     formula_card = f'<div class="card" style="border-left:3px solid var(--accent)"><h2>🧩 {bl("The Pattern", "النمط")}</h2>'
@@ -594,6 +622,7 @@ def gen_grammar(level, week, day, theme, grammar):
 <p style="color:var(--text-secondary);font-size:0.85rem;margin:4px 0 0">{bl("One pattern per week — it stays the same all week, so practise it every day.", "نمط واحد كل أسبوع — بيفضل نفسه طول الأسبوع، فاتمرن عليه كل يوم.")}</p></div>
 <div class="card"><h2 style="margin:0">{name}</h2>
 {f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:6px">{name_ar}</p>' if name_ar else ''}</div>
+{point_card}
 {formula_card}
 {use_card}
 {struggle_card}
@@ -996,7 +1025,8 @@ def generate_level(level, audio_manifest):
                                       grammar=grammar_data,
                                       can_do=week_can_do))
             with open(day_dir / "accent.html", "w", encoding="utf-8") as f:
-                f.write(gen_accent(level, week, day, focus, norm))
+                f.write(gen_accent(level, week, day, focus, norm,
+                                   phoneme_focus=week_data.get("phoneme_focus")))
             with open(day_dir / "shadowing.html", "w", encoding="utf-8") as f:
                 f.write(gen_shadowing(level, week, day, theme, norm, shadow_aid))
             with open(day_dir / "listening.html", "w", encoding="utf-8") as f:
@@ -1004,7 +1034,8 @@ def generate_level(level, audio_manifest):
                                       day_listening=day_listening))
 
             with open(day_dir / "grammar.html", "w", encoding="utf-8") as f:
-                f.write(gen_grammar(level, week, day, theme, grammar_data))
+                f.write(gen_grammar(level, week, day, theme, grammar_data,
+                                    grammar_point=week_data.get("grammar_point")))
             with open(day_dir / "vocab.html", "w", encoding="utf-8") as f:
                 f.write(gen_vocab(level, week, day, theme, day_vocab))
             # E1: Speaking page. Speaking missions are keyed by day-name in

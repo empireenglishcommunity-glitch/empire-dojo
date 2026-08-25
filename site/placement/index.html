@@ -17,6 +17,10 @@
       border:1px solid rgba(212,175,55,0.35); border-radius:10px; background:transparent;
       color:inherit; cursor:pointer; font-size:1rem; }
     .plc-opt.sel { background:rgba(212,175,55,0.22); border-color:#D4AF37; }
+    .plc-input { width:100%; padding:10px 12px; border-radius:10px; font-size:1rem;
+      border:1px solid rgba(212,175,55,0.35); background:transparent; color:inherit; }
+    .plc-play { padding:8px 14px; border-radius:10px; border:1px solid #D4AF37;
+      background:rgba(212,175,55,0.15); color:inherit; cursor:pointer; font-size:1rem; margin-bottom:8px; }
     .plc-bands { list-style:none; padding:0; margin:8px 0; }
     .plc-bands li { display:flex; justify-content:space-between; padding:6px 0;
       border-bottom:1px solid rgba(212,175,55,0.15); }
@@ -24,6 +28,9 @@
     #plc-writing textarea { width:100%; min-height:130px; padding:10px; border-radius:10px;
       border:1px solid rgba(212,175,55,0.35); background:transparent; color:inherit; font-size:1rem; }
     .plc-progress { font-size:0.85rem; color:var(--text-secondary,#8a8a8a); }
+    .plc-rec-btn { padding:12px 20px; border-radius:12px; border:1px solid #D4AF37;
+      background:rgba(212,175,55,0.15); color:inherit; cursor:pointer; font-size:1.05rem; }
+    .plc-rec-btn.recording { background:rgba(231,76,60,0.22); border-color:#e74c3c; }
   </style>
 </head>
 <body>
@@ -38,7 +45,7 @@
 
     <div id="plc-nosession" class="card" style="display:none;text-align:center">
       <h2>🔒 Open after logging in</h2>
-      <p style="color:var(--text-secondary);margin:12px 0">Please open this from your calendar link.
+      <p style="color:var(--text-secondary);margin:12px 0">Open this from your calendar link.
         <span class="ar-inline" lang="ar" dir="rtl">/ افتحها من رابط التقويم بعد تسجيل الدخول.</span></p>
       <a href="/" class="btn">🏠 Home</a>
     </div>
@@ -47,10 +54,10 @@
       <div style="font-size:2.4rem">🧭</div>
       <h2>Find your level</h2>
       <p style="color:var(--text-secondary);margin:12px 0">
-        A short adaptive check of your vocabulary and writing gives you a CEFR
-        profile and the best level to start from. It adjusts to you as you go.
-        <span class="ar-inline" lang="ar" dir="rtl">/ اختبار قصير يتكيّف معك ويعطيك
-        مستواك على الإطار الأوروبي (CEFR) وأنسب مكان تبدأ منه.</span>
+        A short adaptive check of your <b>vocabulary, listening, writing and speaking</b>
+        gives you a CEFR profile and the best level to start from. It adjusts to you.
+        <span class="ar-inline" lang="ar" dir="rtl">/ اختبار قصير يتكيّف معك (مفردات، استماع،
+        كتابة، محادثة) ويعطيك مستواك على الإطار الأوروبي (CEFR) وأنسب مكان تبدأ منه.</span>
       </p>
       <button class="btn" id="plc-start-btn">▶️ Start <span class="ar-inline" lang="ar" dir="rtl">/ ابدأ</span></button>
     </div>
@@ -70,6 +77,20 @@
       <textarea id="plc-writing-text" placeholder="Write a few sentences in English..."></textarea>
       <div style="text-align:center;margin-top:10px">
         <button class="btn" id="plc-writing-btn">Submit ✅ <span class="ar-inline" lang="ar" dir="rtl">/ إرسال</span></button>
+      </div>
+    </div>
+
+    <div id="plc-speak" class="card" style="display:none">
+      <h3 style="margin-top:0">🎙️ Speaking task <span class="ar-inline" lang="ar" dir="rtl">/ مهمة محادثة</span></h3>
+      <p id="plc-speak-prompt" style="font-weight:600"></p>
+      <p id="plc-speak-prompt-ar" class="ar-inline" lang="ar" dir="rtl" style="color:var(--text-secondary)"></p>
+      <div style="text-align:center;margin:14px 0">
+        <button class="plc-rec-btn" id="plc-rec-btn">🎙️ Record</button>
+        <audio id="plc-rec-playback" controls style="display:none;margin-top:12px;width:100%"></audio>
+      </div>
+      <div style="text-align:center">
+        <button class="btn" id="plc-speak-submit" style="display:none">Submit ✅ <span class="ar-inline" lang="ar" dir="rtl">/ إرسال</span></button>
+        <button class="btn btn-ghost" id="plc-speak-skip">Skip speaking <span class="ar-inline" lang="ar" dir="rtl">/ تخطّي</span></button>
       </div>
     </div>
 
@@ -104,9 +125,10 @@
   <script>
   const PlacementPage = {
     _sel: {},
+    _blob: null,
+    _views: ['plc-loading','plc-nosession','plc-intro','plc-block','plc-writing','plc-speak','plc-result','plc-done'],
     _show(id) {
-      ['plc-loading','plc-nosession','plc-intro','plc-block','plc-writing','plc-result','plc-done']
-        .forEach(s => { const el = document.getElementById(s); if (el) el.style.display = (s === id) ? '' : 'none'; });
+      this._views.forEach(s => { const el = document.getElementById(s); if (el) el.style.display = (s === id) ? '' : 'none'; });
     },
     _esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); },
 
@@ -118,6 +140,9 @@
       document.getElementById('plc-next-btn').onclick = () => this.submitBlock();
       document.getElementById('plc-writing-btn').onclick = () => this.submitWriting();
       document.getElementById('plc-slot-btn').onclick = () => this.slot();
+      document.getElementById('plc-rec-btn').onclick = () => this.toggleRecord();
+      document.getElementById('plc-speak-submit').onclick = () => this.submitSpeaking(true);
+      document.getElementById('plc-speak-skip').onclick = () => this.submitSpeaking(false);
     },
 
     async _post(url, body) {
@@ -134,35 +159,65 @@
       this._show('plc-loading');
       const d = await this._post('/api/placement/start');
       if (!d || !d.ok) { this._show('plc-intro'); return; }
-      this._renderBlock(d);
+      this._route(d);
+    },
+
+    // Route an /answer or /writing response to the right view.
+    _route(d) {
+      if (d.phase === 'vocab' || d.phase === 'listening') this._renderBlock(d);
+      else if (d.phase === 'writing') this._renderWriting(d);
+      else if (d.phase === 'speaking') this._renderSpeaking(d);
+      else if (d.phase === 'done') this._renderResult(d);
     },
 
     _renderBlock(d) {
       this._sel = {};
+      const listening = d.phase === 'listening';
       document.getElementById('plc-block-meta').textContent =
-        `Section ${d.block_no} · level ${d.band}`;
+        listening ? `Listening · level ${d.band} — type the word you hear`
+                  : `Section ${d.block_no} · level ${d.band}`;
       const wrap = document.getElementById('plc-questions');
-      wrap.innerHTML = (d.block || []).map(q => `
-        <div class="plc-q" data-qid="${this._esc(q.q_id)}">
+      wrap.innerHTML = (d.block || []).map(q => {
+        if (listening) {
+          return `<div class="plc-q" data-qid="${this._esc(q.q_id)}" data-say="${this._esc(q.say_en)}">
+            <button class="plc-play" data-say="${this._esc(q.say_en)}">🔊 Play</button>
+            <input class="plc-input" type="text" autocomplete="off" placeholder="Type what you hear…" />
+          </div>`;
+        }
+        return `<div class="plc-q" data-qid="${this._esc(q.q_id)}">
           <div class="plc-prompt" lang="ar" dir="rtl">${this._esc(q.prompt_ar)}</div>
-          ${(q.options || []).map(o =>
-            `<button class="plc-opt" data-val="${this._esc(o)}">${this._esc(o)}</button>`).join('')}
-        </div>`).join('');
-      wrap.querySelectorAll('.plc-opt').forEach(btn => {
-        btn.onclick = () => {
-          const q = btn.closest('.plc-q'); const qid = q.getAttribute('data-qid');
-          q.querySelectorAll('.plc-opt').forEach(b => b.classList.remove('sel'));
-          btn.classList.add('sel'); this._sel[qid] = btn.getAttribute('data-val');
-        };
-      });
+          ${(q.options || []).map(o => `<button class="plc-opt" data-val="${this._esc(o)}">${this._esc(o)}</button>`).join('')}
+        </div>`;
+      }).join('');
+
+      if (listening) {
+        wrap.querySelectorAll('.plc-play').forEach(btn => {
+          btn.onclick = () => { try { TTS.speak(btn.getAttribute('data-say'), 0.85); } catch(e){} };
+        });
+        wrap.querySelectorAll('.plc-q').forEach(q => {
+          const qid = q.getAttribute('data-qid');
+          const input = q.querySelector('.plc-input');
+          input.oninput = () => { this._sel[qid] = input.value; };
+        });
+        // Auto-play the first word once so they know it started.
+        const first = wrap.querySelector('.plc-play');
+        if (first) setTimeout(() => { try { TTS.speak(first.getAttribute('data-say'), 0.85); } catch(e){} }, 350);
+      } else {
+        wrap.querySelectorAll('.plc-opt').forEach(btn => {
+          btn.onclick = () => {
+            const q = btn.closest('.plc-q'); const qid = q.getAttribute('data-qid');
+            q.querySelectorAll('.plc-opt').forEach(b => b.classList.remove('sel'));
+            btn.classList.add('sel'); this._sel[qid] = btn.getAttribute('data-val');
+          };
+        });
+      }
       this._show('plc-block');
     },
 
     async submitBlock() {
       const d = await this._post('/api/placement/answer', { answers: this._sel });
       if (!d || !d.ok) return;
-      if (d.phase === 'vocab') { this._renderBlock(d); }
-      else if (d.phase === 'writing') { this._renderWriting(d); }
+      this._route(d);
     },
 
     _renderWriting(d) {
@@ -179,7 +234,56 @@
       this._show('plc-loading');
       const d = await this._post('/api/placement/writing', { text });
       if (!d || !d.ok) { this._show('plc-writing'); return; }
-      this._renderResult(d);
+      this._route(d);
+    },
+
+    _renderSpeaking(d) {
+      const p = d.prompt || {};
+      document.getElementById('plc-speak-prompt').textContent =
+        p.prompt_en || p.en || 'Speak for about a minute about the topic.';
+      document.getElementById('plc-speak-prompt-ar').textContent = p.prompt_ar || p.ar || '';
+      this._blob = null;
+      this._recording = false;
+      const btn = document.getElementById('plc-rec-btn');
+      btn.textContent = '🎙️ Record'; btn.classList.remove('recording');
+      document.getElementById('plc-speak-submit').style.display = 'none';
+      document.getElementById('plc-rec-playback').style.display = 'none';
+      this._show('plc-speak');
+    },
+
+    async toggleRecord() {
+      const btn = document.getElementById('plc-rec-btn');
+      if (!this._recording) {
+        try { await Recorder.start(); } catch (e) { return; }
+        this._recording = true;
+        btn.textContent = '⏹️ Stop'; btn.classList.add('recording');
+      } else {
+        this._recording = false;
+        btn.textContent = '🎙️ Re-record'; btn.classList.remove('recording');
+        try { this._blob = await Recorder.stop(); } catch (e) { this._blob = null; }
+        if (this._blob) {
+          const pb = document.getElementById('plc-rec-playback');
+          pb.src = URL.createObjectURL(this._blob); pb.style.display = '';
+          document.getElementById('plc-speak-submit').style.display = '';
+        }
+      }
+    },
+
+    async submitSpeaking(withAudio) {
+      this._show('plc-loading');
+      let d = null;
+      try {
+        if (withAudio && this._blob) {
+          const fd = new FormData();
+          fd.append('audio', this._blob, 'speaking.webm');
+          const res = await DarbSession.fetch('/api/placement/speaking', { method: 'POST', body: fd });
+          if (res) d = await res.json().catch(() => null);
+        } else {
+          d = await this._post('/api/placement/speaking', { transcript: '' });
+        }
+      } catch (e) {}
+      if (!d || !d.ok) { this._renderSpeaking({ prompt: {} }); return; }
+      this._route(d);
     },
 
     _skillLabel(k) {
@@ -195,9 +299,7 @@
       document.getElementById('plc-result-level').textContent =
         `${d.overall_level}${d.level_name ? ' — ' + d.level_name : ''}`;
       const measured = (d.measured_skills || []).map(k => this._skillLabel(k)).join(', ');
-      document.getElementById('plc-measured').textContent =
-        `Measured this session: ${measured}. Listening & speaking are added in a later version.`;
-      this._level = d.overall_level;
+      document.getElementById('plc-measured').textContent = `Measured this session: ${measured}.`;
       this._show('plc-result');
     },
 

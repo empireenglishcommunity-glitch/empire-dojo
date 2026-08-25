@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>Can-Do Checklist | Empire English</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#D4AF37">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="stylesheet" href="/css/empire.css">
+  <style>
+    .cd-progress-outer { height:14px; border-radius:8px; background:rgba(212,175,55,0.15);
+      overflow:hidden; margin:10px 0; }
+    .cd-progress-inner { height:100%; background:#D4AF37; width:0; transition:width .5s; }
+    .cd-mode { margin-top:16px; }
+    .cd-mode h3 { margin:0 0 6px; font-size:1rem; }
+    .cd-list { list-style:none; padding:0; margin:0; }
+    .cd-list li { display:flex; gap:8px; padding:8px 0; line-height:1.4;
+      border-bottom:1px solid rgba(212,175,55,0.15); }
+    .cd-mark { flex:0 0 auto; font-size:1.1rem; }
+    .cd-reached { }
+    .cd-unreached { color:var(--text-secondary,#8a8a8a); }
+    .cd-note { font-size:0.8rem; color:var(--text-secondary,#8a8a8a); font-style:italic; margin-top:14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px">
+      <h1>✅ Can-Do Checklist</h1>
+      <p class="subtitle">What you can do at your level <span class="ar-inline" lang="ar" dir="rtl">/ ما تقدر تعمله في مستواك</span></p>
+    </div>
+
+    <div id="cd-loading" class="darb-loading"><div class="spinner"></div><p>Loading...</p></div>
+
+    <div id="cd-nosession" class="card" style="display:none;text-align:center">
+      <h2>🔒 Open after logging in</h2>
+      <p style="color:var(--text-secondary);margin:12px 0">Open this from your calendar link.
+        <span class="ar-inline" lang="ar" dir="rtl">/ افتحها من رابط التقويم.</span></p>
+      <a href="/" class="btn">🏠 Home</a>
+    </div>
+
+    <div id="cd-ready" style="display:none">
+      <div class="card">
+        <h2 id="cd-level" style="margin-top:0">—</h2>
+        <div class="cd-progress-outer"><div class="cd-progress-inner" id="cd-bar"></div></div>
+        <p id="cd-summary" style="margin:4px 0"></p>
+        <p style="color:var(--text-secondary);font-size:0.9rem">Each ✓ is a CEFR
+          "can-do" goal you've reached by mastering its week. ○ are still ahead.
+          <span class="ar-inline" lang="ar" dir="rtl">/ كل ✓ هدف "can-do" وصلته بإتقان أسبوعه. ○ لسه قدامك.</span></p>
+      </div>
+      <div class="card" id="cd-groups"></div>
+      <p class="cd-note">CEFR-aligned (Companion Volume, 2020). A learning map, not
+        an official certification. <span class="ar-inline" lang="ar" dir="rtl">/ متوافق مع CEFR — خريطة تعلّم وليست شهادة رسمية.</span></p>
+    </div>
+
+    <div class="nav" style="margin-top:20px"><a href="/">← Home <span class="ar-inline" lang="ar" dir="rtl">/ الرئيسية</span></a></div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/darb.js"></script>
+  <script>
+  const CanDoPage = {
+    _show(id) {
+      ['cd-loading','cd-nosession','cd-ready'].forEach(s => {
+        const el = document.getElementById(s); if (el) el.style.display = (s === id) ? '' : 'none'; });
+    },
+    _esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); },
+    _modeLabel(m) {
+      return ({ reception:'Understanding (listening & reading)', production:'Speaking & writing',
+                interaction:'Conversation', mediation:'Explaining & connecting' })[m] || m;
+    },
+
+    async init() {
+      DarbSession.init();
+      if (!DarbSession.hasSession()) { this._show('cd-nosession'); return; }
+      let d = null;
+      try {
+        const res = await DarbSession.fetch('/api/cefr/progress');
+        if (res) d = await res.json().catch(() => null);
+      } catch (e) {}
+      if (!d || !d.ok) { this._show('cd-nosession'); return; }
+      this._render(d);
+    },
+
+    _render(d) {
+      document.getElementById('cd-level').textContent =
+        `${d.level}${d.level_name ? ' — ' + d.level_name : ''}`;
+      document.getElementById('cd-summary').innerHTML =
+        `<strong>${d.reached}/${d.total}</strong> can-do goals reached — ${d.pct}%`;
+      document.getElementById('cd-bar').style.width = `${d.pct}%`;
+      const modes = ['reception','production','interaction','mediation'];
+      const byMode = {};
+      (d.descriptors || []).forEach(x => { (byMode[x.mode] = byMode[x.mode] || []).push(x); });
+      let html = '';
+      modes.forEach(m => {
+        const list = byMode[m]; if (!list || !list.length) return;
+        html += `<div class="cd-mode"><h3>${this._esc(this._modeLabel(m))}</h3><ul class="cd-list">`;
+        list.forEach(x => {
+          const cls = x.reached ? 'cd-reached' : 'cd-unreached';
+          const mark = x.reached ? '✅' : '⬜';
+          html += `<li class="${cls}"><span class="cd-mark">${mark}</span><span>${this._esc(x.en || '')}` +
+            (x.ar ? ` <span class="ar-inline" lang="ar" dir="rtl">/ ${this._esc(x.ar)}</span>` : '') +
+            `</span></li>`;
+        });
+        html += `</ul></div>`;
+      });
+      document.getElementById('cd-groups').innerHTML = html ||
+        '<p style="color:var(--text-secondary)">No can-do goals mapped yet.</p>';
+      this._show('cd-ready');
+    }
+  };
+  document.addEventListener('DOMContentLoaded', () => CanDoPage.init());
+  </script>
+</body>
+</html>

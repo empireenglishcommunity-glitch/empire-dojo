@@ -28,6 +28,7 @@ Usage:
 """
 import argparse
 import json
+import random
 import re
 from pathlib import Path
 
@@ -452,6 +453,224 @@ def gen_speaking(level, week, day, theme, mission):
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="vocab.html">← {bl("Vocab", "المفردات")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('speaking')}
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+
+def build_review_items(level, week, weeks_vocab, weeks_grammar):
+    """Phase 11C: build the WEEKLY REVIEW quiz — retrieval practice.
+
+    Why this exists: until now "done" meant a student had been EXPOSED to the
+    content (they clicked through it). Nothing ever asked them to recall it
+    later without the answer in front of them. Exposure is not retention, and
+    a course that only measures exposure cannot honestly claim a student
+    "knows" a level.
+
+    So this is deliberately RETRIEVAL, not re-reading:
+      * items are weighted towards EARLIER weeks (spaced retrieval), because
+        recalling week 2's words in week 6 is what actually builds durable
+        memory -- re-reading week 6 does not;
+      * both directions are tested (EN->AR and AR->EN), so a student cannot
+        pass by recognising word shapes in one direction only;
+      * grammar items come from a PREVIOUS week's pattern, so the pattern has
+        to be remembered rather than copied off today's grammar page.
+
+    Built entirely from already-authored content, so it works for all 90 weeks
+    and all six levels the moment it ships -- no new authoring, nothing to
+    keep in sync.
+
+    Deterministic: seeded by (level, week) so the quiz is identical on every
+    visit and every rebuild. A quiz that reshuffled on refresh would let a
+    student reroll until they got easy items.
+
+    `weeks_vocab`  = {week: [word dicts]} for THIS level, all weeks so far.
+    `weeks_grammar` = {week: grammar dict} likewise.
+    """
+    rng = random.Random(f"{level}-{week}-review")
+
+    current = list(weeks_vocab.get(week) or [])
+    prior_weeks = [w for w in range(1, week) if weeks_vocab.get(w)]
+    prior = [(w, item) for w in prior_weeks for item in weeks_vocab[w]]
+
+    # Distractor pool: every word of the level we have seen up to now, so
+    # wrong options are always plausible same-level words, never nonsense.
+    pool = [it for w in range(1, week + 1) for it in (weeks_vocab.get(w) or [])]
+
+    def _opts(correct, key):
+        """3 options for `key` ('arabic' or 'word'), correct one included."""
+        want = (correct.get(key) or "").strip()
+        others, seen = [], {want.lower()}
+        for cand in rng.sample(pool, k=min(len(pool), 40)):
+            v = (cand.get(key) or "").strip()
+            if v and v.lower() not in seen:
+                seen.add(v.lower())
+                others.append(v)
+            if len(others) == 2:
+                break
+        options = [want] + others
+        rng.shuffle(options)
+        return options, options.index(want)
+
+    items = []
+
+    def _add_vocab(entry, src_week, direction):
+        word = (entry.get("word") or "").strip()
+        arabic = (entry.get("arabic") or "").strip()
+        if not word or not arabic:
+            return
+        if direction == "en2ar":
+            options, answer = _opts(entry, "arabic")
+            if len(options) < 3:
+                return
+            items.append({"type": "vocab_en2ar", "week": src_week, "prompt": word,
+                          "speak": word, "options": options, "answer": answer})
+        else:
+            options, answer = _opts(entry, "word")
+            if len(options) < 3:
+                return
+            items.append({"type": "vocab_ar2en", "week": src_week, "prompt": arabic,
+                          "speak": "", "options": options, "answer": answer})
+
+    # 4 from EARLIER weeks (the spaced-retrieval core), 4 from this week
+    # (consolidation). Week 1 has no history, so it takes all 8 from itself
+    # rather than shipping a visibly thinner quiz than every other week.
+    spaced = rng.sample(prior, k=min(4, len(prior))) if prior else []
+    for i, (src_week, entry) in enumerate(spaced):
+        _add_vocab(entry, src_week, "ar2en" if i % 2 else "en2ar")
+
+    current_wanted = 8 - len(spaced)
+    for i, entry in enumerate(rng.sample(current, k=min(current_wanted, len(current)))):
+        _add_vocab(entry, week, "en2ar" if i % 2 else "ar2en")
+
+    # 2 grammar recall items, preferring a PREVIOUS week's pattern so the
+    # answer is not sitting on today's grammar page.
+    g_weeks = [w for w in ([w for w in range(1, week)] or [week])
+               if weeks_grammar.get(w) and (weeks_grammar[w].get("practice_fill_blank"))]
+    if not g_weeks and weeks_grammar.get(week, {}).get("practice_fill_blank"):
+        g_weeks = [week]
+    if g_weeks:
+        gw = rng.choice(g_weeks)
+        gitems = [p for p in weeks_grammar[gw]["practice_fill_blank"]
+                  if p.get("sentence") and p.get("answer")]
+        answers_pool = [str(p["answer"]) for p in gitems]
+        for p in rng.sample(gitems, k=min(2, len(gitems))):
+            correct = str(p["answer"])
+            wrong = [a for a in dict.fromkeys(answers_pool) if a.lower() != correct.lower()]
+            options = [correct] + rng.sample(wrong, k=min(2, len(wrong)))
+            if len(options) < 2:
+                continue
+            rng.shuffle(options)
+            items.append({"type": "grammar", "week": gw, "prompt": p["sentence"],
+                          "speak": "", "options": options,
+                          "answer": options.index(correct)})
+    return items
+
+
+def gen_review(level, week, day, theme, items):
+    """The weekly review quiz page (Phase 11C).
+
+    Pass mark is 80%: below that the page tells the student exactly which
+    weeks to revisit rather than just showing a low score, because the point
+    of retrieval practice is to redirect study, not to grade.
+    """
+    theme = esc_html(theme)
+    if not items:
+        return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Review Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🧠 Review</h1><p class="subtitle">Week {week} • Day {day}</p></div>
+<div class="card"><p>{bl("No review items for this week yet.", "لا توجد أسئلة مراجعة للأسبوع ده بعد.")}</p></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
+{bottom_nav('review')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+    LABEL = {"vocab_en2ar": bl("What does this word mean?", "الكلمة دي معناها إيه؟"),
+             "vocab_ar2en": bl("Which English word is this?", "دي أنهي كلمة إنجليزي؟"),
+             "grammar": bl("Complete the sentence", "كمّل الجملة")}
+
+    q_html = ""
+    for qi, it in enumerate(items):
+        opts = "".join(
+            f'<div class="option" data-qi="{qi}" data-oi="{oi}"'
+            f' onclick="Review.pick({qi},{oi})">{esc_html(o)}</div>'
+            for oi, o in enumerate(it["options"]))
+        speak = ""
+        if it.get("speak"):
+            speak = (f'<button class="btn btn-sm btn-outline" style="padding:2px 8px"'
+                     f' onclick="TTS.speak(\'{esc(it["speak"])}\', 0.75)">🔊</button>')
+        from_week = (bl(f"from week {it['week']}", f"من أسبوع {it['week']}")
+                     if it["week"] != week else bl("this week", "الأسبوع ده"))
+        q_html += (f'<div class="card"><h2>{qi+1}. {LABEL.get(it["type"], "")}</h2>'
+                   f'<p style="color:var(--text-muted);font-size:0.8rem;margin:0 0 8px">🗓️ {from_week}</p>'
+                   f'<div class="transcript" style="font-size:1.1rem">{esc_html(it["prompt"])} {speak}</div>'
+                   f'<div class="options" data-qi="{qi}" style="margin-top:10px">{opts}</div>'
+                   f'<div class="q-feedback" data-qi="{qi}" style="margin-top:8px"></div></div>')
+
+    answers_json = safe_json_for_script_tag([int(i["answer"]) for i in items])
+    weeks_json = safe_json_for_script_tag([int(i["week"]) for i in items])
+
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Review Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🧠 Review</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
+<div class="card" style="padding:10px 14px"><p style="color:var(--accent);font-weight:600;margin:0">🔁 {bl("Weekly retrieval practice", "مراجعة أسبوعية")}</p>
+<p style="color:var(--text-secondary);font-size:0.85rem;margin:4px 0 0">{bl("Most questions come from EARLIER weeks. Remembering old words is what makes them stay.", "أغلب الأسئلة من أسابيع قديمة. إنك تفتكر الكلمات القديمة هو اللي يثبتها.")}</p></div>
+<div id="review-score" class="card" style="display:none"></div>
+{q_html}
+<div class="done-section" data-exercise="review"><div id="done-status" class="done-status" style="color:var(--text-secondary);font-size:0.85rem">{bl("Completes when you answer every question.", "بيتقفل لما تجاوب على كل الأسئلة.")}</div><input type="checkbox" class="checkbox" style="display:none" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'review')"><button class="btn btn-sm btn-outline done-fallback" style="margin-top:8px">✔️ {bl("I've finished — mark done", "خلصت — علّم تم")}</button></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="vocab.html">📖 {bl("Vocab", "المفردات")} →</a></div></div>
+{bottom_nav('review')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script>
+const reviewAnswers={answers_json};
+const reviewWeeks={weeks_json};
+const Review={{
+  _done:new Set(), _wrongWeeks:[],
+  pick(qi,oi){{
+    const box=document.querySelector('.options[data-qi="'+qi+'"]');
+    const fb=document.querySelector('.q-feedback[data-qi="'+qi+'"]');
+    if(!box||box.dataset.answered)return;
+    box.dataset.answered='1';
+    const correct=reviewAnswers[qi];
+    box.querySelectorAll('.option').forEach(el=>{{
+      el.style.pointerEvents='none';
+      const i=parseInt(el.dataset.oi,10);
+      if(i===correct)el.classList.add('correct');
+      else if(i===oi)el.classList.add('wrong');
+    }});
+    const ok=(oi===correct);
+    if(!ok)this._wrongWeeks.push(reviewWeeks[qi]);
+    if(fb)fb.innerHTML=ok
+      ?'<span style="color:var(--success);font-weight:600">✅ '+{json.dumps(bl("Correct", "صح"))}+'</span>'
+      :'<span style="color:var(--danger)">❌</span>';
+    this._done.add(qi);
+    if(this._done.size>=reviewAnswers.length)this._finish();
+  }},
+  _finish(){{
+    const total=reviewAnswers.length;
+    const wrong=this._wrongWeeks.length, score=total-wrong;
+    const pct=Math.round(score/total*100);
+    const box=document.getElementById('review-score');
+    if(box){{
+      let msg;
+      if(pct>=80){{
+        msg='<p style="color:var(--success);font-weight:600">'+{json.dumps(bl("Strong recall — keep going.", "ذاكرتك قوية — كمّل."))}+'</p>';
+      }} else {{
+        const weeks=[...new Set(this._wrongWeeks)].sort((a,b)=>a-b).join(', ');
+        msg='<p style="color:var(--danger);font-weight:600">'+{json.dumps(bl("Revisit these weeks:", "ارجع للأسابيع دي:"))}+' '+weeks+'</p>';
+      }}
+      box.innerHTML='<h2>🏆 '+score+'/'+total+' ('+pct+'%)</h2>'+msg;
+      box.style.display='block';
+      box.scrollIntoView({{behavior:'smooth',block:'center'}});
+    }}
+    if(window.ExerciseComplete)window.ExerciseComplete();
+  }}
+}};
+</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_mediation(level, week, day, theme, mediation):
@@ -1135,6 +1354,7 @@ def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None,
 <a href="grammar.html">📐 Grammar — القواعد <span style="color:var(--text-muted);font-size:0.8rem">({bl("weekly", "أسبوعي")})</span></a>
 {reading_link}
 {mediation_link}
+<a href="review.html">🧠 Review — مراجعة <span style="color:var(--text-muted);font-size:0.8rem">({bl("weekly", "أسبوعي")})</span></a>
 </div></div>
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
@@ -1251,6 +1471,19 @@ def generate_level(level, audio_manifest):
     # nothing. The card now comes from the week's authored grammar.)
     can_do_library = load_can_do_library(level)
 
+    # Preloaded for the weekly REVIEW quiz (Phase 11C): retrieval practice
+    # needs EARLIER weeks' content, not just the current week's, so the whole
+    # level's vocabulary and grammar must be in hand before the loop.
+    weeks_vocab, weeks_grammar = {}, {}
+    for w in range(1, max_week + 1):
+        wf = DATA_DIR / f"{level}_week{w}.json"
+        if wf.exists():
+            with open(wf, encoding="utf-8") as f:
+                weeks_vocab[w] = (json.load(f) or {}).get("vocabulary", []) or []
+        g = load_week_grammar_data(level, w)
+        if g:
+            weeks_grammar[w] = g
+
     for week in range(1, max_week + 1):
         week_file = DATA_DIR / f"{level}_week{week}.json"
         if not week_file.exists():
@@ -1277,6 +1510,7 @@ def generate_level(level, audio_manifest):
         # shown raw -- a code means nothing to a student.
         week_can_do = [can_do_library[c] for c in (week_data.get("can_do") or [])
                        if c in can_do_library]
+        review_items = build_review_items(level, week, weeks_vocab, weeks_grammar)
 
         drills_by_day = {}
         if accent_data:
@@ -1341,6 +1575,9 @@ def generate_level(level, audio_manifest):
                 f.write(gen_listening(level, week, day, theme, day_vocab, vocab,
                                       day_listening=day_listening))
 
+            with open(day_dir / "review.html", "w", encoding="utf-8") as f:
+                f.write(gen_review(level, week, day, theme, review_items))
+
             with open(day_dir / "mediation.html", "w", encoding="utf-8") as f:
                 f.write(gen_mediation(level, week, day, theme, mediation_data))
 
@@ -1364,8 +1601,8 @@ def generate_level(level, audio_manifest):
                 "text": norm["primary_text"],
             }
             # index + accent, shadowing, listening, vocab, speaking, grammar,
-            # reading, mediation
-            pages_per_day = 9
+            # reading, mediation, review
+            pages_per_day = 10
             total += pages_per_day
 
         print(f"  [{level}] Week {week}: {pages_per_day * 7} pages ✅")

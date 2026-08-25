@@ -209,9 +209,16 @@ def normalize_drill(drill):
 
 def bottom_nav(active):
     """Generate the fixed bottom navigation bar for mobile (Sahel S1).
-    `active` is one of: 'accent', 'shadowing', 'listening', 'vocab'.
+    `active` is one of: 'accent', 'shadowing', 'listening', 'vocab',
+    'speaking', 'grammar'.
     First item is always Home (the personal calendar) so the student is
-    one tap from home on any exercise page — no more back-back-back."""
+    one tap from home on any exercise page — no more back-back-back.
+
+    NOTE: 'grammar' is deliberately NOT given its own item here. The bar
+    already holds Home + 5 exercises; each item is min-width:60px, so a
+    7th would overflow a 375px-wide phone. Grammar is reached from the
+    day menu and its own page-nav instead. Passing active='grammar'
+    simply highlights nothing, which is correct."""
     links = '<a href="/"><span class="nav-icon">🏠</span>Home</a>'
     items = [
         ('accent', '🎯', 'Accent'),
@@ -434,6 +441,194 @@ def gen_speaking(level, week, day, theme, mission):
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
+def gen_grammar(level, week, day, theme, grammar):
+    """Phase 11A-3: the WEEKLY grammar pattern as a real, tracked exercise.
+
+    The curriculum authors one rich bilingual pattern per week in
+    content/{level}/grammar/weekN.json -- 90 patterns carrying 1,208
+    sub-items (formula, formula_visual, when_to_use, the
+    why_arabic_speakers_struggle contrast, 5 examples, 3 common_errors,
+    5 practice_fill_blank, quick_rule, mnemonic, connect_to_speaking).
+
+    Before this page, NONE of it was practisable: grammar reached students
+    only as a passive Wednesday #cheat-sheets post -- no page, no exercise,
+    no completion, no mastery. A student could "finish" a level having never
+    practised a single grammar point.
+
+    It is WEEKLY, not daily: the same pattern is the target all week (the
+    page states this plainly), and completion is tracked per day so
+    re-practising still levels the tier. It is deliberately NOT one of the
+    calendar's required exercises -- see database.WEEKLY_EXERCISES.
+    """
+    theme = esc_html(theme)
+    if not grammar:
+        # Honest empty state -- never fabricate a pattern.
+        return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Grammar Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📐 Grammar</h1><p class="subtitle">Week {week} • Day {day}</p></div>
+<div class="card"><p>{bl("No grammar pattern is authored for this week yet.", "لا يوجد نمط قواعد لهذا الأسبوع بعد.")}</p></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
+{bottom_nav('grammar')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+    name = esc_html(grammar.get("pattern_name", ""))
+    name_ar = esc_html(grammar.get("pattern_name_ar", ""))
+    formula = esc_html(grammar.get("formula", ""))
+    formula_visual = esc_html(grammar.get("formula_visual", ""))
+    when_to_use = esc_html(grammar.get("when_to_use", ""))
+    when_to_use_ar = esc_html(grammar.get("when_to_use_ar", ""))
+    why_struggle = esc_html(grammar.get("why_arabic_speakers_struggle", ""))
+    quick_rule = esc_html(grammar.get("quick_rule", ""))
+    quick_rule_ar = esc_html(grammar.get("quick_rule_ar", ""))
+    mnemonic = esc_html(grammar.get("mnemonic", ""))
+    connect = esc_html(grammar.get("connect_to_speaking", ""))
+
+    # --- Formula / quick rule ---
+    formula_card = f'<div class="card" style="border-left:3px solid var(--accent)"><h2>🧩 {bl("The Pattern", "النمط")}</h2>'
+    if formula:
+        formula_card += f'<div class="transcript" style="font-size:1.2rem;line-height:1.7"><b>{formula}</b></div>'
+    if formula_visual:
+        formula_card += f'<p style="color:var(--accent-light);margin:10px 0;font-family:monospace">{formula_visual}</p>'
+    if quick_rule:
+        formula_card += f'<p style="margin-top:12px">⚡ {quick_rule}</p>'
+    if quick_rule_ar:
+        formula_card += f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:6px">{quick_rule_ar}</p>'
+    formula_card += '</div>'
+
+    # --- When to use ---
+    use_card = ""
+    if when_to_use or when_to_use_ar:
+        use_card = f'<div class="card"><h2>📍 {bl("When to use it", "امتى تستخدمه")}</h2>'
+        if when_to_use:
+            use_card += f'<p style="line-height:1.7">{when_to_use}</p>'
+        if when_to_use_ar:
+            use_card += f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:8px">{when_to_use_ar}</p>'
+        use_card += '</div>'
+
+    # --- Why Arabic speakers struggle (the L1-contrast that makes this
+    #     curriculum specific to its students, previously never shown) ---
+    struggle_card = ""
+    if why_struggle:
+        struggle_card = (f'<div class="card" style="border-left:3px solid var(--danger)">'
+                         f'<h2>⚠️ {bl("Why this is tricky for Arabic speakers", "ليه دي صعبة على العربي")}</h2>'
+                         f'<p style="line-height:1.7">{why_struggle}</p></div>')
+
+    # --- Examples (with TTS) ---
+    ex_html = ""
+    for ex in (grammar.get("examples") or []):
+        en = esc_html(ex.get("en", ""))
+        ar = esc_html(ex.get("ar", ""))
+        structure = esc_html(ex.get("structure", ""))
+        if not en:
+            continue
+        ex_html += (f'<div style="padding:12px 0;border-bottom:1px solid var(--border)">'
+                    f'<p style="font-size:1.05rem;line-height:1.6">{en}'
+                    f' <button class="btn btn-sm btn-outline" style="margin-inline-start:8px"'
+                    f' onclick="TTS.speak(\'{esc(ex.get("en", ""))}\', 0.75)">🔊</button></p>'
+                    + (f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:4px">{ar}</p>' if ar else '')
+                    + (f'<p style="color:var(--text-muted);font-size:0.85rem;font-family:monospace;margin-top:4px">{structure}</p>' if structure else '')
+                    + '</div>')
+    examples_card = (f'<div class="card"><h2>💡 {bl("Examples", "أمثلة")}</h2>{ex_html}</div>') if ex_html else ""
+
+    # --- Common errors ---
+    err_html = ""
+    for er in (grammar.get("common_errors") or []):
+        wrong = esc_html(er.get("wrong", ""))
+        correct = esc_html(er.get("correct", ""))
+        expl = esc_html(er.get("explanation", ""))
+        if not (wrong or correct):
+            continue
+        err_html += (f'<div style="padding:12px 0;border-bottom:1px solid var(--border)">'
+                     f'<p style="color:var(--danger)">❌ <s>{wrong}</s></p>'
+                     f'<p style="color:var(--success)">✅ {correct}</p>'
+                     + (f'<p style="color:var(--text-secondary);font-size:0.9rem;margin-top:4px">{expl}</p>' if expl else '')
+                     + '</div>')
+    errors_card = (f'<div class="card"><h2>🚫 {bl("Common mistakes", "أخطاء شائعة")}</h2>{err_html}</div>') if err_html else ""
+
+    # --- Practice: fill in the blank (this is what makes it an EXERCISE
+    #     rather than another cheat sheet, and what auto-completes it) ---
+    practice = [p for p in (grammar.get("practice_fill_blank") or [])
+                if p.get("sentence") and p.get("answer")]
+    practice_card = ""
+    if practice:
+        rows = ""
+        for i, p in enumerate(practice):
+            rows += (f'<div class="question" data-gi="{i}" style="padding:12px 0;border-bottom:1px solid var(--border)">'
+                     f'<p style="font-size:1.05rem;line-height:1.7">{esc_html(p["sentence"])}</p>'
+                     f'<input class="quiz-input g-answer" data-gi="{i}" type="text" autocomplete="off"'
+                     f' placeholder="{bl("your answer", "جوابك")}" style="margin-top:8px;width:100%">'
+                     f'<button class="btn btn-sm" style="margin-top:8px" onclick="GrammarPractice.check({i})">✓ {bl("Check", "صحح")}</button>'
+                     f'<div class="g-feedback" data-gi="{i}" style="margin-top:8px"></div></div>')
+        practice_card = (f'<div class="card"><h2>✍️ {bl("Practice", "تمرين")}</h2>'
+                         f'<p style="color:var(--text-secondary);font-size:0.9rem">'
+                         f'{bl("Fill in the blank. Completing all of them marks this exercise done.", "املا الفراغ. لما تخلص كلهم التمرين يتحسب.")}</p>'
+                         f'{rows}</div>')
+
+    # --- Mnemonic + link to speaking ---
+    tail = ""
+    if mnemonic:
+        tail += (f'<div class="card"><h2>🧠 {bl("Remember it", "افتكرها")}</h2>'
+                 f'<p style="font-size:1.05rem">{mnemonic}</p></div>')
+    if connect:
+        tail += (f'<div class="card" style="border-left:3px solid var(--accent)">'
+                 f'<h2>🎙️ {bl("Use it when you speak", "استخدمها وانت بتتكلم")}</h2>'
+                 f'<p style="line-height:1.7">{connect}</p></div>')
+
+    answers_json = safe_json_for_script_tag([str(p["answer"]) for p in practice])
+    done_hint = (bl("Completes automatically when you finish the practice.",
+                    "بيتقفل تلقائيًا لما تخلص التمرين.")
+                 if practice else
+                 bl("Read the pattern, then mark it done.", "اقرا النمط وبعدين علّمه تم."))
+
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Grammar Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>📐 Grammar</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
+<div class="card" style="padding:10px 14px"><p style="color:var(--accent);font-weight:600;margin:0">📅 {bl("This week's pattern", "نمط الأسبوع")}</p>
+<p style="color:var(--text-secondary);font-size:0.85rem;margin:4px 0 0">{bl("One pattern per week — it stays the same all week, so practise it every day.", "نمط واحد كل أسبوع — بيفضل نفسه طول الأسبوع، فاتمرن عليه كل يوم.")}</p></div>
+<div class="card"><h2 style="margin:0">{name}</h2>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:6px">{name_ar}</p>' if name_ar else ''}</div>
+{formula_card}
+{use_card}
+{struggle_card}
+{examples_card}
+{errors_card}
+{practice_card}
+{tail}
+<div class="done-section" data-exercise="grammar"><div id="done-status" class="done-status" style="color:var(--text-secondary);font-size:0.85rem">{done_hint}</div><input type="checkbox" class="checkbox" style="display:none" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'grammar')"><button class="btn btn-sm btn-outline done-fallback" style="margin-top:8px">✔️ {bl("I've finished — mark done", "خلصت — علّم تم")}</button></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
+{bottom_nav('grammar')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script>
+const grammarAnswers={answers_json};
+const GrammarPractice={{
+  _done:new Set(),
+  _norm(s){{return String(s||'').trim().toLowerCase().replace(/[.,!?;:'"]/g,'');}},
+  check(i){{
+    const input=document.querySelector('.g-answer[data-gi="'+i+'"]');
+    const fb=document.querySelector('.g-feedback[data-gi="'+i+'"]');
+    if(!input||!fb)return;
+    const expected=grammarAnswers[i]||'';
+    const ok=this._norm(input.value)===this._norm(expected);
+    fb.innerHTML=ok
+      ?'<span style="color:var(--success);font-weight:600">✅ '+{json.dumps(bl("Correct", "صح"))}+'</span>'
+      :'<span style="color:var(--danger)">❌ '+{json.dumps(bl("Answer", "الإجابة"))}+': <b>'+expected+'</b></span>';
+    // Counts as attempted either way -- students must not be trapped by a
+    // typo, and the correct answer is revealed so the attempt still teaches.
+    this._done.add(i);
+    if(this._done.size>=grammarAnswers.length&&window.ExerciseComplete)window.ExerciseComplete();
+  }}
+}};
+</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+
 def gen_listening(level, week, day, theme, day_vocab, all_week_vocab, day_listening=None):
     """Grounded listening comprehension: hear a vocabulary word, choose its
     correct Arabic meaning. Distractors are drawn from other words in the
@@ -597,6 +792,7 @@ def gen_day_index(level, week, day, pattern=None):
 <a href="listening.html">👂 Listening — الاستماع</a>
 <a href="vocab.html">📖 Vocabulary — المفردات</a>
 <a href="speaking.html">🎙️ Speaking — التحدث</a>
+<a href="grammar.html">📐 Grammar — القواعد <span style="color:var(--text-muted);font-size:0.8rem">({bl("weekly", "أسبوعي")})</span></a>
 </div></div>
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
@@ -607,6 +803,25 @@ def gen_day_index(level, week, day, pattern=None):
 # ============================================================
 #  GENERATE
 # ============================================================
+
+def load_week_grammar_data(level, week):
+    """The week's authored grammar pattern (content/{level}/grammar/weekN_*.json).
+    Same lookup shape as load_week_accent_data. Returns None when the week has
+    no authored pattern -- callers must render an honest empty state, never a
+    fabricated pattern."""
+    grammar_dir = CONTENT_DIR / level / "grammar"
+    if not grammar_dir.exists():
+        return None
+    # "week1_*.json" cannot match "week10_*.json" (the underscore is
+    # required immediately after the number), so week 1 never picks up
+    # week 10's file -- same guarantee the accent loader relies on.
+    matches = (sorted(grammar_dir.glob(f"week{week}_*.json"))
+               + sorted(grammar_dir.glob(f"week{week}.json")))
+    if not matches:
+        return None
+    with open(matches[0], encoding="utf-8") as f:
+        return json.load(f)
+
 
 def load_week_accent_data(level, week):
     accent_dir = CONTENT_DIR / level / "accent"
@@ -652,6 +867,7 @@ def generate_level(level, audio_manifest):
             week_data = json.load(f)
 
         accent_data = load_week_accent_data(level, week)
+        grammar_data = load_week_grammar_data(level, week)
         focus = accent_data.get("focus", "Review") if accent_data else "Review"
         theme = week_data.get("theme", "General")
         vocab = week_data.get("vocabulary", [])
@@ -721,6 +937,9 @@ def generate_level(level, audio_manifest):
             with open(day_dir / "listening.html", "w", encoding="utf-8") as f:
                 f.write(gen_listening(level, week, day, theme, day_vocab, vocab,
                                       day_listening=day_listening))
+
+            with open(day_dir / "grammar.html", "w", encoding="utf-8") as f:
+                f.write(gen_grammar(level, week, day, theme, grammar_data))
             with open(day_dir / "vocab.html", "w", encoding="utf-8") as f:
                 f.write(gen_vocab(level, week, day, theme, day_vocab))
             # E1: Speaking page. Speaking missions are keyed by day-name in
@@ -734,9 +953,11 @@ def generate_level(level, audio_manifest):
                 "level": level, "week": week, "day": day,
                 "text": norm["primary_text"],
             }
-            total += 6  # index + 5 exercise pages
+            # index + accent, shadowing, listening, vocab, speaking, grammar
+            pages_per_day = 7
+            total += pages_per_day
 
-        print(f"  [{level}] Week {week}: 42 pages ✅")
+        print(f"  [{level}] Week {week}: {pages_per_day * 7} pages ✅")
 
     return total
 

@@ -454,6 +454,119 @@ def gen_speaking(level, week, day, theme, mission):
 <script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
+def gen_mediation(level, week, day, theme, mediation):
+    """Phase 11B: MEDIATION — the fourth CEFR mode, previously absent entirely.
+
+    Mediation is relaying/explaining/summarising for someone else. Nothing in
+    the 7 daily tasks asked a student to do it, so every level's `.M.`
+    descriptors were taught by no week.
+
+    It is graded by a KEY-POINTS CHECKLIST rather than by machine-marking free
+    text, because that is genuinely how mediation is assessed: did the
+    essential information get across? The student writes their relay, then
+    reveals the model answer and confirms each fact they conveyed. That is
+    honest self-assessment against explicit criteria -- not a fake auto-grade.
+
+    A1.M.2 (signal understanding / ask for help with a single word or short
+    phrase) is delivered as the "signal phrases" card, each playable.
+    """
+    theme = esc_html(theme)
+    if not mediation:
+        return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Mediation Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🤝 Mediation</h1><p class="subtitle">Week {week} • Day {day}</p></div>
+<div class="card"><p>{bl("The mediation task for this week is not published yet.", "مهمة الوساطة للأسبوع ده لسه مش منشورة.")}</p></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
+{bottom_nav('mediation')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+    title = esc_html(mediation.get("title", ""))
+    title_ar = esc_html(mediation.get("title_ar", ""))
+    scen = mediation.get("scenario") or {}
+    task = mediation.get("task") or {}
+    model = mediation.get("model_answer") or {}
+    source = mediation.get("source", "")
+
+    points = [p for p in (mediation.get("key_points") or []) if p.get("en")]
+    points_html = ""
+    for pi, p in enumerate(points):
+        points_html += (
+            f'<label style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;'
+            f'border-bottom:1px solid var(--border);cursor:pointer">'
+            f'<input type="checkbox" class="kp-check" data-kp="{pi}"'
+            f' onchange="Mediation.tick()" style="margin-top:5px">'
+            f'<span><span>{esc_html(p["en"])}</span>'
+            + (f'<br><span class="arabic-text" lang="ar" dir="rtl">{esc_html(p.get("ar",""))}</span>'
+               if p.get("ar") else '')
+            + '</span></label>')
+
+    signals = [s for s in (mediation.get("signal_phrases") or []) if s.get("en")]
+    signals_html = ""
+    for s in signals:
+        signals_html += (
+            f'<div style="padding:8px 0;border-bottom:1px solid var(--border)">'
+            f'<b>{esc_html(s["en"])}</b>'
+            f' <button class="btn btn-sm btn-outline" style="padding:2px 8px"'
+            f' onclick="TTS.speak(\'{esc(s["en"])}\', 0.7)">🔊</button>'
+            + (f'<br><span class="arabic-text" lang="ar" dir="rtl">{esc_html(s.get("ar",""))}</span>'
+               if s.get("ar") else '')
+            + '</div>')
+
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Mediation Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🤝 Mediation</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
+<div class="card" style="padding:10px 14px"><p style="color:var(--accent);font-weight:600;margin:0">📅 {bl("This week's mediation task", "مهمة الوساطة للأسبوع")}</p>
+<p style="color:var(--text-secondary);font-size:0.85rem;margin:4px 0 0">{bl("Mediation means helping someone else understand. This is real life, not a test.", "الوساطة معناها إنك تساعد حد تاني يفهم. دي حياة حقيقية، مش امتحان.")}</p></div>
+<div class="card"><h2 style="margin:0">{title}</h2>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:6px">{title_ar}</p>' if title_ar else ''}</div>
+<div class="card"><h2>👥 {bl("The situation", "الموقف")}</h2>
+<p style="line-height:1.7">{esc_html(scen.get("en",""))}</p>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:8px">{esc_html(scen.get("ar",""))}</p>' if scen.get("ar") else ''}</div>
+<div class="card" style="border-left:3px solid var(--accent)"><h2>📨 {bl("What you heard / read", "اللي سمعته أو قريته")}</h2>
+<div class="transcript" style="font-size:1.05rem;line-height:1.8">{esc_html(source)}</div>
+<button class="btn btn-sm" style="margin-top:10px" onclick="TTS.speak('{esc(source)}', 0.75)">🔊 {bl("Listen", "استمع")}</button></div>
+<div class="card"><h2>🎯 {bl("Your job", "مهمتك")}</h2>
+<p style="line-height:1.7">{esc_html(task.get("en",""))}</p>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:8px">{esc_html(task.get("ar",""))}</p>' if task.get("ar") else ''}
+<textarea id="mediation-answer" class="quiz-input" rows="4" style="width:100%;margin-top:12px;resize:vertical" placeholder="{bl("Write what you would say...", "اكتب اللي هتقوله...")}"></textarea>
+<button class="btn btn-sm" style="margin-top:10px" onclick="Mediation.reveal()">👀 {bl("Show the model answer", "وريني الإجابة النموذجية")}</button></div>
+<div class="card" id="model-card" style="display:none;border-left:3px solid var(--success)"><h2>✅ {bl("A good answer", "إجابة كويسة")}</h2>
+<p style="line-height:1.8">{esc_html(model.get("en",""))}</p>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:8px">{esc_html(model.get("ar",""))}</p>' if model.get("ar") else ''}
+<button class="btn btn-sm btn-outline" style="margin-top:10px" onclick="TTS.speak('{esc(model.get("en",""))}', 0.75)">🔊 {bl("Listen", "استمع")}</button></div>
+<div class="card"><h2>📋 {bl("Did you pass on everything?", "نقلت كل حاجة؟")}</h2>
+<p style="color:var(--text-secondary);font-size:0.9rem">{bl("Tick each fact you passed on. Mediation succeeds when the other person gets the important information.", "علّم على كل معلومة نقلتها. الوساطة تنجح لما الشخص التاني يفهم المعلومة المهمة.")}</p>
+{points_html}
+<p id="kp-progress" style="margin-top:10px;color:var(--text-secondary);font-size:0.9rem">0/{len(points)}</p></div>
+<div class="card"><h2>🙋 {bl("If you do not understand", "لو مش فاهم")}</h2>
+<p style="color:var(--text-secondary);font-size:0.9rem">{bl("Use one short phrase — and a gesture is fine. Asking for help is a skill, not a failure.", "استخدم جملة قصيرة — والإشارة مقبولة. إنك تطلب مساعدة دي مهارة، مش فشل.")}</p>
+{signals_html}</div>
+<div class="done-section" data-exercise="mediation"><div id="done-status" class="done-status" style="color:var(--text-secondary);font-size:0.85rem">{bl("Completes when you tick every fact you passed on.", "بيتقفل لما تعلّم على كل المعلومات اللي نقلتها.")}</div><input type="checkbox" class="checkbox" style="display:none" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'mediation')"><button class="btn btn-sm btn-outline done-fallback" style="margin-top:8px">✔️ {bl("I've finished — mark done", "خلصت — علّم تم")}</button></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="reading.html">📖 {bl("Reading", "القراءة")} →</a></div></div>
+{bottom_nav('mediation')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script>
+const Mediation={{
+  _total:{len(points)},
+  reveal(){{ const c=document.getElementById('model-card'); if(c)c.style.display='block'; }},
+  tick(){{
+    const done=document.querySelectorAll('.kp-check:checked').length;
+    const p=document.getElementById('kp-progress');
+    if(p)p.textContent=done+'/'+this._total;
+    if(this._total>0&&done>=this._total&&window.ExerciseComplete)window.ExerciseComplete();
+  }}
+}};
+</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+
 def gen_reading(level, week, day, theme, reading):
     """Phase 11B: READING — the CEFR mode that had no task at all.
 
@@ -918,7 +1031,8 @@ def gen_vocab(level, week, day, theme, words):
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
-def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None):
+def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None,
+                  mediation=None):
     """The day's menu.
 
     Phase 11A-4 fixed TWO holes here:
@@ -972,6 +1086,15 @@ def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None):
             f'({bl("weekly", "أسبوعي")})</span></a>'
         )
 
+    # Mediation, like reading, is listed ONLY where it is authored.
+    mediation_link = ""
+    if mediation:
+        mediation_link = (
+            f'<a href="mediation.html">🤝 Mediation — الوساطة '
+            f'<span style="color:var(--text-muted);font-size:0.8rem">'
+            f'({bl("weekly", "أسبوعي")})</span></a>'
+        )
+
     # --- This week's CEFR goals (the "I can ..." statements) ---
     can_do_card = ""
     if can_do:
@@ -1011,6 +1134,7 @@ def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None):
 <a href="speaking.html">🎙️ Speaking — التحدث</a>
 <a href="grammar.html">📐 Grammar — القواعد <span style="color:var(--text-muted);font-size:0.8rem">({bl("weekly", "أسبوعي")})</span></a>
 {reading_link}
+{mediation_link}
 </div></div>
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
@@ -1021,6 +1145,19 @@ def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None):
 # ============================================================
 #  GENERATE
 # ============================================================
+
+def load_week_mediation_data(level, week):
+    """The week's authored mediation task, or None when not authored yet."""
+    med_dir = CONTENT_DIR / level / "mediation"
+    if not med_dir.exists():
+        return None
+    matches = (sorted(med_dir.glob(f"week{week}_*.json"))
+               + sorted(med_dir.glob(f"week{week}.json")))
+    if not matches:
+        return None
+    with open(matches[0], encoding="utf-8") as f:
+        return json.load(f)
+
 
 def load_week_reading_data(level, week):
     """The week's authored reading passage (content/{level}/reading/weekN_*.json).
@@ -1125,6 +1262,7 @@ def generate_level(level, audio_manifest):
         accent_data = load_week_accent_data(level, week)
         grammar_data = load_week_grammar_data(level, week)
         reading_data = load_week_reading_data(level, week)
+        mediation_data = load_week_mediation_data(level, week)
         focus = accent_data.get("focus", "Review") if accent_data else "Review"
         theme = week_data.get("theme", "General")
         vocab = week_data.get("vocabulary", [])
@@ -1192,7 +1330,8 @@ def generate_level(level, audio_manifest):
                 f.write(gen_day_index(level, week, day,
                                       grammar=grammar_data,
                                       can_do=week_can_do,
-                                      reading=reading_data))
+                                      reading=reading_data,
+                                      mediation=mediation_data))
             with open(day_dir / "accent.html", "w", encoding="utf-8") as f:
                 f.write(gen_accent(level, week, day, focus, norm,
                                    phoneme_focus=week_data.get("phoneme_focus")))
@@ -1201,6 +1340,9 @@ def generate_level(level, audio_manifest):
             with open(day_dir / "listening.html", "w", encoding="utf-8") as f:
                 f.write(gen_listening(level, week, day, theme, day_vocab, vocab,
                                       day_listening=day_listening))
+
+            with open(day_dir / "mediation.html", "w", encoding="utf-8") as f:
+                f.write(gen_mediation(level, week, day, theme, mediation_data))
 
             with open(day_dir / "reading.html", "w", encoding="utf-8") as f:
                 f.write(gen_reading(level, week, day, theme, reading_data))
@@ -1222,8 +1364,8 @@ def generate_level(level, audio_manifest):
                 "text": norm["primary_text"],
             }
             # index + accent, shadowing, listening, vocab, speaking, grammar,
-            # reading
-            pages_per_day = 8
+            # reading, mediation
+            pages_per_day = 9
             total += pages_per_day
 
         print(f"  [{level}] Week {week}: {pages_per_day * 7} pages ✅")

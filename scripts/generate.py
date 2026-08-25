@@ -635,17 +635,35 @@ def generate_level(level, audio_manifest):
             day_dir = OUTPUT_DIR / level / f"week{week}" / f"day{day}"
             day_dir.mkdir(parents=True, exist_ok=True)
 
-            # Split weekly vocab into 7 days using the SAME adaptive formula
-            # as the bot's curriculum.py get_vocabulary_for_day() (len // 7,
-            # no fallback). Previously this used a hardcoded "8 words/day"
-            # slice that fell back to vocab[:8] (day 1's words, verbatim)
-            # for any week with fewer than day*8 total words -- silently
-            # showing day 1's vocabulary again on day 6/7 (or worse) for
-            # every week below the 56-word threshold. That's every L2/L3
-            # week (denser, more advanced vocab by design) plus a couple
-            # of L1 weeks. Must stay in sync with curriculum.py's formula.
-            words_per_day = max(1, len(vocab) // 7)
-            day_vocab = vocab[(day - 1) * words_per_day: day * words_per_day]
+            # Split weekly vocab into 7 days using the SAME formula as the
+            # bot's curriculum.py get_vocabulary_for_day(). This MUST stay
+            # byte-for-byte equivalent: nexus `database.record_vocab_quiz`
+            # and `verification.py` both assume the bot and this site agree
+            # word-for-word on what a given day teaches.
+            #
+            # History, so neither copy regresses again:
+            #  1. Originally a hardcoded "8 words/day" slice that fell back
+            #     to vocab[:8] (day 1's words, verbatim) for any week with
+            #     fewer than day*8 words -- silently re-showing day 1's
+            #     vocabulary on day 6/7 for every week under 56 words.
+            #  2. Then `max(1, len(vocab) // 7)`, which fixed the repeat but
+            #     truncated on integer division and never assigned the
+            #     remainder to any day -- so the last `len % 7` words of
+            #     EVERY week were unreachable. Measured across the 90
+            #     authored weeks: 354 of 2,909 words (12.2%) never rendered
+            #     on any page; 88 of 90 weeks affected; worst week lost 6.
+            #  3. Now: distribute the remainder. The first `len % 7` days
+            #     get one extra word, so the 7 slices reconstruct the week's
+            #     list exactly (contiguous, in authored order, zero loss).
+            base, remainder = divmod(len(vocab), 7)
+            if base == 0:
+                # Fewer than 7 words: cycle so no day is empty, and every
+                # word still appears across the week.
+                day_vocab = [vocab[(day - 1) % len(vocab)]] if vocab else []
+            else:
+                _start = (day - 1) * base + min(day - 1, remainder)
+                _size = base + (1 if (day - 1) < remainder else 0)
+                day_vocab = vocab[_start:_start + _size]
             norm = normalize_drill(drills_by_day.get(day))
             shadow_aid = audio_id(level, week, day, "shadow")
 

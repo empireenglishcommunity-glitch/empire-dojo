@@ -47,7 +47,7 @@ OUTPUT_DIR = REPO_ROOT / "site"  # deployed site lives here, NOT in scripts/
 
 # Single source of truth for how many curriculum weeks each level has —
 # must match bots/discord-learning-bot/src/curriculum.py's LEVEL_WEEK_COUNTS.
-LEVEL_WEEK_COUNTS = {"l0": 8, "l1": 10, "l2": 12, "l3": 8}
+LEVEL_WEEK_COUNTS = {}  # legacy L0–L3 retired; CEFR-only now
 
 # CEFR levels (Mi'yar) — must match curriculum.py's CEFR_WEEK_COUNTS. Generated
 # additively alongside the legacy levels; a CEFR level with no data files on

@@ -51,15 +51,14 @@
     <div id="cert-ready" class="cert-wrap" style="display:none">
       <div class="cert">
         <div class="cert-seal">🏛️🎓</div>
-        <div class="cert-title">Certificate of Mastery</div>
-        <div class="cert-sub">Empire English Community <span class="ar-inline" lang="ar" dir="rtl">/ شهادة إتقان</span></div>
-        <div class="cert-line">This certifies that</div>
+        <div class="cert-title" id="cert-title">Certificate</div>
+        <div class="cert-sub">Empire English Community <span class="ar-inline" lang="ar" dir="rtl">/ شهادة</span></div>
         <div class="cert-name" id="cert-name">—</div>
-        <div class="cert-line">has mastered every week of</div>
         <div class="cert-level" id="cert-level">—</div>
+        <div class="cert-line" id="cert-statement"></div>
+        <div class="cert-line ar-inline" lang="ar" dir="rtl" id="cert-statement-ar" style="display:none"></div>
         <div class="cert-meta">
-          <span id="cert-weeks">— weeks mastered</span>
-          <span id="cert-distinction" style="display:none">⭐ — distinctions</span>
+          <span id="cert-distinction" style="display:none">⭐ Distinction / امتياز</span>
           <span id="cert-date"></span>
         </div>
         <div class="cert-cando" id="cert-cando" style="display:none">
@@ -133,16 +132,19 @@
       document.getElementById('cert-name').textContent = d.name || 'Student';
       document.getElementById('cert-level').textContent =
         `${d.level}${d.level_name ? ' — ' + d.level_name : ''}`;
-      document.getElementById('cert-weeks').textContent =
-        `${d.weeks_mastered} of ${d.total_weeks} weeks mastered`;
-      if (d.distinction_count > 0) {
-        const el = document.getElementById('cert-distinction');
-        el.textContent = `⭐ ${d.distinction_count} distinction${d.distinction_count > 1 ? 's' : ''}`;
-        el.style.display = '';
+      // Exam-based cert (passed the exit exam) is the stronger credential.
+      document.getElementById('cert-title').textContent =
+        (d.basis === 'exam') ? 'Certificate of Proficiency' : 'Certificate of Completion';
+      document.getElementById('cert-statement').textContent = d.statement_en ||
+        `Empire English certifies ${d.name || 'this student'} at CEFR Level ${d.level}.`;
+      const arEl = document.getElementById('cert-statement-ar');
+      if (d.statement_ar) { arEl.textContent = d.statement_ar; arEl.style.display = ''; }
+      if (d.distinction) {
+        document.getElementById('cert-distinction').style.display = '';
       }
-      if (d.completed_at) {
-        const day = String(d.completed_at).slice(0, 10);
-        document.getElementById('cert-date').textContent = `📅 ${day}`;
+      const dateStr = d.date || d.completed_at;
+      if (dateStr) {
+        document.getElementById('cert-date').textContent = `📅 ${String(dateStr).slice(0, 10)}`;
       }
       // Mi'yar Phase 8: descriptor-referenced can-do checklist (hidden if the
       // server didn't send one, so the page stays backward-compatible).

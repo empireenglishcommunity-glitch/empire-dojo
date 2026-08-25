@@ -113,6 +113,7 @@
         <a href="#maintenance">🧰 وضع الصيانة</a>
         <a href="#schedule">⏰ المهام المجدولة</a>
         <a href="#itqan">📝 الاختبار الأسبوعي</a>
+        <a href="#exit-exam-ops">🎯 اختبار الخروج + تحديد المستوى</a>
         <a href="#nutq">🗣️ تقييم النطق</a>
         <a href="#governance">⚖️ الحوكمة</a>
         <a href="#runbook">🚀 التشغيل</a>
@@ -448,6 +449,31 @@
     </div>
 
     <!-- Nutq: pronunciation feedback -->
+    <div class="card guide-section" id="exit-exam-ops" style="border-color:var(--accent)">
+      <h2>🎯 اختبار الخروج CEFR + تحديد المستوى + الشهادة</h2>
+      <p><b>الحالة: مُفعّل (Live).</b> اختبار الترقية بقى <b>اختبار خروج CEFR</b>: تقييم مقابل أهداف الـ can-do بدرجات نجاح يحددها خبراء + تقييم AI مع <b>مراجعة بشرية عند الحدود</b>. مفتاح الإيقاف الطارئ: <code>!flag disable assessment_advancement_exam</code> (فوري، بدون إعادة نشر).</p>
+
+      <h3>🔎 طابور المراجعة (أنت الحَكَم في الحالات الحدّية)</h3>
+      <p>النتايج الواضحة (نجاح/رسوب) تتقرّر تلقائيًا. اللي قريبة من الحد الفاصل (±7) أو ثقة الـ AI فيها أقل من 0.55 <b>ما تتقررش آليًا</b> — بتيجي لك:</p>
+      <ul>
+        <li><code>!exam-review [level]</code> — اعرض الاختبارات المنتظرة مراجعتك.</li>
+        <li><code>!exam-pass &lt;id&gt;</code> — قرار نجاح ← ترقية + شهادة.</li>
+        <li><code>!exam-fail &lt;id&gt;</code> — قرار رسوب ← رسالة إعادة محاولة.</li>
+      </ul>
+      <p style="color:var(--text-muted);font-size:0.85rem">بتوصلك تنبيهات على كل محاولة (نجاح/رسوب/مراجعة) في تنبيهات الأوبس.</p>
+
+      <h3>🧭 تحديد المستوى (Placement)</h3>
+      <p>للطلاب الجدد أو لإعادة التقييم: <code>!placement</code> (للطالب نفسه) أو <code>!placement @user</code> (تبعت له رابط دخول لصفحة الاختبار). ملف مهارات CEFR + وضع <b>متحفّظ</b> في المستوى المناسب، والانضمام <b>اختياري</b> (ما بنجبرش حد).</p>
+
+      <h3>🎓 الشهادة + قائمة الـ Can-Do</h3>
+      <p>النجاح في اختبار الخروج يصدر شهادة «أظهر إتقانًا للمستوى X على CEFR» (+ امتياز لو Part B ≥ 90). الصفحات:
+        <a href="/placement/">/placement/</a> ·
+        <a href="/can-do/">/can-do/</a> ·
+        <a href="/assessment/certificate/">/assessment/certificate/</a>.
+        الطالب يشوف تقدّمه في الـ can-do عبر <code>!progress</code>.</p>
+      <p style="color:var(--text-muted);font-size:0.85rem">التزم بالصياغة: «متوافق مع CEFR» — <b>مش</b> «معتمد من CEFR» في أي مكان.</p>
+    </div>
+
     <div class="card guide-section" id="nutq" style="border-color:var(--accent)">
       <h2>🗣️ تقييم النطق (Nutq) — «Grade my best read»</h2>
       <p>ميزة تُعطي الطالب <b>درجة نطق دقيقة واحدة في اليوم</b> على مهمة <b>Shadowing</b> فقط. الفلسفة: التمرين حرّ بلا أرقام، والدرجة الرسمية دقيقة وباختيار الطالب — فلا يرى المبتدئ رقماً «غير عادل» من محرّك ضعيف.</p>

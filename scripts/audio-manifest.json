@@ -4174,5 +4174,977 @@
     "voice": "af_sky",
     "speaker": "Teacher",
     "text": "This is the last morning, so I want to say one thing and then let you go. When you started, most of you wanted to learn English in order to get a better job. That is a good reason, and although it worked for some of you, it is not the reason you kept going. You kept going because you started enjoying being understood. That is a different thing, and it is much harder to lose. A warning, however. In three weeks you will stop practising. Not because you decide to, but because nothing will remind you. So decide now what will remind you. Some of you have agreed to meet on Fridays, and I would recommend keeping that, even when only two people come. Others plan to read for ten minutes a night, which sounds too small to matter and is in fact the only size that survives. Finally, avoid waiting to feel ready before you speak. Nobody feels ready. You did not feel ready in week one either, and yet here you are, understanding every word I am saying."
+  },
+  "b2-w1-bc0": {
+    "level": "b2",
+    "week": 1,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_isabella",
+    "speaker": "Lecturer",
+    "text": "Good morning. Today I want to talk about why progress stops, and I want to be careful about a distinction that most people collapse. Consider two students. The first has studied English for six years. The second has been studying English for six years. In everyday speech we treat those as the same sentence. They are not. The first tells you about a completed quantity: six years exist, they are in the past, and something resulted. The second tells you about an unfinished activity, and it carries an implication the first does not, which is that the effort is still going on, and possibly going on longer than expected. Now, here is why this matters beyond grammar. We have known since the nineteen sixties that skill acquisition is not linear. What we have been discovering more recently is less comfortable: the plateau is not a failure of effort. Learners on a plateau have usually been working harder than they were at the start. They have been repeating what they already do well, because repeating what you do well feels like progress and feels safe. So the question to ask is not 'how long have you been studying?' It is 'what have you actually completed?' The first question measures your patience. The second measures your progress. Most of us have been answering the first one for years, and calling it the second."
+  },
+  "b2-w2-bc0": {
+    "level": "b2",
+    "week": 2,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Presenter",
+    "text": "Tonight: the bridge that closed with four hours' notice, and the eighteen months of warnings that came before it. Our reporter has seen documents that nobody was supposed to see."
+  },
+  "b2-w2-bc1": {
+    "level": "b2",
+    "week": 2,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sarah",
+    "speaker": "Reporter",
+    "text": "By the time the bridge was closed on the fourth of March, engineers had been raising concerns for a year and a half. The first report, in September the year before, had described the western supports as 'deteriorating but stable'. That phrase matters, because it had allowed the authority to postpone a decision without technically ignoring the warning. A second inspection, in January, had removed the word 'stable'. Nobody, it seems, noticed that it had gone. What we have established is this. The engineers had not been silent. They had written, they had escalated, and by February two of them had asked to be removed from the project. The authority says it received no formal recommendation to close the bridge, and strictly speaking that is true. What it had received was three documents, each one more worried than the last, none of which used the word 'close'. One of them, dated the eleventh of February, ends with a sentence the authority has not explained to us. It reads: we consider our obligation discharged. Engineers do not write that about a bridge they believe is safe. The question, then, is not who failed to speak. It is why a system that had been told three times still needed a fourth."
+  },
+  "b2-w2-bc2": {
+    "level": "b2",
+    "week": 2,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Presenter",
+    "text": "The authority declined to be interviewed. We will keep asking."
+  },
+  "b2-w3-bc0": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "You kept it."
+  },
+  "b2-w3-bc1": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "Of course I kept it. Why would I throw it away?"
+  },
+  "b2-w3-bc2": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "Because you'd told me you had. That's why. In the car, on the way back from the hospital. You said you'd burnt everything."
+  },
+  "b2-w3-bc3": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "I said I'd burnt the letters."
+  },
+  "b2-w3-bc4": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "Oh. The letters."
+  },
+  "b2-w3-bc5": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "They were different. You know they were different. I'd been carrying those letters around for two years, and every time I read them I was worse afterwards. The photograph is just, it's the four of us on a beach. Nobody is angry in it."
+  },
+  "b2-w3-bc6": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "That's exactly what's wrong with it. Sorry. That came out—"
+  },
+  "b2-w3-bc7": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "No. Go on."
+  },
+  "b2-w3-bc8": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "It's just that when I look at it, I don't see the four of us on a beach. I see the morning after. I see you standing in the kitchen not telling me. And I'd been asking you for a week. So when you keep it, and you put it in a drawer where I'd obviously find it—"
+  },
+  "b2-w3-bc9": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "I didn't put it anywhere. It's been in that drawer since we moved. Mona. It's been in that drawer since we moved."
+  },
+  "b2-w3-bc10": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "Do you remember what you actually said to me in that car?"
+  },
+  "b2-w3-bc11": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "I remember what I meant."
+  },
+  "b2-w3-bc12": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "That's not the same thing, and you know it isn't."
+  },
+  "b2-w3-bc13": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "No. It isn't. What I meant was, I'm not going to be the person who keeps a shrine. What I said was, I've burnt everything. Because the second one was shorter, and you were crying, and I wanted the conversation to be over."
+  },
+  "b2-w3-bc14": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "It was over. For eight months it was completely over."
+  },
+  "b2-w3-bc15": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Tarek",
+    "text": "I know."
+  },
+  "b2-w3-bc16": {
+    "level": "b2",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Mona",
+    "text": "Fine. Then I'm the one who went looking."
+  },
+  "b2-w4-bc0": {
+    "level": "b2",
+    "week": 4,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Lecturer",
+    "text": "Let me start with a number that will be wrong. By twenty-thirty, according to the projection on the screen, this city will have added two million people. I want to spend the next few minutes explaining why that figure will be wrong, and why it is still the most useful figure we have. First, what the projection actually says. It does not say two million people will arrive. It says that if the trends of the last twelve years continue, the city will have absorbed roughly that number by the end of the decade. By twenty-thirty we will have been building at the current rate for eighteen years. The projection is a sentence about our own behaviour, not about the future. Second, why it will be wrong. Every projection of this kind has been wrong, in both directions, and for the same reason: people respond to the projection. If the number frightens the planners, they will be building differently within three years, and the number will fall. If it reassures them, they will be doing nothing, and it will rise. A forecast that changes behaviour cannot describe the world it predicts. So why publish it? Because the alternative is not a better number. The alternative is planning with no number at all, which in practice means planning for the city that already exists. And by twenty-thirty, that city will have stopped existing."
+  },
+  "b2-w5-bc0": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "If we'd said something in April, none of this would have happened."
+  },
+  "b2-w5-bc1": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Sami",
+    "text": "That's not true, and you know it isn't. Because if we'd said something in April, they would have moved us both off the project and given it to Hana, and Hana would have signed exactly the same thing. It wouldn't have changed the outcome. It would have changed who was standing here."
+  },
+  "b2-w5-bc2": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "So your position is that it wouldn't have mattered."
+  },
+  "b2-w5-bc3": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Sami",
+    "text": "My position is that it wouldn't have worked. Those aren't the same thing."
+  },
+  "b2-w5-bc4": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "Go on, then."
+  },
+  "b2-w5-bc5": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Sami",
+    "text": "Look. If I'd known in April what I know now, I'd have gone to the board directly. I would have. But in April all I had was a feeling that the numbers were too clean."
+  },
+  "b2-w5-bc6": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "You told me they were too clean. In the car park. You said nobody's costs come in that tidy."
+  },
+  "b2-w5-bc7": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Sami",
+    "text": "I did say that."
+  },
+  "b2-w5-bc8": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "And I said we should check. And you said, let's see what the second quarter looks like."
+  },
+  "b2-w5-bc9": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Sami",
+    "text": "Which was a reasonable thing to say in April."
+  },
+  "b2-w5-bc10": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "It was a reasonable thing to say if you wanted to not know for another three months. That's what it was for. If either of us had genuinely thought the numbers were fine, we wouldn't have needed to wait for the second quarter to find out."
+  },
+  "b2-w5-bc11": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Sami",
+    "text": "That's a hard way to put it."
+  },
+  "b2-w5-bc12": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "It's the accurate way to put it. So don't tell me it wouldn't have worked. Tell me we didn't try."
+  },
+  "b2-w5-bc13": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Sami",
+    "text": "All right. We didn't try. That doesn't make it better."
+  },
+  "b2-w5-bc14": {
+    "level": "b2",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Layla",
+    "text": "No. But it makes it ours."
+  },
+  "b2-w6-bc0": {
+    "level": "b2",
+    "week": 6,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_bella",
+    "speaker": "Lecturer",
+    "text": "Historians are trained to distrust a certain kind of sentence, and I want to defend it anyway. The sentence is: if that had not happened, we would not be here. Notice the shape of it. The condition is in the past; the consequence is in the present. If the treaty had been signed in eighteen seventy, this region would be a single country today. If she had not missed that train, you would not exist. These are mixed conditionals, and they are the natural grammar of historical explanation, which is why historians use them constantly while officially disapproving of them. The objection is reasonable. We cannot test them. If the treaty had been signed, a thousand other things would also have changed, and we cannot hold those still while we vary the one we are interested in. So the sentence looks like an argument and behaves like a story. But consider the alternative. If we refuse all counterfactuals, we lose the ability to say that anything mattered. To say that a decision was important is to say that the present would be different without it. There is no other content to the word 'important'. A history with no counterfactuals is not a more rigorous history; it is a chronicle, a list of things that happened in order, and it cannot distinguish the treaty from the weather that afternoon. So: use them, and say out loud that you are using them. The danger is not the sentence. The danger is the sentence pretending to be a fact."
+  },
+  "b2-w7-bc0": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Hana",
+    "text": "How long?"
+  },
+  "b2-w7-bc1": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Father",
+    "text": "Since March."
+  },
+  "b2-w7-bc2": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Hana",
+    "text": "March. Since March, and you told Amir."
+  },
+  "b2-w7-bc3": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Father",
+    "text": "I wish you wouldn't look at me like that. I didn't tell Amir. Amir works at the hospital. Amir found out, which is not the same thing."
+  },
+  "b2-w7-bc4": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Hana",
+    "text": "If only you'd said something. One sentence. Hana, I've had some tests."
+  },
+  "b2-w7-bc5": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Father",
+    "text": "And then what? You'd have come back from Dubai, you'd have lost the contract, and you'd have sat in this flat for six months watching me have tests. I wish I could tell you I'd have handled it better than you would have. I wouldn't."
+  },
+  "b2-w7-bc6": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Hana",
+    "text": "That was my decision to make."
+  },
+  "b2-w7-bc7": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Father",
+    "text": "Yes. It was. That's the part I got wrong. I keep wishing I'd been the sort of father you could have told bad news to. Then maybe I'd have been the sort you could hear it from."
+  },
+  "b2-w7-bc8": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Hana",
+    "text": "Baba—"
+  },
+  "b2-w7-bc9": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Father",
+    "text": "Don't. Not yet. Ask me the medical question. You've been holding it since you walked in."
+  },
+  "b2-w7-bc10": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Hana",
+    "text": "What did they say on Thursday?"
+  },
+  "b2-w7-bc11": {
+    "level": "b2",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Father",
+    "text": "They said it's operable. They said Tuesday. I wish it were sooner. And before you say it: yes, I have already told your mother, and no, I did not tell her first. She asked me the same question you did, in the same voice, standing in the same place. You are more like her than either of you would like."
+  },
+  "b2-w8-bc0": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Host",
+    "text": "Last night's interview has been described as a collapse, a trap and, by one newspaper this morning, as the most honest four minutes in a decade. Rania, you were in the room. What was she actually asked?"
+  },
+  "b2-w8-bc1": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sarah",
+    "speaker": "Rania",
+    "text": "She was asked three things, and the order matters. She was first asked whether the department had approved the payments. She said it had not. She was then asked whether she personally had seen the file. She said she couldn't recall. And she was finally asked, and this is the question everyone has forgotten, whether she would resign if it turned out that she had. She said she would."
+  },
+  "b2-w8-bc2": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Host",
+    "text": "Karim, why has that third question disappeared from the coverage?"
+  },
+  "b2-w8-bc3": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "Because it doesn't fit either story. Those who want her gone are reporting that she denied everything, which she didn't; she made a commitment. Those defending her are reporting that she was ambushed, which she wasn't; she was asked a hypothetical and she chose to answer it. She could have said 'I won't deal in hypotheticals'. Ministers say that eleven times a day. She didn't."
+  },
+  "b2-w8-bc4": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sarah",
+    "speaker": "Rania",
+    "text": "I would add one thing. The word 'approved' was doing a lot of work in that first answer. She was asked whether the department had approved the payments, and she said it had not. Nobody asked her whether the payments had been made. Those are different questions, and she answered the one she was given, precisely and, as far as I can tell, truthfully."
+  },
+  "b2-w8-bc5": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "Which is what makes the interview interesting rather than damaging. She was not caught out. She was unusually careful, and then, in the last thirty seconds, she was not."
+  },
+  "b2-w8-bc6": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sarah",
+    "speaker": "Rania",
+    "text": "She also asked the interviewer a question, which nobody has reported. She asked him whether he had the file."
+  },
+  "b2-w8-bc7": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Host",
+    "text": "And?"
+  },
+  "b2-w8-bc8": {
+    "level": "b2",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sarah",
+    "speaker": "Rania",
+    "text": "He said he did."
+  },
+  "b2-w9-bc0": {
+    "level": "b2",
+    "week": 9,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Anchor",
+    "text": "Good evening. Water pressure has been restored to most of the eastern districts tonight, twelve hours after a main was ruptured during construction work. Around forty thousand homes were affected. The company says the pipe had been marked on the plans, and that the contractor has been suspended while the incident is investigated. Our correspondent is in Zeitoun."
+  },
+  "b2-w9-bc1": {
+    "level": "b2",
+    "week": 9,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Correspondent",
+    "text": "The pipe was cut at about six this morning. Within an hour the street had been closed, and by nine the water had been shut off across four districts. What has angered people here is not the accident, because accidents happen. It is that they were not told. The company's message was sent to registered mobile numbers only, and in this district most accounts were opened before that system existed. So thousands of people had their supply cut with no warning at all. Several residents told me they had their tanks filled by neighbours who happened to have heard."
+  },
+  "b2-w9-bc2": {
+    "level": "b2",
+    "week": 9,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Anchor",
+    "text": "And the repair itself?"
+  },
+  "b2-w9-bc3": {
+    "level": "b2",
+    "week": 9,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Correspondent",
+    "text": "The section is being replaced tonight rather than patched, which is why it has taken longer. It should be finished by morning. Schools in the four districts have been told to open as normal, and the two hospitals were never affected; they have their own tanks. The wider question, how many other pipes are marked on plans that contractors are not required to check, has not been answered, and it was not asked at this afternoon's press conference either."
+  },
+  "b2-w10-bc0": {
+    "level": "b2",
+    "week": 10,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_isabella",
+    "speaker": "Narrator",
+    "text": "For eleven years the case was closed. It was reopened in twenty-nineteen, not because new evidence appeared, but because someone re-read the old evidence and noticed what it could not mean. Here is the reasoning, and I want you to follow it rather than accept it. The gate was locked from the inside. So whoever left must have had a key, or must have climbed the eastern wall. The wall was wet that night and unmarked in the morning, so they cannot have climbed it. Therefore they must have had a key. Eleven people had keys. But the original investigation had reached a different conclusion. It decided the gate might have been locked afterwards, by a caretaker who could simply have forgotten doing it. That is not impossible. Caretakers do forget. And once you allow that, the key stops mattering and the eleven names dissolve. This is the part that should trouble you. Both lines of reasoning are valid. One assumes the physical evidence is reliable and human memory is not; the other assumes the opposite. Neither can be tested now. What decided the case in nineteen ninety-eight was not evidence. It was which of those two assumptions the investigating officer found more natural, and he had been a caretaker himself, twenty years earlier, in a building with a gate he had sometimes forgotten to lock. He may never have noticed that about his own reasoning. Most of us don't."
+  },
+  "b2-w11-bc0": {
+    "level": "b2",
+    "week": 11,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Lecturer",
+    "text": "The building we are looking at, begun in nineteen thirty-two and never completed, is the most instructive failure in the city. Its architect, who had never built anything above three storeys, won the competition with a drawing rather than a plan, a distinction which the committee, most of whom were merchants, did not recognise as important. The design, admired even now for its staircase, contains a mistake visible only in section. The light wells, intended to serve the inner rooms, narrow as they descend. Anyone standing on the ground floor, looking up, sees a bright rectangle of sky. Anyone in the rooms beside them sees almost nothing. The architect, drawing in elevation, never drew the section that would have shown him this. Two things follow, neither of them about architecture. First, the failure was not one of talent; the staircase is genuinely beautiful. It was a failure of representation. He was working in a medium which could not display the error he was making. Second, the committee's mistake was the more serious one, and it is the one we repeat. They judged the thing they were shown, rather than asking what they were not being shown. Every profession has a section drawing it does not habitually make. Finding yours, which is difficult and unrewarding, is most of what expertise consists of."
+  },
+  "b2-w12-bc0": {
+    "level": "b2",
+    "week": 12,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Lecturer",
+    "text": "There is a small group of English verbs which change meaning depending on what follows them, and I want to use them to make a point about memory rather than about grammar. Compare: I remembered to lock the door, and I remembered locking the door. The first is about an intention that was carried out. The second is about a past event being recalled. Native speakers use them correctly without being able to explain the difference, which is normal, and learners often produce the second when they mean the first, which is not a small error. It is the difference between a plan and a memory. Now the interesting part. Psychologists studying false memory have found that the second construction is unusually dangerous. When people are asked do you remember locking the door, they reconstruct the event, and reconstruction feels identical to recall. When they are asked did you intend to lock the door, they do not reconstruct anything; they consult a plan, and plans are easier to check. So the grammatical distinction that learners find fiddly turns out to mark a real difference in how reliable the answer is. I am not going to tell you that this makes the grammar easier. It does not. But it explains why the distinction survived. Languages tend to keep the contrasts that do work, and the contrast between having intended something and having witnessed it does a great deal of work."
+  },
+  "b2-w13-bc0": {
+    "level": "b2",
+    "week": 13,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Host",
+    "text": "Every guest on this programme this month has told me what most people want. Dalia, you actually measure it."
+  },
+  "b2-w13-bc1": {
+    "level": "b2",
+    "week": 13,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_bella",
+    "speaker": "Dalia",
+    "text": "And that is why I almost never use the phrase. 'Most people' is doing something dishonest in nearly every sentence it appears in. Take last week's figure: sixty-one per cent support the scheme. That is most people, in a sense. But of those sixty-one, fewer than half could describe what the scheme does, and a third said they would oppose it if it raised their own costs, which it will. So 'most people support it' is both true and useless."
+  },
+  "b2-w13-bc2": {
+    "level": "b2",
+    "week": 13,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Minister",
+    "text": "With respect, all of politics works like that. Neither of us has a better instrument. Every mandate in every parliament rests on a number that thin."
+  },
+  "b2-w13-bc3": {
+    "level": "b2",
+    "week": 13,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_bella",
+    "speaker": "Dalia",
+    "text": "I agree, and that is not a defence. It is the problem. The honest sentence is longer: a majority express support, few understand the detail, and support falls sharply when costs are mentioned. Nobody puts that on a poster."
+  },
+  "b2-w13-bc4": {
+    "level": "b2",
+    "week": 13,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Minister",
+    "text": "Because a poster with that on it loses."
+  },
+  "b2-w13-bc5": {
+    "level": "b2",
+    "week": 13,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Host",
+    "text": "So is there any question where the answer is stable?"
+  },
+  "b2-w13-bc6": {
+    "level": "b2",
+    "week": 13,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_bella",
+    "speaker": "Dalia",
+    "text": "Yes. Almost all of them, if you ask twice, six months apart, and count only the people who say the same thing both times. That group is usually about a quarter. Every serious campaign is fought over the other three quarters, and each of them will tell you that they are most people."
+  },
+  "b2-w14-bc0": {
+    "level": "b2",
+    "week": 14,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_lewis",
+    "speaker": "Lecturer",
+    "text": "I want to make an argument in four moves, and I want to signal each move as I make it, because the signalling is the lesson. First, the claim. Discourse markers are not decoration. 'However' is not a more formal 'but'. It performs a different act: it tells the listener that what follows will not merely differ from what preceded, but will outweigh it. Second, the evidence. When we removed the markers from recorded lectures and played them to students, comprehension of the individual sentences was unaffected. Recall of the argument's direction fell by roughly forty per cent. The students could tell you what had been said. They could not tell you which side the speaker was on. Third, and this is the concession, which I am flagging deliberately, the effect is smaller in writing. Readers can go back. Listeners cannot. So it is possible to write reasonably well while using markers carelessly, which is why many fluent writers are poor lecturers. Nevertheless, and here is the fourth move, the conclusion is stronger than the concession. If your listener cannot reconstruct the shape of your argument, you have not made an argument; you have produced a sequence of true sentences. And notice what I did just then. I said 'nevertheless', and you knew, before you heard any of the content, that the concession was about to be overruled. That is the whole mechanism, and it cost me one word."
+  },
+  "b2-w15-bc0": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Samira",
+    "text": "It wasn't the audit that worried me. It was how calm you were about the audit."
+  },
+  "b2-w15-bc1": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "I'm calm about a lot of things."
+  },
+  "b2-w15-bc2": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Samira",
+    "text": "Not about this. What you do when something's wrong is you tidy. You alphabetise. For three weeks you didn't tidy anything."
+  },
+  "b2-w15-bc3": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Nour",
+    "text": "Can I just—"
+  },
+  "b2-w15-bc4": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Samira",
+    "text": "No. Karim. It was you who called them."
+  },
+  "b2-w15-bc5": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "It was me who called them."
+  },
+  "b2-w15-bc6": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Nour",
+    "text": "Wait, you—"
+  },
+  "b2-w15-bc7": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "What I couldn't do was watch it happen twice. That's all it was. It wasn't loyalty to the company and it certainly wasn't courage. I did it in a car park at eleven at night and I was sick afterwards."
+  },
+  "b2-w15-bc8": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Samira",
+    "text": "Why didn't you tell me?"
+  },
+  "b2-w15-bc9": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "Because what you'd have done is come with me. And then it would have been the two of us in that car park, and one of us needed to still be here in six months."
+  },
+  "b2-w15-bc10": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Samira",
+    "text": "That wasn't yours to decide."
+  },
+  "b2-w15-bc11": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "No. It's the second time this year someone has told me that."
+  },
+  "b2-w15-bc12": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Nour",
+    "text": "It was Hana, wasn't it. The first time."
+  },
+  "b2-w15-bc13": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "It was Hana."
+  },
+  "b2-w15-bc14": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Nour",
+    "text": "Does she know you did it?"
+  },
+  "b2-w15-bc15": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "What Hana knows is that somebody did it, and that whoever it was waited eight months longer than she did. She hasn't asked me. I think that's deliberate."
+  },
+  "b2-w15-bc16": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Samira",
+    "text": "It was her they moved to the Alexandria office, wasn't it."
+  },
+  "b2-w15-bc17": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "It was. And what I keep coming back to is that nobody moved me anywhere. Which tells you something about how much they think I matter, and it isn't flattering."
+  },
+  "b2-w15-bc18": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Samira",
+    "text": "Right. So what happens on Monday?"
+  },
+  "b2-w15-bc19": {
+    "level": "b2",
+    "week": 15,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "Karim",
+    "text": "On Monday, nothing happens. It's what happens in March that I can't tell you about."
+  },
+  "b2-w16-bc0": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Interviewer",
+    "text": "Ms Farid, thank you for making time. Could you outline for us the rationale behind the decision to withdraw the product?"
+  },
+  "b2-w16-bc1": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Ms Farid",
+    "text": "Certainly. Following a routine review, we concluded that the product no longer aligned with our long-term strategic priorities, and we took the decision to discontinue it in an orderly manner."
+  },
+  "b2-w16-bc2": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Interviewer",
+    "text": "And the reports of a safety concern?"
+  },
+  "b2-w16-bc3": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Ms Farid",
+    "text": "I'm not in a position to comment on speculation."
+  },
+  "b2-w16-bc4": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Interviewer",
+    "text": "Thank you. Right, that's us. We're done. Ahmed, you can put that down."
+  },
+  "b2-w16-bc5": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Ms Farid",
+    "text": "Is that thing off?"
+  },
+  "b2-w16-bc6": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Interviewer",
+    "text": "It's off."
+  },
+  "b2-w16-bc7": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Ms Farid",
+    "text": "Right, look. Between us, it fell apart. Not the product, the whole thing. We'd been putting off the review for a year and a half because nobody wanted to be the one who brought it up, and then someone finally did, and it turned out we'd all been quietly assuming somebody else had checked. Nobody had."
+  },
+  "b2-w16-bc8": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Interviewer",
+    "text": "That's a much better answer."
+  },
+  "b2-w16-bc9": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Ms Farid",
+    "text": "It's a much worse answer, which is exactly why you got the other one. I'm not going to be the person who says 'nobody had checked' on camera."
+  },
+  "b2-w16-bc10": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Interviewer",
+    "text": "You realise the strategic-priorities line is what everyone will run."
+  },
+  "b2-w16-bc11": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Ms Farid",
+    "text": "Of course they'll run it. It's clean, it's short, and it doesn't require anybody to ring me back. And in eighteen months, when somebody digs it up and puts it next to whatever comes out of the review, I'll be the one explaining why I said it. I know exactly what I've just bought and what it cost."
+  },
+  "b2-w16-bc12": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Interviewer",
+    "text": "Off the record, then. Will you pull the next one earlier?"
+  },
+  "b2-w16-bc13": {
+    "level": "b2",
+    "week": 16,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Ms Farid",
+    "text": "We'll see. Ask me again in a year and I'll give you a sentence you can use."
   }
 }

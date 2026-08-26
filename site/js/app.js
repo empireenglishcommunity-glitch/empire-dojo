@@ -23,7 +23,18 @@ const TTS = {
     speechSynthesis.onvoiceschanged = loadVoices;
   },
 
-  speak(text, rate = null) {
+  /**
+   * Speak `text`. `onDone` (Phase 11D) is invoked when the utterance
+   * finishes OR errors, which is what lets KokoroAudio.playSequence chain
+   * one segment to the next when it is running on the browser-TTS fallback
+   * path rather than on pre-generated MP3s. Optional and backwards
+   * compatible: every existing caller passes one or two arguments.
+   *
+   * Note that speechSynthesis.cancel() (i.e. TTS.stop()) also fires onend,
+   * so any sequencing built on this callback must guard against advancing
+   * after a deliberate stop -- playSequence does, via its cancel flag.
+   */
+  speak(text, rate = null, onDone = null) {
     this.stop();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.voice = this.voice;
@@ -31,7 +42,12 @@ const TTS = {
     utterance.pitch = 1;
     utterance.lang = 'en-US';
     this.speaking = true;
-    utterance.onend = () => { this.speaking = false; };
+    const finish = () => {
+      this.speaking = false;
+      if (typeof onDone === 'function') onDone();
+    };
+    utterance.onend = finish;
+    utterance.onerror = finish;
     speechSynthesis.speak(utterance);
   },
 
@@ -52,6 +68,7 @@ const TTS = {
 const KokoroAudio = {
   _current: null,
   _fallbackText: null,
+  _seqCancelled: false,
   rate: 0.75,
 
   /**
@@ -91,11 +108,75 @@ const KokoroAudio = {
    * in case the browser-TTS path was the one actually playing).
    */
   stop() {
+    // Phase 11D: cancel any running sequence FIRST. TTS.stop() below fires
+    // the utterance's onend, which is the same callback playSequence uses to
+    // advance -- without this flag, pressing Stop mid-sequence on the
+    // browser-TTS fallback path would start the next segment instead.
+    this._seqCancelled = true;
     if (this._current) {
       this._current.pause();
       this._current = null;
     }
     TTS.stop();
+  },
+
+  /**
+   * Phase 11D — play a LIST of clips back to back as one continuous piece of
+   * audio.
+   *
+   * This is what makes extended listening possible at all. The five CEFR
+   * descriptors this exercise exists for include "most TV news ... and films
+   * in standard dialect" and "main points of many radio or TV programmes",
+   * and a news bulletin or a two-person scene cannot be one voice reading one
+   * blob: each speaker turn is its own clip with its own Kokoro voice, and
+   * they have to play in order without the student pressing anything between
+   * them.
+   *
+   * `items` is [{id, text}]. Each item independently falls back to browser
+   * TTS if its MP3 is missing, so a script works end to end before Kokoro has
+   * been run over it -- and a single failed clip degrades that one turn
+   * instead of breaking the whole sequence.
+   *
+   * opts: {rate, onSegment(index), onEnd()}.
+   */
+  playSequence(items, opts = {}) {
+    this.stop();
+    this._seqCancelled = false;
+    if (!Array.isArray(items) || items.length === 0) return;
+    if (opts.rate) this.rate = parseFloat(opts.rate);
+    const onSegment = typeof opts.onSegment === 'function' ? opts.onSegment : null;
+    const onEnd = typeof opts.onEnd === 'function' ? opts.onEnd : null;
+
+    const playAt = (i) => {
+      if (this._seqCancelled) return;
+      if (i >= items.length) {
+        this._current = null;
+        if (onEnd) onEnd();
+        return;
+      }
+      if (onSegment) onSegment(i);
+      const item = items[i] || {};
+      const next = () => playAt(i + 1);
+      const audio = new Audio(`/audio/${item.id}.mp3`);
+      this._current = audio;
+      audio.playbackRate = this.rate;
+      // Guard against double-advancing: an <audio> element can fire both
+      // 'error' and a rejected play() promise for the same failure.
+      let handed = false;
+      const fallback = () => {
+        if (handed || this._seqCancelled) return;
+        handed = true;
+        TTS.speak(item.text || '', this.rate, next);
+      };
+      audio.addEventListener('error', fallback);
+      audio.addEventListener('ended', () => {
+        if (handed || this._seqCancelled) return;
+        handed = true;
+        next();
+      });
+      audio.play().catch(fallback);
+    };
+    playAt(0);
   },
 
   /**

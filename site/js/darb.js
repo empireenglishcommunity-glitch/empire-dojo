@@ -428,7 +428,7 @@ const DarbExercise = {
     if (!DarbSession.hasSession()) return;
 
     // Detect level/week/day/exercise from URL
-    const match = window.location.pathname.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking|grammar|reading|mediation|review)/);
+    const match = window.location.pathname.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking|grammar|reading|mediation|review|broadcast)/);
     if (!match) return;
 
     const [, level, week, day, exercise] = match;
@@ -558,7 +558,7 @@ const DarbRecording = {
     if (!DarbSession.hasSession()) return;
 
     // Detect level/week/day/exercise from URL
-    const match = window.location.pathname.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking|grammar|reading|mediation|review)/);
+    const match = window.location.pathname.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)\/(accent|shadowing|listening|vocab|speaking|grammar|reading|mediation|review|broadcast)/);
     if (!match) return;
 
     const [, level, week, day, exercise] = match;
@@ -1015,7 +1015,7 @@ const DarbDayProgress = {
     }
 
     // This exercise's own "Done" checkbox → server-authoritative.
-    const exMatch = window.location.pathname.match(/\/(accent|shadowing|listening|vocab|speaking|grammar|reading|mediation|review)/);
+    const exMatch = window.location.pathname.match(/\/(accent|shadowing|listening|vocab|speaking|grammar|reading|mediation|review|broadcast)/);
     if (exMatch) {
       const exKey = exMatch[1] === 'shadowing' ? 'shadow' : exMatch[1];
       const done = (exercises[exKey] || 0) > 0;

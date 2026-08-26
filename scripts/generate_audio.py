@@ -67,6 +67,9 @@ VOICES = [
     ("bm_george", "British Male, authoritative"),
     ("bm_lewis", "British Male, warm"),
 ]
+# VOICES is a list of (id, description) pairs, so membership tests need the ids
+# on their own -- `voice not in VOICES` would be true for every real voice.
+VOICE_IDS = {v for v, _ in VOICES}
 
 
 def log(msg):
@@ -87,6 +90,25 @@ def list_voices():
     print("\n  Usage: python3 generate_audio.py --voice am_adam\n")
 
 
+# Seconds to wait for one synthesis. Kokoro on CPU is roughly real-time, so the
+# ceiling has to scale with how much speech is being asked for. The old fixed 60s
+# was already close to the limit for the longest shadowing passage (244 words,
+# ~100s of audio), and Phase 11D's extended-listening clips are deliberately
+# long. A timeout is NOT a harmless retry here: the clip is simply never written,
+# generate_audio.py exits 0 anyway, and the page silently degrades to the
+# browser's robot voice for a full minute of listening comprehension.
+REQUEST_TIMEOUT_BASE = 120
+REQUEST_TIMEOUT_PER_WORD = 1.5
+REQUEST_TIMEOUT_MAX = 900
+
+
+def request_timeout_for(text):
+    """A generous, length-aware socket timeout for one synthesis request."""
+    words = len((text or "").split())
+    return min(REQUEST_TIMEOUT_MAX,
+               REQUEST_TIMEOUT_BASE + int(words * REQUEST_TIMEOUT_PER_WORD))
+
+
 def call_kokoro(text, voice):
     payload = json.dumps({
         "model": "kokoro",
@@ -100,7 +122,7 @@ def call_kokoro(text, voice):
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    with urllib.request.urlopen(req, timeout=request_timeout_for(text)) as resp:
         return resp.read()
 
 
@@ -182,13 +204,26 @@ def main():
             log(f"SKIP  {clip_id} (no text)")
             continue
 
-        log(f"GEN   {clip_id} -- \"{text[:60]}{'...' if len(text) > 60 else ''}\"")
+        # PER-CLIP VOICE (Phase 11D). --voice remains the default for every clip
+        # that does not name one, so all 630 shadowing clips are unaffected. But
+        # an extended-listening script is a list of speaker turns, and a
+        # two-person scene rendered in one voice is one person talking to
+        # themselves -- which cannot teach "the majority of films in standard
+        # dialect". A manifest entry may therefore pin its own voice, and
+        # `--voice` must not override it.
+        voice = meta.get("voice") or args.voice
+        if voice not in VOICE_IDS:
+            print(f"  WARNING: {clip_id} names unknown voice {voice!r}; "
+                  f"falling back to {args.voice}")
+            voice = args.voice
+
+        log(f"GEN   {clip_id} [{voice}] -- \"{text[:60]}{'...' if len(text) > 60 else ''}\"")
         try:
-            audio_bytes = call_kokoro(text, args.voice)
+            audio_bytes = call_kokoro(text, voice)
             out_path.write_bytes(audio_bytes)
             out_manifest["files"][clip_id] = {
                 **meta,
-                "voice": args.voice,
+                "voice": voice,
                 "file_size_bytes": len(audio_bytes),
                 "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             }
@@ -208,6 +243,39 @@ def main():
     log(f"Skipped:   {skipped}")
     log(f"Failed:    {failed}")
     log(f"Manifest:  {manifest_path}")
+
+    # CONSISTENCY CHECK. Previously this script exited 0 even when clips had
+    # failed, so a timed-out synthesis was invisible: the MP3 was simply absent,
+    # the page fell back to the browser's robot voice, and nothing anywhere
+    # said so. For a minute of listening comprehension that is not a graceful
+    # degradation, it is a silent quality collapse -- so missing and empty
+    # clips are now reported by id and the exit code is non-zero.
+    missing, empty = [], []
+    for clip_id, meta in needed.items():
+        if not (meta.get("text") or "").strip():
+            continue
+        path = OUTPUT_DIR / f"{clip_id}.mp3"
+        if not path.exists():
+            missing.append(clip_id)
+        elif path.stat().st_size == 0:
+            empty.append(clip_id)
+
+    if missing or empty:
+        log_header("INCOMPLETE")
+        if missing:
+            print(f"  {len(missing)} clip(s) have NO mp3 on disk:")
+            for clip_id in missing[:20]:
+                print(f"    - {clip_id}")
+            if len(missing) > 20:
+                print(f"    ... and {len(missing) - 20} more")
+        if empty:
+            print(f"  {len(empty)} clip(s) are zero bytes: {', '.join(empty[:20])}")
+        print("\n  Pages for these clips will fall back to the browser voice.")
+        print("  Re-run this script to fill the gaps.\n")
+        print("===========================================================\n")
+        sys.exit(1)
+
+    log("Every clip in the manifest has a non-empty mp3 on disk")
     print("\n===========================================================\n")
 
 

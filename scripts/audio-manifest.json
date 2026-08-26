@@ -5146,5 +5146,95 @@
     "voice": "bf_emma",
     "speaker": "Ms Farid",
     "text": "We'll see. Ask me again in a year and I'll give you a sentence you can use."
+  },
+  "a1-w1-bc0": {
+    "level": "a1",
+    "week": 1,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Omar",
+    "text": "Hello. My name is Omar. I am from Cairo, in Egypt. I am twenty-five years old. I am a student. This is my friend. His name is Ali. He is from Alexandria. He is not a student. He is a teacher. We are in the same English class. Our class is on Monday and Wednesday. It is at six o'clock. Ali is a very good friend. Nice to meet you. Goodbye!"
+  },
+  "a1-w2-bc0": {
+    "level": "a1",
+    "week": 2,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_bella",
+    "speaker": "Salma",
+    "text": "This is my family. I have got two sisters and one brother. My brother's name is Karim. He is ten years old. My sisters are Hana and Nour. Hana is my big sister. She has got a small car. Nour is my little sister. She has got a cat. Its name is Mimi. My mother is a nurse. My father works in a shop. Our house is small, but it is very happy."
+  },
+  "a1-w3-bc0": {
+    "level": "a1",
+    "week": 3,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bf_emma",
+    "speaker": "Teacher",
+    "text": "Good morning. Here is your day. There are three classes today. The first class is at nine o'clock. There is a break at eleven. The second class is at half past eleven. Lunch is at one o'clock. The last class is at three. There are twenty students in the class today. Tomorrow is Friday, and there are no classes on Friday. Have a good day!"
+  },
+  "a1-w4-bc0": {
+    "level": "a1",
+    "week": 4,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_michael",
+    "speaker": "A man in the street",
+    "text": "Excuse me? Yes. Listen. Go out of this building. Turn left. Walk to the end of the street. The pharmacy is next to the bank. It is opposite the big mosque. It is not far. Five minutes. There is a bus stop in front of it. If you see the school, you are too far. Go back. The pharmacy is open now. Thank you!"
+  },
+  "a1-w5-bc0": {
+    "level": "a1",
+    "week": 5,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sky",
+    "speaker": "Sami",
+    "text": "I get up at six o'clock every day. I drink tea and I eat bread with cheese. I go to work at seven. I work in an office with my friends. We start at eight. We have lunch at one. I finish work at four. I come home and I sleep for one hour. In the evening I study English. I go to bed at eleven. On Friday I do not work. I visit my family."
+  },
+  "a1-w6-bc0": {
+    "level": "a1",
+    "week": 6,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_nicole",
+    "speaker": "Youssef",
+    "text": "My sister Hana likes food very much. She eats rice and chicken every day. She does not eat fish. She drinks coffee in the morning and tea in the evening. She cooks with my mother on Friday. They make some soup and some bread. Hana wants a big kitchen, but our kitchen is small. She says, one day I have a restaurant. I think she can do it."
+  },
+  "a1-w7-bc0": {
+    "level": "a1",
+    "week": 7,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "bm_george",
+    "speaker": "Market announcer",
+    "text": "Welcome to the market. Listen to today's prices. Bread is three pounds. How much is the rice? The rice is twelve pounds for one kilo. The tomatoes are eight pounds. The eggs are forty pounds for thirty eggs. Tea is twenty-five pounds. We have some apples today, and they are fifteen pounds. The market is open from seven in the morning to seven in the evening. Come early!"
+  },
+  "a1-w8-bc0": {
+    "level": "a1",
+    "week": 8,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_sarah",
+    "speaker": "Mona",
+    "text": "My friend Nadia is tall and she has got long black hair. She is twenty years old. She is very kind and she is always happy. She has got a big blue bag. Her bag is old, but she loves it. Nadia has got a new phone. It is small and white. She lives in a big flat with her family. Her flat is near my house. Nadia is a good friend."
+  },
+  "a1-w9-bc0": {
+    "level": "a1",
+    "week": 9,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "am_adam",
+    "speaker": "Ahmed",
+    "text": "Hello, I am Ahmed. I can swim and I can drive a car. I can't cook. My food is not good! I like playing football with my friends on Friday. I love watching films at home. I don't like running. My brother can play the guitar, but I can't. He likes singing. I want to learn. Can you play music? Tell me!"
+  },
+  "a1-w10-bc0": {
+    "level": "a1",
+    "week": 10,
+    "day": 0,
+    "kind": "broadcast",
+    "voice": "af_bella",
+    "speaker": "Nour",
+    "text": "Yesterday was my birthday. I was very happy. My family was at home with me. My mother was in the kitchen all morning. There was a big cake on the table. It was chocolate. My friends were here at six o'clock. We were together for three hours. There were ten people in my small flat! My little brother was very excited. It was a good day. Today I am tired, but I am happy."
   }
 }

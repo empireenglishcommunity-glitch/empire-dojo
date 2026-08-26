@@ -1250,8 +1250,295 @@ def gen_vocab(level, week, day, theme, words):
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
+def broadcast_audio_id(level, week, index):
+    """Stable clip id for one SEGMENT of a week's extended-listening script.
+
+    Separate from audio_id() because extended listening is WEEKLY, not daily
+    (one script per week, played on any day), and because one script is a list
+    of speaker turns rather than a single passage -- a news bulletin or a
+    two-person scene needs one clip per voice. Hence `{level}-w{week}-bc{i}`
+    with no day component: seven days share the week's clips instead of
+    generating seven identical copies of the same minute of audio.
+    """
+    return f"{level}-w{week}-bc{index}"
+
+
+def gen_broadcast(level, week, day, theme, bc):
+    """Phase 11D: EXTENDED LISTENING — the last CEFR gap, and the only one that
+    authored text could never close.
+
+    After reading and mediation shipped, five descriptors were still taught by
+    no week:
+
+        A2.R.2  main point of short, clear messages and ANNOUNCEMENTS
+        B1.R.1  main points of clear standard SPEECH on familiar matters
+        B1.R.2  main points of many RADIO or TV programmes
+        B2.R.1  extended SPEECH and LECTURES, complex lines of argument
+        B2.R.2  most TV NEWS and current-affairs programmes, and FILMS
+
+    The existing listening page is word-level dictation: five words a week,
+    typed back. Its unit is smaller than the unit these descriptors are about,
+    so no amount of it can evidence them. This page plays roughly a minute of
+    connected speech instead.
+
+    THE ONE RULE THAT MAKES IT HONEST: the transcript and the detail questions
+    stay LOCKED until the main-point question has been answered. If the
+    transcript were on screen from the start, a student could read instead of
+    listen, the exercise would be reading with a play button, and it could not
+    honestly evidence a listening descriptor. The lock is what the descriptor
+    claim rests on, so it is enforced here rather than left as advice.
+
+    Completion is by genuine engagement: the gist question plus every detail
+    question must be answered before the exercise auto-completes.
+    """
+    theme = esc_html(theme)
+    if not bc:
+        return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Extended Listening Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎧 {bl("Extended Listening", "الاستماع الممتد")}</h1><p class="subtitle">Week {week} • Day {day}</p></div>
+<div class="card"><p>{bl("The extended listening for this week is not published yet.", "الاستماع الممتد للأسبوع ده لسه مش منشور.")}</p></div>
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
+{bottom_nav('broadcast')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+    title = esc_html(bc.get("title", ""))
+    title_ar = esc_html(bc.get("title_ar", ""))
+    gist_ar = esc_html(bc.get("gist_ar", ""))
+    fmt = esc_html((bc.get("format") or "recording").replace("_", " "))
+    segments = [s for s in (bc.get("segments") or []) if (s.get("text") or "").strip()]
+    word_count = sum(len((s.get("text") or "").split()) for s in segments)
+    # ~150 words per minute of clear delivery — an honest estimate, and it sets
+    # the student's expectation before they press play.
+    approx_sec = max(10, int(round(word_count / 150 * 60)))
+
+    before = bc.get("before_listening") or {}
+    before_en = esc_html(before.get("en", ""))
+    before_ar = esc_html(before.get("ar", ""))
+
+    # --- the player: speaker labels only, never the words ---
+    seq = [{"id": broadcast_audio_id(level, week, i), "text": s.get("text", "")}
+           for i, s in enumerate(segments)]
+    seq_json = safe_json_for_script_tag(seq)
+    turn_rows = ""
+    if len(segments) > 1:
+        for i, s in enumerate(segments):
+            spk = esc_html(s.get("speaker") or f"Voice {i+1}")
+            spk_ar = esc_html(s.get("speaker_ar") or "")
+            turn_rows += (
+                f'<div class="bc-turn" data-si="{i}" style="display:flex;align-items:center;'
+                f'gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">'
+                f'<span class="bc-turn-dot" style="width:8px;height:8px;border-radius:50%;'
+                f'background:var(--border);flex:0 0 auto"></span>'
+                f'<b style="font-size:0.9rem">{spk}</b>'
+                + (f'<span class="arabic-text" lang="ar" dir="rtl" style="font-size:0.85rem">{spk_ar}</span>'
+                   if spk_ar else '')
+                + f'<button class="btn btn-sm btn-outline" style="margin-inline-start:auto;padding:2px 8px"'
+                f' onclick="Broadcast.playFrom({i})">▶️</button></div>')
+        turn_rows = (f'<div class="card"><h2>🗣️ {bl("Who speaks", "مين بيتكلم")}</h2>'
+                     f'<p style="color:var(--text-secondary);font-size:0.85rem;margin:0 0 8px">'
+                     f'{bl("The order of the voices — not the words.", "ترتيب الأصوات — مش الكلام.")}</p>'
+                     f'{turn_rows}</div>')
+
+    # --- glossary: shown BEFORE listening on purpose ---
+    # Pre-teaching a handful of words is standard listening practice and gives
+    # nothing away about the main point, whereas the transcript would.
+    glossary = ""
+    gitems = [g for g in (bc.get("glossary") or []) if g.get("word")]
+    if gitems:
+        rows = "".join(
+            f'<div style="padding:6px 0;border-bottom:1px solid var(--border)">'
+            f'<b>{esc_html(g["word"])}</b>'
+            f'<span class="arabic-text" lang="ar" dir="rtl" style="margin-inline-start:10px">{esc_html(g.get("ar",""))}</span>'
+            f'</div>' for g in gitems)
+        glossary = (f'<div class="card"><h2>📕 {bl("Words to listen for", "كلمات استمع لها")}</h2>'
+                    f'{rows}</div>')
+
+    # --- the gist question: the gate ---
+    gist = bc.get("gist_question") or {}
+    gist_opts = "".join(
+        f'<div class="option" data-oi="{oi}" onclick="Broadcast.pickGist({oi})">{esc_html(o)}</div>'
+        for oi, o in enumerate(gist.get("options") or []))
+    gist_card = (
+        f'<div class="card" style="border-left:3px solid var(--accent)">'
+        f'<h2>🎯 {bl("The main point", "الفكرة الأساسية")}</h2>'
+        f'<p style="color:var(--text-secondary);font-size:0.85rem;margin:0 0 8px">'
+        f'{bl("Answer this from listening. The transcript unlocks afterwards.", "جاوب من السمع. النص بيتفتح بعد كده.")}</p>'
+        f'<p style="line-height:1.7">{esc_html(gist.get("q",""))}</p>'
+        + (f'<p class="arabic-text" lang="ar" dir="rtl" style="margin:6px 0">{esc_html(gist.get("q_ar",""))}</p>'
+           if gist.get("q_ar") else '')
+        + f'<div class="options" id="bc-gist-options">{gist_opts}</div>'
+        f'<div class="q-feedback" id="bc-gist-feedback" style="margin-top:8px"></div></div>')
+
+    # --- detail questions: locked until the gist is answered ---
+    questions = [q for q in (bc.get("questions") or [])
+                 if q.get("q") and q.get("options")]
+    q_html = ""
+    for qi, q in enumerate(questions):
+        opts = "".join(
+            f'<div class="option" data-qi="{qi}" data-oi="{oi}"'
+            f' onclick="Broadcast.pick({qi},{oi})">{esc_html(o)}</div>'
+            for oi, o in enumerate(q["options"]))
+        q_html += (f'<div class="card"><h2>❓ {bl("Question", "سؤال")} {qi+1}</h2>'
+                   f'<p style="line-height:1.7">{esc_html(q["q"])}</p>'
+                   + (f'<p class="arabic-text" lang="ar" dir="rtl" style="margin:6px 0">{esc_html(q.get("q_ar",""))}</p>'
+                      if q.get("q_ar") else '')
+                   + f'<div class="options" data-qi="{qi}">{opts}</div>'
+                   f'<div class="q-feedback" data-qi="{qi}" style="margin-top:8px"></div></div>')
+    details_block = (
+        f'<div id="bc-details" class="bc-locked" aria-hidden="true">{q_html}</div>'
+        f'<div id="bc-details-lock" class="card">'
+        f'<p style="color:var(--text-secondary);margin:0">🔒 '
+        f'{bl("Answer the main-point question above to unlock the detail questions.", "جاوب على سؤال الفكرة الأساسية فوق عشان تفتح أسئلة التفاصيل.")}</p></div>'
+    ) if questions else ""
+
+    # --- transcript: locked until the gist is answered ---
+    transcript_rows = ""
+    for s in segments:
+        spk = esc_html(s.get("speaker") or "")
+        txt = esc_html(s.get("text") or "")
+        transcript_rows += (
+            f'<div style="margin:10px 0">'
+            + (f'<b style="color:var(--accent);font-size:0.85rem">{spk}</b><br>' if spk else '')
+            + f'<span style="line-height:1.9">{txt}</span></div>')
+    transcript_card = (
+        f'<div id="bc-transcript" class="card bc-locked" aria-hidden="true">'
+        f'<h2>📄 {bl("Transcript", "النص")}</h2>'
+        f'<p style="color:var(--text-secondary);font-size:0.85rem;margin:0 0 8px">'
+        f'{bl("Now read while you listen again — check what you missed.", "اقرا وإنت بتسمع تاني — شوف إيه اللي فاتك.")}</p>'
+        f'{transcript_rows}</div>'
+        f'<div id="bc-transcript-lock" class="card">'
+        f'<p style="color:var(--text-secondary);margin:0">🔒 '
+        f'{bl("The transcript opens after you answer the main-point question — so the answer comes from your ears, not your eyes.", "النص بيتفتح بعد ما تجاوب على سؤال الفكرة الأساسية — عشان الإجابة تطلع من ودنك، مش من عينك.")}</p></div>')
+
+    answers_json = safe_json_for_script_tag([int(q.get("answer", 0)) for q in questions])
+    gist_answer = int(gist.get("answer", 0))
+    done_hint = (bl("Completes automatically when you answer the main point and every question.",
+                    "بيتقفل تلقائيًا لما تجاوب على الفكرة الأساسية وكل الأسئلة.")
+                 if questions else
+                 bl("Listen, answer the main point, then mark it done.",
+                    "اسمع، جاوب على الفكرة الأساسية، وبعدين علّمه تم."))
+
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/favicon.png"><title>Extended Listening Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}
+<style>.bc-locked{{display:none}}.bc-turn.playing .bc-turn-dot{{background:var(--accent)}}</style></head><body>
+{watermark_comment()}
+{content_gate_overlay()}
+<div id="gated-content" class="gated-content">
+<div class="container"><div class="header"><img src="/logo.png" alt="Empire" style="width:40px;height:40px;border-radius:50%;box-shadow:0 0 10px rgba(212,175,55,0.3);margin-bottom:10px"><h1>🎧 {bl("Extended Listening", "الاستماع الممتد")}</h1><p class="subtitle">Week {week} • Day {day} • {theme}</p></div>
+{gamification_bar()}
+<div class="card" style="padding:10px 14px"><p style="color:var(--accent);font-weight:600;margin:0">📅 {bl("This week's recording", "تسجيل الأسبوع")} · {fmt} · ~{approx_sec}s</p>
+<p style="color:var(--text-secondary);font-size:0.85rem;margin:4px 0 0">{bl("One recording per week — listen again each day and you will need fewer replays.", "تسجيل واحد كل أسبوع — اسمعه كل يوم وهتحتاج تعيده أقل.")}</p></div>
+<div class="card"><h2 style="margin:0">{title}</h2>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:6px">{title_ar}</p>' if title_ar else ''}</div>
+<div class="card" style="border-left:3px solid var(--accent-light)"><h2>👂 {bl("Before you listen", "قبل ما تسمع")}</h2>
+<p style="line-height:1.7;margin:0">{before_en}</p>
+{f'<p class="arabic-text" lang="ar" dir="rtl" style="margin:8px 0 0">{before_ar}</p>' if before_ar else ''}</div>
+{glossary}
+<div class="card"><h2>▶️ {bl("Listen", "اسمع")}</h2>
+<button class="btn" onclick="Broadcast.playAll()">▶️ {bl("Play", "شغل")}</button>
+<button class="btn btn-outline" style="margin-inline-start:8px" onclick="Broadcast.stop()">⏹️ {bl("Stop", "قف")}</button>
+<div class="speed-control" style="margin-top:10px"><label>{bl("Speed","السرعة")}:</label>
+<select id="bc-speed" onchange="Broadcast.setRate(this.value)">
+<option value="0.75">Slow / بطيء</option><option value="0.9">Careful / متمهل</option>
+<option value="1.0" selected>Normal / عادي</option></select></div>
+<p style="color:var(--text-secondary);font-size:0.85rem;margin:10px 0 0">{bl("Times played", "عدد المرات")}: <b id="bc-plays">0</b></p>
+<p style="color:var(--text-muted);font-size:0.8rem;margin:6px 0 0">🎙️ {bl("Studio-quality audio when available, otherwise your browser's voice.", "صوت استوديو لو متوفر، وإلا صوت المتصفح.")}</p></div>
+{turn_rows}
+{f'<div class="arabic-text" lang="ar" dir="rtl">{gist_ar}</div>' if gist_ar else ''}
+{gist_card}
+{details_block}
+{transcript_card}
+<div class="done-section" data-exercise="broadcast"><div id="done-status" class="done-status" style="color:var(--text-secondary);font-size:0.85rem">{done_hint}</div><input type="checkbox" class="checkbox" style="display:none" onchange="if(this.checked)Progress.markDone('{level}',{week},{day},'broadcast')"><button class="btn btn-sm btn-outline done-fallback" style="margin-top:8px">✔️ {bl("I've finished — mark done", "خلصت — علّم تم")}</button></div>
+{swipe_hint()}
+<div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="reading.html">📖 {bl("Reading", "القراءة")} →</a></div></div>
+{bottom_nav('broadcast')}
+<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script>
+const bcSegments={seq_json};
+const bcGistAnswer={gist_answer};
+const bcAnswers={answers_json};
+const Broadcast={{
+  _plays:0, _rate:1.0, _answered:new Set(), _gistDone:false,
+  playAll(){{
+    this._plays++;
+    const el=document.getElementById('bc-plays');
+    if(el) el.textContent=this._plays;
+    KokoroAudio.playSequence(bcSegments,{{
+      rate:this._rate,
+      onSegment:(i)=>{{
+        document.querySelectorAll('.bc-turn').forEach(t=>t.classList.remove('playing'));
+        const row=document.querySelector('.bc-turn[data-si="'+i+'"]');
+        if(row) row.classList.add('playing');
+      }},
+      onEnd:()=>{{ document.querySelectorAll('.bc-turn').forEach(t=>t.classList.remove('playing')); }}
+    }});
+  }},
+  playFrom(i){{
+    KokoroAudio.playSequence(bcSegments.slice(i),{{rate:this._rate}});
+  }},
+  stop(){{ KokoroAudio.stop(); document.querySelectorAll('.bc-turn').forEach(t=>t.classList.remove('playing')); }},
+  setRate(r){{ this._rate=parseFloat(r); KokoroAudio.setRate(r); }},
+  pickGist(oi){{
+    const box=document.getElementById('bc-gist-options');
+    const fb=document.getElementById('bc-gist-feedback');
+    if(!box||box.dataset.answered) return;
+    box.dataset.answered='1';
+    box.querySelectorAll('.option').forEach(el=>{{
+      const o=parseInt(el.dataset.oi,10);
+      if(o===bcGistAnswer) el.classList.add('correct');
+      else if(o===oi) el.classList.add('wrong');
+    }});
+    if(fb) fb.innerHTML = (oi===bcGistAnswer)
+      ? '<span style="color:var(--success)">✅ Correct — صح</span>'
+      : '<span style="color:var(--text-secondary)">The highlighted answer is the main point. Listen once more with the transcript.</span>';
+    this._gistDone=true;
+    this.unlock();
+    this.check();
+  }},
+  unlock(){{
+    ['bc-details','bc-transcript'].forEach(id=>{{
+      const el=document.getElementById(id);
+      if(el){{ el.classList.remove('bc-locked'); el.setAttribute('aria-hidden','false'); }}
+    }});
+    ['bc-details-lock','bc-transcript-lock'].forEach(id=>{{
+      const el=document.getElementById(id);
+      if(el) el.remove();
+    }});
+  }},
+  pick(qi,oi){{
+    if(!this._gistDone) return;
+    const box=document.querySelector('#bc-details .options[data-qi="'+qi+'"]');
+    const fb=document.querySelector('#bc-details .q-feedback[data-qi="'+qi+'"]');
+    if(!box||box.dataset.answered) return;
+    box.dataset.answered='1';
+    const correct=bcAnswers[qi];
+    box.querySelectorAll('.option').forEach(el=>{{
+      const o=parseInt(el.dataset.oi,10);
+      if(o===correct) el.classList.add('correct');
+      else if(o===oi) el.classList.add('wrong');
+    }});
+    if(fb) fb.innerHTML = (oi===correct)
+      ? '<span style="color:var(--success)">✅ Correct — صح</span>'
+      : '<span style="color:var(--text-secondary)">Check the transcript for this one.</span>';
+    this._answered.add(qi);
+    this.check();
+  }},
+  check(){{
+    if(!this._gistDone) return;
+    if(this._answered.size<bcAnswers.length) return;
+    const cb=document.querySelector('.done-section .checkbox');
+    if(cb&&!cb.checked){{ cb.checked=true; cb.dispatchEvent(new Event('change')); }}
+  }}
+}};
+</script>
+{content_gate_js()}{copyright_footer()}</div></body></html>'''
+
+
 def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None,
-                  mediation=None):
+                  mediation=None, broadcast=None):
     """The day's menu.
 
     Phase 11A-4 fixed TWO holes here:
@@ -1314,6 +1601,17 @@ def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None,
             f'({bl("weekly", "أسبوعي")})</span></a>'
         )
 
+    # Extended listening (Phase 11D) — same rule again: listed only where a
+    # script is authored, so a level still awaiting content never links to a
+    # "coming soon" dead end.
+    broadcast_link = ""
+    if broadcast:
+        broadcast_link = (
+            f'<a href="broadcast.html">🎧 Extended Listening — الاستماع الممتد '
+            f'<span style="color:var(--text-muted);font-size:0.8rem">'
+            f'({bl("weekly", "أسبوعي")})</span></a>'
+        )
+
     # --- This week's CEFR goals (the "I can ..." statements) ---
     can_do_card = ""
     if can_do:
@@ -1352,6 +1650,7 @@ def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None,
 <a href="vocab.html">📖 Vocabulary — المفردات</a>
 <a href="speaking.html">🎙️ Speaking — التحدث</a>
 <a href="grammar.html">📐 Grammar — القواعد <span style="color:var(--text-muted);font-size:0.8rem">({bl("weekly", "أسبوعي")})</span></a>
+{broadcast_link}
 {reading_link}
 {mediation_link}
 <a href="review.html">🧠 Review — مراجعة <span style="color:var(--text-muted);font-size:0.8rem">({bl("weekly", "أسبوعي")})</span></a>
@@ -1391,6 +1690,26 @@ def load_week_reading_data(level, week):
         return None
     matches = (sorted(reading_dir.glob(f"week{week}_*.json"))
                + sorted(reading_dir.glob(f"week{week}.json")))
+    if not matches:
+        return None
+    with open(matches[0], encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_week_broadcast_data(level, week):
+    """The week's authored extended-listening script
+    (content/{level}/broadcast/weekN_*.json).
+
+    Returns None when the level/week has no authored script -- Phase 11D is
+    rolled out level by level behind the owner approval gate, exactly like
+    reading and mediation, so "not authored yet" is a normal state that must
+    render an honest empty page.
+    """
+    bc_dir = CONTENT_DIR / level / "broadcast"
+    if not bc_dir.exists():
+        return None
+    matches = (sorted(bc_dir.glob(f"week{week}_*.json"))
+               + sorted(bc_dir.glob(f"week{week}.json")))
     if not matches:
         return None
     with open(matches[0], encoding="utf-8") as f:
@@ -1496,6 +1815,7 @@ def generate_level(level, audio_manifest):
         grammar_data = load_week_grammar_data(level, week)
         reading_data = load_week_reading_data(level, week)
         mediation_data = load_week_mediation_data(level, week)
+        broadcast_data = load_week_broadcast_data(level, week)
         focus = accent_data.get("focus", "Review") if accent_data else "Review"
         theme = week_data.get("theme", "General")
         vocab = week_data.get("vocabulary", [])
@@ -1565,7 +1885,8 @@ def generate_level(level, audio_manifest):
                                       grammar=grammar_data,
                                       can_do=week_can_do,
                                       reading=reading_data,
-                                      mediation=mediation_data))
+                                      mediation=mediation_data,
+                                      broadcast=broadcast_data))
             with open(day_dir / "accent.html", "w", encoding="utf-8") as f:
                 f.write(gen_accent(level, week, day, focus, norm,
                                    phoneme_focus=week_data.get("phoneme_focus")))
@@ -1584,6 +1905,9 @@ def generate_level(level, audio_manifest):
             with open(day_dir / "reading.html", "w", encoding="utf-8") as f:
                 f.write(gen_reading(level, week, day, theme, reading_data))
 
+            with open(day_dir / "broadcast.html", "w", encoding="utf-8") as f:
+                f.write(gen_broadcast(level, week, day, theme, broadcast_data))
+
             with open(day_dir / "grammar.html", "w", encoding="utf-8") as f:
                 f.write(gen_grammar(level, week, day, theme, grammar_data,
                                     grammar_point=week_data.get("grammar_point")))
@@ -1601,9 +1925,30 @@ def generate_level(level, audio_manifest):
                 "text": norm["primary_text"],
             }
             # index + accent, shadowing, listening, vocab, speaking, grammar,
-            # reading, mediation, review
-            pages_per_day = 10
+            # reading, mediation, review, broadcast
+            pages_per_day = 11
             total += pages_per_day
+
+        # --- extended-listening clips (Phase 11D) ---
+        # Registered ONCE PER WEEK, outside the day loop: the script is weekly,
+        # so the seven days share the same clips rather than rendering seven
+        # identical copies of the same minute of audio (which would have added
+        # ~630 needless MP3s and minutes of Kokoro time per level).
+        #
+        # Each speaker turn is its own clip AND carries its own `voice`, which
+        # is what makes a two-person scene or a news bulletin with a
+        # correspondent possible -- one voice reading every part cannot teach
+        # "the majority of films in standard dialect".
+        for _i, _seg in enumerate(
+                [s for s in ((broadcast_data or {}).get("segments") or [])
+                 if (s.get("text") or "").strip()]):
+            audio_manifest[broadcast_audio_id(level, week, _i)] = {
+                "level": level, "week": week, "day": 0,
+                "kind": "broadcast",
+                "voice": _seg.get("voice") or "af_heart",
+                "speaker": _seg.get("speaker") or "",
+                "text": " ".join((_seg.get("text") or "").split()),
+            }
 
         print(f"  [{level}] Week {week}: {pages_per_day * 7} pages ✅")
 

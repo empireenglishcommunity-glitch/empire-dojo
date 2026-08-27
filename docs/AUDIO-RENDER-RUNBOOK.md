@@ -1,10 +1,16 @@
 # Audio render runbook
 
-**Status: all 162 extended-listening clips are rendered and committed.**
-`site/audio/` holds 792 MP3s — 630 shadowing + 162 extended listening — and
-nothing in the manifest is missing. This document is now (a) the record of how
-they were made and why the pace was chosen, and (b) the procedure for
-re-rendering after a script edit or authoring a new level.
+**Status: all 465 extended-listening clips are rendered and committed, for all
+six levels.** `site/audio/` holds 1,095 MP3s — 630 shadowing + 465 extended
+listening — and nothing in the manifest is missing. This document is (a) the
+record of how they were made and why the pace was chosen, and (b) the procedure
+for re-rendering after a script edit or authoring a new level.
+
+Pace is verified against the descriptors by a separate checker:
+
+```bash
+python3.12 scripts/verify_audio_pace.py     # exit 1 if any level drifts
+```
 
 ---
 
@@ -24,7 +30,7 @@ It skips clips that already exist, honours each clip's own `voice`, applies the
 per-level pace below, and **exits non-zero listing anything it failed to
 produce**.
 
-### B. Local `kokoro-onnx`, no server (how these 162 were actually made)
+### B. Local `kokoro-onnx`, no server (how these 465 were actually made)
 
 The build environment has no Kokoro container, so the clips were rendered
 in-process from the ONNX build of the same model (Kokoro-82M):
@@ -36,41 +42,120 @@ curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-fil
 curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin     # 27 MB
 ```
 
-Then a short script reads the manifest and writes `site/audio/{id}.mp3`. It ran
-at **3.4× real time** on CPU: 57.8 minutes of audio in 17 minutes. `libsndfile
-1.2.2` writes MP3 directly, so no ffmpeg is needed.
+Then, from the repo:
+
+```bash
+python3.12 scripts/render_broadcast_local.py --model-dir ./kokoro
+python3.12 scripts/render_broadcast_local.py --model-dir ./kokoro --report   # pace matrix only
+python3.12 scripts/render_broadcast_local.py --model-dir ./kokoro --only c2- --regenerate
+```
+
+It reads the manifest and writes `site/audio/{id}.mp3`, skipping what already
+exists unless `--regenerate` is given. `--only` takes a substring of the clip id,
+which is also how to render one level at a time. `libsndfile 1.2.2` writes MP3
+directly, so no ffmpeg is needed.
+
+Throughput on CPU is **~2× real time** with pace correction enabled (it was 3.9×
+open-loop; the difference is the re-renders needed to hit each level's target).
+The full 465-clip set is ~109 minutes of audio in roughly 60 minutes of compute,
+so render **one level per invocation** if your shell has a command timeout.
 
 Useful to know because it means **no server is required to fix audio** — any
 machine with Python and 340 MB of disk can do it.
 
 ---
 
-## Pace is set per level, and this is not cosmetic
+## Pace is set per level AND per voice, and this is not cosmetic
 
-Kokoro at `speed=1.0` delivers **190–200 wpm**, which is *fast native pace*. The
-first render pass came out at A1 202, A2 190, B1 191, B2 186 wpm — and that
-**invalidates the exercise** rather than merely making it harder:
+Several reception descriptors are claims about **delivery speed**, not only about
+comprehension:
 
 - `A1.R.1` — *"…when people **speak slowly and clearly**"*
 - `A2.R.2` — *"short, **clear**, simple messages and announcements"*
 - `B1.R.2` — *"…when delivered **relatively slowly and clearly**"*
+- `C1.R.1` — extended speech at native delivery
+- `C2.R.1` — *"…delivered at **fast native speed**"*
 
-A beginner given 200 wpm fails on delivery speed alone, whatever their
-comprehension. So:
+A beginner given 200 wpm fails on delivery speed alone whatever their
+comprehension; a C2 clip delivered at 120 wpm means the programme is claiming
+"fast native speed" over audio slower than its own beginner target. Both
+directions matter.
 
-| level | `speed` | measured median | descriptor asks for |
+### The mistake this replaced
+
+The first version of this set **one `speed` per level**. That assumed all eleven
+Kokoro voices speak at the same rate at `speed=1.0`. They do not — measured on a
+fixed 53-word reference paragraph there is a **1.84× spread**:
+
+| voice | wpm @1.0 | | voice | wpm @1.0 |
+|---|---|---|---|---|
+| `af_nicole` | **130** | | `af_sarah` | 222 |
+| `am_michael` | 193 | | `am_adam` | 228 |
+| `bm_george` | 198 | | `af_sky` | 230 |
+| `bm_lewis` | 204 | | `bf_isabella` | 236 |
+| `af_bella` | 209 | | `bf_emma` | 238 |
+| `af_heart` | 212 | | | |
+
+`af_nicole` is a severe outlier. The consequences were in the shipped audio:
+
+- delivery pace was decided by whichever voice a script happened to name;
+- inside one multi-voice scene, one speaker ran at 120 wpm and another at 210 —
+  which no real panel or argument sounds like;
+- six C1/C2 clips shipped at **120–142 wpm**, at or below the A1 target, on the
+  two descriptors whose entire content is delivery speed.
+
+Two other hypotheses were tested and **rejected** first: inter-sentence pause
+length (raising speed and cutting the pause moved the worst clip only 120 → 141
+wpm) and punctuation such as em-dashes and ellipses (normalising it changed
+122 → 120 wpm).
+
+### How it works now
+
+Pace is expressed as a **target wpm per level** — the thing the descriptors
+actually talk about — and the per-clip `speed` is derived from the measured rate
+of the voice that clip names:
+
+```
+speed = target_wpm[level] / VOICE_WPM[voice]
+```
+
+Kokoro's `speed` parameter was verified linear over 0.55–1.60 (measured ratio
+0.97–1.09, no clipping), so the correction is valid.
+
+Two further effects make a real clip slower than those rates predict: **chunked
+synthesis costs ~13%** (each chunk is spoken with sentence-final prosody, so
+joining N chunks is longer than one N-length utterance), and a voice's rate is
+**not text-independent** (`bm_george` reads a numeral-heavy news bulletin ~11%
+slower than the reference prose). Open-loop that left C1 at 172 wpm against a
+195 target. So `render_broadcast_local.py` **closes the loop**: it measures each
+rendered clip and rescales the speed by `target/actual`, up to `--max-passes`
+times. Almost every clip converges in one correction.
+
+Measured result, verified independently by `scripts/verify_audio_pace.py`:
+
+| level | target | measured | descriptor asks for |
 |---|---|---|---|
-| A1 | 0.65 | **128 wpm** | slowly and clearly |
-| A2 | 0.72 | **134 wpm** | short, clear, simple |
-| B1 | 0.80 | **152 wpm** | relatively slowly and clearly |
-| B2 | 0.90 | **173 wpm** | normal clear broadcast / lecture |
-| C1 / C2 | 1.00 | — | native speed, which is the point at those levels |
+| A1 | 125 | **124** | slowly and clearly |
+| A2 | 135 | **135** | short, clear, simple |
+| B1 | 155 | **155** | relatively slowly and clearly |
+| B2 | 175 | **175** | normal clear broadcast / lecture |
+| C1 | 195 | **189** | native |
+| C2 | 205 | **199** | fast native speed |
 
 Reference: careful speech ~120–130 wpm, normal conversation ~150–160, fast
 native 200+. The page's speed selector (Slow / Careful / Normal) still lets a
 student slow it further from there.
 
-`SPEED_BY_LEVEL` lives in `scripts/generate_audio.py`, so both render paths agree.
+**Turns under 25 words are not paced.** Words-per-minute is meaningless for a
+one-word turn (`"And?"`, `"Baba—"`) — it is mostly onset and decay, so it reads
+as ~100 wpm however fast it is spoken. Closing the loop on those numbers drove
+such clips to maximum speed and made short emotional lines sound rushed, the
+opposite of the intended fix. They render open-loop and are excluded from the
+aggregates (`MIN_WORDS_FOR_PACE`).
+
+The numbers live in **`scripts/audio_pace.py`**, shared by both render paths.
+Re-measure with `scripts/measure_voice_rates.py` if the Kokoro model version
+changes — the rates are properties of the model, not of our content.
 **Shadowing clips are untouched** — they carry no level-scoped pace requirement
 and stay at the default.
 
@@ -84,7 +169,9 @@ and stay at the default.
 | A2 | 12 | 15 | 15–159 | mostly single voice |
 | B1 | 14 | 29 | 4–181 | phone-ins, interviews |
 | B2 | 16 | 108 | 1–256 | five long drama scenes |
-| **total** | **52** | **162** | | **57.8 min, 25 MB** |
+| C1 | 18 | 121 | 1–300 | unsignposted monologues, idiom-heavy scenes |
+| C2 | 20 | 182 | 1–427 | panel with overlap, auction, commentary, eulogy |
+| **total** | **90** | **465** | | **109 min measurable, 206 MB** |
 
 Clip ids are `{level}-w{week}-bc{index}` — no day component, because extended
 listening is **weekly**: all seven days share the same clips.

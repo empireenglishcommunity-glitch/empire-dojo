@@ -109,30 +109,20 @@ def request_timeout_for(text):
                REQUEST_TIMEOUT_BASE + int(words * REQUEST_TIMEOUT_PER_WORD))
 
 
-# PACE PER LEVEL. Kokoro at speed 1.0 delivers roughly 190-200 wpm, which is
-# fast NATIVE pace. That is wrong for the lower levels and it is wrong in a way
-# that invalidates the exercise rather than just making it harder: A1.R.1 is
-# "when people SPEAK SLOWLY AND CLEARLY" and B1.R.2 is "when delivered
-# RELATIVELY SLOWLY AND CLEARLY", so a beginner given 200 wpm fails on delivery
-# speed alone, whatever their comprehension.
+# PACE PER LEVEL, NORMALISED PER VOICE. See scripts/audio_pace.py for the full
+# reasoning and the measured per-voice rates.
 #
-# Measured after rendering at these values: A1 128 wpm, A2 134, B1 152, B2 173.
-# (Reference: careful speech ~120-130, normal conversation ~150-160, fast native
-# 200+.) The page's speed selector still lets a student slow it further.
+# This used to be a single `speed` per level, which assumed all eleven Kokoro
+# voices speak at the same rate at speed=1.0. They do not -- there is a 1.84x
+# spread, and af_nicole (130 wpm) is a severe outlier against bf_emma (238 wpm).
+# The result was that delivery pace was decided by whichever voice a script
+# named: six C1/C2 clips shipped at 120-142 wpm, at or below the A1 target, on
+# the two descriptors (C1.R.1, C2.R.1) whose entire content is delivery speed.
 #
-# Shadowing clips are unaffected -- they carry no level-scoped pace requirement
-# and have always been rendered at the default.
-SPEED_BY_LEVEL = {
-    "a1": 0.65, "a2": 0.72, "b1": 0.80, "b2": 0.90, "c1": 1.00, "c2": 1.00,
-}
-
-
-def speed_for(meta):
-    """Delivery speed for one clip. Only extended-listening clips are paced by
-    level; everything else keeps the default."""
-    if meta.get("kind") != "broadcast":
-        return 1.0
-    return SPEED_BY_LEVEL.get((meta.get("level") or "").lower(), 0.9)
+# Pace is now expressed as a target wpm per level -- which is what the
+# descriptors actually talk about -- and the per-clip speed is derived from the
+# measured rate of the voice that clip names.
+from audio_pace import pace_report, speed_for, target_wpm_for  # noqa: E402,F401
 
 
 def call_kokoro(text, voice, speed=1.0):
@@ -181,6 +171,12 @@ def main():
     log(f"Voice:      {args.voice}")
     log(f"Output:     {OUTPUT_DIR}")
     log(f"Mode:       {'REGENERATE ALL' if args.regenerate else 'Generate missing only'}")
+
+    # Print the pace matrix. This is the decision most likely to be wrong and
+    # least likely to be noticed -- a clip at the wrong pace sounds fine in
+    # isolation and silently breaks a delivery-speed descriptor.
+    log_header("Delivery pace (target wpm per level / speed per voice)")
+    print(pace_report())
 
     log_header("Checking Kokoro TTS")
     if not check_health(args.voice):
@@ -244,7 +240,10 @@ def main():
                   f"falling back to {args.voice}")
             voice = args.voice
 
-        speed = speed_for(meta)
+        # Pace off the RESOLVED voice, not meta's: if the manifest named an
+        # unknown voice we fell back above, and pacing against the name we
+        # rejected would reintroduce the very mismatch this corrects.
+        speed = speed_for({**meta, "voice": voice})
         log(f"GEN   {clip_id} [{voice} @{speed}] -- "
             f"\"{text[:55]}{'...' if len(text) > 55 else ''}\"")
         try:

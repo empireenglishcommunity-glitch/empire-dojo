@@ -1,177 +1,169 @@
 # Audio render runbook
 
-How to turn the authored extended-listening scripts into studio audio.
-
-**Status: 162 clips are authored and registered but NOT rendered.** Every page
-works without them — each clip falls back to the browser's speech voice — so
-nothing is broken. But the fallback is noticeably worse, and for the multi-voice
-scenes it changes the exercise (see [What the fallback costs](#what-the-fallback-costs)).
-
-This has to run on a machine that can reach Kokoro. It cannot be done from the
-build/CI environment, which has no Kokoro server.
+**Status: all 162 extended-listening clips are rendered and committed.**
+`site/audio/` holds 792 MP3s — 630 shadowing + 162 extended listening — and
+nothing in the manifest is missing. This document is now (a) the record of how
+they were made and why the pace was chosen, and (b) the procedure for
+re-rendering after a script edit or authoring a new level.
 
 ---
 
-## The one command
+## Two ways to render
+
+### A. Kokoro FastAPI server (the project's normal path)
 
 ```bash
 cd empire-dojo
 python3 scripts/generate_audio.py
 ```
 
-That is it. It will:
+Needs Kokoro reachable — `curl http://localhost:8880/health`, or set
+`KOKORO_URL`. To start it: `cd /opt/kokoro-tts && docker compose up -d`.
 
-1. read `scripts/audio-manifest.json` (written by `generate.py`);
-2. **skip** every clip that already has an MP3 — so the 630 existing shadowing
-   clips are untouched and cost nothing;
-3. render the 162 outstanding broadcast clips, **each in the voice its script
-   names**;
-4. write them to `site/audio/{clip_id}.mp3`;
-5. **exit non-zero and list any clip it failed to produce.**
+It skips clips that already exist, honours each clip's own `voice`, applies the
+per-level pace below, and **exits non-zero listing anything it failed to
+produce**.
 
-Expect roughly **20–45 minutes** on CPU-only inference, most of it in B2.
+### B. Local `kokoro-onnx`, no server (how these 162 were actually made)
+
+The build environment has no Kokoro container, so the clips were rendered
+in-process from the ONNX build of the same model (Kokoro-82M):
+
+```bash
+pip install kokoro-onnx soundfile
+mkdir -p kokoro && cd kokoro
+curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx   # 311 MB
+curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin     # 27 MB
+```
+
+Then a short script reads the manifest and writes `site/audio/{id}.mp3`. It ran
+at **3.4× real time** on CPU: 57.8 minutes of audio in 17 minutes. `libsndfile
+1.2.2` writes MP3 directly, so no ffmpeg is needed.
+
+Useful to know because it means **no server is required to fix audio** — any
+machine with Python and 340 MB of disk can do it.
 
 ---
 
-## Prerequisites
+## Pace is set per level, and this is not cosmetic
 
-Kokoro must be running and reachable:
+Kokoro at `speed=1.0` delivers **190–200 wpm**, which is *fast native pace*. The
+first render pass came out at A1 202, A2 190, B1 191, B2 186 wpm — and that
+**invalidates the exercise** rather than merely making it harder:
 
-```bash
-# default location the script expects
-curl http://localhost:8880/health
+- `A1.R.1` — *"…when people **speak slowly and clearly**"*
+- `A2.R.2` — *"short, **clear**, simple messages and announcements"*
+- `B1.R.2` — *"…when delivered **relatively slowly and clearly**"*
 
-# if it is elsewhere
-export KOKORO_URL=http://my-host:8880
-```
+A beginner given 200 wpm fails on delivery speed alone, whatever their
+comprehension. So:
 
-To start it (per the header of `scripts/generate_audio.py`):
+| level | `speed` | measured median | descriptor asks for |
+|---|---|---|---|
+| A1 | 0.65 | **128 wpm** | slowly and clearly |
+| A2 | 0.72 | **134 wpm** | short, clear, simple |
+| B1 | 0.80 | **152 wpm** | relatively slowly and clearly |
+| B2 | 0.90 | **173 wpm** | normal clear broadcast / lecture |
+| C1 / C2 | 1.00 | — | native speed, which is the point at those levels |
 
-```bash
-cd /opt/kokoro-tts && docker compose up -d
-```
+Reference: careful speech ~120–130 wpm, normal conversation ~150–160, fast
+native 200+. The page's speed selector (Slow / Careful / Normal) still lets a
+student slow it further from there.
 
-The script probes Kokoro before doing anything and exits 1 with instructions if
-it cannot connect, so a wrong URL fails immediately rather than half-way through.
+`SPEED_BY_LEVEL` lives in `scripts/generate_audio.py`, so both render paths agree.
+**Shadowing clips are untouched** — they carry no level-scoped pace requirement
+and stay at the default.
 
 ---
 
-## What gets rendered
+## What is in there
 
-| level | scripts | clips | words per clip | notes |
+| level | scripts | clips | words per clip | audio |
 |---|---|---|---|---|
-| A1 | 10 | 10 | 62–76 | one voice each — cheapest, and the most important to get right |
-| A2 | 12 | 15 | 15–159 | mostly single voice; two scripts have 2–3 turns |
-| B1 | 14 | 29 | 4–181 | phone-ins and interviews, 3–5 turns each |
-| B2 | 16 | 108 | 1–256 | five long drama scenes; week 15 alone is 20 turns |
-| **total** | **52** | **162** | | **8,574 spoken words** |
+| A1 | 10 | 10 | 62–76 | slow, single voice |
+| A2 | 12 | 15 | 15–159 | mostly single voice |
+| B1 | 14 | 29 | 4–181 | phone-ins, interviews |
+| B2 | 16 | 108 | 1–256 | five long drama scenes |
+| **total** | **52** | **162** | | **57.8 min, 25 MB** |
 
 Clip ids are `{level}-w{week}-bc{index}` — no day component, because extended
-listening is **weekly**: all seven days of a week share the same clips.
+listening is **weekly**: all seven days share the same clips.
 
-The longest single clip is `b2-w6-bc0` at **256 words**, about 100 seconds of
-speech.
-
-**Very short clips are expected, not a bug.** The drama scenes contain real
-dialogue turns like *"And?"*, *"It's off."* and *"I know."* — some are one word.
-They are separate clips because they are separate speakers. If you see a 4 KB MP3
-in the B2 set, that is correct.
+**Very short clips are expected.** The drama scenes contain real one-word turns
+(*"And?"*, *"It's off."*, *"I know."*) which are separate clips because they are
+separate speakers. A 4 KB MP3 in the B2 set is correct.
 
 ---
 
-## Verifying afterwards
+## Verifying
 
 ```bash
-# 1. the script's own check — exits non-zero if anything is missing or empty
-python3 scripts/generate_audio.py ; echo "exit=$?"
+# every manifest entry has a real file
+python3 scripts/generate_audio.py ; echo "exit=$?"      # non-zero if any missing
 
-# 2. count what landed
-ls site/audio/*-bc*.mp3 | wc -l          # expect 162
-
-# 3. nothing should be zero bytes
-find site/audio -name '*-bc*.mp3' -size 0
-
-# 4. listen to one of each kind before trusting the batch
-#    a beginner script, a news bulletin, and a two-person scene:
-#      site/audio/a1-w1-bc0.mp3
-#      site/audio/b2-w9-bc0.mp3
-#      site/audio/b2-w15-bc0.mp3  (then bc1, bc2 — they should sound like
-#                                  different people)
+ls site/audio/*-bc*.mp3 | wc -l                          # expect 162
+find site/audio -name '*-bc*.mp3' -size 0                # expect nothing
 ```
 
-Then commit the new MP3s and deploy:
+Pace check — the one that actually matters after a re-render:
 
-```bash
-git add site/audio
-git commit -m "chore: render extended-listening audio (162 clips)"
-git push
-# then the usual wrangler deploy
+```python
+import json, soundfile as sf, statistics, collections
+m = json.load(open('scripts/audio-manifest.json'))
+per = collections.defaultdict(list)
+for k, v in m.items():
+    if v.get('kind') != 'broadcast':
+        continue
+    i = sf.info(f"site/audio/{k}.mp3")
+    w = len(v['text'].split())
+    if i.duration > 1.5 and w >= 8:          # short interjections skew the median
+        per[v['level']].append(w / (i.duration / 60))
+for lvl in ('a1', 'a2', 'b1', 'b2'):
+    print(lvl, round(statistics.median(per[lvl])), 'wpm')
+# expect roughly a1 128 · a2 134 · b1 152 · b2 173
 ```
 
-> **Size note.** `site/audio/` is already **151 MB** of committed MP3s. Measured
-> against the existing clips (~5 KB per spoken word), these 8,574 words will add
-> roughly **40 MB**, taking the directory to ~190 MB and the repo's `site/` to
-> ~260 MB.
->
-> That still works, but it is the point at which to decide about **Git LFS or an
-> external bucket** — and to decide it *before* C1/C2 extended listening is ever
-> authored, since those two levels would add another 38 scripts at the longest
-> word counts in the course.
+Then listen to three before trusting a batch — a beginner script, a news
+bulletin, and three consecutive turns of a scene (they should sound like
+different people):
+
+```
+site/audio/a1-w1-bc0.mp3
+site/audio/b2-w9-bc0.mp3
+site/audio/b2-w15-bc0.mp3   then bc1, bc2
+```
 
 ---
 
-## What the fallback costs
+## Re-rendering after a script edit
 
-Until the clips exist, `KokoroAudio.playSequence()` falls back to the browser's
-`SpeechSynthesis` voice, per clip and independently. Concretely:
-
-- **A1/A2 single-voice scripts** — acceptable. Robotic, but the content is short
-  and clear and the exercise still works.
-- **B1 interviews and phone-ins** — degraded. The speaker labels on the page
-  still show who is talking, but every part is read in one voice.
-- **B2 drama scenes** — **materially different from the authored exercise.** A
-  20-turn scene between three characters, read by one undifferentiated voice,
-  loses the turn-taking that carries the meaning. The comprehension questions ask
-  about implication, and implication in dialogue depends on knowing who just
-  spoke.
-
-So: A1 and A2 can ship as they are. **Render before pointing B1 or B2 students at
-this exercise.**
-
----
-
-## Regenerating a clip after editing a script
-
-Clip ids come from the script's **position** (level, week, index), not from a
-hash of its text. So if you edit a script's wording, the id does not change and
-`generate_audio.py` will **skip** the existing stale MP3.
-
-To re-render, delete the specific clips first:
+Clip ids come from **position** (level, week, index), **not** from a hash of the
+text. So editing a script does **not** change the id, and both renderers will
+**skip** the now-stale MP3.
 
 ```bash
 rm site/audio/b2-w15-bc*.mp3
 python3 scripts/generate_audio.py
 ```
 
-`--regenerate` also exists, but it re-renders **all 792 clips** including the 630
-shadowing ones, which takes hours. Prefer deleting the few you changed.
+`--regenerate` also exists but re-renders **all 792** clips including the 630
+shadowing ones — hours, to fix one line.
 
-> Also: the service worker (`site/sw.js`) caches `/audio/` **cache-first,
+> **And bump the service worker.** `site/sw.js` caches `/audio/` **cache-first,
 > forever**, under a manually versioned `CACHE_NAME`. A student who has already
-> played a clip keeps the old bytes until that version is bumped. If you
-> re-render audio that students have already heard, bump `CACHE_NAME` in
-> `site/sw.js` in the same commit.
+> played a clip keeps the old bytes until it changes. If you re-render audio
+> students may have heard, bump `CACHE_NAME` in the same commit.
 
 ---
 
-## Choosing different voices
+## Changing a voice
 
-Each segment names its own voice in the content file
-(`content/{level}/broadcast/week*.json`, `segments[].voice`). To change one, edit
-that field in **empire-nexus**, re-run `generate.py` in empire-dojo to refresh
-the manifest, delete the affected MP3, and re-render.
+Each segment names its voice in `content/{level}/broadcast/week*.json`
+(`segments[].voice`) in **empire-nexus**. Edit it there, re-run `generate.py` in
+empire-dojo to refresh the manifest, delete the affected MP3, re-render.
 
-Available voices — `python3 scripts/generate_audio.py --list-voices`:
+`--voice X` sets the default for clips that do **not** name one; it does **not**
+override a script's own choice.
 
 | id | character |
 |---|---|
@@ -187,6 +179,14 @@ Available voices — `python3 scripts/generate_audio.py --list-voices`:
 | `bm_george` | British male, authoritative |
 | `bm_lewis` | British male, warm |
 
-`--voice X` sets the default for clips that do **not** name one; it does **not**
-override a script's own choice. All 630 shadowing clips use the default, so
-`--voice` still behaves as it always did for them.
+---
+
+## Size, and the decision to make before C1/C2
+
+`site/audio/` is now **176 MB** across 792 files, all committed to git. The 162
+new clips added **25 MB**.
+
+C1 and C2 extended listening, if authored, would add **38 more scripts at the
+longest word counts in the course** — plausibly another 40–60 MB, and C1/C2
+render at full speed so they are shorter per word but there are more words.
+**Decide on Git LFS or an external bucket before authoring them**, not after.

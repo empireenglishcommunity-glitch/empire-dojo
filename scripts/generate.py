@@ -1955,6 +1955,337 @@ def generate_level(level, audio_manifest):
     return total
 
 
+def review_items(level):
+    """Every authored reading / mediation / extended-listening item for a level.
+
+    Lives in generate.py rather than a separate script on purpose: the review
+    surface must show exactly what the BUILD sees, so that approving an item and
+    shipping it cannot diverge. A second loader would eventually drift.
+    """
+    items = []
+    for week in range(1, ALL_WEEK_COUNTS[level] + 1):
+        r = load_week_reading_data(level, week)
+        if r and (r.get("text") or "").strip():
+            items.append({"kind": "reading", "week": week, "data": r})
+        m = load_week_mediation_data(level, week)
+        if m and m.get("source") and (m.get("key_points") or []):
+            items.append({"kind": "mediation", "week": week, "data": m})
+        b = load_week_broadcast_data(level, week)
+        if b and [s for s in (b.get("segments") or []) if (s.get("text") or "").strip()]:
+            items.append({"kind": "broadcast", "week": week, "data": b})
+    return items
+
+
+KIND_LABEL = {
+    "reading": ("📖", "Reading"),
+    "mediation": ("🤝", "Mediation"),
+    "broadcast": ("🎧", "Extended Listening"),
+}
+
+
+def _rv_questions(qs, label="Question"):
+    """Render comprehension questions with the CORRECT option marked.
+
+    Marking the answer is the point — the reviewer is checking whether the
+    intended answer is genuinely the only defensible one, which they cannot do
+    if they have to guess which it is.
+    """
+    out = ""
+    for qi, q in enumerate(qs or []):
+        opts = ""
+        for oi, o in enumerate(q.get("options") or []):
+            correct = (oi == q.get("answer"))
+            mark = "✅ " if correct else "&nbsp;&nbsp;&nbsp;"
+            style = ("background:rgba(46,204,113,0.12);border-color:var(--success)"
+                     if correct else "")
+            opts += (f'<div style="padding:5px 9px;margin:3px 0;border:1px solid '
+                     f'var(--border);border-radius:7px;{style}">{mark}{esc_html(o)}</div>')
+        out += (f'<div style="margin:10px 0"><b style="font-size:0.9rem">{label} {qi+1}.</b> '
+                f'{esc_html(q.get("q",""))}'
+                + (f'<div class="arabic-text" lang="ar" dir="rtl" style="font-size:0.85rem;'
+                   f'margin:3px 0">{esc_html(q.get("q_ar",""))}</div>'
+                   if q.get("q_ar") else "")
+                + f'{opts}</div>')
+    return out
+
+
+def _rv_glossary(gl):
+    if not gl:
+        return ""
+    rows = " · ".join(f'<b>{esc_html(g.get("word",""))}</b> '
+                      f'<span class="arabic-text" lang="ar" dir="rtl">{esc_html(g.get("ar",""))}</span>'
+                      for g in gl if g.get("word"))
+    return (f'<p style="font-size:0.85rem;color:var(--text-secondary);margin:8px 0">'
+            f'📕 {rows}</p>')
+
+
+def _rv_body(level, item):
+    """The reviewable content of one item, rendered in full."""
+    kind, d, week = item["kind"], item["data"], item["week"]
+    out = ""
+
+    if kind == "reading":
+        wc = len(str(d.get("text", "")).split())
+        out += (f'<p style="color:var(--text-muted);font-size:0.8rem;margin:0 0 6px">'
+                f'{wc} words</p>')
+        for para in str(d.get("text", "")).split("\n\n"):
+            if para.strip():
+                out += (f'<p style="line-height:1.85;margin:8px 0">'
+                        f'{esc_html(" ".join(para.split()))}</p>')
+        out += _rv_glossary(d.get("glossary"))
+        out += _rv_questions(d.get("questions"))
+
+    elif kind == "mediation":
+        sc = d.get("scenario") or {}
+        tk = d.get("task") or {}
+        ma = d.get("model_answer") or {}
+        out += (f'<p style="margin:6px 0"><b>Scenario:</b> {esc_html(sc.get("en",""))}</p>'
+                f'<div class="arabic-text" lang="ar" dir="rtl" style="font-size:0.85rem">'
+                f'{esc_html(sc.get("ar",""))}</div>')
+        out += (f'<div style="border-inline-start:3px solid var(--accent);padding:8px 12px;'
+                f'margin:10px 0;background:rgba(212,175,55,0.05)"><b>Source the student is '
+                f'given:</b><br>{esc_html(d.get("source",""))}</div>')
+        out += f'<p style="margin:6px 0"><b>Task:</b> {esc_html(tk.get("en",""))}</p>'
+        kp = "".join(f'<li>{esc_html(p.get("en",""))}</li>'
+                     for p in (d.get("key_points") or []))
+        out += (f'<p style="margin:8px 0 2px"><b>Must get across ({len(d.get("key_points") or [])}):</b></p>'
+                f'<ul style="margin:2px 0;padding-inline-start:20px;font-size:0.92rem">{kp}</ul>')
+        out += (f'<p style="margin:8px 0"><b>Model answer:</b> '
+                f'<i>{esc_html(ma.get("en",""))}</i></p>')
+        sp = " · ".join(esc_html(s.get("en", "")) for s in (d.get("signal_phrases") or []))
+        if sp:
+            out += (f'<p style="font-size:0.85rem;color:var(--text-secondary)">'
+                    f'💬 If you do not understand: {sp}</p>')
+
+    elif kind == "broadcast":
+        segs = [s for s in (d.get("segments") or []) if (s.get("text") or "").strip()]
+        wc = sum(len(s["text"].split()) for s in segs)
+        out += (f'<p style="color:var(--text-muted);font-size:0.8rem;margin:0 0 6px">'
+                f'{esc_html((d.get("format") or "recording").replace("_", " "))} · '
+                f'{wc} words · {len(segs)} '
+                f'{"turns" if len(segs) > 1 else "turn"}</p>')
+        bl_ = d.get("before_listening") or {}
+        if bl_.get("en"):
+            out += (f'<p style="margin:6px 0"><b>Before you listen:</b> '
+                    f'{esc_html(bl_["en"])}</p>')
+        for i, s in enumerate(segs):
+            aid = broadcast_audio_id(level, week, i)
+            out += (f'<div style="margin:8px 0;padding:8px 10px;border:1px solid var(--border);'
+                    f'border-radius:8px">'
+                    f'<b style="color:var(--accent);font-size:0.85rem">'
+                    f'{esc_html(s.get("speaker") or f"Voice {i+1}")}</b>'
+                    f'<span style="color:var(--text-muted);font-size:0.78rem;'
+                    f'margin-inline-start:8px">{esc_html(s.get("voice",""))}</span>'
+                    f'<audio controls preload="none" src="/audio/{aid}.mp3" '
+                    f'style="width:100%;margin:6px 0;height:34px"></audio>'
+                    f'<div style="line-height:1.8;font-size:0.95rem">'
+                    f'{esc_html(" ".join(s["text"].split()))}</div></div>')
+        out += _rv_glossary(d.get("glossary"))
+        gq = d.get("gist_question") or {}
+        if gq.get("q"):
+            out += ('<p style="margin:10px 0 0"><b>Main-point question</b> '
+                    '<span style="color:var(--text-muted);font-size:0.8rem">'
+                    '(asked before the transcript unlocks)</span></p>')
+            out += _rv_questions([gq], label="Gist")
+        out += _rv_questions(d.get("questions"), label="Detail")
+
+    return out
+
+
+def gen_content_review(level, items):
+    """Owner sign-off surface for one level's authored content.
+
+    Why this exists: signing off 174 authored items meant opening 174 JSON files,
+    which is why it had not happened. Ticking the checkboxes without reading them
+    would have destroyed the only artefact that distinguishes "a human with
+    authority read this" from "a machine generated it" — the same class of
+    unearned claim the coverage work exists to remove. So the fix is to make the
+    review cheap, not to skip it.
+
+    Decisions are kept in localStorage and exported as markdown for the
+    ALIGNMENT docs. No new API, no new table, nothing that can break a student
+    path: this page is inert with respect to the rest of the system.
+    """
+    lv = level.upper()
+    counts = {k: sum(1 for i in items if i["kind"] == k)
+              for k in ("reading", "mediation", "broadcast")}
+    cards = ""
+    for item in items:
+        d, kind, week = item["data"], item["kind"], item["week"]
+        icon, label = KIND_LABEL[kind]
+        rid = f"{kind}:{level}:{week}"
+        codes = " ".join(f'<span style="background:rgba(212,175,55,0.15);color:var(--accent);'
+                         f'padding:1px 7px;border-radius:9px;font-size:0.75rem;'
+                         f'margin-inline-end:4px">{esc_html(c)}</span>'
+                         for c in (d.get("can_do") or []))
+        cards += f'''<div class="card rv-item" data-rid="{rid}" data-kind="{kind}">
+<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+<span style="font-size:1.1rem">{icon}</span>
+<b style="color:var(--accent-light)">Week {week}</b>
+<span style="color:var(--text-muted);font-size:0.8rem">{label}</span>
+<span class="rv-state" style="margin-inline-start:auto;font-size:0.8rem"></span></div>
+<h3 style="margin:6px 0 2px;font-size:1.05rem">{esc_html(d.get("title",""))}</h3>
+<div class="arabic-text" lang="ar" dir="rtl" style="font-size:0.9rem">{esc_html(d.get("title_ar",""))}</div>
+<div style="margin:6px 0">{codes}</div>
+{_rv_body(level, item)}
+<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">
+<button class="btn btn-sm rv-ok" type="button">✅ Approve</button>
+<button class="btn btn-sm btn-outline rv-flag" type="button" style="margin-inline-start:8px">⚠️ Needs change</button>
+<textarea class="rv-note" rows="2" placeholder="What should change? (only needed if flagged)"
+ style="width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid var(--border);
+ background:var(--bg-primary);color:var(--text-primary);font-family:inherit;font-size:0.9rem"></textarea>
+</div></div>'''
+
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>{lv} content review | Empire English</title>
+<link rel="stylesheet" href="/css/empire.css"></head><body>
+<div class="container">
+<div class="header"><h1 style="font-size:1.4rem">{lv} — content review</h1>
+<p class="subtitle">{counts["reading"]} reading · {counts["mediation"]} mediation · {counts["broadcast"]} extended listening</p></div>
+
+<div class="card" style="padding:12px 14px">
+<p style="margin:0 0 6px"><b id="rv-progress">0 of {len(items)} reviewed</b></p>
+<div style="height:7px;background:var(--border);border-radius:4px;overflow:hidden">
+<div id="rv-bar" style="height:100%;width:0;background:var(--accent);transition:width .2s"></div></div>
+<p style="color:var(--text-secondary);font-size:0.84rem;margin:8px 0 0">
+Judgements only you can make: is this right for <b>your</b> students, at this level?
+The correct answer is marked on every question so you can check it is the only defensible one.
+Decisions save on this device as you go.</p>
+<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn btn-sm btn-outline rv-filter" data-f="all" type="button">All</button>
+<button class="btn btn-sm btn-outline rv-filter" data-f="todo" type="button">Not yet reviewed</button>
+<button class="btn btn-sm btn-outline rv-filter" data-f="flag" type="button">Flagged</button>
+<button class="btn btn-sm btn-outline rv-filter" data-f="reading" type="button">📖 Reading</button>
+<button class="btn btn-sm btn-outline rv-filter" data-f="mediation" type="button">🤝 Mediation</button>
+<button class="btn btn-sm btn-outline rv-filter" data-f="broadcast" type="button">🎧 Listening</button>
+</div></div>
+
+<div id="rv-list">{cards}</div>
+
+<div class="card"><h2 style="font-size:1rem">Send me your decisions</h2>
+<p style="color:var(--text-secondary);font-size:0.85rem">Press this when you have finished (or part-finished).
+Copy the text and send it to me — I will apply the approvals to the ALIGNMENT docs and fix everything you flagged.</p>
+<button class="btn" id="rv-export" type="button">📋 Build my decisions</button>
+<textarea id="rv-out" rows="10" readonly style="width:100%;margin-top:10px;display:none;
+padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-primary);
+color:var(--text-primary);font-family:monospace;font-size:0.8rem"></textarea></div>
+
+<div class="nav page-nav" style="margin-top:16px"><a href="/content-review/">← All levels</a></div>
+<div class="footer">Empire English Community — owner review surface</div>
+</div>
+<script>
+(function(){{
+  var KEY='eec-review-v1';
+  var store={{}};
+  try{{ store=JSON.parse(localStorage.getItem(KEY)||'{{}}'); }}catch(e){{ store={{}}; }}
+  function save(){{ try{{ localStorage.setItem(KEY,JSON.stringify(store)); }}catch(e){{}} }}
+  var items=[].slice.call(document.querySelectorAll('.rv-item'));
+
+  function paint(el){{
+    var rid=el.dataset.rid, rec=store[rid], s=el.querySelector('.rv-state');
+    var note=el.querySelector('.rv-note');
+    el.style.borderInlineStart='3px solid transparent';
+    if(!rec){{ s.textContent=''; return; }}
+    if(rec.v==='ok'){{ s.textContent='✅ approved'; s.style.color='var(--success)';
+      el.style.borderInlineStart='3px solid var(--success)'; }}
+    else {{ s.textContent='⚠️ needs change'; s.style.color='var(--accent)';
+      el.style.borderInlineStart='3px solid var(--accent)'; }}
+    if(rec.n && note.value!==rec.n) note.value=rec.n;
+  }}
+  function progress(){{
+    var n=items.filter(function(el){{ return store[el.dataset.rid]; }}).length;
+    document.getElementById('rv-progress').textContent=n+' of '+items.length+' reviewed';
+    document.getElementById('rv-bar').style.width=(items.length?100*n/items.length:0)+'%';
+  }}
+  document.getElementById('rv-list').addEventListener('click',function(ev){{
+    var b=ev.target.closest('button'); if(!b) return;
+    var el=ev.target.closest('.rv-item'); if(!el) return;
+    var rid=el.dataset.rid;
+    if(b.classList.contains('rv-ok')) store[rid]={{v:'ok',n:''}};
+    else if(b.classList.contains('rv-flag')) store[rid]={{v:'flag',n:el.querySelector('.rv-note').value}};
+    else return;
+    save(); paint(el); progress();
+  }});
+  document.getElementById('rv-list').addEventListener('input',function(ev){{
+    if(!ev.target.classList.contains('rv-note')) return;
+    var el=ev.target.closest('.rv-item'), rid=el.dataset.rid;
+    if(store[rid]){{ store[rid].n=ev.target.value; save(); }}
+  }});
+  [].slice.call(document.querySelectorAll('.rv-filter')).forEach(function(btn){{
+    btn.addEventListener('click',function(){{
+      var f=btn.dataset.f;
+      items.forEach(function(el){{
+        var rec=store[el.dataset.rid], show=true;
+        if(f==='todo') show=!rec;
+        else if(f==='flag') show=!!rec&&rec.v==='flag';
+        else if(f!=='all') show=el.dataset.kind===f;
+        el.style.display=show?'':'none';
+      }});
+    }});
+  }});
+  document.getElementById('rv-export').addEventListener('click',function(){{
+    var ok=[],fl=[],todo=[];
+    items.forEach(function(el){{
+      var rid=el.dataset.rid, rec=store[rid];
+      if(!rec) todo.push(rid);
+      else if(rec.v==='ok') ok.push(rid);
+      else fl.push(rid+(rec.n?' — '+rec.n:' — (no note)'));
+    }});
+    var t='{lv} CONTENT REVIEW\\n'+
+      'approved: '+ok.length+'  flagged: '+fl.length+'  not reviewed: '+todo.length+'\\n\\n'+
+      'APPROVED\\n'+(ok.length?ok.map(function(x){{return '  '+x;}}).join('\\n'):'  (none)')+'\\n\\n'+
+      'NEEDS CHANGE\\n'+(fl.length?fl.map(function(x){{return '  '+x;}}).join('\\n'):'  (none)')+'\\n\\n'+
+      'NOT REVIEWED\\n'+(todo.length?todo.map(function(x){{return '  '+x;}}).join('\\n'):'  (none)');
+    var out=document.getElementById('rv-out');
+    out.style.display='block'; out.value=t; out.focus(); out.select();
+    try{{ navigator.clipboard.writeText(t); }}catch(e){{}}
+  }});
+  items.forEach(paint); progress();
+}})();
+</script>
+{copyright_footer()}</body></html>'''
+
+
+def gen_content_review_index(by_level):
+    rows = ""
+    total = 0
+    for level, items in by_level.items():
+        if not items:
+            continue
+        total += len(items)
+        c = {k: sum(1 for i in items if i["kind"] == k)
+             for k in ("reading", "mediation", "broadcast")}
+        rows += (f'<a href="/content-review/{level}.html" '
+                 f'style="display:block;padding:12px 14px;margin:7px 0;border:1px solid '
+                 f'var(--border);border-radius:10px;text-decoration:none">'
+                 f'<b style="color:var(--accent);font-size:1.05rem">{level.upper()}</b>'
+                 f'<span style="color:var(--text-muted);margin-inline-start:8px;font-size:0.85rem">'
+                 f'{len(items)} items</span><br>'
+                 f'<span style="color:var(--text-secondary);font-size:0.85rem">'
+                 f'📖 {c["reading"]} reading · 🤝 {c["mediation"]} mediation · '
+                 f'🎧 {c["broadcast"]} extended listening</span></a>')
+    return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>Content review | Empire English</title>
+<link rel="stylesheet" href="/css/empire.css"></head><body>
+<div class="container">
+<div class="header"><img src="/logo.png" alt="Empire" style="width:44px;height:44px;border-radius:50%;margin-bottom:8px">
+<h1 style="font-size:1.4rem">Content review</h1>
+<p class="subtitle">{total} authored items awaiting your sign-off</p></div>
+<div class="card"><p style="margin:0;color:var(--text-secondary);font-size:0.9rem">
+Everything authored for reading, mediation and extended listening, with the audio playable and the
+correct answer marked on every question. Approve or flag each item; your decisions save on this
+device, and the button at the bottom of each level builds a summary to send me.</p>
+<p style="margin:10px 0 0;color:var(--text-muted);font-size:0.82rem">
+This page is owner-only — it shows every answer, so it sits behind the ops passcode, not a student session.</p></div>
+{rows}
+<div class="footer">Empire English Community — owner review surface</div>
+</div>{copyright_footer()}</body></html>'''
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--level", choices=list(ALL_WEEK_COUNTS), default=None,
@@ -1996,6 +2327,25 @@ def main():
 
     with open(AUDIO_MANIFEST_PATH, "w", encoding="utf-8") as f:
         json.dump(audio_manifest, f, ensure_ascii=False, indent=2)
+
+    # --- owner content-review surface (passcode-gated, not student-facing) ---
+    review_dir = OUTPUT_DIR / "content-review"
+    review_dir.mkdir(parents=True, exist_ok=True)
+    by_level, reviewable = {}, 0
+    for level in ALL_WEEK_COUNTS:
+        items = review_items(level)
+        by_level[level] = items
+        if not items:
+            continue
+        reviewable += len(items)
+        with open(review_dir / f"{level}.html", "w", encoding="utf-8") as f:
+            f.write(gen_content_review(level, items))
+        total += 1
+    with open(review_dir / "index.html", "w", encoding="utf-8") as f:
+        f.write(gen_content_review_index(by_level))
+    total += 1
+    print(f"  Content review: {reviewable} items across "
+          f"{sum(1 for v in by_level.values() if v)} levels -> /content-review/")
 
     print(f"\n  TOTAL: {total} HTML pages generated")
     print(f"  Audio manifest: {AUDIO_MANIFEST_PATH} ({len(audio_manifest)} clips needed)")

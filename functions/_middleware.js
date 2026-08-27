@@ -59,9 +59,18 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // 0. Owner/admin ops guide — passcode-gated, INDEPENDENT of student sessions.
+  // 0. Owner/admin surfaces — passcode-gated, INDEPENDENT of student sessions.
   //    Intercept early so the student session logic never applies here.
-  if (path === '/ops-guide' || path.startsWith('/ops-guide/')) {
+  //
+  //    /content-review/ is the curriculum sign-off surface. It deliberately
+  //    shows the CORRECT ANSWER to every comprehension question, so it must not
+  //    be reachable with a student session. Note it is NOT enough to add it to
+  //    LEVEL_FREE_PATHS (where an earlier '/review/' entry sits): that only
+  //    drops level-scoping and would let any linked student read every answer
+  //    at every level. It needs the owner passcode, which is what this branch
+  //    gives it, reusing the ops-guide cookie so the owner unlocks once.
+  if (path === '/ops-guide' || path.startsWith('/ops-guide/') ||
+      path.startsWith('/content-review')) {
     return handleOpsGuide(context);
   }
 

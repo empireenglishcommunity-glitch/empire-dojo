@@ -45,8 +45,10 @@ const LEVEL_FREE_PATHS = [
 // Knowing the hash does not grant access (it can't be reversed to the passcode).
 // To rotate: run `printf 'NEW_PASSCODE' | sha256sum` and paste the hex here.
 // May be overridden at runtime via env.OPS_GUIDE_PASSCODE_SHA256.
+// Rotated 2026-08-27 — the previous passcode was lost. If you rotate again,
+// only the hash goes here; the plaintext lives in your head, nowhere in git.
 const OPS_GUIDE_PASSCODE_SHA256 =
-  '5c3bcfc017eba74777b75fb3153c901df02f735162be4e8f366ff956f09e608d';
+  'f60888c2d61a8b61f781dd035896cdcd29ca397551cc92a41a7e8d3fb56607c8';
 
 // How long a correct passcode keeps the ops guide unlocked on that device.
 const OPS_COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days

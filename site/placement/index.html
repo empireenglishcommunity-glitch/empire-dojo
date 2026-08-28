@@ -170,7 +170,51 @@
       else if (d.phase === 'done') this._renderResult(d);
     },
 
+    // Listening comprehension: a real broadcast clip from the student's band
+    // plus that script's own gist + detail questions. Replaces the old
+    // single-word dictation probe, which tested word recognition rather than
+    // comprehension and barely discriminated between B1 and C1.
+    //
+    // The dictation path below is KEPT as a fallback: the server sends
+    // mode:'dictation' when a band has no eligible clip, and placement must
+    // never break because one audio file is missing.
+    _renderComprehension(d) {
+      this._sel = {};
+      document.getElementById('plc-block-meta').textContent =
+        `Listening · level ${d.band} — listen, then answer`;
+      const wrap = document.getElementById('plc-questions');
+      wrap.innerHTML = `
+        <div class="plc-audio-wrap" style="margin:0 0 18px">
+          <audio id="plc-audio" src="${this._esc(d.audio_url)}" preload="auto"
+                 controls style="width:100%"></audio>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin:6px 0 0">
+            You may listen more than once. There is no transcript.
+            <span class="ar-inline" lang="ar" dir="rtl">تقدر تسمع أكتر من مرة. مفيش نص مكتوب.</span>
+          </p>
+        </div>
+        ${(d.items || []).map(q => `
+          <div class="plc-q" data-qid="${this._esc(q.q_id)}">
+            <div class="plc-prompt">${this._esc(q.prompt)}</div>
+            ${(q.options || []).map(o =>
+              `<button class="plc-opt" data-val="${this._esc(o)}">${this._esc(o)}</button>`
+            ).join('')}
+          </div>`).join('')}
+      `;
+      wrap.querySelectorAll('.plc-opt').forEach(btn => {
+        btn.onclick = () => {
+          const q = btn.closest('.plc-q'); const qid = q.getAttribute('data-qid');
+          q.querySelectorAll('.plc-opt').forEach(b => b.classList.remove('sel'));
+          btn.classList.add('sel'); this._sel[qid] = btn.getAttribute('data-val');
+        };
+      });
+      this._show('plc-block');
+    },
+
     _renderBlock(d) {
+      // Real-audio comprehension probe (server decides; dictation is fallback).
+      if (d.phase === 'listening' && d.mode === 'comprehension') {
+        return this._renderComprehension(d);
+      }
       this._sel = {};
       const listening = d.phase === 'listening';
       document.getElementById('plc-block-meta').textContent =

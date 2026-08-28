@@ -1319,8 +1319,24 @@ def gen_broadcast(level, week, day, theme, bc):
     before_ar = esc_html(before.get("ar", ""))
 
     # --- the player: speaker labels only, never the words ---
-    seq = [{"id": broadcast_audio_id(level, week, i), "text": s.get("text", "")}
-           for i, s in enumerate(segments)]
+    #
+    # AUTHENTIC SCENE AUDIO. B2.R.2 and C1.R.2 name FILMS, and synthesis cannot
+    # deliver what an actor does with a line. When a scene has been re-recorded
+    # with real voices it arrives as ONE continuous file ({level}-w{week}-scene.mp3)
+    # — actors perform a scene, they do not record one clean turn at a time — so
+    # the player uses that single file instead of the per-turn TTS clips.
+    #
+    # Per-turn highlighting is lost with a continuous recording, which is a fair
+    # trade: reading tone off a real voice is the whole point of the descriptor.
+    # Falls back to the TTS sequence whenever no scene file is present, so this is
+    # purely additive and nothing changes until a recording lands.
+    scene_file = OUTPUT_DIR / "audio" / f"{level}-w{week}-scene.mp3"
+    authentic_scene = scene_file.exists()
+    if authentic_scene:
+        seq = [{"id": f"{level}-w{week}-scene", "text": ""}]
+    else:
+        seq = [{"id": broadcast_audio_id(level, week, i), "text": s.get("text", "")}
+               for i, s in enumerate(segments)]
     seq_json = safe_json_for_script_tag(seq)
     turn_rows = ""
     if len(segments) > 1:

@@ -1,8 +1,15 @@
 name: empire-dojo verify
 
-# Run on PRs that touch site content, the generator, or this workflow.
+# Run on PRs that touch site content, the generator, or this workflow —
+# and on pushes to main, so the deployed branch is continuously verified.
 on:
   pull_request:
+    paths:
+      - "scripts/**"
+      - "site/**"
+      - ".github/workflows/dojo-verify.yml"
+  push:
+    branches: [main]
     paths:
       - "scripts/**"
       - "site/**"
@@ -26,9 +33,68 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install verification dependencies
+        # soundfile is needed by verify_audio_pace.py to read MP3 durations.
+        run: pip install --quiet soundfile
+
+      # ---------------------------------------------------------------
+      #  1. The committed site/ must match what the generator produces.
+      #
+      #  This step exists because of a real gap found by the 2026-08-29
+      #  audit: this workflow used to regenerate site/ and then verify the
+      #  REGENERATED output, which means a divergence between the committed
+      #  pages and the generator could never fail the build. Since site/ is
+      #  what actually gets deployed, that was the one thing most worth
+      #  checking. Verified byte-identical at the time this gate was added,
+      #  so it starts green rather than being merged already-failing.
+      # ---------------------------------------------------------------
       - name: Regenerate site from curriculum
         run: |
           EEC_REPO_DIR=${{ github.workspace }}/empire-nexus python3 scripts/generate.py
 
+      - name: Committed site/ must match the generator (no drift)
+        run: |
+          if ! git diff --quiet -- site/ scripts/audio-manifest.json; then
+            echo "::error::The committed site/ does not match what generate.py produces."
+            echo "Regenerate locally and commit the result:"
+            echo "  EEC_REPO_DIR=<path-to-empire-nexus> python3 scripts/generate.py"
+            echo ""
+            echo "Files that differ:"
+            git --no-pager diff --stat -- site/ scripts/audio-manifest.json
+            exit 1
+          fi
+          echo "Committed site/ is identical to the generator output."
+
+      # ---------------------------------------------------------------
+      #  2. Structural / injection sweep over every generated page.
+      # ---------------------------------------------------------------
       - name: Verify all generated pages (html.parser + injection sweep)
         run: python3 scripts/verify_pages.py
+
+      # ---------------------------------------------------------------
+      #  3. Delivery pace. NOT cosmetic: several CEFR descriptors are
+      #     claims about speed ("speak slowly and clearly" at A1 through
+      #     "fast native speed" at C2), and this is the only check that
+      #     tests that claim against the actual rendered artefact. Pace
+      #     has already been a real shipped defect once, when clips were
+      #     rendered per-voice without normalising for the fact that the
+      #     Kokoro voices differ by 1.84x at the same speed setting.
+      # ---------------------------------------------------------------
+      - name: Verify extended-listening delivery pace
+        run: python3 scripts/verify_audio_pace.py
+
+      # ---------------------------------------------------------------
+      #  4. Authentic-audio manifest. Guards the two film reservations
+      #     (B2.R.2, C1.R.2): a scene may only be declared authentic if
+      #     its file exists, is a plausible size, and is not byte-identical
+      #     to the TTS clip it claims to replace.
+      #
+      #     NOTE: this check catches MECHANICAL failures only. Listing a
+      #     scene in the manifest is a human trust declaration that the
+      #     audio is a real recording, and no script can verify that.
+      #     Never describe a green tick here as proof of authenticity.
+      # ---------------------------------------------------------------
+      - name: Verify authentic-audio declarations
+        run: |
+          EEC_REPO_DIR=${{ github.workspace }}/empire-nexus \
+            python3 scripts/verify_authentic_audio.py

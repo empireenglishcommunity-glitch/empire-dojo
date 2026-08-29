@@ -136,6 +136,21 @@ def bl(en, ar):
     return f'{en} <span class="ar-inline" lang="ar" dir="rtl">/ {ar}</span>'
 
 
+def bl_attr(en, ar):
+    """Plain-text bilingual label for HTML ATTRIBUTE contexts (placeholder,
+    title, aria-label, value) where markup is invalid.
+
+    bl() returns a <span>, which is only valid in element BODY content.
+    Embedding bl() inside an attribute (e.g. placeholder="{bl(...)}")
+    terminates the attribute at the span's first double-quote and leaks
+    the rest of the markup into the UI as literal text -- seen live on
+    2026-08-29 as `your answer <span class` and `... j/ جوابك" style=...>`
+    inside the grammar and mediation input placeholders. Attributes get
+    plain text only: this returns 'en / ar' escaped for safe attribute use.
+    """
+    return esc_html(f"{en} / {ar}")
+
+
 # ============================================================
 #  ACCENT DRILL NORMALIZATION
 #
@@ -754,7 +769,7 @@ def gen_mediation(level, week, day, theme, mediation):
 <div class="card"><h2>🎯 {bl("Your job", "مهمتك")}</h2>
 <p style="line-height:1.7">{esc_html(task.get("en",""))}</p>
 {f'<p class="arabic-text" lang="ar" dir="rtl" style="margin-top:8px">{esc_html(task.get("ar",""))}</p>' if task.get("ar") else ''}
-<textarea id="mediation-answer" class="quiz-input" rows="4" style="width:100%;margin-top:12px;resize:vertical" placeholder="{bl("Write what you would say...", "اكتب اللي هتقوله...")}"></textarea>
+<textarea id="mediation-answer" class="quiz-input" rows="4" style="width:100%;margin-top:12px;resize:vertical" placeholder="{bl_attr("Write what you would say...", "اكتب اللي هتقوله...")}"></textarea>
 <button class="btn btn-sm" style="margin-top:10px" onclick="Mediation.reveal()">👀 {bl("Show the model answer", "وريني الإجابة النموذجية")}</button></div>
 <div class="card" id="model-card" style="display:none;border-left:3px solid var(--success)"><h2>✅ {bl("A good answer", "إجابة كويسة")}</h2>
 <p style="line-height:1.8">{esc_html(model.get("en",""))}</p>
@@ -1055,7 +1070,7 @@ def gen_grammar(level, week, day, theme, grammar, grammar_point=None):
             rows += (f'<div class="question" data-gi="{i}" style="padding:12px 0;border-bottom:1px solid var(--border)">'
                      f'<p style="font-size:1.05rem;line-height:1.7">{esc_html(p["sentence"])}</p>'
                      f'<input class="quiz-input g-answer" data-gi="{i}" type="text" autocomplete="off"'
-                     f' placeholder="{bl("your answer", "جوابك")}" style="margin-top:8px;width:100%">'
+                     f' placeholder="{bl_attr("your answer", "جوابك")}" style="margin-top:8px;width:100%">'
                      f'<button class="btn btn-sm" style="margin-top:8px" onclick="GrammarPractice.check({i})">✓ {bl("Check", "صحح")}</button>'
                      f'<div class="g-feedback" data-gi="{i}" style="margin-top:8px"></div></div>')
         practice_card = (f'<div class="card"><h2>✍️ {bl("Practice", "تمرين")}</h2>'

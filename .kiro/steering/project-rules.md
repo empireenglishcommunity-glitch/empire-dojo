@@ -8,8 +8,12 @@
 
 ## 1. Project Identity
 
-- **Project:** Empire English Practice Platform — the web companion to the Discord Learning Bot
+- **Project:** Empire English Practice Platform ("Darb") — the web companion to the Discord Learning Bot
 - **Parent project:** Empire English Community (see `empire-nexus/.kiro/steering/project-rules.md` for org-wide rules)
+- **Levels:** the **six CEFR levels A1–C2**, 90 curriculum weeks, 6,948 generated
+  pages, 1,095 Kokoro TTS clips. *(Updated 2026-08-29 — legacy `L0`–`L3` was
+  retired and its content, pages and audio deleted on 2026-08-25. Anything in
+  this file still written in L0–L3 terms is historical.)*
 - **Purpose:** Gives students a page to land on when a Discord daily task says "go practice your accent/shadowing/listening/vocab" — the bot links here, this repo has no independent content strategy of its own
 - **Live at:** https://practice.empireenglish.online
 - **Repository:** `empireenglishcommunity-glitch/empire-dojo`
@@ -54,7 +58,7 @@ it, not just add a gitignore rule.
 
 - **All curriculum content (vocabulary, accent drills, shadowing text) comes from `empire-nexus/bots/discord-learning-bot/`** — specifically its `data/` and `content/` directories. This repo has ZERO independent content — it only renders what the bot's curriculum already contains.
 - Never fabricate or invent curriculum content here (dialogue, vocabulary, drills) to "fill in" a level or week. If real content doesn't exist yet in empire-nexus for some week/level, that's a signal to go fix it there, not to invent placeholder text here.
-- `LEVEL_WEEK_COUNTS = {"l0": 8, "l1": 10, "l2": 12, "l3": 8}` in `scripts/generate.py` MUST always match the identical constant in `empire-nexus/bots/discord-learning-bot/src/curriculum.py`. If the bot's curriculum grows (new weeks/levels), update both in the same PR.
+- `CEFR_WEEK_COUNTS = {"a1": 10, "a2": 12, "b1": 14, "b2": 16, "c1": 18, "c2": 20}` in `scripts/generate.py` MUST always match the identical constant in `empire-nexus/bots/discord-learning-bot/src/curriculum.py` (which keys it upper-case: `{"A1": 10, …}`). If the bot's curriculum grows, update both in the same PR. *(Corrected 2026-08-29: this rule previously named `LEVEL_WEEK_COUNTS = {"l0": 8, "l1": 10, "l2": 12, "l3": 8}`, which is now an empty dict on both sides — legacy L0–L3 was retired 2026-08-25. Following the old rule literally would have told you to restore a retired model.)*
 - Shadowing pages use the curriculum's real `sentence_practice`/`record_this` text. Listening pages use a grounded vocab-comprehension check (hear a real word, pick its correct Arabic meaning from real same-week distractors) — this was a deliberate choice to scale to all weeks without fabricating dialogue content that only existed for weeks 1-2 in an earlier version of this generator.
 - Vocab flashcard pages (1,843 words across L0-L3) deliberately do NOT have pre-generated Kokoro audio — only browser TTS. This was a scope/storage tradeoff, explicitly flagged as open to revisiting.
 - **Every curriculum-derived string must go through `esc_html()` (for HTML body/attribute context) or `safe_json_for_script_tag()` (for embedding inside a `<script>` tag) before being written into generated HTML.** Found via adversarial-input stress testing (2026-07-13, [PR #10](https://github.com/empireenglishcommunity-glitch/empire-dojo/pull/10)): curriculum text was previously interpolated raw, and a crafted `<img onerror>` in a vocabulary word's `arabic` field was proven to actually execute in a browser via `app.js`'s `Flashcard.render()` (which itself was also fixed to use `textContent`/`createElement` instead of `innerHTML`). If you add a new page generator function in `generate.py`, apply the same escaping to any curriculum-derived value before interpolating it — don't assume curriculum content is safe just because it's currently hand-authored/repo-committed rather than user-submitted.
@@ -167,6 +171,51 @@ after any deploy-affecting change:
 
 Never declare a fix "done" based on the deploy command exiting 0, or
 based on one or two spot-checked URLs.
+
+---
+
+## 7. What CI actually checks (and what it deliberately cannot)
+
+*(This section number was missing entirely until 2026-08-29 — the file jumped
+from §6 to §8. Added here because the CI gates were expanded in the same pass.)*
+
+`.github/workflows/dojo-verify.yml` runs on every PR touching `scripts/` or
+`site/`, and on pushes to `main`. **Five gates, in order:**
+
+1. **Regenerate** `site/` from `empire-nexus`'s curriculum.
+2. **Drift gate** — `git diff --quiet -- site/ scripts/audio-manifest.json`.
+   The committed `site/` must be **byte-identical** to what `generate.py`
+   produces. Before 2026-08-29 the workflow regenerated `site/` and then verified
+   the *regenerated* output, which meant a divergence between the committed pages
+   and the generator could never fail the build — and `site/` is the thing that
+   actually gets deployed. So **commit your regenerated pages**; if this gate
+   fails, run `EEC_REPO_DIR=<nexus> python3 scripts/generate.py` and commit.
+3. **`verify_pages.py`** — 6,948 pages, real `html.parser` parse + injection sweep.
+4. **`verify_audio_pace.py`** — delivery pace per CEFR level. **Not cosmetic:**
+   several descriptors are claims about speed (`A1.R.1` "speak slowly and
+   clearly" … `C2.R.1` "fast native speed") and this is the only check that tests
+   that claim against the rendered artefact. It has caught a real shipped defect.
+   Needs `pip install soundfile`.
+5. **`verify_authentic_audio.py`** — guards the two film reservations
+   (`B2.R.2`, `C1.R.2`).
+
+**What CI cannot check, so you must:**
+
+- **Visual regression.** A page can parse cleanly, match the generator and still
+  look broken. That is what §8's preview-URL discipline is for.
+- **Whether the English is any good.** The validators check shape, script purity
+  and structure — not writing quality. A green build has passed an ungrammatical
+  sentence before.
+- **Per-clip pace for short clips.** Only clips at or above
+  `MIN_WORDS_FOR_PACE` are measurable — currently **204 of 465** broadcast clips.
+  The rest contribute nothing to the aggregate, so "pace verified" means *per
+  level*, not *per clip*. Do not overstate it.
+- **That audio declared authentic really is authentic.** Gate 5 catches missing
+  files, implausibly small files, and files byte-identical to the TTS clip they
+  claim to replace. It **cannot** distinguish a human performance from a
+  convincing substitute. Listing a scene in `authentic_audio.json` is a human
+  trust declaration. Never call a green tick proof of authenticity.
+- **That the live site is current.** CI never deploys. See §8.5.
 
 ---
 

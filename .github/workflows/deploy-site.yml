@@ -1,0 +1,124 @@
+name: deploy site (Cloudflare Pages)
+
+# Auto-deploy site/ to Cloudflare Pages whenever it lands on main.
+#
+# WHY THIS EXISTS
+# ---------------
+# This repo used to have NO deploy automation at all: the Pages project has no
+# Git integration (`source: null` via the Cloudflare API), so merging a PR did
+# nothing to the live site and somebody had to remember to run
+# `wrangler pages deploy site` by hand. That gap has bitten before — defect
+# D008 (2026-07-15), where PR #21 was merged and the live site kept serving an
+# older build because nobody deployed. Steering §8.5 documented the manual step
+# as a "hard rule", but a rule that depends on remembering is exactly the thing
+# that fails. This makes merge -> live structural instead of remembered.
+#
+# REQUIRES ONE REPOSITORY SECRET:
+#   CLOUDFLARE_API_TOKEN -> a Cloudflare API token scoped to
+#                           Account > Cloudflare Pages > Edit
+# The account id and project name are NOT secret (they are already documented in
+# .kiro/steering/project-rules.md §5) so they live in plain env vars below.
+#
+# NOTE: this deploys the site/ directory exactly as committed. It deliberately
+# does NOT regenerate — the dojo-verify workflow's drift gate already proves the
+# committed site/ is byte-identical to generate.py's output, so regenerating here
+# would duplicate that check and risk deploying something that was never reviewed.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "functions/**"
+      - ".github/workflows/deploy-site.yml"
+  workflow_dispatch: {}   # allow a manual "Run workflow" (e.g. to re-deploy)
+
+concurrency:
+  group: deploy-site
+  cancel-in-progress: false   # never abort a half-finished upload
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: "8c2ca895bd4e579be07d2fa6c9fdba7e"
+  PAGES_PROJECT: "empire-practice"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fail early if the deploy token is missing
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN repository secret is not set."
+            echo "Add it under Settings > Secrets and variables > Actions."
+            echo "Token needs: Account > Cloudflare Pages > Edit."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Deploy site/ to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          npx --yes wrangler@4 pages deploy site \
+            --project-name="$PAGES_PROJECT" \
+            --branch=main \
+            --commit-hash="$GITHUB_SHA" \
+            --commit-dirty=false
+
+      # ---------------------------------------------------------------
+      #  Verify the deploy actually became production for THIS commit.
+      #
+      #  Deliberately not "wrangler exited 0, therefore it's live" —
+      #  §6 of the steering rules exists because exit-0 has hidden real
+      #  bugs in this repo before. This asserts against the Cloudflare
+      #  API that the newest production deployment carries this commit.
+      # ---------------------------------------------------------------
+      - name: Verify the live production deployment is this commit
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          sleep 5
+          deployed="$(curl -fsS \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${PAGES_PROJECT}/deployments?env=production&per_page=1" \
+            | jq -r '.result[0].deployment_trigger.metadata.commit_hash // ""')"
+
+          echo "expected commit: $GITHUB_SHA"
+          echo "deployed commit: $deployed"
+
+          case "$GITHUB_SHA" in
+            "$deployed"*) echo "Production deployment matches this commit." ;;
+            *)
+              echo "::error::Newest production deployment ($deployed) is not this commit ($GITHUB_SHA)."
+              exit 1
+              ;;
+          esac
+
+      # ---------------------------------------------------------------
+      #  Soft check: an ungated public asset served from the live custom
+      #  domain should match the repo. Advisory only (a CDN edge can lag
+      #  briefly), so a mismatch warns rather than failing a deploy that
+      #  the API above already confirmed.
+      # ---------------------------------------------------------------
+      - name: Live asset spot-check (advisory)
+        continue-on-error: true
+        run: |
+          for attempt in 1 2 3 4 5; do
+            live="$(curl -fsSL https://practice.empireenglish.online/js/app.js | sha256sum | cut -d' ' -f1)"
+            repo="$(sha256sum site/js/app.js | cut -d' ' -f1)"
+            if [ "$live" = "$repo" ]; then
+              echo "Live /js/app.js matches the repo."
+              exit 0
+            fi
+            echo "attempt $attempt: live and repo differ, retrying in 10s..."
+            sleep 10
+          done
+          echo "::warning::Live /js/app.js still differs from the repo. The API check passed, so this is most likely edge caching — verify manually if it persists."

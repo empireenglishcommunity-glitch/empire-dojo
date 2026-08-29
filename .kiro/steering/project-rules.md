@@ -220,77 +220,112 @@ from §6 to §8. Added here because the CI gates were expanded in the same pass.
 
 ---
 
-## 8. Preview-URL Discipline (Aegis — never merge without checking)
+## 8. Preview Discipline (Aegis — never merge a visual change unseen)
 
-**Hard rule: never merge a PR that touches `scripts/` or `site/` without
-clicking through its Cloudflare Pages preview URL first.**
+> 🔴 **CORRECTED 2026-08-29.** This section used to assert: *"Cloudflare Pages
+> automatically generates a unique preview URL for every PR branch (visible in the
+> PR's Deployments section or commit status checks). This has been happening since
+> the project's creation."* **That is false, and following it wastes time looking
+> for a URL that does not exist.** The Pages project has **no Git integration** —
+> the Cloudflare API reports `source: null` for `empire-practice`, which means
+> Cloudflare never sees the GitHub repo and therefore builds **no automatic
+> preview deployments for PRs at all**. Verified by API inspection, and by PR #136
+> having no preview URL. Every deployment this project has ever had was pushed
+> **manually** with `wrangler`. Do not go hunting for a preview link in the PR UI.
 
-Cloudflare Pages automatically generates a unique preview URL for every
-PR branch (visible in the PR's Deployments section or commit status
-checks). This has been happening since the project's creation — it was
-just never formalized as a required step. Now it is.
+**Hard rule: never merge a PR that changes what a student SEES (`site/`, or
+`scripts/generate.py` output) without previewing it somewhere first.**
 
-Why this matters:
+Since there are no automatic previews, create one deliberately. Two options:
+
+```bash
+# A. Named preview alias (does NOT touch production, which is branch "main"):
+npx wrangler pages deploy site --project-name=empire-practice --branch=preview-<topic>
+#    -> serves at https://preview-<topic>.empire-practice-8l0.pages.dev
+
+# B. Purely local, no Cloudflare needed — enough for layout/markup checks:
+python3 -m http.server 8000 --directory site
+#    (the edge gate in functions/ does not run locally, so pages render ungated)
+```
+
+Why previewing matters at all:
 - `generate.py` exiting 0 does NOT mean the pages look right (see
   rule 6 above — multiple real bugs passed exit-0 checks).
 - The CI `verify_pages.py` check catches structural/injection issues,
   but it can't catch visual regressions (layout broken, wrong content
   displayed, CSS broken).
-- The preview URL is free, automatic, and already exists — using it
-  costs zero effort beyond actually looking at the pages.
+- Creating a preview costs one command — cheaper than shipping a broken
+  page to 17 students and finding out from a screenshot.
 
-What "clicking through" means in practice:
-1. Open the Cloudflare preview URL from the PR's status/deployment.
-2. Spot-check at least one page per level (L0-L3).
-3. Confirm the page loads, renders correctly, has the right content,
-   and navigation links work.
-4. If `scripts/diff_against_live.py` is available, also run it against
-   the preview URL to confirm only intended changes are present:
+What previewing means in practice:
+1. Open the preview alias (or the local server) you created above.
+2. Spot-check at least one page per affected level (**A1–C2**; the legacy
+   L0–L3 zone was retired 2026-08-25 and no longer exists).
+3. Confirm the page loads, renders correctly, has the right content, and
+   navigation links work.
+4. Optionally run the differ to confirm only intended changes are present:
    ```bash
-   python3 scripts/diff_against_live.py <preview-url>
+   python3 scripts/diff_against_live.py <preview-or-live-url>
    ```
 
-If the preview URL is broken or unavailable, that itself is a signal
-something is wrong — do not merge without understanding why.
+**A worked example of why this section exists:** on 2026-08-29 the grammar
+fill-in-the-blank and mediation pages shipped with raw HTML inside their input
+`placeholder` attributes (`your answer <span class …`) — see §3's `bl_attr` rule.
+`verify_pages.py` passed all 6,948 pages, the drift gate was green, and the
+generator exited 0. Only a human looking at the page caught it, and that human
+was a **student**. Structural validators cannot see "this looks broken."
 
 ---
 
-## 8.5. Post-Merge Production Deploy (Hisn — never assume merge = live)
+## 8.5. Production Deploy (Hisn — merge now deploys itself, but verify)
 
-**Hard rule: merging a PR to `main` does NOT put it on the live site.**
-This repo has no CI/CD auto-deploy pipeline — `.github/workflows/`
-only runs verification checks on PRs, it never deploys anything.
-`https://practice.empireenglish.online` only reflects whatever was
-last manually deployed via:
+> ✅ **UPDATED 2026-08-29.** This section used to say *"merging a PR to `main`
+> does NOT put it on the live site — this repo has no CI/CD auto-deploy
+> pipeline"*. **That is no longer true.** `.github/workflows/deploy-site.yml`
+> now deploys `site/` to Cloudflare Pages automatically on every push to `main`
+> that touches `site/`, `functions/`, or that workflow. The manual command is
+> still the fallback and is still what you use for previews.
 
+**How production is updated now:** merge to `main` → `deploy-site.yml` runs
+`wrangler pages deploy site` → it then **asserts against the Cloudflare API that
+the newest production deployment carries that exact commit** (not merely that
+wrangler exited 0), plus an advisory live-asset hash check.
+
+**Manual deploy** (fallback, or after changing something outside those paths):
 ```bash
 cd empire-dojo
 git checkout main && git pull
-npx wrangler pages deploy site --project-name=empire-practice
+npx wrangler pages deploy site --project-name=empire-practice --branch=main
 ```
 
-**This gap was found for real** (2026-07-15, Hisn full-ecosystem
-verification campaign, defect D008): PR #21 (the Wuslah W1 student
-dashboard) was merged to `main`, but nobody ran the deploy command
-afterward. The live site continued serving an older build — missing
-the entire `/dash/` page AND the homepage's new "📊 My Dashboard" link
-— until this was caught by a page crawler comparing local repo state
-against live HTTP responses, not by anyone noticing visually.
+**Why this automation exists — the gap was real, twice:**
+- **2026-07-15 (defect D008):** PR #21 (Wuslah W1 dashboard) was merged but
+  nobody ran the deploy. Live kept serving an older build — missing the whole
+  `/dash/` page and the homepage link to it — caught only by a crawler diffing
+  repo state against live HTTP responses.
+- **2026-08-29:** PR #135 was merged and sat undeployed until an unrelated
+  deploy happened to carry it. Harmless *that* time (it changed no `site/`
+  files), but the same hole. A "hard rule" that depends on a human remembering
+  is not a control; a workflow is.
 
-**Rule going forward: after merging ANY PR that touches `site/`, run
-the deploy command in section 5 before considering the work "done."**
-Section 8's preview-URL discipline (checking the PR's preview deploy
-before merging) is necessary but NOT sufficient — it confirms the
-CHANGE is correct, not that it's actually LIVE after merge. Both steps
-are required:
-1. Before merge: check the preview URL (section 8)
-2. After merge: run the production deploy command (section 5)
+**Still true, and still your job:** auto-deploy proves the bytes are live, not
+that they are *correct*. §8's preview discipline is not optional — production
+deploying itself makes an unreviewed visual regression reach students *faster*.
 
-If unsure whether the live site is current, don't guess — compare
-`git log -1 --format=%H` on `main` against the live site's actual
-rendered content for something that changed in that commit (e.g. grep
-for new text/links that PR added). This is exactly how the D008 gap
-was confirmed, not by trusting a deploy history log or dashboard.
+**Two Cloudflare facts worth knowing before you debug a deploy:**
+- The Pages project has **no Git integration** (`source: null`). Cloudflare is
+  not watching this repo; the GitHub Action is the only thing that pushes.
+  So the *only* deploys that exist are ones a workflow or a human ran.
+- The workflow needs the repository secret **`CLOUDFLARE_API_TOKEN`**
+  (scope: *Account > Cloudflare Pages > Edit*). If it is missing or revoked the
+  workflow fails loudly on its first step by design — never silently.
+
+If you ever doubt whether live is current, don't guess: query the API for the
+newest production deployment's commit and compare it to `main`, and/or hash an
+ungated public asset (`/js/app.js`, `/css/empire.css`) against the repo copy.
+Content pages cannot be checked anonymously — `functions/_middleware.js` serves
+the "Access Required" gate to any request without a student session, so a curl
+of `/a1/week1/day1/grammar` returns the gate, **not** stale content.
 
 ---
 

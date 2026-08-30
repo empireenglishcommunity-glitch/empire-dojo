@@ -1,0 +1,134 @@
+name: audio r2 smoke test
+
+# Proves the audio pipeline's foundations BEFORE we build 12 hours of rendering
+# on top of them:
+#   1. the R2 S3 credentials work,
+#   2. the private voice bucket actually holds the owner's reference file,
+#   3. an object written to the public bucket is reachable over the custom
+#      domain (i.e. delivery works end to end).
+#
+# Manual only. Costs nothing, writes one throwaway object and deletes it.
+on:
+  workflow_dispatch:
+    inputs:
+      public_bucket:
+        description: "Public audio bucket"
+        default: "empire-audio"
+      voice_bucket:
+        description: "Private voice bucket (holds reference.m4a)"
+        default: "empire-voice"
+      public_domain:
+        description: "Public domain connected to the audio bucket"
+        default: "audio.empireenglish.online"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail early if R2 secrets are missing
+        env:
+          A: ${{ secrets.R2_ACCOUNT_ID }}
+          K: ${{ secrets.R2_ACCESS_KEY_ID }}
+          S: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          miss=0
+          [ -z "$A" ] && { echo "::error::R2_ACCOUNT_ID secret is not set"; miss=1; }
+          [ -z "$K" ] && { echo "::error::R2_ACCESS_KEY_ID secret is not set"; miss=1; }
+          [ -z "$S" ] && { echo "::error::R2_SECRET_ACCESS_KEY secret is not set"; miss=1; }
+          [ "$miss" = "1" ] && exit 1
+          echo "All three R2 secrets are present."
+
+      - name: Install boto3
+        run: pip install --quiet boto3
+
+      - name: R2 checks
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          PUBLIC_BUCKET: ${{ inputs.public_bucket }}
+          VOICE_BUCKET: ${{ inputs.voice_bucket }}
+          PUBLIC_DOMAIN: ${{ inputs.public_domain }}
+        run: |
+          python3 - <<'PY'
+          import os, sys, time, urllib.request, boto3
+          from botocore.config import Config
+
+          acct = os.environ["R2_ACCOUNT_ID"]
+          s3 = boto3.client(
+              "s3",
+              endpoint_url=f"https://{acct}.r2.cloudflarestorage.com",
+              aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
+              aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
+              region_name="auto",
+              config=Config(signature_version="s3v4"),
+          )
+          pub = os.environ["PUBLIC_BUCKET"]
+          voice = os.environ["VOICE_BUCKET"]
+          domain = os.environ["PUBLIC_DOMAIN"]
+          fail = []
+
+          print("=== 1. list buckets (auth check) ===")
+          try:
+              names = [b["Name"] for b in s3.list_buckets().get("Buckets", [])]
+              print("  buckets visible to this token:", names)
+              for b in (pub, voice):
+                  print(f"  {'OK' if b in names else 'MISSING'}: {b}")
+                  if b not in names:
+                      fail.append(f"bucket {b} not found")
+          except Exception as e:
+              fail.append(f"list_buckets failed: {e}")
+              print("  ERROR:", e)
+
+          print("\n=== 2. the private voice reference ===")
+          try:
+              h = s3.head_object(Bucket=voice, Key="reference.m4a")
+              kb = h["ContentLength"] / 1024
+              print(f"  OK: {voice}/reference.m4a is {kb:.0f} KB")
+              if h["ContentLength"] < 50_000:
+                  fail.append("reference.m4a is suspiciously small (<50 KB)")
+          except Exception as e:
+              fail.append(f"reference.m4a not found in {voice}: {e}")
+              print("  ERROR:", e)
+
+          print("\n=== 3. write to public bucket + read over the custom domain ===")
+          key = f"_smoke/ping-{int(time.time())}.txt"
+          token = f"empire-audio-ok-{int(time.time())}"
+          try:
+              s3.put_object(Bucket=pub, Key=key, Body=token.encode(),
+                            ContentType="text/plain", CacheControl="no-store")
+              print(f"  wrote {pub}/{key}")
+              url = f"https://{domain}/{key}"
+              got = None
+              for attempt in range(6):
+                  time.sleep(3)
+                  try:
+                      with urllib.request.urlopen(url, timeout=15) as r:
+                          got = r.read().decode().strip()
+                          print(f"  attempt {attempt+1}: HTTP {r.status} -> {got!r}")
+                          break
+                  except Exception as e:
+                      print(f"  attempt {attempt+1}: {e}")
+              if got == token:
+                  print(f"  OK: public delivery works — {url}")
+              else:
+                  fail.append(f"public read mismatch at {url} (got {got!r}); "
+                              f"custom domain may not be connected to {pub}")
+          except Exception as e:
+              fail.append(f"public write/read failed: {e}")
+              print("  ERROR:", e)
+          finally:
+              try:
+                  s3.delete_object(Bucket=pub, Key=key)
+                  print(f"  cleaned up {key}")
+              except Exception:
+                  pass
+
+          print("\n" + "=" * 50)
+          if fail:
+              print("SMOKE TEST FAILED:")
+              for f in fail:
+                  print("  -", f)
+              sys.exit(1)
+          print("SMOKE TEST PASSED — R2 read/write and public delivery all work.")
+          PY

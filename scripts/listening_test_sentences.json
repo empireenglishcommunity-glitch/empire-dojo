@@ -1,0 +1,26 @@
+{
+  "_what": "The fixed sentence set for the voice listening test. Rendered three ways (Kokoro af_heart, your voice via F5-TTS, your voice via Chatterbox) so the owner can compare the SAME words across engines. Chosen to exercise every surface: a greeting, questions, a long sentence, numbers, minimal pairs (the accent task's core), and a short teaching passage.",
+  "_why": "A mass render of 4,875 clips must never happen on faith. This is the 20-sentence proof heard first.",
+  "sentences": [
+    {"id": "01-greeting",        "surface": "listening", "text": "Good morning. Welcome back to your English practice."},
+    {"id": "02-question-short",  "surface": "listening", "text": "How are you feeling today?"},
+    {"id": "03-question-long",   "surface": "listening", "text": "Could you tell me what you did yesterday, and what you are planning to do tomorrow?"},
+    {"id": "04-instruction",     "surface": "index",     "text": "Listen carefully, then repeat the sentence three times before you record yourself."},
+    {"id": "05-numbers",         "surface": "listening", "text": "The meeting is at half past nine on the fourteenth of March."},
+    {"id": "06-minimal-ship",    "surface": "accent",    "text": "ship, sheep. It is a big ship. Look at the sheep."},
+    {"id": "07-minimal-th",      "surface": "accent",    "text": "think, sink. I think the sink is broken."},
+    {"id": "08-word-list",       "surface": "accent",    "text": "comfortable, vegetable, temperature, Wednesday, February."},
+    {"id": "09-sentence-stress", "surface": "accent",    "text": "I didn't say she stole the money. I said she borrowed it."},
+    {"id": "10-passage",         "surface": "shadowing", "text": "Every evening after work, she walks along the river. The water is calm, the sky turns orange, and for a few minutes the whole city feels quiet."},
+    {"id": "11-encourage",       "surface": "encourage", "text": "That was excellent work. You are improving faster than you think. Keep going."},
+    {"id": "12-vocab-word",      "surface": "vocab",     "text": "generous. A generous person gives without expecting anything back."},
+    {"id": "13-connected",       "surface": "listening", "text": "What are you going to do about it? I don't know yet, but I'll figure it out."},
+    {"id": "14-reading",         "surface": "reading",   "text": "The report concluded that, despite the setbacks, the project had achieved most of its original goals."},
+    {"id": "15-contraction",     "surface": "accent",    "text": "I'm, you're, they've, wouldn't, shouldn't have."},
+    {"id": "16-intonation-q",    "surface": "listening", "text": "You're coming to the party, aren't you?"},
+    {"id": "17-long-native",     "surface": "listening", "text": "By the time we arrived at the station, the last train had already left, so we had to take a taxi all the way home."},
+    {"id": "18-mediation",       "surface": "mediation", "text": "In plain terms, it means this: spend less than you earn, and save the difference."},
+    {"id": "19-review",          "surface": "review",    "text": "Let's review the five words you learned this week before we move on."},
+    {"id": "20-farewell",        "surface": "encourage", "text": "Great session today. See you tomorrow, and don't forget to practice."}
+  ]
+}

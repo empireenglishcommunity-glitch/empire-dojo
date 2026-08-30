@@ -615,7 +615,14 @@ const ItqanAssessment = {
     if (data && data.voided) {
       this.finishing = false;
       this.attempt = null; this.answers = {}; this.idx = 0;
-      this._showIntro();
+      // Return to the intro for THIS assessment type. Calling the weekly
+      // _showIntro() for a monthly review set the title to "Week NaN —
+      // Assessment" (this.week is NaN when type=monthly) and rebound Start to
+      // the weekly flow with an invalid week, so a student whose monthly review
+      // was voided could not restart it at all.
+      if (this.type === 'monthly') this._showMonthlyIntro();
+      else if (this.type === 'advancement') this._showAdvancementIntro();
+      else this._showIntro();
       const t = document.getElementById('asmt-intro-title');
       if (t && t.parentNode && !document.getElementById('asmt-intro-note')) {
         const n = document.createElement('p');

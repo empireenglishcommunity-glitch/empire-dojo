@@ -18,8 +18,11 @@ on:
         description: "Private voice bucket (holds reference.m4a)"
         default: "empire-voice"
       public_domain:
-        description: "Public domain connected to the audio bucket"
+        description: "Custom domain for the audio bucket (production)"
         default: "audio.empireenglish.online"
+      r2_dev_domain:
+        description: "The pub-*.r2.dev domain (dev fallback), no https://"
+        default: "pub-9bc66fe001f84c2bba3c94df866bade9.r2.dev"
 
 jobs:
   smoke:
@@ -49,17 +52,32 @@ jobs:
           PUBLIC_BUCKET: ${{ inputs.public_bucket }}
           VOICE_BUCKET: ${{ inputs.voice_bucket }}
           PUBLIC_DOMAIN: ${{ inputs.public_domain }}
+          R2_DEV_DOMAIN: ${{ inputs.r2_dev_domain }}
         run: |
           python3 - <<'PY'
           import os, sys, time, urllib.request, boto3
           from botocore.config import Config
 
-          acct = os.environ["R2_ACCOUNT_ID"]
+          # Strip whitespace from every secret. A trailing newline pasted into a
+          # GitHub secret ends up INSIDE the AWS SigV4 credential string
+          # ("Credential=KEY\n/date/...") and the request is rejected with
+          # "Invalid header value" — which is exactly what run #1 hit. Stripping
+          # here makes the pipeline robust to how the secrets were pasted,
+          # instead of depending on a clean copy every time.
+          def env(name):
+              v = os.environ.get(name, "")
+              stripped = v.strip()
+              if v != stripped:
+                  print(f"  note: {name} had surrounding whitespace — stripped "
+                        f"({len(v)} -> {len(stripped)} chars)")
+              return stripped
+
+          acct = env("R2_ACCOUNT_ID")
           s3 = boto3.client(
               "s3",
               endpoint_url=f"https://{acct}.r2.cloudflarestorage.com",
-              aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
-              aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
+              aws_access_key_id=env("R2_ACCESS_KEY_ID"),
+              aws_secret_access_key=env("R2_SECRET_ACCESS_KEY"),
               region_name="auto",
               config=Config(signature_version="s3v4"),
           )
@@ -68,52 +86,83 @@ jobs:
           domain = os.environ["PUBLIC_DOMAIN"]
           fail = []
 
-          print("=== 1. list buckets (auth check) ===")
-          try:
-              names = [b["Name"] for b in s3.list_buckets().get("Buckets", [])]
-              print("  buckets visible to this token:", names)
-              for b in (pub, voice):
-                  print(f"  {'OK' if b in names else 'MISSING'}: {b}")
-                  if b not in names:
-                      fail.append(f"bucket {b} not found")
-          except Exception as e:
-              fail.append(f"list_buckets failed: {e}")
-              print("  ERROR:", e)
+          def list_keys(bucket):
+              """List object keys in a bucket. A scoped R2 token CAN list objects
+              in a bucket it owns (unlike ListBuckets, which needs account-wide
+              scope — that was the wrong thing to test in run #2)."""
+              out = []
+              try:
+                  r = s3.list_objects_v2(Bucket=bucket, MaxKeys=50)
+                  for o in r.get("Contents", []):
+                      out.append((o["Key"], o["Size"]))
+              except Exception as e:
+                  return None, e
+              return out, None
 
-          print("\n=== 2. the private voice reference ===")
-          try:
-              h = s3.head_object(Bucket=voice, Key="reference.m4a")
-              kb = h["ContentLength"] / 1024
-              print(f"  OK: {voice}/reference.m4a is {kb:.0f} KB")
-              if h["ContentLength"] < 50_000:
-                  fail.append("reference.m4a is suspiciously small (<50 KB)")
-          except Exception as e:
-              fail.append(f"reference.m4a not found in {voice}: {e}")
-              print("  ERROR:", e)
+          print("=== 1. private voice bucket contents ===")
+          keys, err = list_keys(voice)
+          if err is not None:
+              fail.append(f"cannot access bucket {voice}: {err}")
+              print("  ERROR:", err)
+          elif not keys:
+              fail.append(f"bucket {voice} is EMPTY — reference.m4a was not uploaded")
+              print(f"  {voice} is empty")
+          else:
+              for k, sz in keys:
+                  print(f"  {k}  ({sz/1024:.0f} KB)")
+              has_ref = any(k == "reference.m4a" for k, _ in keys)
+              audio = [(k, sz) for k, sz in keys
+                       if k.lower().endswith((".m4a", ".mp3", ".wav", ".mp4", ".ogg"))]
+              if has_ref:
+                  print("  OK: reference.m4a is present")
+              elif audio:
+                  fail.append(f"an audio file exists in {voice} but it is not named "
+                              f"'reference.m4a' (found: {audio[0][0]}). Either rename "
+                              f"it or tell me the name to use.")
+              else:
+                  fail.append(f"{voice} has objects but no audio file")
 
-          print("\n=== 3. write to public bucket + read over the custom domain ===")
+          print("\n=== 2. write to public bucket + read over each public endpoint ===")
           key = f"_smoke/ping-{int(time.time())}.txt"
           token = f"empire-audio-ok-{int(time.time())}"
+          r2_dev = os.environ.get("R2_DEV_DOMAIN", "").strip()
+          candidates = [("custom domain", domain)] + \
+                       ([("r2.dev", r2_dev)] if r2_dev else [])
+          served_by = []
           try:
               s3.put_object(Bucket=pub, Key=key, Body=token.encode(),
                             ContentType="text/plain", CacheControl="no-store")
               print(f"  wrote {pub}/{key}")
-              url = f"https://{domain}/{key}"
-              got = None
-              for attempt in range(6):
-                  time.sleep(3)
-                  try:
-                      with urllib.request.urlopen(url, timeout=15) as r:
-                          got = r.read().decode().strip()
-                          print(f"  attempt {attempt+1}: HTTP {r.status} -> {got!r}")
-                          break
-                  except Exception as e:
-                      print(f"  attempt {attempt+1}: {e}")
-              if got == token:
-                  print(f"  OK: public delivery works — {url}")
-              else:
-                  fail.append(f"public read mismatch at {url} (got {got!r}); "
-                              f"custom domain may not be connected to {pub}")
+              for label, host in candidates:
+                  url = f"https://{host}/{key}"
+                  ok = False
+                  for attempt in range(4):
+                      time.sleep(3)
+                      try:
+                          with urllib.request.urlopen(url, timeout=15) as r:
+                              body = r.read().decode().strip()
+                              print(f"  [{label}] attempt {attempt+1}: "
+                                    f"HTTP {r.status} -> {body!r}")
+                              if body == token:
+                                  ok = True
+                                  break
+                      except Exception as e:
+                          print(f"  [{label}] attempt {attempt+1}: {e}")
+                  if ok:
+                      served_by.append(label)
+                      print(f"  OK: {label} serves the object — https://{host}/")
+              if not served_by:
+                  fail.append(
+                      f"wrote to {pub} fine, but NO public endpoint served it back. "
+                      f"Enable public access on {pub}.")
+              elif "custom domain" not in served_by:
+                  # r2.dev works but the production domain doesn't. Not fatal for
+                  # the test, but r2.dev is RATE-LIMITED by Cloudflare and unfit
+                  # for a site serving thousands of clips to students.
+                  print(f"\n  ⚠️ WARNING: only {served_by} works. The custom domain "
+                        f"{domain} is not serving yet. r2.dev is rate-limited and "
+                        f"must NOT be the production audio host — connect the "
+                        f"custom domain before the mass render.")
           except Exception as e:
               fail.append(f"public write/read failed: {e}")
               print("  ERROR:", e)

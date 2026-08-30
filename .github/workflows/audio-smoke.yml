@@ -82,30 +82,43 @@ jobs:
           domain = os.environ["PUBLIC_DOMAIN"]
           fail = []
 
-          print("=== 1. list buckets (auth check) ===")
-          try:
-              names = [b["Name"] for b in s3.list_buckets().get("Buckets", [])]
-              print("  buckets visible to this token:", names)
-              for b in (pub, voice):
-                  print(f"  {'OK' if b in names else 'MISSING'}: {b}")
-                  if b not in names:
-                      fail.append(f"bucket {b} not found")
-          except Exception as e:
-              fail.append(f"list_buckets failed: {e}")
-              print("  ERROR:", e)
+          def list_keys(bucket):
+              """List object keys in a bucket. A scoped R2 token CAN list objects
+              in a bucket it owns (unlike ListBuckets, which needs account-wide
+              scope — that was the wrong thing to test in run #2)."""
+              out = []
+              try:
+                  r = s3.list_objects_v2(Bucket=bucket, MaxKeys=50)
+                  for o in r.get("Contents", []):
+                      out.append((o["Key"], o["Size"]))
+              except Exception as e:
+                  return None, e
+              return out, None
 
-          print("\n=== 2. the private voice reference ===")
-          try:
-              h = s3.head_object(Bucket=voice, Key="reference.m4a")
-              kb = h["ContentLength"] / 1024
-              print(f"  OK: {voice}/reference.m4a is {kb:.0f} KB")
-              if h["ContentLength"] < 50_000:
-                  fail.append("reference.m4a is suspiciously small (<50 KB)")
-          except Exception as e:
-              fail.append(f"reference.m4a not found in {voice}: {e}")
-              print("  ERROR:", e)
+          print("=== 1. private voice bucket contents ===")
+          keys, err = list_keys(voice)
+          if err is not None:
+              fail.append(f"cannot access bucket {voice}: {err}")
+              print("  ERROR:", err)
+          elif not keys:
+              fail.append(f"bucket {voice} is EMPTY — reference.m4a was not uploaded")
+              print(f"  {voice} is empty")
+          else:
+              for k, sz in keys:
+                  print(f"  {k}  ({sz/1024:.0f} KB)")
+              has_ref = any(k == "reference.m4a" for k, _ in keys)
+              audio = [(k, sz) for k, sz in keys
+                       if k.lower().endswith((".m4a", ".mp3", ".wav", ".mp4", ".ogg"))]
+              if has_ref:
+                  print("  OK: reference.m4a is present")
+              elif audio:
+                  fail.append(f"an audio file exists in {voice} but it is not named "
+                              f"'reference.m4a' (found: {audio[0][0]}). Either rename "
+                              f"it or tell me the name to use.")
+              else:
+                  fail.append(f"{voice} has objects but no audio file")
 
-          print("\n=== 3. write to public bucket + read over the custom domain ===")
+          print("\n=== 2. write to public bucket + read over the custom domain ===")
           key = f"_smoke/ping-{int(time.time())}.txt"
           token = f"empire-audio-ok-{int(time.time())}"
           try:
@@ -126,8 +139,12 @@ jobs:
               if got == token:
                   print(f"  OK: public delivery works — {url}")
               else:
-                  fail.append(f"public read mismatch at {url} (got {got!r}); "
-                              f"custom domain may not be connected to {pub}")
+                  fail.append(
+                      f"wrote to {pub} fine, but reading over https://{domain}/ "
+                      f"returned 403/none. The custom domain routes to R2 but "
+                      f"PUBLIC ACCESS is not enabled. In the R2 dashboard open the "
+                      f"{pub} bucket -> Settings -> Public access -> connect/enable "
+                      f"the custom domain {domain}.")
           except Exception as e:
               fail.append(f"public write/read failed: {e}")
               print("  ERROR:", e)

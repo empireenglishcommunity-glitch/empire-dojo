@@ -7,12 +7,14 @@ on:
     paths:
       - "scripts/**"
       - "site/**"
+      - "functions/**"
       - ".github/workflows/dojo-verify.yml"
   push:
     branches: [main]
     paths:
       - "scripts/**"
       - "site/**"
+      - "functions/**"
       - ".github/workflows/dojo-verify.yml"
 
 jobs:
@@ -36,6 +38,32 @@ jobs:
       - name: Install verification dependencies
         # soundfile is needed by verify_audio_pace.py to read MP3 durations.
         run: pip install --quiet soundfile
+
+      # ---------------------------------------------------------------
+      #  0. Edge Functions must parse.
+      #
+      #  functions/_middleware.js is the gate in front of EVERY page on the
+      #  site. A syntax error there does not degrade gracefully: Cloudflare
+      #  fails the Function, and the one thing this file is responsible for
+      #  — not serving paid content to strangers — stops happening. Until
+      #  now this directory was not even in the workflow's path filter, so
+      #  the single highest-consequence file in the repo was the only one
+      #  with no automated check at all. `node --check` is preinstalled on
+      #  the runner and costs nothing.
+      # ---------------------------------------------------------------
+      - name: Edge Functions must parse (node --check)
+        run: |
+          shopt -s nullglob
+          found=0
+          for f in functions/*.js functions/**/*.js; do
+            echo "checking $f"
+            node --check "$f"
+            found=1
+          done
+          if [ "$found" = "0" ]; then
+            echo "::error::No files matched functions/**/*.js — the check silently passed on nothing."
+            exit 1
+          fi
 
       # ---------------------------------------------------------------
       #  1. The committed site/ must match what the generator produces.

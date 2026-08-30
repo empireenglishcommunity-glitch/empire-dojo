@@ -152,25 +152,41 @@ jobs:
 
           # --- 4. verify public delivery on both -----------------------------
           print("\n=== 4. verify public read ===")
+          # A persistent probe object (NOT deleted) so it can also be curl'd
+          # independently from outside this runner.
+          s3.put_object(Bucket=audio, Key="_health/ok.txt", Body=b"empire-audio-ok",
+                        ContentType="text/plain", CacheControl="no-store")
           key = f"_smoke/setup-{int(time.time())}.txt"
           tok = f"ok-{int(time.time())}"
           s3.put_object(Bucket=audio, Key=key, Body=tok.encode(),
                         ContentType="text/plain", CacheControl="no-store")
-          dev_host = f"pub-9bc66fe001f84c2bba3c94df866bade9.r2.dev"
+          dev_host = "pub-9bc66fe001f84c2bba3c94df866bade9.r2.dev"
+          # Send a real browser User-Agent. Cloudflare's bot protection 403s the
+          # default "Python-urllib/3.x" UA, which produced identical 403s on both
+          # correctly-configured endpoints — a test artifact, not a config fault.
+          UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/122.0 Safari/537.36")
+          def get(url):
+              req = urllib.request.Request(url, headers={"User-Agent": UA})
+              with urllib.request.urlopen(req, timeout=15) as rr:
+                  return rr.status, rr.read().decode().strip()
           served = []
           for label, host in (("custom", domain), ("r2.dev", dev_host)):
               for attempt in range(5):
                   time.sleep(4)
                   try:
-                      with urllib.request.urlopen(f"https://{host}/{key}", timeout=15) as rr:
-                          if rr.read().decode().strip() == tok:
-                              served.append(label)
-                              print(f"  OK [{label}] https://{host}/")
-                              break
-                          print(f"  [{label}] attempt {attempt+1}: mismatch")
+                      code, body = get(f"https://{host}/{key}")
+                      print(f"  [{label}] attempt {attempt+1}: HTTP {code}")
+                      if body == tok:
+                          served.append(label)
+                          print(f"  OK [{label}] https://{host}/")
+                          break
                   except Exception as e:
                       print(f"  [{label}] attempt {attempt+1}: {e}")
+              if label in served:
+                  continue
           s3.delete_object(Bucket=audio, Key=key)
+          print(f"  (left {audio}/_health/ok.txt in place for external curl checks)")
 
           if "custom" not in served:
               print("\n  NOTE: custom domain not serving yet — DNS/cert can take a "

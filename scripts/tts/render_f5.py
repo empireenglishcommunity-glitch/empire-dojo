@@ -42,19 +42,38 @@ def main():
 
     from f5_tts.api import F5TTS
     f5 = F5TTS()  # loads the model once
-    print("  F5 model loaded")
+    print("  F5 model loaded", flush=True)
+
+    # Per-sentence timeout: F5 on CPU can stall on a single input. A hard cap
+    # means one bad sentence is skipped instead of consuming the whole job.
+    import signal
+
+    class _Timeout(Exception):
+        pass
+
+    def _alarm(signum, frame):
+        raise _Timeout()
+
+    signal.signal(signal.SIGALRM, _alarm)
+    PER_SENTENCE_SEC = 150
 
     for s in sents:
         dest = out / f"{s['id']}.f5.wav"
+        signal.alarm(PER_SENTENCE_SEC)
         try:
             f5.infer(ref_file=ref, ref_text=ref_text, gen_text=s["text"],
                      file_wave=str(dest))
             if dest.exists() and dest.stat().st_size > 1000:
-                print(f"  f5 OK: {s['id']}")
+                print(f"  f5 OK: {s['id']}", flush=True)
             else:
-                print(f"  f5 FAIL {s['id']}: no/empty output")
+                print(f"  f5 FAIL {s['id']}: no/empty output", flush=True)
+        except _Timeout:
+            print(f"  f5 TIMEOUT {s['id']} (>{PER_SENTENCE_SEC}s) — skipped",
+                  flush=True)
         except Exception as e:
-            print(f"  f5 FAIL {s['id']}: {e}")
+            print(f"  f5 FAIL {s['id']}: {e}", flush=True)
+        finally:
+            signal.alarm(0)
 
 
 if __name__ == "__main__":

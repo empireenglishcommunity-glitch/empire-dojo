@@ -54,12 +54,26 @@ jobs:
           import os, sys, time, urllib.request, boto3
           from botocore.config import Config
 
-          acct = os.environ["R2_ACCOUNT_ID"]
+          # Strip whitespace from every secret. A trailing newline pasted into a
+          # GitHub secret ends up INSIDE the AWS SigV4 credential string
+          # ("Credential=KEY\n/date/...") and the request is rejected with
+          # "Invalid header value" — which is exactly what run #1 hit. Stripping
+          # here makes the pipeline robust to how the secrets were pasted,
+          # instead of depending on a clean copy every time.
+          def env(name):
+              v = os.environ.get(name, "")
+              stripped = v.strip()
+              if v != stripped:
+                  print(f"  note: {name} had surrounding whitespace — stripped "
+                        f"({len(v)} -> {len(stripped)} chars)")
+              return stripped
+
+          acct = env("R2_ACCOUNT_ID")
           s3 = boto3.client(
               "s3",
               endpoint_url=f"https://{acct}.r2.cloudflarestorage.com",
-              aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
-              aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
+              aws_access_key_id=env("R2_ACCESS_KEY_ID"),
+              aws_secret_access_key=env("R2_SECRET_ACCESS_KEY"),
               region_name="auto",
               config=Config(signature_version="s3v4"),
           )

@@ -1,10 +1,14 @@
 name: audio listening test
 
 # Renders the 20 fixed test sentences THREE ways — Kokoro (native), the owner's
-# voice via F5-TTS, and via Chatterbox — uploads them plus an A/B/C compare page
-# to R2, and prints one link. The owner listens and picks the engine before any
-# mass render. Each engine is continue-on-error: one failing must not deny the
-# owner the ones that worked.
+# voice via F5-TTS, and via Chatterbox — then assembles an A/B/C compare page on
+# R2 and prints one link.
+#
+# The engines run as PARALLEL jobs, each with its own timeout, so a slow engine
+# (F5 diffusion on CPU is very slow) can never block the others. Whatever
+# renders in time is what the owner hears; the assemble job builds the page from
+# exactly the clips that made it to R2. This is also the shard pattern the mass
+# render will use.
 on:
   workflow_dispatch:
     inputs:
@@ -13,33 +17,37 @@ on:
       audio_bucket:
         default: "empire-audio"
       public_base:
-        description: "Public base URL for the audio bucket"
         default: "https://audio.empireenglish.online"
+
+env:
+  AUDIO_BUCKET: ${{ inputs.audio_bucket }}
+  VOICE_BUCKET: ${{ inputs.voice_bucket }}
+  PUBLIC_BASE: ${{ inputs.public_base }}
+  PREFIX: _listening-test/${{ github.run_id }}
 
 jobs:
   render:
+    strategy:
+      fail-fast: false          # one engine failing must not cancel the others
+      matrix:
+        engine: [kokoro, f5, chatterbox]
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 45
     env:
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-      VOICE_BUCKET: ${{ inputs.voice_bucket }}
-      AUDIO_BUCKET: ${{ inputs.audio_bucket }}
-      PUBLIC_BASE: ${{ inputs.public_base }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
-      - name: System audio tools
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - run: pip install --quiet boto3
 
       - name: Fetch + normalise the reference voice
+        if: matrix.engine != 'kokoro'
         run: |
-          pip install --quiet boto3
           python3 - <<'PY'
           import os, boto3
           from botocore.config import Config
@@ -52,61 +60,43 @@ jobs:
           s3.download_file(e("VOICE_BUCKET"), "reference.m4a", "reference.m4a")
           print("downloaded reference.m4a")
           PY
-          # 24 kHz mono WAV — the format the cloning models expect.
-          ffmpeg -y -i reference.m4a -ac 1 -ar 24000 reference.wav
-          # Short clone prompt: F5/Chatterbox want a SHORT reference (~10-15s).
-          # The full 4-minute sample is for the owner's quality judgement, not
-          # the clone prompt — a long prompt is slow to transcribe and can
-          # degrade F5. Skip the first 0.5s (often silence/breath).
-          ffmpeg -y -i reference.wav -ss 0.5 -t 12 -ac 1 -ar 24000 reference_clone.wav
-          echo "references ready:"; ls -la reference.wav reference_clone.wav
+          ffmpeg -y -loglevel error -i reference.m4a -ss 0.5 -t 12 -ac 1 -ar 24000 reference_clone.wav
+          ls -la reference_clone.wav
 
-      - name: Render — Kokoro (native voice)
-        continue-on-error: true
+      - name: Render (${{ matrix.engine }})
         run: |
-          pip install --quiet kokoro-onnx soundfile
-          cd scripts/tts
-          curl -sL -o kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
-          curl -sL -o voices-v1.0.bin  https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
-          cd "$GITHUB_WORKSPACE"
-          python3 scripts/tts/render_kokoro.py clips_raw
+          set -x
+          case "${{ matrix.engine }}" in
+            kokoro)
+              pip install --quiet kokoro-onnx soundfile
+              cd scripts/tts
+              curl -sL -o kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+              curl -sL -o voices-v1.0.bin  https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+              cd "$GITHUB_WORKSPACE"
+              python3 scripts/tts/render_kokoro.py clips_raw
+              ;;
+            f5)
+              pip install --quiet f5-tts faster-whisper
+              python3 scripts/tts/render_f5.py reference_clone.wav clips_raw
+              ;;
+            chatterbox)
+              pip install --quiet chatterbox-tts
+              python3 scripts/tts/render_chatterbox.py reference_clone.wav clips_raw
+              ;;
+          esac
 
-      - name: Render — your voice (F5-TTS)
-        continue-on-error: true
-        run: |
-          pip install --quiet f5-tts faster-whisper
-          python3 scripts/tts/render_f5.py reference_clone.wav clips_raw
-
-      - name: Render — your voice (Chatterbox)
-        continue-on-error: true
-        run: |
-          pip install --quiet chatterbox-tts
-          python3 scripts/tts/render_chatterbox.py reference_clone.wav clips_raw
-
-      - name: Encode to MP3 (48 kbps mono — speech grade)
+      - name: Encode + upload this engine's clips
+        if: always()          # upload whatever rendered, even if some sentences failed
         run: |
           mkdir -p clips
           shopt -s nullglob
           n=0
           for w in clips_raw/*.wav; do
             base=$(basename "$w" .wav)
-            ffmpeg -y -loglevel error -i "$w" -ac 1 -ar 24000 -b:a 48k "clips/${base}.mp3"
-            n=$((n+1))
+            ffmpeg -y -loglevel error -i "$w" -ac 1 -ar 24000 -b:a 48k "clips/${base}.mp3" && n=$((n+1))
           done
-          echo "encoded $n clips"
-          ls -la clips | head -20
-          if [ "$n" = "0" ]; then
-            echo "::error::No clips were rendered by ANY engine — see the render logs above."
-            exit 1
-          fi
-
-      - name: Build the compare page
-        run: |
-          python3 scripts/build_compare_page.py clips /tmp/index.html "$PUBLIC_BASE/_listening-test/${{ github.run_id }}"
-          cp /tmp/index.html clips/index.html
-
-      - name: Upload to R2 + print the link
-        run: |
+          echo "encoded $n clips for ${{ matrix.engine }}"
+          [ "$n" = "0" ] && { echo "nothing to upload"; exit 0; }
           python3 - <<'PY'
           import os, mimetypes, boto3
           from pathlib import Path
@@ -117,28 +107,77 @@ jobs:
               aws_access_key_id=e("R2_ACCESS_KEY_ID"),
               aws_secret_access_key=e("R2_SECRET_ACCESS_KEY"),
               region_name="auto", config=Config(signature_version="s3v4"))
-          bucket = e("AUDIO_BUCKET")
-          run_id = os.environ["GITHUB_RUN_ID"]
-          prefix = f"_listening-test/{run_id}"
+          bucket, prefix = e("AUDIO_BUCKET"), os.environ["PREFIX"]
+          for p in sorted(Path("clips").glob("*.mp3")):
+              s3.put_object(Bucket=bucket, Key=f"{prefix}/{p.name}",
+                            Body=p.read_bytes(), ContentType="audio/mpeg",
+                            CacheControl="no-store")
+              print("uploaded", p.name)
+          PY
+
+  assemble:
+    needs: render
+    if: always()              # build the page from whatever the engines produced
+    runs-on: ubuntu-latest
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet boto3
+
+      - name: Download rendered clips, build compare page, upload + link
+        run: |
+          python3 - <<'PY'
+          import os, boto3
+          from pathlib import Path
+          from botocore.config import Config
+          def e(n): return os.environ[n].strip()
+          s3 = boto3.client("s3",
+              endpoint_url=f"https://{e('R2_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+              aws_access_key_id=e("R2_ACCESS_KEY_ID"),
+              aws_secret_access_key=e("R2_SECRET_ACCESS_KEY"),
+              region_name="auto", config=Config(signature_version="s3v4"))
+          bucket, prefix = e("AUDIO_BUCKET"), os.environ["PREFIX"]
+          Path("clips").mkdir(exist_ok=True)
           got = {"kokoro": 0, "f5": 0, "chatterbox": 0}
-          for p in sorted(Path("clips").iterdir()):
-              key = f"{prefix}/{p.name}"
-              ct = mimetypes.guess_type(p.name)[0] or "application/octet-stream"
-              s3.put_object(Bucket=bucket, Key=key, Body=p.read_bytes(),
-                            ContentType=ct, CacheControl="no-store")
-              for eng in got:
-                  if p.name.endswith(f".{eng}.mp3"):
-                      got[eng] += 1
-          base = e("PUBLIC_BASE")
-          print("\n" + "=" * 60)
+          r = s3.list_objects_v2(Bucket=bucket, Prefix=prefix + "/")
+          for o in r.get("Contents", []):
+              k = o["Key"]
+              if k.endswith(".mp3"):
+                  name = k.split("/")[-1]
+                  s3.download_file(bucket, k, f"clips/{name}")
+                  for eng in got:
+                      if name.endswith(f".{eng}.mp3"):
+                          got[eng] += 1
+          print("clips present per engine:", got)
+          Path("_got.txt").write_text(str(got))
+          PY
+          python3 scripts/build_compare_page.py clips /tmp/index.html "$PUBLIC_BASE/$PREFIX"
+          python3 - <<'PY'
+          import os, boto3
+          from botocore.config import Config
+          def e(n): return os.environ[n].strip()
+          s3 = boto3.client("s3",
+              endpoint_url=f"https://{e('R2_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+              aws_access_key_id=e("R2_ACCESS_KEY_ID"),
+              aws_secret_access_key=e("R2_SECRET_ACCESS_KEY"),
+              region_name="auto", config=Config(signature_version="s3v4"))
+          bucket, prefix = e("AUDIO_BUCKET"), os.environ["PREFIX"]
+          s3.put_object(Bucket=bucket, Key=f"{prefix}/index.html",
+                        Body=open("/tmp/index.html","rb").read(),
+                        ContentType="text/html; charset=utf-8", CacheControl="no-store")
+          link = f"{e('PUBLIC_BASE')}/{prefix}/index.html"
+          got = open("_got.txt").read()
+          print("\n" + "="*60)
           print("  LISTENING TEST READY")
-          print("=" * 60)
-          print(f"  clips per engine: {got}")
-          print(f"\n  >>> {base}/{prefix}/index.html\n")
-          print("=" * 60)
-          # surface it in the run summary too
+          print("  clips per engine:", got)
+          print(f"  >>> {link}")
+          print("="*60)
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
-              f.write(f"## 🎧 Listening test ready\n\n")
-              f.write(f"**[{base}/{prefix}/index.html]({base}/{prefix}/index.html)**\n\n")
-              f.write(f"Clips rendered per engine: `{got}`\n")
+              f.write(f"## 🎧 Listening test ready\n\n**[{link}]({link})**\n\nClips per engine: `{got}`\n")
           PY

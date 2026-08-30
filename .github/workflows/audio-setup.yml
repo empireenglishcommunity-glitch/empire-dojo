@@ -117,6 +117,11 @@ jobs:
               dev_host = r.get("result", {}).get("domain") or ""
               print("  r2.dev host:", dev_host)
 
+          # --- 2b. what does Cloudflare ACTUALLY think about the managed URL? -
+          print("\n=== 2b. managed r2.dev ACTUAL status ===")
+          st, m = cf("GET", f"/accounts/{acct}/r2/buckets/{audio}/domains/managed")
+          print(f"  HTTP {st}: {json.dumps(m.get('result', m))[:400]}")
+
           # --- 3. connect the custom domain (production) ---------------------
           print("\n=== 3. connect custom domain ===")
           st, z = cf("GET", f"/zones?name={zone}")
@@ -127,13 +132,21 @@ jobs:
                   f"/accounts/{acct}/r2/buckets/{audio}/custom_domains",
                   {"domain": domain, "zoneId": zid, "enabled": True, "minTLS": "1.2"})
               print(f"  connect HTTP {st}  success={r.get('success')}")
-              if not r.get("success"):
-                  msg = json.dumps(r.get("errors", r))[:400]
-                  # Already-connected is fine, not a failure.
-                  if "already" in msg.lower() or st == 409:
-                      print("  (already connected)")
-                  else:
-                      print("  ", msg)
+              if st == 409 or (not r.get("success") and "already" in
+                               json.dumps(r.get("errors", "")).lower()):
+                  # Already exists — the owner's earlier dashboard attempt may
+                  # have left it disabled or half-provisioned, which a POST won't
+                  # fix. Force-enable it with the domain-specific PUT.
+                  print("  already exists; force-enabling via PUT")
+                  st2, r2 = cf("PUT",
+                      f"/accounts/{acct}/r2/buckets/{audio}/custom_domains/{domain}",
+                      {"enabled": True, "minTLS": "1.2"})
+                  print(f"  PUT HTTP {st2} success={r2.get('success')}")
+              elif not r.get("success"):
+                  print("  ", json.dumps(r.get("errors", r))[:400])
+              # Print the domain's real status (ownership + ssl provisioning)
+              st, d = cf("GET", f"/accounts/{acct}/r2/buckets/{audio}/custom_domains")
+              print(f"  custom domain status: {json.dumps(d.get('result', d))[:500]}")
           else:
               print("  could not resolve zone id (token may lack Zone Read)")
 

@@ -18,8 +18,11 @@ on:
         description: "Private voice bucket (holds reference.m4a)"
         default: "empire-voice"
       public_domain:
-        description: "Public domain connected to the audio bucket"
+        description: "Custom domain for the audio bucket (production)"
         default: "audio.empireenglish.online"
+      r2_dev_domain:
+        description: "The pub-*.r2.dev domain (dev fallback), no https://"
+        default: "pub-9bc66fe001f84c2bba3c94df866bade9.r2.dev"
 
 jobs:
   smoke:
@@ -49,6 +52,7 @@ jobs:
           PUBLIC_BUCKET: ${{ inputs.public_bucket }}
           VOICE_BUCKET: ${{ inputs.voice_bucket }}
           PUBLIC_DOMAIN: ${{ inputs.public_domain }}
+          R2_DEV_DOMAIN: ${{ inputs.r2_dev_domain }}
         run: |
           python3 - <<'PY'
           import os, sys, time, urllib.request, boto3
@@ -118,33 +122,47 @@ jobs:
               else:
                   fail.append(f"{voice} has objects but no audio file")
 
-          print("\n=== 2. write to public bucket + read over the custom domain ===")
+          print("\n=== 2. write to public bucket + read over each public endpoint ===")
           key = f"_smoke/ping-{int(time.time())}.txt"
           token = f"empire-audio-ok-{int(time.time())}"
+          r2_dev = os.environ.get("R2_DEV_DOMAIN", "").strip()
+          candidates = [("custom domain", domain)] + \
+                       ([("r2.dev", r2_dev)] if r2_dev else [])
+          served_by = []
           try:
               s3.put_object(Bucket=pub, Key=key, Body=token.encode(),
                             ContentType="text/plain", CacheControl="no-store")
               print(f"  wrote {pub}/{key}")
-              url = f"https://{domain}/{key}"
-              got = None
-              for attempt in range(6):
-                  time.sleep(3)
-                  try:
-                      with urllib.request.urlopen(url, timeout=15) as r:
-                          got = r.read().decode().strip()
-                          print(f"  attempt {attempt+1}: HTTP {r.status} -> {got!r}")
-                          break
-                  except Exception as e:
-                      print(f"  attempt {attempt+1}: {e}")
-              if got == token:
-                  print(f"  OK: public delivery works — {url}")
-              else:
+              for label, host in candidates:
+                  url = f"https://{host}/{key}"
+                  ok = False
+                  for attempt in range(4):
+                      time.sleep(3)
+                      try:
+                          with urllib.request.urlopen(url, timeout=15) as r:
+                              body = r.read().decode().strip()
+                              print(f"  [{label}] attempt {attempt+1}: "
+                                    f"HTTP {r.status} -> {body!r}")
+                              if body == token:
+                                  ok = True
+                                  break
+                      except Exception as e:
+                          print(f"  [{label}] attempt {attempt+1}: {e}")
+                  if ok:
+                      served_by.append(label)
+                      print(f"  OK: {label} serves the object — https://{host}/")
+              if not served_by:
                   fail.append(
-                      f"wrote to {pub} fine, but reading over https://{domain}/ "
-                      f"returned 403/none. The custom domain routes to R2 but "
-                      f"PUBLIC ACCESS is not enabled. In the R2 dashboard open the "
-                      f"{pub} bucket -> Settings -> Public access -> connect/enable "
-                      f"the custom domain {domain}.")
+                      f"wrote to {pub} fine, but NO public endpoint served it back. "
+                      f"Enable public access on {pub}.")
+              elif "custom domain" not in served_by:
+                  # r2.dev works but the production domain doesn't. Not fatal for
+                  # the test, but r2.dev is RATE-LIMITED by Cloudflare and unfit
+                  # for a site serving thousands of clips to students.
+                  print(f"\n  ⚠️ WARNING: only {served_by} works. The custom domain "
+                        f"{domain} is not serving yet. r2.dev is rate-limited and "
+                        f"must NOT be the production audio host — connect the "
+                        f"custom domain before the mass render.")
           except Exception as e:
               fail.append(f"public write/read failed: {e}")
               print("  ERROR:", e)

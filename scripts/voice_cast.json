@@ -1,0 +1,30 @@
+{
+  "_what": "Which Kokoro voice speaks each surface of the practice site.",
+  "_why": "Owner decisions: (1) ship Kokoro site-wide to eliminate the browser's robotic speechSynthesis, (2) use a MIX of voices so it feels like a team of teachers rather than one voice, (3) AMERICAN ACCENT ONLY — this is an American-English programme, no British voices anywhere.",
+  "_rule": "Every voice id must start with af_ (American female) or am_ (American male). bf_/bm_ (British) are FORBIDDEN and validate_cast() fails the build if any appears.",
+  "_american_voices_available": {
+    "af_heart": "US female, warm, professional",
+    "af_bella": "US female, clear, neutral",
+    "af_nicole": "US female, calm, mature",
+    "af_sarah": "US female, bright, energetic",
+    "af_sky": "US female, young, friendly",
+    "am_adam": "US male, professional, neutral",
+    "am_michael": "US male, warm, conversational"
+  },
+  "_forbidden_voices": ["bf_emma", "bf_isabella", "bm_george", "bm_lewis"],
+  "cast": {
+    "index":     { "voice": "af_sky",     "role": "Host — opens each day, friendly and welcoming" },
+    "accent":    { "voice": "am_adam",    "role": "Pronunciation model — the clearest, most neutral American voice, the one students imitate" },
+    "shadowing": { "voice": "af_heart",   "role": "Main narrator — the passage students shadow" },
+    "vocab":     { "voice": "af_bella",   "role": "Vocabulary coach — crisp, clear single words" },
+    "reading":   { "voice": "af_sarah",   "role": "Storyteller — narrates reading passages with energy" },
+    "grammar":   { "voice": "am_michael", "role": "Grammar teacher — warm and explanatory" },
+    "mediation": { "voice": "am_adam",    "role": "Explainer — relays and simplifies (reuses the clear neutral male)" },
+    "review":    { "voice": "af_nicole",  "role": "Reviewer — calm weekly recap" }
+  },
+  "listening_rotation": {
+    "_note": "Listening comprehension needs DIFFERENT PEOPLE, not one voice. Listening items rotate deterministically across this set (by item index) so a student practises understanding several American speakers, male and female.",
+    "voices": ["am_michael", "af_sarah", "af_nicole", "am_adam", "af_heart"]
+  },
+  "default": "af_heart"
+}

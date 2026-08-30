@@ -26,7 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACCOUNT_ID: "8c2ca895bd4e579be07d2fa6c9fdba7e"
-      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      # Accept either name: the properly-scoped token landed under the
+      # misspelled CLOUDFLARE_API_TOKEL, so prefer it and fall back to the
+      # correctly-named one. TODO(owner): rename to CLOUDFLARE_API_TOKEN and
+      # delete the typo'd secret, then this fallback can be removed.
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEL || secrets.CLOUDFLARE_API_TOKEN }}
       R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}

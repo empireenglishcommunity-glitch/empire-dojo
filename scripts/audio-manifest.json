@@ -3793,7 +3793,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Announcer",
     "text": "Good afternoon, ladies and gentlemen. This is an announcement for passengers travelling to Luxor. The two o'clock train has changed platform. It will now leave from platform five, not platform two. The train left the depot late this morning, so it will depart about fifteen minutes behind time. We are sorry for the delay."
   },
@@ -3838,7 +3838,7 @@
     "week": 6,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Weather presenter",
     "text": "And now the weather. Tomorrow will be warm and dry in Cairo, with a high of thirty-one degrees. There will be some wind in the afternoon, but it will not be strong. On Wednesday the sky will be cloudy in the morning, and it will probably clear by midday. Thursday will be the hottest day of the week, thirty-six degrees, so please drink plenty of water and stay inside between twelve and three. In Alexandria it will be cooler, about twenty-six, and there will be a chance of light rain on Thursday evening. The weekend will be pleasant everywhere. Temperatures will fall to twenty-eight, and it will feel much more comfortable. That's all from me. Have a good week."
   },
@@ -3865,7 +3865,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Recorded message",
     "text": "Thank you for calling Doctor Samir's clinic. Please listen carefully to this message. The clinic is open daily from nine until five, and on Friday we close early, at one o'clock. If you have an appointment, please arrive ten minutes early and bring your card. If you are waiting for test results, do not come to the clinic; we will send them to you by message. If you are feeling very unwell, or if you are breathing badly, do not wait for an appointment. Go straight to the hospital on Nile Street. After the beep, please speak slowly and clearly, and leave your name, your phone number and the reason for your call. We answer messages quickly, usually on the same day."
   },
@@ -3901,7 +3901,7 @@
     "week": 11,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Manager",
     "text": "Welcome to the team. Before you start, there are a few things you have to know. You must arrive before eight thirty. If you are going to be late, you have to call your manager, not a colleague. You don't have to wear a suit, but you should wear something clean and simple. You must not use your phone on the factory floor. That is a safety rule, not a suggestion. You should ask questions in your first week. Nobody expects you to know everything, and it is much better to ask than to guess. If a machine sounds strange, you must stop it and tell someone immediately. You have to take your break between one and two, and you should eat something, because people who skip lunch make more mistakes in the afternoon. Good luck."
   },
@@ -3919,7 +3919,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "News anchor",
     "text": "Good evening. These are tonight's main stories. The city council has approved a new bus lane on the ring road, and work will begin next month. Doctors at the central hospital have ended their three-day strike after talks with the health ministry. And the national team has qualified for the final for the first time since two thousand and nine. First, the bus lane. Our transport correspondent, Nadia Fahmy, has been at the council meeting all afternoon."
   },
@@ -3937,7 +3937,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "News anchor",
     "text": "Nadia, thank you. We will have more on that story at nine."
   },
@@ -3955,7 +3955,7 @@
     "week": 3,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Manager",
     "text": "Before you go, here is next week, so nobody is surprised. On Monday the auditors are coming at nine. That is arranged, it is in the calendar, and they are staying until Wednesday. While they are here, please do not move any files out of the shared folder. On Tuesday I am meeting the two new suppliers, so I will not be at my desk in the morning. If you need me, send a message and I will answer between meetings. Wednesday is the big one: we are presenting the quarter figures at two o'clock, and I am going to ask Yusuf to open, because he built the numbers. Thursday will probably be quiet, so that is a good day to finish anything the auditors ask for. And on Friday the office is closing at one, because the lift is being repaired in the afternoon. One last thing. I am not going to send a reminder about the timesheets again. They are due Thursday. Please just do them."
   },
@@ -4009,7 +4009,7 @@
     "week": 6,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Reporter",
     "text": "Every city has a house like this one. It stands at the end of a quiet street, the windows are covered, and the garden has not been cut for at least ten years. Nobody in the neighbourhood can tell us who owns it. It must belong to somebody: the taxes are paid every year, on time, from a bank in another city. So the owner might be living abroad, or the house could be part of an old family argument that no lawyer has been able to finish. What is certain is that it cannot be abandoned, because abandoned houses do not pay their taxes. Neighbours say a car comes twice a year, always in the evening. A woman gets out, stays for about an hour, and leaves. She might be the owner. She may be a lawyer. She could simply be someone who was asked, a long time ago, to check that the roof is still there. We knocked on the door for three days. Nobody answered, and yet somebody, somewhere, is still paying."
   },
@@ -4027,7 +4027,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Guest",
     "text": "By accident. I had been working in an office for six years, and I hated it. I had been fixing my own bike since I was a boy, and one evening a neighbour asked me to look at hers. Then her brother came. Then his friends. I have been doing it ever since. For the first two years I was still in the office, so I was repairing bikes until midnight and going to work tired. I have been teaching a class on Saturdays for about eighteen months now, and that is the part I enjoy most. People arrive thinking a bicycle is complicated. It is not. It has been more or less the same machine for a hundred years, and it wants to be understood, not respected."
   },
@@ -4045,7 +4045,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Guest",
     "text": "I have not thought about the office for years. That is the answer."
   },
@@ -4072,7 +4072,7 @@
     "week": 10,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Guide",
     "text": "Stop here for a moment, in front of the blue door. This is the house where the poet lived for six years, and the room whose window you can see on the first floor is the one in which he wrote most of his early work. The man who owns the house today is a dentist, and he is used to visitors standing in the street and pointing. Now look to your left. The narrow lane that runs beside the house is older than the house itself. It is the only lane in this quarter which has never been widened, which is why it still floods every winter. At the end of it there is a café whose owner claims that his grandfather served coffee to the poet every morning. That may well be true. What is certainly true is that the chairs, which look old enough, were bought in two thousand and four. Walk to the end of the lane and wait there. The next stop is the school that gave this street its name."
   },
@@ -4081,7 +4081,7 @@
     "week": 11,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Presenter",
     "text": "Welcome to the week in review. On Sunday the transport minister said that fuel prices would not rise before the summer. On Monday his office told a newspaper that he had been talking about diesel only. By Wednesday, petrol was up nine per cent. Layla, what happened?"
   },
@@ -4099,7 +4099,7 @@
     "week": 11,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Presenter",
     "text": "So who was wrong?"
   },
@@ -4135,7 +4135,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Kamal",
     "text": "I earn enough, I think, but there is never enough left at the end of the month. Both my sisters say I spend too much on small things, and neither of them is wrong. But I cannot see where it goes."
   },
@@ -4153,7 +4153,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Kamal",
     "text": "The expensive week is always the first one."
   },
@@ -4180,7 +4180,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Lecturer",
     "text": "Good morning. Today I want to talk about why progress stops, and I want to be careful about a distinction that most people collapse. Consider two students. The first has studied English for six years. The second has been studying English for six years. In everyday speech we treat those as the same sentence. They are not. The first tells you about a completed quantity: six years exist, they are in the past, and something resulted. The second tells you about an unfinished activity, and it carries an implication the first does not, which is that the effort is still going on, and possibly going on longer than expected. Now, here is why this matters beyond grammar. We have known since the nineteen sixties that skill acquisition is not linear. What we have been discovering more recently is less comfortable: the plateau is not a failure of effort. Learners on a plateau have usually been working harder than they were at the start. They have been repeating what they already do well, because repeating what you do well feels like progress and feels safe. So the question to ask is not 'how long have you been studying?' It is 'what have you actually completed?' The first question measures your patience. The second measures your progress. Most of us have been answering the first one for years, and calling it the second."
   },
@@ -4189,7 +4189,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Presenter",
     "text": "Tonight: the bridge that closed with four hours' notice, and the eighteen months of warnings that came before it. Our reporter has seen documents that nobody was supposed to see."
   },
@@ -4207,7 +4207,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Presenter",
     "text": "The authority declined to be interviewed. We will keep asking."
   },
@@ -4378,7 +4378,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "If we'd said something in April, none of this would have happened."
   },
@@ -4387,7 +4387,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "That's not true, and you know it isn't. Because if we'd said something in April, they would have moved us both off the project and given it to Hana, and Hana would have signed exactly the same thing. It wouldn't have changed the outcome. It would have changed who was standing here."
   },
@@ -4396,7 +4396,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "So your position is that it wouldn't have mattered."
   },
@@ -4405,7 +4405,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "My position is that it wouldn't have worked. Those aren't the same thing."
   },
@@ -4414,7 +4414,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "Go on, then."
   },
@@ -4423,7 +4423,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "Look. If I'd known in April what I know now, I'd have gone to the board directly. I would have. But in April all I had was a feeling that the numbers were too clean."
   },
@@ -4432,7 +4432,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "You told me they were too clean. In the car park. You said nobody's costs come in that tidy."
   },
@@ -4441,7 +4441,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "I did say that."
   },
@@ -4450,7 +4450,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "And I said we should check. And you said, let's see what the second quarter looks like."
   },
@@ -4459,7 +4459,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "Which was a reasonable thing to say in April."
   },
@@ -4468,7 +4468,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "It was a reasonable thing to say if you wanted to not know for another three months. That's what it was for. If either of us had genuinely thought the numbers were fine, we wouldn't have needed to wait for the second quarter to find out."
   },
@@ -4477,7 +4477,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "That's a hard way to put it."
   },
@@ -4486,7 +4486,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "It's the accurate way to put it. So don't tell me it wouldn't have worked. Tell me we didn't try."
   },
@@ -4495,7 +4495,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "All right. We didn't try. That doesn't make it better."
   },
@@ -4504,7 +4504,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Layla",
     "text": "No. But it makes it ours."
   },
@@ -4630,7 +4630,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Host",
     "text": "Last night's interview has been described as a collapse, a trap and, by one newspaper this morning, as the most honest four minutes in a decade. Rania, you were in the room. What was she actually asked?"
   },
@@ -4648,7 +4648,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Host",
     "text": "Karim, why has that third question disappeared from the coverage?"
   },
@@ -4693,7 +4693,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Host",
     "text": "And?"
   },
@@ -4720,7 +4720,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Correspondent",
     "text": "The pipe was cut at about six this morning. Within an hour the street had been closed, and by nine the water had been shut off across four districts. What has angered people here is not the accident, because accidents happen. It is that they were not told. The company's message was sent to registered mobile numbers only, and in this district most accounts were opened before that system existed. So thousands of people had their supply cut with no warning at all. Several residents told me they had their tanks filled by neighbours who happened to have heard."
   },
@@ -4738,7 +4738,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Correspondent",
     "text": "The section is being replaced tonight rather than patched, which is why it has taken longer. It should be finished by morning. Schools in the four districts have been told to open as normal, and the two hospitals were never affected; they have their own tanks. The wider question, how many other pipes are marked on plans that contractors are not required to check, has not been answered, and it was not asked at this afternoon's press conference either."
   },
@@ -4747,7 +4747,7 @@
     "week": 10,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Narrator",
     "text": "For eleven years the case was closed. It was reopened in twenty-nineteen, not because new evidence appeared, but because someone re-read the old evidence and noticed what it could not mean. Here is the reasoning, and I want you to follow it rather than accept it. The gate was locked from the inside. So whoever left must have had a key, or must have climbed the eastern wall. The wall was wet that night and unmarked in the morning, so they cannot have climbed it. Therefore they must have had a key. Eleven people had keys. But the original investigation had reached a different conclusion. It decided the gate might have been locked afterwards, by a caretaker who could simply have forgotten doing it. That is not impossible. Caretakers do forget. And once you allow that, the key stops mattering and the eleven names dissolve. This is the part that should trouble you. Both lines of reasoning are valid. One assumes the physical evidence is reliable and human memory is not; the other assumes the opposite. Neither can be tested now. What decided the case in nineteen ninety-eight was not evidence. It was which of those two assumptions the investigating officer found more natural, and he had been a caretaker himself, twenty years earlier, in a building with a gate he had sometimes forgotten to lock. He may never have noticed that about his own reasoning. Most of us don't."
   },
@@ -4765,7 +4765,7 @@
     "week": 12,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Lecturer",
     "text": "There is a small group of English verbs which change meaning depending on what follows them, and I want to use them to make a point about memory rather than about grammar. Compare: I remembered to lock the door, and I remembered locking the door. The first is about an intention that was carried out. The second is about a past event being recalled. Native speakers use them correctly without being able to explain the difference, which is normal, and learners often produce the second when they mean the first, which is not a small error. It is the difference between a plan and a memory. Now the interesting part. Psychologists studying false memory have found that the second construction is unusually dangerous. When people are asked do you remember locking the door, they reconstruct the event, and reconstruction feels identical to recall. When they are asked did you intend to lock the door, they do not reconstruct anything; they consult a plan, and plans are easier to check. So the grammatical distinction that learners find fiddly turns out to mark a real difference in how reliable the answer is. I am not going to tell you that this makes the grammar easier. It does not. But it explains why the distinction survived. Languages tend to keep the contrasts that do work, and the contrast between having intended something and having witnessed it does a great deal of work."
   },
@@ -4792,7 +4792,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Minister",
     "text": "With respect, all of politics works like that. Neither of us has a better instrument. Every mandate in every parliament rests on a number that thin."
   },
@@ -4810,7 +4810,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Minister",
     "text": "Because a poster with that on it loses."
   },
@@ -4837,7 +4837,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Lecturer",
     "text": "I want to make an argument in four moves, and I want to signal each move as I make it, because the signalling is the lesson. First, the claim. Discourse markers are not decoration. 'However' is not a more formal 'but'. It performs a different act: it tells the listener that what follows will not merely differ from what preceded, but will outweigh it. Second, the evidence. When we removed the markers from recorded lectures and played them to students, comprehension of the individual sentences was unaffected. Recall of the argument's direction fell by roughly forty per cent. The students could tell you what had been said. They could not tell you which side the speaker was on. Third, and this is the concession, which I am flagging deliberately, the effect is smaller in writing. Readers can go back. Listeners cannot. So it is possible to write reasonably well while using markers carelessly, which is why many fluent writers are poor lecturers. Nevertheless, and here is the fourth move, the conclusion is stronger than the concession. If your listener cannot reconstruct the shape of your argument, you have not made an argument; you have produced a sequence of true sentences. And notice what I did just then. I said 'nevertheless', and you knew, before you heard any of the content, that the concession was about to be overruled. That is the whole mechanism, and it cost me one word."
   },
@@ -5026,7 +5026,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "Ms Farid, thank you for making time. Could you outline for us the rationale behind the decision to withdraw the product?"
   },
@@ -5035,7 +5035,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Certainly. Following a routine review, we concluded that the product no longer aligned with our long-term strategic priorities, and we took the decision to discontinue it in an orderly manner."
   },
@@ -5044,7 +5044,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "And the reports of a safety concern?"
   },
@@ -5053,7 +5053,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "I'm not in a position to comment on speculation."
   },
@@ -5062,7 +5062,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "Thank you. Right, that's us. We're done. Ahmed, you can put that down."
   },
@@ -5071,7 +5071,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Is that thing off?"
   },
@@ -5080,7 +5080,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "It's off."
   },
@@ -5089,7 +5089,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Right, look. Between us, it fell apart. Not the product, the whole thing. We'd been putting off the review for a year and a half because nobody wanted to be the one who brought it up, and then someone finally did, and it turned out we'd all been quietly assuming somebody else had checked. Nobody had."
   },
@@ -5098,7 +5098,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "That's a much better answer."
   },
@@ -5107,7 +5107,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "It's a much worse answer, which is exactly why you got the other one. I'm not going to be the person who says 'nobody had checked' on camera."
   },
@@ -5116,7 +5116,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "You realise the strategic-priorities line is what everyone will run."
   },
@@ -5125,7 +5125,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Of course they'll run it. It's clean, it's short, and it doesn't require anybody to ring me back. And in eighteen months, when somebody digs it up and puts it next to whatever comes out of the review, I'll be the one explaining why I said it. I know exactly what I've just bought and what it cost."
   },
@@ -5134,7 +5134,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "Off the record, then. Will you pull the next one earlier?"
   },
@@ -5143,7 +5143,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "We'll see. Ask me again in a year and I'll give you a sentence you can use."
   },
@@ -5170,7 +5170,7 @@
     "week": 3,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Teacher",
     "text": "Good morning. Here is your day. There are three classes today. The first class is at nine o'clock. There is a break at eleven. The second class is at half past eleven. Lunch is at one o'clock. The last class is at three. There are twenty students in the class today. Tomorrow is Friday, and there are no classes on Friday. Have a good day!"
   },
@@ -5206,7 +5206,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Market announcer",
     "text": "Welcome to the market. Listen to today's prices. Bread is three pounds. How much is the rice? The rice is twelve pounds for one kilo. The tomatoes are eight pounds. The eggs are forty pounds for thirty eggs. Tea is twenty-five pounds. We have some apples today, and they are fifteen pounds. The market is open from seven in the morning to seven in the evening. Come early!"
   },
@@ -5386,7 +5386,7 @@
     "week": 5,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Researcher",
     "text": "The thirty-one per cent. I've been trying to find where it comes from for about a year now, on and off, mostly off. It's in the briefing, it's in two ministerial answers, it's on a poster in the lobby of the building I work in. And it is estimated — that's the phrasing, it is estimated — which, fine, estimates are legitimate, I make them. But estimated by whom, against what. The baseline is 2011, generally, when people bother to say, and 2011 is a drought year. Now I'm not alleging anything. It's widely believed to be a reduction and it may well be a reduction. What I'd like is one name. One person who, if it turned out to be wrong, would have been wrong. Because that's the whole difference, isn't it. My hypothesis has my name on it and I can be shown to have erred, and that is not a burden, it's the thing that makes it worth reading. Whereas 'it is argued' — nobody's arguing. There's no one there. And the consensus forms anyway, that's the part that gets me, the consensus forms out of a construction rather than out of anybody's findings, and then it's cited, and the citation is to the briefing, and the briefing cites nothing. I raised it once. I was told it had been reviewed independently. I asked to see the review. That was February. I've asked twice since, politely both times, and I've had a very courteous reply on each occasion explaining that it isn't in a form suitable for circulation. Which may be entirely true. I'd only note that a review nobody may read and a review that doesn't exist are, from where I'm standing, the same object."
   },
@@ -5395,7 +5395,7 @@
     "week": 6,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Epidemiologist",
     "text": "The rise in recorded diagnoses is not in dispute; its interpretation is, and the distinction turns on the reliability of detection rather than on any change in prevalence. Three processes coincided after 2014. The introduction of routine school screening produced a step change in ascertainment. The implementation of a broader diagnostic threshold widened the category itself. And the expansion of regional clinics reduced the geographical scarcity of assessment, with the predictable consequence that districts previously showing low rates showed rates close to the national mean within two years. The significance of that ordering is easily missed. Because the three overlapped, the accumulation of cases presents as a single emergent trend; differentiation between them requires the raw distribution, which is available, and the correlation with clinic openings, which is strong enough that its omission from the 2019 summary is difficult to explain. None of this supports the more comfortable conclusion, namely that nothing has changed. Even after adjustment for ascertainment a residual increase of roughly four per cent per decade persists, and its verification is the one genuinely open question. The utilisation of services has risen far faster, which is a separate matter, and the deterioration in waiting times follows from that rather than from any change in the underlying condition. The tendency in public discussion is to treat the whole rise as either artefact or emergency. The compilation of evidence supports neither. A final methodological point, since it determines what any of this is worth. The screening cohort was not randomly sampled; participation was by school, and schools opted in. The 2014 step change is therefore itself measured on a self-selected population, and the correction we apply for that is an estimate rather than an adjustment. I would not build policy on the residual figure until that has been settled."
   },
@@ -5413,7 +5413,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "It was a — I mean, you'd know better than me how long it takes."
   },
@@ -5431,7 +5431,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "You're not in trouble. Nobody's talking about trouble. I'd have thought you'd want the leeway, honestly, most people bite my hand off for that."
   },
@@ -5449,7 +5449,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "It's a thank you."
   },
@@ -5467,7 +5467,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "Did it? That wasn't — that's not how I meant it."
   },
@@ -5485,7 +5485,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "That feels a bit heavy-handed for what's basically a friendly working relationship."
   },
@@ -5503,7 +5503,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "..."
   },
@@ -5521,7 +5521,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "Up to you. Genuinely. Put it in writing if you like."
   },
@@ -5539,7 +5539,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "Not 'if you get a chance'. I hear it. I do it without noticing, that's the honest answer, and I'd rather you pulled me up on it."
   },
@@ -5557,7 +5557,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Sami",
     "text": "No — thank you. I'd rather be told than have you sitting here till eight, guessing what I meant."
   },
@@ -5575,7 +5575,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Seminar lead",
     "text": "An argument fails at its joints far more often than at its premises, and that is worth stating plainly insofar as most training in critical reading concentrates on evidence, whereas the errors surviving peer review are almost invariably errors of connection. Consider a structure common in policy writing. A premise is established, evidence is presented, and a conclusion follows introduced by 'thus' or 'hence' or, more ambitiously, 'accordingly'. The evidence may be impeccable. Nevertheless the conjunction is doing work that has not been earned, in that it asserts a relation the data do not contain: correlation is reported and causation inferred, whereby a marker becomes a mechanism without anybody having claimed that it is one. Conversely, a genuinely cohesive argument can be recognised by a simple test. Remove every discourse marker and read what remains. If the sequence still compels, the markers were describing a structure that was there; if it collapses into a list, they were supplying one that was not. Coherence is a property of the reasoning, cohesion a property of the prose, and the second is regularly mistaken for the first. Notwithstanding this, 'moreover' is not a crime; signposting is what allows a reader to follow a long chain at all, and papers stripped of it are measurably harder to use. The rationale for attending to joints is practical. Evidence can be checked by anyone with the data; a connective cannot, which is why it is where a weak case is most safely concealed, and why the reviewer who concedes the evidence and interrogates the conjunction is the one who tends to refute something. And I'd add that this is learnable in an afternoon, which is why I find its absence from most methods training genuinely difficult to account for."
   },
@@ -5584,7 +5584,7 @@
     "week": 10,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Statistician",
     "text": "So the index. Nine indicators, and the first thing to say — actually no, let me do this the other way round. Air quality has a threshold. There's a level above which harm is documented, we know where it is, it's a real number. Institutional trust does not have one. Nobody has ever specified the point at which trust becomes insufficient, because there isn't one. And we average them. We normalise both to one-to-ten and we average them, and the moment you do that you've asserted that a point of trust and a point of air quality are the same size, which — they're not, they're not even the same kind of thing. The extent to which people rely on the composite is what worries me. A city moves four places, and the press writes it up, and when you go and look, the movement is in three indicators none of which is individually significant. So it's precise. It's precise to two decimal places and it isn't accurate, and those get confused constantly. Where it does work — and it does work — is the wide comparison. If two cities are a long way apart, further apart than the error, the ranking holds, and we've validated that four times. Fine. Use it for that. The bands are quantiles, by the way, which means a difference of nought point two can move you a category, and the appendix says so, and I have never met anyone who read the appendix. And the last thing, which is really the first thing. If somebody asks you what a city's score means, the honest answer is that it means where that city sits relative to other cities on nine things we chose. Not how good it is. Those are not the same sentence and only one of them is defensible."
   },
@@ -5845,7 +5845,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Plant supervisor",
     "text": "People say it survived because of loyalty and that's — look, the people were loyal, forty per cent of them left, which tells you what loyalty was worth against a mortgage. It was going to close in September. That was settled, everybody knew, the only question was the order things happened in. And the transfer was to have gone in June, to the plant up north, which by the time June came was three days off a strike, so nothing moved. Six weeks' extension. Then indefinitely. Now. Back up. April. Somebody — and I've never found out who, and I've asked — somebody decided we wouldn't tell customers the closure date until the transfer was done. Purely administrative, that's how it read at the time. Except that customers weren't told, so the orders kept coming, so at the end of the six weeks there was a commercial case for another six, and once there's a commercial case nobody has to be brave. It was never revisited. Not once. We were to have become a distribution depot and for four years we were neither one thing nor the other. I'd say the turning point was April and I'd say nobody in April thought they were making a decision at all. That's what I find difficult about it, not the closing. The site's profitable now, by the way. Which people also attribute to foresight. There's a version of this in the company history. Two paragraphs, and it uses the word 'commitment' twice. Nobody in those two paragraphs is making a decision — everybody in them is displaying a virtue. And I was there. What I remember is a lot of tired people finding out on a Tuesday that the thing they'd been told was finished wasn't finished, and getting on with it."
   },
@@ -5863,7 +5863,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "Good. It's fairly standard, to be honest. Most people sign it as is."
   },
@@ -5881,7 +5881,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "We've never enforced it. Not once."
   },
@@ -5899,7 +5899,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "Go on."
   },
@@ -5917,7 +5917,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "That's — well, that's between you and your supplier, strictly speaking."
   },
@@ -5935,7 +5935,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "I hear you. I'm not sure I can get an escalation clause past the committee."
   },
@@ -5953,7 +5953,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "A review trigger. That I can probably do."
   },
@@ -5971,7 +5971,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "I'll take the review trigger to them on Thursday. I think it goes through."
   },
@@ -5989,7 +5989,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Fouad",
     "text": "Then you'd be signing it as it stands, and I'd understand if you didn't sign it."
   },
@@ -6016,7 +6016,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "It is a grey area. I don't think anybody's pretending otherwise."
   },
@@ -6034,7 +6034,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "Well, quite. And if we get into it we'll open a right can of worms, and then we're into three years of it."
   },
@@ -6052,7 +6052,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "You're splitting hairs."
   },
@@ -6070,7 +6070,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "You'd have us write 'we decided not to look'? That's a hostage to fortune."
   },
@@ -6088,7 +6088,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "..."
   },
@@ -6106,7 +6106,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "Parked. Six months. I'll draft it."
   },
@@ -6124,7 +6124,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "Why does that matter?"
   },
@@ -6142,7 +6142,7 @@
     "week": 15,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "...That's a fair point, annoyingly. Fine. My name on it."
   },
@@ -6151,7 +6151,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "Ms Farid, could you outline for us the rationale behind the decision to withdraw the product?"
   },
@@ -6160,7 +6160,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Certainly. Following a routine review, we concluded that the product no longer aligned with our long-term strategic priorities, and we took the decision to discontinue it in an orderly manner."
   },
@@ -6169,7 +6169,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "And the reports of a safety concern?"
   },
@@ -6178,7 +6178,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "I'm not in a position to comment on speculation."
   },
@@ -6187,7 +6187,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "Thank you. Right, that's us — Ahmed, you can put that down."
   },
@@ -6196,7 +6196,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Is that thing off?"
   },
@@ -6205,7 +6205,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "It's off."
   },
@@ -6214,7 +6214,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Right. Look — between us, the whole thing fell apart. Not the product, the process. We'd been putting the review off for a year and a half because nobody fancied being the one to bring it up, and then someone finally did, and it turned out we'd all been quietly assuming somebody else had checked. Nobody had."
   },
@@ -6223,7 +6223,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "That's a much better answer."
   },
@@ -6232,7 +6232,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "It's a much worse answer, which is exactly why you got the other one. I'm not going to be the woman who says 'nobody had checked' on camera."
   },
@@ -6241,7 +6241,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "You know the strategic-priorities line is what everyone will run."
   },
@@ -6250,7 +6250,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "Of course they'll run it. It's clean, it's short, nobody has to ring me back. And in eighteen months when somebody digs it up and puts it next to the review, I'll be the one explaining why I said it. I know exactly what I've bought and what it cost."
   },
@@ -6259,7 +6259,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "Will you pull the next one earlier?"
   },
@@ -6268,7 +6268,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "We'll see. Ask me in a year and I'll give you a sentence you can use."
   },
@@ -6277,7 +6277,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "One more, off the record. Do you regret the line?"
   },
@@ -6286,7 +6286,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "No. I regret that it's the one that works. Those are different regrets, and only one of them is mine to fix."
   },
@@ -6295,7 +6295,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Interviewer",
     "text": "I might use that."
   },
@@ -6304,7 +6304,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Farid",
     "text": "You won't. It's got a subordinate clause in it."
   },
@@ -6313,7 +6313,7 @@
     "week": 17,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Editor",
     "text": "'The well-documented long-term impact of export-driven, labour-intensive growth on deeply rooted regional inequality.' That's twelve words and one noun and I count four claims in it, none of which is being defended, and I get thirty of these a week. Well-documented. It's an adjective. You can't argue with an adjective — there's nothing to argue with, it's not a proposition, it's furniture. If the author had written 'this impact is well-documented' I could ask where, and they'd have to tell me, and half the time they can't. Deeply rooted, same. State-of-the-art, purpose-built, cutting-edge — those are evaluations wearing description as a coat, and they've been evaluated by nobody. And the head noun comes last, so by the time you meet the subject you've already accepted five things about it. I do understand why people write like this. It's dense and it's economical and a specialist unpacks it without effort, and if I made them write it out in clauses it'd be three sentences and they'd lose the journal's word count. But when I'm reading for whether something is true rather than whether it's publishable, I break the phrase up. Every time. Claim by claim. And nine times out of ten the disagreement — the actual thing the field is fighting about — turns out to be one of the modifiers, sitting there where nobody has to cite it. I had one last year — I won't say which journal — where the entire contribution of the paper was the word 'sustained'. Take 'sustained' out and there is no finding. I flagged it. The author's reply ran to three pages and never once said where the sustaining had been measured. We published it. I'd like to be able to say we didn't."
   },
@@ -6331,7 +6331,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Chair",
     "text": "Right, we've got eleven minutes, so I'm going to be rude and cut in. Dr Aziz — the department says the programme was resilient. You've said in print that resilience is doing a great deal of work in that sentence. Go."
   },
@@ -6367,7 +6367,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Chair",
     "text": "Ms Haddad."
   },
@@ -6403,7 +6403,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Chair",
     "text": "That's — sorry, that is quite a serious charge, do you want to—"
   },
@@ -6430,7 +6430,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Chair",
     "text": "Thirty seconds each, then I have to stop us. What word should the report have used?"
   },
@@ -6457,7 +6457,7 @@
     "week": 1,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Chair",
     "text": "We'll have to leave it there."
   },
@@ -6475,7 +6475,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "...four one... no, hold on, that's the bay. Four one seven. Pallet four one seven. Can you—"
   },
@@ -6493,7 +6493,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "Four ONE seven. There's a one in the middle. It's the one with the seal gone on the short side, not the top. Short side."
   },
@@ -6511,7 +6511,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "No. No, that's the whole reason I'm ringing you. The paperwork says Meridian. The crate stencil says Volkert, and the temperature strip inside is a Volkert strip, they're the green ones with the— ...are you still there?"
   },
@@ -6529,7 +6529,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "Strip's showing... it's sat at minus eighteen for most of it, then there's a window where it goes up. I want to say six hours. Could be eight, the marks are close together and this torch is— hang on— ...right, eight. Eight hours, up to minus four."
   },
@@ -6547,7 +6547,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "It's over. And before you ask, no, I can't tell you when. The strip doesn't timestamp, it just draws. But the port stamp on the outside is the nineteenth and it landed here Tuesday, so the window's inside those five days somewhere."
   },
@@ -6565,7 +6565,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "Then nineteenth to twenty-third, and the eight hours is in there. There's one more thing and then I'll lose you, I've got one bar. There are two pallets with the seal gone, not one."
   },
@@ -6583,7 +6583,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "Four one seven and four two one. Twenty-one, not seventeen, on the second one. Same stencil, same green strip. I've only read the strip on seventeen. I'm not opening the other one on my own and without somebody from quality standing next to me, and I'd put that in writing if you want."
   },
@@ -6601,7 +6601,7 @@
     "week": 2,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Karim",
     "text": "Understood. Photographs, no radio, wait for Nadia. And Ops — put in your note that I said two pallets at twenty past eleven. Because if this turns into a thing, I don't want to be the man who mentioned the second one on Thursday."
   },
@@ -6691,7 +6691,7 @@
     "week": 4,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Comedian",
     "text": "So I have a degree in linguistics, which is a qualification that is useful in exactly one situation, and that situation is an argument with your mother. Genuinely. Genuinely the only application. Four years. Fourteen thousand pounds. So that when she says 'nobody says it like that' I can say 'nine hundred years of attested usage says it like that, Mum,' and she can say 'well, they're wrong as well.' And she wins. She wins because she's my mother, and because 'they're wrong as well' is unfalsifiable, which — yes, thank you, sir, one person. One. That's my crowd. That's my people. That man is going home to nobody. ... The thing is, everyone thinks they hate grammar and everyone is a fanatic about it. Everyone. You've all got one. You've got one thing that if somebody does it in an email you no longer respect them as a person. Don't shake your head, madam, you've got two. I can see it from here. And here's what kills me: the ones people get furious about are never the ones that stop you understanding the sentence. Nobody's ever been genuinely confused by 'less' instead of 'fewer'. Nobody's stood in a supermarket going 'ten items or less, well, now I simply do not know how many tins I may purchase.' It isn't confusion. It's a costume. It's a little flag you run up so people know which sort of person you are. My dad used to correct me at dinner. Every night. Not to teach me anything — he'd already understood me, that's the point, you can't correct what you didn't understand. He corrected me because he was thirty years into a job where nobody let him finish a sentence, and I was eleven, and I was available. And I did the same thing. I did the exact same thing to a work-experience kid three years ago, in front of people, over an apostrophe, and I watched his face do the thing my face used to do. And I thought: ah. There it is. That's what it's for. Fourteen thousand pounds to find out my degree is a weapon my dad handed me and I picked up. ... Anyway. Great to be in Manchester."
   },
@@ -6871,7 +6871,7 @@
     "week": 6,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Departing director",
     "text": "Thank you. Thank you, and thank you particularly to Hisham for an introduction of which I recognised most of the details. Fourteen years. I've been asked to be brief, by the same office that asked me to be brief in 2019, so at least there is continuity somewhere in this building. I want to say three things. The first is about the people in this room, and I mean it without qualification, which is why I'm putting it first and separately: the scientific staff of this institute are the best I have worked with anywhere, and everything that has been achieved here was achieved by them, frequently in spite of arrangements that were not designed with them in mind. The second thing is about the arrangements. I have been fortunate to serve under four board chairs, each of whom brought a fresh strategic vision, and I mean four entirely fresh ones. I have signed off eleven organisational restructures. I am told that the twelfth is in preparation, and I am confident it will be received with all the enthusiasm the previous eleven enjoyed. I should say that I have never once been asked whether the eleventh had finished before the twelfth was drafted, and I want to record my gratitude for the consistency of that approach. The third thing is a request, and it is the only request I'm going to make, so I'd be glad if it were minuted. When my successor asks for the figures on the Aleppo collection — and she will ask, she's rather good — somebody in this room will be tempted to give her the summary. I'd ask you not to. Give her the spreadsheet. All nine tabs of it, including the tab that nobody has been willing to put a name to since 2021. She will draw her own conclusions, which she is perfectly capable of doing, and she will draw them in her first year rather than her fourth. That is the entire favour I would like, and it costs nobody anything except a certain amount of discomfort in about March. Right. I'm told the food is excellent, and unlike the restructures, I've seen the plan for it. It has been the privilege of my working life. Thank you all."
   },
@@ -6880,7 +6880,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "Eighteen minutes past. We're on the parking scheme, the lines are jammed, and I'll be honest with you, about nine in ten of you are against it. Line four, Mahmoud in Dokki, you're through."
   },
@@ -6898,7 +6898,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "She's listening, Mahmoud."
   },
@@ -6916,7 +6916,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "That's a specific point and I'll put it to her. But can I ask you — if she came back and said 'you're right, we'll amortise it over seven', would you then support the scheme?"
   },
@@ -6934,7 +6934,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "So it isn't the accounting."
   },
@@ -6952,7 +6952,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "Right. Thank you, that's a much better argument than the one you started with. Line two, Fatima, you're a resident of the same street I think?"
   },
@@ -6970,7 +6970,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "And under the scheme?"
   },
@@ -6988,7 +6988,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "That's — hold on, that's the most interesting thing anybody's said this morning. Say that last bit again."
   },
@@ -7006,7 +7006,7 @@
     "week": 7,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Host",
     "text": "Councillor, you've been listening. You've got ninety seconds after this."
   },
@@ -7015,7 +7015,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "Mr Rashad, before the break you told my learned friend that the inspection regime was, and I wrote it down, 'broadly compliant'. Do you stand by that?"
   },
@@ -7024,7 +7024,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "I do."
   },
@@ -7033,7 +7033,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "Would you help me with 'broadly'? Is that a term of art in your industry, or is it a word you chose this morning?"
   },
@@ -7042,7 +7042,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "It's — it isn't a defined term, no. It's a fair summary."
   },
@@ -7051,7 +7051,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "A fair summary of what proportion? Half? Nine tenths?"
   },
@@ -7060,7 +7060,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "I couldn't put a figure on it standing here."
   },
@@ -7069,7 +7069,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "No. But somebody did, didn't they. Bundle four, tab nineteen. That's your own internal quarterly, your name at the top. What figure does it give for completed inspections against schedule?"
   },
@@ -7078,7 +7078,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "...Sixty-one per cent."
   },
@@ -7087,7 +7087,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "Sixty-one. Is sixty-one 'broadly'?"
   },
@@ -7096,7 +7096,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "In the context of a regime that was being rebuilt at the time, I'd say it—"
   },
@@ -7105,7 +7105,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "I'll come to the rebuilding. My question was whether sixty-one per cent is 'broadly compliant'."
   },
@@ -7114,7 +7114,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "On its own, no, I wouldn't describe sixty-one as broadly."
   },
@@ -7123,7 +7123,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "Thank you. Now the rebuilding, since you raise it. The regime was being rebuilt because of the 2019 findings."
   },
@@ -7132,7 +7132,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "Partly, yes."
   },
@@ -7141,7 +7141,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "And the 2019 findings concerned the same three sites we are concerned with today."
   },
@@ -7150,7 +7150,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "Two of the three."
   },
@@ -7159,7 +7159,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "Two of the three. I'm grateful — that's a correction I'll accept. Which two?"
   },
@@ -7168,7 +7168,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "Harrow Bank and the Quay."
   },
@@ -7177,7 +7177,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "So by the time of this quarterly, you knew that two of these three sites had been the subject of adverse findings four years earlier, you knew your own completion rate stood at sixty-one per cent, and the word you selected for the board was 'broadly'. That's right, isn't it?"
   },
@@ -7186,7 +7186,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "The word I selected was — yes. I wrote that word. I'd say in fairness the table was in the same document, two pages later."
   },
@@ -7195,7 +7195,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "It was. Two pages later, in nine-point type, in an appendix. And the board minute for that meeting records what, on the inspection regime?"
   },
@@ -7204,7 +7204,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Mr Rashad",
     "text": "...'Noted as broadly compliant.'"
   },
@@ -7213,7 +7213,7 @@
     "week": 8,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Counsel",
     "text": "Your word, in their minute. Nothing further, my lord."
   },
@@ -7222,7 +7222,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Commentator",
     "text": "—and Farouk has it, Farouk turns, he's got Idrissi outside him and he's not going to use him, he's going himself, he's going himself and he's through! He's through on the angle, it's a tight one, and that's — that's the flag up. No. No, it isn't, the flag stayed down, the linesman's kept it down and Farouk knew, Farouk absolutely knew, look at him, he hasn't broken stride once. Squares it — Nabil — NABIL — off the bar, off the underside of the bar and out, and Selim gets a hand to it, or does he, I don't think he touches it at all."
   },
@@ -7240,7 +7240,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Commentator",
     "text": "Corner, then. No — goal kick, they've given a goal kick, and there's a conversation to be had about that because that came off Fathi's shin on the way through. Twenty-two minutes gone, still nothing between them, and this has been a far better half than the first twenty suggested it would be. Fathi takes it short. Short to Idrissi, Idrissi's under pressure immediately — he's got Warda coming, he's got nowhere, and he does brilliantly there, he just lets it run across his body and buys himself the yard he needed."
   },
@@ -7258,7 +7258,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Commentator",
     "text": "Now here's Souleyman. First time in the half he's had it in that pocket, and you sense the crowd lift, they can hear it too — sorry, they can SEE it, they can see what's coming — he's looking for Nabil again, and it's cut out. It's cut out by Zayd, who has had an outstanding forty minutes, and who I said before kick-off was the one player in this side I'd have concerns about. I'll say that again because I got it wrong: I said Zayd would struggle against pace and he has been the best defender on the pitch."
   },
@@ -7276,7 +7276,7 @@
     "week": 9,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Commentator",
     "text": "Which is coaching rather than the player. Twenty-four minutes, goalless, and Farouk is down. Farouk is down and the physio is coming on, and that changes the shape of this entirely."
   },
@@ -7303,7 +7303,7 @@
     "week": 10,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Presenter",
     "text": "That's the right question and it's the one I'd have asked. Two responses. The pre-trend in figure two is driven almost entirely by four districts, all four of which are in the same governorate, and all four of which had a separate capital programme running from 2010. If I drop that governorate the pre-trend is flat to within noise — I have that as appendix table nine, and the coefficient moves from nought-point-one-nine to nought-point-one-seven, so it survives. What I'd concede is that I can't distinguish 'the pre-trend was an artefact of that programme' from 'the reform was targeted at districts already improving'. Those are observationally equivalent in my data and I should have said so in the paper rather than in answer to a question."
   },
@@ -7321,7 +7321,7 @@
     "week": 10,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Presenter",
     "text": "They widen. Substantially. Clustered at governorate level I'm down to eleven clusters, which is below where I'd want to be for the wild bootstrap to be reliable, so the honest statement is that the point estimate is stable and the inference is weak. I'd rather say that than report a t-statistic I don't believe."
   },
@@ -7348,7 +7348,7 @@
     "week": 10,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Presenter",
     "text": "There is, and I've bounded it rather than removed it. The reform moved reporting from schools to districts in 2014, which is one year into treatment. If I restrict to the 2013 cohort only — reported under the old regime throughout — I get nought-point-one-four on a third of the sample. So roughly a quarter of the headline effect could be reporting rather than attainment. I put that in the abstract in the current draft, which is not where it was in the version you were sent."
   },
@@ -7384,7 +7384,7 @@
     "week": 11,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Message two — Marwan",
     "text": "It's Marwan, Tuesday about half eleven. Hala's told me off, entirely fairly. I've sent the full survey. Page fourteen is the wall. What it says is the crack is historic, it's been pointed at some stage, and the surveyor's recommendation is monitoring rather than works. So the eight thousand in my summary was my own estimate for rebuilding it, which I shouldn't have put in a document without labelling it as mine. There's no eight thousand anywhere in the survey. Sorry. Genuinely."
   },
@@ -7420,7 +7420,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "I'll take three more and then I genuinely do have to go. Yes — at the front."
   },
@@ -7438,7 +7438,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "On the second part, the minister's statement to the House stands, and I'd refer you to it in full rather than the phrase. On the first part, the risk register is an operational document. It's produced by officials, it's reviewed by officials, and it isn't routinely submitted to ministers."
   },
@@ -7456,7 +7456,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "It's what I'm able to tell you. Yes, Layla—"
   },
@@ -7474,7 +7474,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "I'm not going to get drawn into a document-by-document commentary from a podium."
   },
@@ -7501,7 +7501,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "I haven't seen the transcript of Tuesday, so I'm not going to characterise what the permanent secretary said or didn't say."
   },
@@ -7519,7 +7519,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "...Go on."
   },
@@ -7537,7 +7537,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "...Right. I'm not going to stand here and pretend I have a form of words for that, because I don't, and inventing one now would be worse than saying so. I will take that away and we will come back to you today, in writing, on whether the register was in the box and whether it was read. I'd ask you not to read anything into the fact that I can't answer it standing here, except that I can't answer it standing here."
   },
@@ -7555,7 +7555,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "If the answer to what I've just undertaken to find out requires a correction, then a correction will follow, and it will follow from her and not from me. That's the last one. Thank you."
   },
@@ -7573,7 +7573,7 @@
     "week": 13,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_michael",
     "speaker": "Spokesman",
     "text": "Today. On the record. Thank you."
   },
@@ -7582,7 +7582,7 @@
     "week": 14,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_isabella",
+    "voice": "af_nicole",
     "speaker": "Narrator",
     "text": "Gallery eleven is quiet, even by the standards of this building. Forty-one objects, most of them small, arranged with the care that this institution has always been rightly praised for. The lighting is exemplary. The label for case six reads, in full: 'Limestone relief. Nineteenth Dynasty. Acquired 1887.' Acquired. It is a serviceable word, and it has served for a hundred and thirty-eight years. The catalogue is more forthcoming, if you know to ask for the catalogue, and the catalogue records that the relief reached London in the company of a Captain Whitmore, whose diary — held four floors above us, in a collection open to any reader with a card — describes the week in which the relief left its wall. The diary is a lively document. It does not use the word acquired. The museum's position, set out in a statement of 2019 and restated without amendment in 2023, is that the object was obtained in accordance with the legislation and practice of the period. This is entirely accurate. The legislation of the period was written in London. There is a rejoinder to all of this, and it deserves to be put properly rather than dismissed: for ninety years, this relief has been conserved, catalogued, photographed, and made freely available to scholars from every country including the one it was taken from, and it is in demonstrably better physical condition than comparable pieces that stayed where they were. That is not nothing. It is, in fact, a great deal, and anybody who pretends otherwise is arguing a case rather than describing a situation. What the museum has not done, in a hundred and thirty-eight years, is put both of those sentences on the same label. There is room. We measured. The label in case six is 112 millimetres wide and carries eleven words, and the wall to its left, which is empty, is nearly two metres across. The decision not to fill it is a decision, taken by named people, at recorded meetings, and minuted. We asked for the minutes. We were told that they are held, that they are not classified, and that no member of staff is currently available to retrieve them."
   },
@@ -7609,7 +7609,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Announcer B",
     "text": "We are sorry to announce that the zero nine fifty-eight to Port Said has been cancelled. This is due to a shortage of train crew. Passengers for Port Said may travel on the ten twenty-six, which will call additionally at Ismailia, or may use the replacement road service departing from stand C outside the main entrance. Tickets will be accepted on either. We are sorry for the disruption this causes."
   },
@@ -7627,7 +7627,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Announcer B",
     "text": "Would passenger Nour Al-Sayed, travelling to Aswan, please make herself known to a member of staff at the information point on the concourse. Passenger Nour Al-Sayed, to the information point, please."
   },
@@ -7645,7 +7645,7 @@
     "week": 16,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Announcer B",
     "text": "A reminder that the underpass remains closed. Step-free access between platforms is available via the accessible route at the south end of the station only, and staff are on hand at the information point to assist. Passengers requiring step-free access to platform two should allow an additional ten minutes."
   },
@@ -7672,7 +7672,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "Before we start — is Tuesday still realistic for you, or are we being optimistic?"
   },
@@ -7690,7 +7690,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "I'd have thought so. Broadly. There's a question about item nine that our technical people would like to be comfortable with, and I don't think it's a large question."
   },
@@ -7708,7 +7708,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "It is."
   },
@@ -7726,7 +7726,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "That's fair, and I'd rather you did. Look — we can live with indexation. In principle. What we're finding difficult is indexation from year one, with no collar, on a seven-year term. If somebody put year three in front of me I don't say I'd sign it today, but I'd take it to Hisham without a covering note explaining why I was wasting his time."
   },
@@ -7744,7 +7744,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "Well. What would you want to have got?"
   },
@@ -7762,7 +7762,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "Mm. The termination right is not mine to give away in this room."
   },
@@ -7780,7 +7780,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "But I could take the volume commitment on its own, with the termination right surviving, and I think that lands. And if that's where we are, then I'd want the collar as well as the date."
   },
@@ -7798,7 +7798,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "Nought. A floor at nought."
   },
@@ -7816,7 +7816,7 @@
     "week": 18,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bf_emma",
+    "voice": "af_bella",
     "speaker": "Ms Sabbagh",
     "text": "Then I think we're closer than either of us expected to be before lunch. I'll have that written up and with you by six, and Tuesday stays Tuesday."
   },
@@ -7834,7 +7834,7 @@
     "week": 19,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Auctioneer",
     "text": "Lot two-one-four, the pair of famille rose vases, and you'll find the condition note in the addendum sheet, not the printed catalogue. Start me at twenty-eight thousand. Twenty-eight anywhere. Twenty-five then. Twenty-five, thank you, gentleman at the back — twenty-eight, thirty, thirty-two with the lady on the aisle, thirty-five on the telephone, thirty-five. Thirty-eight. Forty. Forty-two, telephone. Am I all done at forty-two? Forty-two thousand, the telephone bidder. ... Forty-five, is that a bid, sir? It is. Forty-five in the room, and the telephone's out. Forty-five thousand, first time, second time — sold, forty-five thousand, and that's paddle one-one-nine."
   },
@@ -7852,7 +7852,7 @@
     "week": 19,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_george",
+    "voice": "am_adam",
     "speaker": "Auctioneer",
     "text": "Thank you, and that's an important one, so I'll say it again: a restored foot rim, on one of the pair, disclosed in the addendum and not in the printed catalogue. Right. Lot two-one-five, the Qur'an leaf, and there is no reserve on this lot. Where would you like to start? Four thousand. Four, four and a half, five, five and a half — no, thank you, I've got five and a half here — six thousand, six and a half, seven. Seven thousand with the lady in the second row, and I'm going to sell it. Seven-two. Seven-four. Am I done at seven-four? Sold at seven thousand four hundred, paddle four-oh-two. Lot two-one-six is withdrawn. Two-one-six withdrawn at the vendor's instruction. Two-one-seven, the Kashan rug, and I have a commission bid of eleven thousand, so I must start there — eleven, twelve, thirteen with the telephone, fourteen. Fourteen thousand. Fifteen. Am I all done? ... Sold at fifteen thousand to the telephone. That's the last lot in this session and we'll resume at two o'clock with the manuscripts, beginning at lot three-oh-one, and I'd remind buyers that collection is from the Bermondsey store and not from this building."
   },
@@ -7888,7 +7888,7 @@
     "week": 20,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "With respect, that's generous but it's also a bit convenient. The procedure says acknowledge and log. It doesn't say carry on with a changeover. There's a line in it about not undertaking non-essential work with an unresolved alarm."
   },
@@ -7906,7 +7906,7 @@
     "week": 20,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "I know, and that's my point, not a criticism of you. We've got a procedure that forbids non-essential work and a schedule that makes everything essential. Those two documents have never been read next to each other."
   },
@@ -7924,7 +7924,7 @@
     "week": 20,
     "day": 0,
     "kind": "broadcast",
-    "voice": "bm_lewis",
+    "voice": "am_michael",
     "speaker": "Fouad",
     "text": "Any operator on that desk at eleven fifty-one, following both documents exactly, does what Ehab did. Which means Ehab is not the variable. If you put me on that desk, or Nadia, we get the same seven minutes, and a review that ends with 'operator response time' has told us the one thing we already knew."
   },

@@ -1,0 +1,109 @@
+name: audio render (kokoro)
+
+# Renders every clip in scripts/audio-manifest.json that has no MP3 on disk,
+# using each clip's own Kokoro voice, and commits the results.
+#
+# Sharded by level so each job stays well inside the runner time limit — the
+# same pattern the site-wide render will use. Kokoro is fast on CPU (unlike the
+# voice-cloning engines, which needed a GPU), so this is entirely free.
+#
+# Clip ids are position-based ({level}-w{week}-bc{i}), NOT content hashes, so a
+# clip whose text or voice changed keeps its id and the renderer would SKIP the
+# stale file. Deleting the stale MP3 is therefore part of changing a voice —
+# see the americanize_voices commit.
+on:
+  workflow_dispatch:
+    inputs:
+      levels:
+        description: "Space-separated level prefixes to render"
+        default: "a1 a2 b1 b2 c1 c2"
+      regenerate:
+        description: "Re-render clips even if the MP3 already exists"
+        type: boolean
+        default: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      levels: ${{ steps.split.outputs.levels }}
+    steps:
+      - id: split
+        env:
+          LEVELS: ${{ inputs.levels }}
+        run: |
+          json=$(python3 -c "import json,os; print(json.dumps(os.environ['LEVELS'].split()))")
+          echo "levels=$json" >> "$GITHUB_OUTPUT"
+          echo "shards: $json"
+
+  render:
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix:
+        level: ${{ fromJson(needs.plan.outputs.levels) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate the voice cast (fails on any British voice)
+        run: python3 scripts/voice_cast.py
+
+      - name: Install Kokoro
+        run: |
+          pip install --quiet kokoro-onnx soundfile
+          mkdir -p kokoro && cd kokoro
+          curl -sL -o kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+          curl -sL -o voices-v1.0.bin  https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+          ls -la
+
+      - name: Render ${{ matrix.level }}
+        run: |
+          # render_broadcast_local.py reads audio-manifest.json, honours each
+          # clip's own `voice`, applies the per-level pace, and skips clips whose
+          # MP3 already exists — so this only produces the ones we deleted.
+          python3 scripts/render_broadcast_local.py \
+            --model-dir ./kokoro \
+            --only "${{ matrix.level }}-" \
+            ${{ inputs.regenerate && '--regenerate' || '' }}
+
+      - name: Upload rendered clips as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: audio-${{ matrix.level }}
+          path: site/audio/*.mp3
+          if-no-files-found: warn
+          retention-days: 3
+
+  commit:
+    needs: render
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: audio-*
+          merge-multiple: true
+          path: site/audio
+
+      - name: Commit the new audio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          n=$(git status --porcelain site/audio | wc -l)
+          echo "changed audio files: $n"
+          if [ "$n" = "0" ]; then echo "nothing to commit"; exit 0; fi
+          git add site/audio
+          git commit -m "chore(audio): render $n clip(s) with Kokoro [skip ci]"
+          git push
+          echo "committed $n clip(s)"

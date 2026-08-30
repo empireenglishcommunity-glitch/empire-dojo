@@ -15,7 +15,20 @@
  *
  * Env vars required:
  *   DARB_SESSION_SECRET — same hex string as the bot's .env
+ * Optional:
+ *   BOT_API_BASE — overrides the default bot API origin used for the
+ *                  revocation check (see checkRevoked below).
  */
+
+// Bot API origin for the revocation check. Same host the site's JS already
+// talks to (site/js/darb.js API_BASE).
+const DEFAULT_BOT_API_BASE = 'https://bot.empireenglish.online';
+
+// How long a "this session is still valid" answer is cached at the edge.
+// A revoked student keeps their pages for at most this long, which is the
+// price of not making a subrequest on every single page view. 60s is short
+// enough to feel immediate and long enough to keep the API load trivial.
+const REVOCATION_CACHE_SECONDS = 60;
 
 // Paths that are NEVER gated (public assets, the gate page itself, API)
 const PUBLIC_PATHS = [
@@ -120,6 +133,21 @@ export async function onRequest(context) {
     return serveGate(request, env, url);
   }
 
+  // 5a. REVOCATION. A valid signature only proves the token was minted by us;
+  //     it says nothing about whether the session has since been withdrawn.
+  //     Without this check a suspended student keeps rendering lesson pages
+  //     from their cookie for the remainder of the 60-day token lifetime, even
+  //     though every API call already 401s. That gap is exactly what made
+  //     "!suspend logs them out of the practice page" untrue before this.
+  //
+  //     Deliberately fails OPEN on a network/API error and CLOSED only on an
+  //     explicit "not valid" answer: locking every paying student out of their
+  //     lessons because the bot restarted would be a far worse outcome than a
+  //     suspended student getting a few extra minutes of access.
+  if (await checkRevoked(token, env)) {
+    return serveGate(request, env, url);
+  }
+
   // 5b. Legacy retirement: a valid session MUST carry a CEFR level (A1–C2).
   //     Pre-migration tokens carry lvl "L0".."L3"; treat them like an expired
   //     session so the student just re-links (friendly gate) — never a hard 403.
@@ -160,6 +188,72 @@ export async function onRequest(context) {
   }
 
   return response;
+}
+
+
+/**
+ * Has this session been revoked? Returns TRUE only when the bot explicitly
+ * says the session is no longer valid.
+ *
+ * The bot's /api/session-status endpoint already exists and already does the
+ * right thing (verify signature + expiry + device_sessions.revoked). It was
+ * simply never called from the edge — the comment on it in api_server.py even
+ * calls it the "edge revocation check". This closes that loop.
+ *
+ * Answers are cached per-token for REVOCATION_CACHE_SECONDS using the Workers
+ * Cache API, so a student browsing 30 pages makes one subrequest, not 30.
+ */
+async function checkRevoked(token, env) {
+  if (!token) return false;
+  const base = (env && env.BOT_API_BASE) || DEFAULT_BOT_API_BASE;
+
+  // Cache key must be a URL and must not leak the whole token; a hash of it is
+  // enough to be unique per session while keeping the token out of cache keys.
+  let cacheKey;
+  try {
+    const digest = await sha256hex(token);
+    cacheKey = new Request(`https://darb-revocation.internal/${digest}`);
+  } catch (_) {
+    cacheKey = null;
+  }
+
+  if (cacheKey) {
+    try {
+      const hit = await caches.default.match(cacheKey);
+      if (hit) {
+        const cached = await hit.text();
+        return cached === 'revoked';
+      }
+    } catch (_) { /* cache unavailable — fall through to a live check */ }
+  }
+
+  let verdict = 'valid';
+  try {
+    const res = await fetch(`${base}/api/session-status`, {
+      method: 'GET',
+      headers: { 'X-Darb-Session': token },
+      // Never let a slow API stall page delivery.
+      signal: AbortSignal.timeout ? AbortSignal.timeout(3000) : undefined,
+    });
+    if (res.status === 401) {
+      verdict = 'revoked';
+    } else if (!res.ok) {
+      // 5xx / unexpected — treat as valid (fail open) and do NOT cache, so the
+      // next request retries rather than trusting a bad answer for a minute.
+      return false;
+    }
+  } catch (_) {
+    return false; // network error / timeout — fail open, don't cache
+  }
+
+  if (cacheKey) {
+    try {
+      await caches.default.put(cacheKey, new Response(verdict, {
+        headers: { 'Cache-Control': `max-age=${REVOCATION_CACHE_SECONDS}` },
+      }));
+    } catch (_) { /* best effort */ }
+  }
+  return verdict === 'revoked';
 }
 
 

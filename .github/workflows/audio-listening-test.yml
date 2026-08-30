@@ -54,7 +54,12 @@ jobs:
           PY
           # 24 kHz mono WAV — the format the cloning models expect.
           ffmpeg -y -i reference.m4a -ac 1 -ar 24000 reference.wav
-          echo "reference.wav ready:"; ls -la reference.wav
+          # Short clone prompt: F5/Chatterbox want a SHORT reference (~10-15s).
+          # The full 4-minute sample is for the owner's quality judgement, not
+          # the clone prompt — a long prompt is slow to transcribe and can
+          # degrade F5. Skip the first 0.5s (often silence/breath).
+          ffmpeg -y -i reference.wav -ss 0.5 -t 12 -ac 1 -ar 24000 reference_clone.wav
+          echo "references ready:"; ls -la reference.wav reference_clone.wav
 
       - name: Render — Kokoro (native voice)
         continue-on-error: true
@@ -69,14 +74,14 @@ jobs:
       - name: Render — your voice (F5-TTS)
         continue-on-error: true
         run: |
-          pip install --quiet f5-tts
-          python3 scripts/tts/render_f5.py reference.wav clips_raw
+          pip install --quiet f5-tts faster-whisper
+          python3 scripts/tts/render_f5.py reference_clone.wav clips_raw
 
       - name: Render — your voice (Chatterbox)
         continue-on-error: true
         run: |
           pip install --quiet chatterbox-tts
-          python3 scripts/tts/render_chatterbox.py reference.wav clips_raw
+          python3 scripts/tts/render_chatterbox.py reference_clone.wav clips_raw
 
       - name: Encode to MP3 (48 kbps mono — speech grade)
         run: |

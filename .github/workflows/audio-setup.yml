@@ -1,0 +1,172 @@
+name: audio r2 setup
+
+# Configures the R2 audio buckets via the Cloudflare API, so the owner never has
+# to get the dashboard exactly right:
+#   1. normalise the voice reference filename (reference.m4a.m4a -> reference.m4a)
+#   2. enable the managed r2.dev public endpoint on the audio bucket (quick, but
+#      rate-limited — dev/test only)
+#   3. connect the custom domain audio.empireenglish.online (production endpoint)
+#   4. verify a written object is readable over both
+#
+# Uses CLOUDFLARE_API_TOKEN (scoped: R2 Edit + Zone DNS Edit) and the R2 S3 keys.
+on:
+  workflow_dispatch:
+    inputs:
+      audio_bucket:
+        default: "empire-audio"
+      voice_bucket:
+        default: "empire-voice"
+      custom_domain:
+        default: "audio.empireenglish.online"
+      zone:
+        default: "empireenglish.online"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      ACCOUNT_ID: "8c2ca895bd4e579be07d2fa6c9fdba7e"
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AUDIO_BUCKET: ${{ inputs.audio_bucket }}
+      VOICE_BUCKET: ${{ inputs.voice_bucket }}
+      CUSTOM_DOMAIN: ${{ inputs.custom_domain }}
+      ZONE: ${{ inputs.zone }}
+    steps:
+      - name: Preflight — required secrets present
+        run: |
+          [ -z "$CF_TOKEN" ] && { echo "::error::CLOUDFLARE_API_TOKEN missing"; exit 1; }
+          [ -z "$R2_ACCESS_KEY_ID" ] && { echo "::error::R2_ACCESS_KEY_ID missing"; exit 1; }
+          echo "secrets present"
+
+      - run: pip install --quiet boto3
+
+      - name: Configure R2 + verify
+        run: |
+          python3 - <<'PY'
+          import json, os, sys, time, urllib.request, urllib.error, boto3
+          from botocore.config import Config
+
+          def env(n): return os.environ.get(n, "").strip()
+          acct   = env("ACCOUNT_ID") or env("R2_ACCOUNT_ID")
+          token  = env("CF_TOKEN")
+          audio  = env("AUDIO_BUCKET")
+          voice  = env("VOICE_BUCKET")
+          domain = env("CUSTOM_DOMAIN")
+          zone   = env("ZONE")
+          base   = "https://api.cloudflare.com/client/v4"
+          fail   = []
+
+          def cf(method, path, body=None):
+              url = base + path
+              data = json.dumps(body).encode() if body is not None else None
+              req = urllib.request.Request(url, data=data, method=method, headers={
+                  "Authorization": f"Bearer {token}",
+                  "Content-Type": "application/json"})
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      return r.status, json.loads(r.read().decode() or "{}")
+              except urllib.error.HTTPError as e:
+                  return e.code, json.loads(e.read().decode() or "{}")
+              except Exception as e:
+                  return 0, {"errors": [str(e)]}
+
+          s3 = boto3.client("s3",
+              endpoint_url=f"https://{env('R2_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+              aws_access_key_id=env("R2_ACCESS_KEY_ID"),
+              aws_secret_access_key=env("R2_SECRET_ACCESS_KEY"),
+              region_name="auto", config=Config(signature_version="s3v4"))
+
+          # --- 1. normalise the voice reference filename ---------------------
+          print("=== 1. normalise voice reference ===")
+          try:
+              keys = [o["Key"] for o in
+                      s3.list_objects_v2(Bucket=voice).get("Contents", [])]
+              print("  voice bucket:", keys)
+              if "reference.m4a" in keys:
+                  print("  OK: reference.m4a already present")
+              else:
+                  src = next((k for k in keys if k.lower().endswith(
+                      (".m4a", ".mp3", ".wav", ".mp4"))), None)
+                  if src:
+                      s3.copy_object(Bucket=voice,
+                                     CopySource={"Bucket": voice, "Key": src},
+                                     Key="reference.m4a")
+                      print(f"  copied {src} -> reference.m4a")
+                  else:
+                      fail.append(f"no audio file in {voice}")
+          except Exception as e:
+              fail.append(f"voice normalise failed: {e}")
+              print("  ERROR:", e)
+
+          # --- 2. enable the managed r2.dev public endpoint ------------------
+          print("\n=== 2. enable r2.dev managed public access ===")
+          st, r = cf("PUT",
+              f"/accounts/{acct}/r2/buckets/{audio}/domains/managed",
+              {"enabled": True})
+          print(f"  HTTP {st}  success={r.get('success')}")
+          if not r.get("success"):
+              print("  ", json.dumps(r.get("errors", r))[:300])
+          else:
+              dev_host = r.get("result", {}).get("domain") or ""
+              print("  r2.dev host:", dev_host)
+
+          # --- 3. connect the custom domain (production) ---------------------
+          print("\n=== 3. connect custom domain ===")
+          st, z = cf("GET", f"/zones?name={zone}")
+          zid = (z.get("result") or [{}])[0].get("id") if z.get("success") else None
+          print(f"  zone {zone} -> {zid}")
+          if zid:
+              st, r = cf("POST",
+                  f"/accounts/{acct}/r2/buckets/{audio}/custom_domains",
+                  {"domain": domain, "zoneId": zid, "enabled": True, "minTLS": "1.2"})
+              print(f"  connect HTTP {st}  success={r.get('success')}")
+              if not r.get("success"):
+                  msg = json.dumps(r.get("errors", r))[:400]
+                  # Already-connected is fine, not a failure.
+                  if "already" in msg.lower() or st == 409:
+                      print("  (already connected)")
+                  else:
+                      print("  ", msg)
+          else:
+              print("  could not resolve zone id (token may lack Zone Read)")
+
+          # --- 4. verify public delivery on both -----------------------------
+          print("\n=== 4. verify public read ===")
+          key = f"_smoke/setup-{int(time.time())}.txt"
+          tok = f"ok-{int(time.time())}"
+          s3.put_object(Bucket=audio, Key=key, Body=tok.encode(),
+                        ContentType="text/plain", CacheControl="no-store")
+          dev_host = f"pub-9bc66fe001f84c2bba3c94df866bade9.r2.dev"
+          served = []
+          for label, host in (("custom", domain), ("r2.dev", dev_host)):
+              for attempt in range(5):
+                  time.sleep(4)
+                  try:
+                      with urllib.request.urlopen(f"https://{host}/{key}", timeout=15) as rr:
+                          if rr.read().decode().strip() == tok:
+                              served.append(label)
+                              print(f"  OK [{label}] https://{host}/")
+                              break
+                          print(f"  [{label}] attempt {attempt+1}: mismatch")
+                  except Exception as e:
+                      print(f"  [{label}] attempt {attempt+1}: {e}")
+          s3.delete_object(Bucket=audio, Key=key)
+
+          if "custom" not in served:
+              print("\n  NOTE: custom domain not serving yet — DNS/cert can take a "
+                    "few minutes after connecting. r2.dev is enough for the "
+                    "listening test; the custom domain must work before the mass "
+                    "render (r2.dev is rate-limited).")
+          if not served:
+              fail.append("no public endpoint served the object after setup")
+
+          print("\n" + "=" * 52)
+          if fail:
+              print("SETUP INCOMPLETE:")
+              for f in fail: print("  -", f)
+              sys.exit(1)
+          print(f"SETUP OK — voice reference normalised; public access via {served}")
+          PY

@@ -129,6 +129,16 @@ jobs:
           candidates = [("custom domain", domain)] + \
                        ([("r2.dev", r2_dev)] if r2_dev else [])
           served_by = []
+          # Send a real browser User-Agent. Cloudflare's bot protection 403s the
+          # default "Python-urllib/3.x" UA, so BOTH correctly-configured public
+          # endpoints returned 403 and this test reported "enable public access
+          # on empire-audio" when public access was already working perfectly.
+          # A test that fails on a healthy system is worse than no test: it
+          # trains you to ignore the colour. audio-setup.yml already carried
+          # this fix; this file was missed. Verified: same URL, same moment —
+          # browser UA 200, Python-urllib UA 403.
+          UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/122.0 Safari/537.36")
           try:
               s3.put_object(Bucket=pub, Key=key, Body=token.encode(),
                             ContentType="text/plain", CacheControl="no-store")
@@ -139,7 +149,9 @@ jobs:
                   for attempt in range(4):
                       time.sleep(3)
                       try:
-                          with urllib.request.urlopen(url, timeout=15) as r:
+                          req = urllib.request.Request(
+                              url, headers={"User-Agent": UA})
+                          with urllib.request.urlopen(req, timeout=15) as r:
                               body = r.read().decode().strip()
                               print(f"  [{label}] attempt {attempt+1}: "
                                     f"HTTP {r.status} -> {body!r}")

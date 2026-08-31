@@ -18,6 +18,16 @@ on:
         default: "empire-audio"
       public_base:
         default: "https://audio.empireenglish.online"
+      # Which engines to run. Defaults to Kokoro ALONE, because that comparison
+      # is already settled: Kokoro rendered 20/20 on CPU, F5-TTS did not finish
+      # 20 sentences in 45 minutes (~60 h for the site, over the 6 h job cap),
+      # and Chatterbox crashed outright on Python 3.12. Voice cloning is
+      # deferred until a GPU is available, not abandoned — so the harness stays,
+      # but a default run must not report a red tick for a conclusion we already
+      # acted on. Pass "kokoro f5 chatterbox" to re-run the full comparison.
+      engines:
+        description: "Space-separated engines: kokoro, f5, chatterbox"
+        default: "kokoro"
 
 env:
   AUDIO_BUCKET: ${{ inputs.audio_bucket }}
@@ -26,11 +36,27 @@ env:
   PREFIX: _listening-test/${{ github.run_id }}
 
 jobs:
+  # Turns the engines string into a JSON array for the matrix below. Same
+  # pattern as audio-render.yml — a matrix cannot split a string itself.
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      engines: ${{ steps.split.outputs.engines }}
+    steps:
+      - id: split
+        env:
+          ENGINES: ${{ inputs.engines }}
+        run: |
+          json=$(python3 -c "import json,os; print(json.dumps(os.environ['ENGINES'].split()))")
+          echo "engines=$json" >> "$GITHUB_OUTPUT"
+          echo "engines: $json"
+
   render:
+    needs: plan
     strategy:
       fail-fast: false          # one engine failing must not cancel the others
       matrix:
-        engine: [kokoro, f5, chatterbox]
+        engine: ${{ fromJson(needs.plan.outputs.engines) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:

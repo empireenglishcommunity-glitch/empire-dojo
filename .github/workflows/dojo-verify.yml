@@ -25,6 +25,17 @@ on:
   # on any ref.
   workflow_dispatch:
 
+  # Daily, because the push trigger above cannot be relied on for main.
+  # Squash-merging a branch puts EVERY commit message into the merge commit
+  # body, so a bot commit containing "[skip ci]" silently suppresses the run
+  # for main as well. That is not hypothetical: merging #151 produced exactly
+  # that, and main sat unverified with nothing reporting it — the PR was
+  # green, the deploy went out, and the checks never ran. workflow_dispatch
+  # only helps if a human remembers, so this is the mechanical backstop:
+  # main cannot stay unverified for more than a day.
+  schedule:
+    - cron: "17 5 * * *"
+
 jobs:
   verify:
     runs-on: ubuntu-latest

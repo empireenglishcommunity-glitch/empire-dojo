@@ -744,6 +744,12 @@ const Gamification = {
     this._renderProgressBar();
     this._checkDailyCompletion();
     this._restoreDoneCheckbox();
+
+    // The real streak arrives with /api/progress, which resolves AFTER this
+    // runs. Without this listener the header would stay hidden for the whole
+    // visit even for a linked student, which is how "show the authoritative
+    // value" quietly becomes "show nothing, ever".
+    window.addEventListener('empire:progress-loaded', () => this._updateStreak());
   },
 
   /**
@@ -796,36 +802,88 @@ const Gamification = {
     checkbox.checked = Progress.isDone(at.level, at.week, at.day, at.type);
   },
 
-  _getToday() {
-    return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-  },
-
+  /**
+   * Show the student's REAL streak — the one the bot maintains — or show nothing.
+   *
+   * WHAT THIS USED TO DO, AND WHY IT WAS WRONG
+   * ------------------------------------------
+   * It kept its own streak in localStorage and incremented it from
+   * `_updateStreak()`, which `init()` calls on EVERY PAGE LOAD. So the 🔥 number
+   * in the header — present on 6,303 pages — went up simply for OPENING a page.
+   * No exercise, no submission, no work of any kind. A student could visit for
+   * five days running, complete nothing, and be congratulated with "🔥 5".
+   *
+   * It was wrong in three separate ways at once:
+   *
+   *   1. It rewarded attendance, not work. The bot's streak requires an actual
+   *      submission; this one required a page view. So it was not a less
+   *      accurate version of the real streak — it measured a different thing
+   *      and used the real thing's name and icon.
+   *   2. It was per-device. localStorage is per-browser, so the same student
+   *      saw one number on her phone and a different one on a laptop, and a
+   *      cleared cache reset her "streak" to 1.
+   *   3. It rolled over on a THIRD clock. It used
+   *      `new Date().toISOString()` — the UTC date — while the bot's day is
+   *      `Asia/Dubai`, and as of 2026-08-31 `Africa/Cairo`. Three components,
+   *      three opinions about when "today" ends.
+   *
+   * That last point is what surfaced it: after moving the bot to Africa/Cairo,
+   * this was the only remaining place in the ecosystem still deciding "what day
+   * is it" for itself.
+   *
+   * WHY IT MATTERS MORE THAN IT LOOKS
+   * ---------------------------------
+   * The whole 2026-08-31 investigation was about the bot telling students
+   * incorrect things about their streaks — nudging a 43-day student that she
+   * had not been active, and warning students their streak would break when it
+   * would not. This was the same harm from the opposite direction: telling a
+   * student she had a streak she had not earned. An invented number is not a
+   * harmless placeholder when it is the exact number the student is trying to
+   * protect.
+   *
+   * NOW
+   * ---
+   * `/api/progress` already returns the authoritative `streak`
+   * (`member.current_streak`), and `ConnectedProgress` already fetches it and
+   * announces it via the `empire:progress-loaded` event. So the value was
+   * available all along; this function simply ignored it.
+   *
+   * When it is unknown — not linked, or progress has not arrived yet — the
+   * element is HIDDEN rather than filled with a guess. Showing nothing is
+   * honest; showing a fabricated streak is not. There is deliberately no
+   * fallback and no localStorage cache: a stale streak read from the last visit
+   * is exactly the kind of plausible-but-wrong number this is removing.
+   *
+   * The old `empire_streak` / `empire_last_active_date` keys are simply left
+   * unread. They are not deleted, because writing to every student's
+   * localStorage on every page load to tidy up a value nobody displays would
+   * add a side effect to fix a cosmetic one.
+   */
   _updateStreak() {
-    const today = this._getToday();
-    const lastActive = localStorage.getItem('empire_last_active_date');
-    let streak = parseInt(localStorage.getItem('empire_streak') || '0');
+    const el = document.getElementById('streak-display');
+    if (!el) return;
 
-    if (lastActive === today) {
-      // Already logged today, streak unchanged
-    } else {
-      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-      if (lastActive === yesterday) {
-        streak++;
-      } else if (lastActive && lastActive !== today) {
-        streak = 1; // Streak broken, restart
-      } else {
-        streak = 1; // First visit
-      }
-      localStorage.setItem('empire_streak', streak);
-      localStorage.setItem('empire_last_active_date', today);
+    const data = (typeof ConnectedProgress !== 'undefined' && ConnectedProgress.data) || null;
+    // Require an actual number. Do NOT coerce with Number(): in JavaScript
+    // `Number(null)` and `Number([])` are both 0, so a missing or malformed
+    // streak would render as a confident "🔥 0" — which is the same class of
+    // invented value this function exists to remove, just quieter. A payload of
+    // the wrong SHAPE must be treated as unknown, not as zero.
+    const raw = data && typeof data.streak === 'number' ? data.streak : NaN;
+    const streak = Number.isFinite(raw) && raw >= 0 ? Math.floor(raw) : null;
+
+    if (streak === null) {
+      el.hidden = true;
+      el.textContent = '';
+      el.removeAttribute('title');
+      return;
     }
 
-    // Render streak in header if element exists
-    const streakEl = document.getElementById('streak-display');
-    if (streakEl) {
-      streakEl.textContent = `🔥 ${streak}`;
-      streakEl.title = `${streak} day streak`;
-    }
+    el.hidden = false;
+    el.textContent = `🔥 ${streak}`;
+    el.title = streak === 1
+      ? '1 day streak — from your Discord record'
+      : `${streak} day streak — from your Discord record`;
   },
 
   // The bar counts the FIVE exercises in the bottom nav. It used to count four

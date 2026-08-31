@@ -1,0 +1,183 @@
+name: speech render (kokoro -> R2)
+
+# Renders every utterance in the speech registry that is not already on R2, and
+# commits the list of what exists so speech_registry.py --check can gate on it
+# without needing R2 credentials.
+#
+# These clips are NOT committed as audio. Cloudflare Pages caps a free-plan
+# deployment at 20,000 files and site/ already holds 8,056, so 9,360 more would
+# leave almost no headroom on a site that grows weekly — and would add ~158 MB
+# to a repo whose .git is already 326 MB. They are served from R2 instead.
+#
+# Sharded by WORD COUNT, not by surface: `accent` alone is 42,199 words (~5.9 h)
+# against GitHub's 6 h job cap, while `review` is 297. See render_speech.py.
+#
+# Re-running is safe and resumes: each shard lists what is already in the bucket
+# and renders only the remainder, so a timed-out or failed shard can simply be
+# run again.
+on:
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: "How many parallel shards"
+        default: "12"
+      only:
+        description: "Optional space-separated shard indices (default: all)"
+        default: ""
+      limit:
+        description: "Render at most N clips per shard (throughput probe)"
+        default: ""
+      audio_bucket:
+        default: "empire-audio"
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      shards: ${{ steps.split.outputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - id: split
+        env:
+          N: ${{ inputs.shards }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          json=$(python3 -c "
+          import json, os
+          n = int(os.environ['N'])
+          only = os.environ.get('ONLY', '').split()
+          print(json.dumps([int(x) for x in only] if only else list(range(n))))
+          ")
+          echo "shards=$json" >> "$GITHUB_OUTPUT"
+          echo "shards to run: $json"
+
+      - name: Show the split
+        run: python3 scripts/render_speech.py --plan --shards ${{ inputs.shards }}
+
+  render:
+    needs: plan
+    strategy:
+      fail-fast: false        # one shard failing must not cancel the rest
+      matrix:
+        shard: ${{ fromJson(needs.plan.outputs.shards) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AUDIO_BUCKET: ${{ inputs.audio_bucket }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate the voice cast (fails on any British voice)
+        run: python3 scripts/voice_cast.py
+
+      - name: Install Kokoro
+        run: |
+          pip install --quiet kokoro-onnx soundfile boto3
+          mkdir -p kokoro && cd kokoro
+          # A truncated model fails deep inside onnxruntime with
+          # "INVALID_PROTOBUF: Protobuf parsing failed", which reads like a code
+          # bug but is just a flaky curl — it already cost one render a full run.
+          fetch() {
+            local url="$1" out="$2" min="$3"
+            curl -sSL --retry 5 --retry-delay 5 --retry-all-errors \
+                 --fail --connect-timeout 30 -o "$out" "$url"
+            local sz=$(stat -c%s "$out")
+            echo "  $out: $sz bytes"
+            if [ "$sz" -lt "$min" ]; then
+              echo "::error::$out is only $sz bytes (expected >= $min) — truncated download"
+              exit 1
+            fi
+          }
+          fetch https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx kokoro-v1.0.onnx 300000000
+          fetch https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin  voices-v1.0.bin   20000000
+
+      - name: Render shard ${{ matrix.shard }}
+        run: |
+          python3 scripts/render_speech.py \
+            --model-dir ./kokoro \
+            --shard ${{ matrix.shard }} \
+            --shards ${{ inputs.shards }} \
+            ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: speech-shard-${{ matrix.shard }}
+          path: shard-${{ matrix.shard }}.json
+          if-no-files-found: warn
+          retention-days: 3
+
+  manifest:
+    needs: render
+    if: always()          # record whatever landed, even if a shard failed
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AUDIO_BUCKET: ${{ inputs.audio_bucket }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet boto3
+
+      # Read the truth from R2 rather than trusting the shard artifacts: the
+      # bucket is what the browser will actually fetch from, and a shard that
+      # died mid-upload would otherwise over-report.
+      - name: Rebuild the rendered manifest from the bucket itself
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from render_speech import already_on_r2, r2_client, registry
+          import os
+          bucket = os.environ["AUDIO_BUCKET"].strip()
+          have = already_on_r2(r2_client(), bucket)
+          reg = registry()
+          missing = sorted(c for c in reg if c not in have)
+          extra = sorted(c for c in have if c not in reg)
+          out = Path("scripts/speech-rendered.json")
+          out.write_text(json.dumps({
+              "_what": ("Speech clip ids present in the R2 bucket, rebuilt by "
+                        "listing the bucket. Committed so speech_registry.py "
+                        "--check can gate without R2 credentials."),
+              "bucket": bucket,
+              "prefix": "speech",
+              "count": len(have),
+              "clips": sorted(have),
+          }, indent=1) + "\n")
+          print(f"  on R2      : {len(have)}")
+          print(f"  registry   : {len(reg)}")
+          print(f"  MISSING    : {len(missing)}")
+          print(f"  stale/extra: {len(extra)}")
+          for c in missing[:10]:
+              print(f"    missing {c}: {reg[c]['text'][:50]!r}")
+          PY
+
+      - name: Commit the manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- scripts/speech-rendered.json; then
+            echo "manifest unchanged"; exit 0
+          fi
+          git add scripts/speech-rendered.json
+          # No [skip ci]: this SHOULD be verified. A render commit that skips CI
+          # is how main sat unverified after #151.
+          git commit -m "chore(speech): record rendered clips present on R2"
+          git push

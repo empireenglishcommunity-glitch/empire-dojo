@@ -219,3 +219,22 @@ jobs:
       - name: Spoken-text sanitiser must strip notation and nothing else
         if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
         run: python3 scripts/verify_speakable.py
+
+      # The site must not invent state the bot owns. The header streak used to be
+      # kept in localStorage and incremented on every PAGE LOAD, so it rewarded
+      # opening a page rather than doing the work, was per-device, and rolled over
+      # on the browser's UTC date while the programme's day is config.TIMEZONE on
+      # the bot. Two checks deliberately, because they fail for different reasons:
+      # the static one catches the pattern coming back, the behavioural one catches
+      # the element rendering the wrong thing (deleting the feature entirely would
+      # satisfy the static check on its own).
+      #
+      # These do NOT depend on the regen step — they only read site/js/, which the
+      # generator does not produce — so they run even if regeneration fails.
+      - name: Site must not invent a streak or a "today" (static)
+        if: ${{ !cancelled() }}
+        run: python3 scripts/verify_no_invented_streak.py
+
+      - name: Header streak must render the authoritative value (behavioural)
+        if: ${{ !cancelled() }}
+        run: node scripts/test_streak_display.js

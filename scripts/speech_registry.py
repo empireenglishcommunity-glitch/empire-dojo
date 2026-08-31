@@ -46,6 +46,9 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 SITE = SCRIPT_DIR.parent / "site"
 AUDIO = SITE / "audio"
+# The committed record of which speech clips exist in the R2 bucket. Written by
+# .github/workflows/speech-render.yml from an actual bucket listing.
+RENDERED_MANIFEST = SCRIPT_DIR / "speech-rendered.json"
 
 sys.path.insert(0, str(SCRIPT_DIR))
 from voice_cast import load_cast, validate_cast, voice_for  # noqa: E402
@@ -213,7 +216,26 @@ def main():
     found, pages, page_voices = scan(site, cast)
     reg = build_registry(found)
 
-    missing = [cid for cid in reg if not (AUDIO / f"{cid}.mp3").exists()]
+    # Where a rendered speech clip actually LIVES is R2, not site/audio/ —
+    # Cloudflare Pages caps a free-plan deployment at 20,000 files and site/ is
+    # already at 8,056, so these 9,360 are served from the bucket and never
+    # committed. Checking site/audio/ would therefore report all 9,360 as
+    # missing forever, and this gate would be permanently red for no reason —
+    # the failure mode that trains people to ignore a red tick.
+    #
+    # scripts/speech-rendered.json is the committed record of what is in the
+    # bucket, rebuilt by the render workflow from a real bucket listing. Using
+    # it keeps this check credential-free and auditable in git history, and it
+    # still falls back to site/audio/ so a locally rendered clip counts.
+    rendered = set()
+    if RENDERED_MANIFEST.exists():
+        try:
+            rendered = set(json.loads(
+                RENDERED_MANIFEST.read_text()).get("clips", []))
+        except (ValueError, OSError) as exc:
+            print(f"::warning::could not read {RENDERED_MANIFEST.name}: {exc}")
+    missing = [cid for cid in reg
+               if cid not in rendered and not (AUDIO / f"{cid}.mp3").exists()]
 
     if args.check:
         # Characters that Python's str.split() and JavaScript's /\s+/ do NOT

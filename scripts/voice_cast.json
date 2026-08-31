@@ -1,30 +1,45 @@
 {
   "_what": "Which Kokoro voice speaks each surface of the practice site.",
-  "_why": "Owner decisions: (1) ship Kokoro site-wide to eliminate the browser's robotic speechSynthesis, (2) use a MIX of voices so it feels like a team of teachers rather than one voice, (3) AMERICAN ACCENT ONLY — this is an American-English programme, no British voices anywhere.",
+  "_why": "Owner decisions: (1) ship Kokoro site-wide to eliminate the browser's robotic speechSynthesis, (2) use a MIX of voices so it feels like a team of teachers rather than one voice, (3) AMERICAN ACCENT ONLY — this is an American-English programme, no British voices anywhere, (4) every voice must be CLEARLY intelligible — a student reported that the previous grammar voice was 'annoying' and 'his accent not clear'.",
   "_rule": "Every voice id must start with af_ (American female) or am_ (American male). bf_/bm_ (British) are FORBIDDEN and validate_cast() fails the build if any appears.",
+  "_how_these_were_chosen": "MEASURED, not picked from adjectives. scripts/benchmark_voices.py renders the same 10 sentences (A1 grammar patterns plus longer prose) with all 9 American male and 11 American female Kokoro voices at speed 1.0, transcribes each with an ASR, and reports word-for-word recovery, word error rate and mean ASR confidence. Confidence is the discriminator: every strong voice reaches 100% exact, but they differ in how clearly they get there. The previous cast was assembled from the descriptions in generate_audio.py, which is how the least clear voice in the whole set ended up teaching grammar.",
+  "_measured_2026_08_31": {
+    "_note": "conf = mean ASR avg_logprob, closer to 0 is clearer. All voices below reached 100% exact recovery unless stated.",
+    "male": {"am_adam": -0.28, "am_fenrir": -0.29, "am_eric": -0.30, "am_puck": -0.32, "am_liam": -0.33, "am_michael": -0.36, "am_onyx": -0.37, "am_echo": "-0.33 (90% exact)", "am_santa": "-0.35 (90% exact)"},
+    "female": {"af_kore": -0.30, "af_heart": -0.31, "af_aoede": -0.31, "af_bella": -0.31, "af_sarah": -0.32, "af_jessica": -0.33, "af_sky": -0.35, "af_alloy": -0.36, "af_river": -0.36, "af_nicole": -0.38, "af_nova": "-0.37 (90% exact)"}
+  },
+  "_changes_2026_08_31": {
+    "grammar": "am_michael (-0.36, 6th of 9 males) -> am_eric (-0.30, 3rd). This is the voice the student complained about. am_fenrir scored marginally better (-0.29) but speaks at 223 wpm against am_eric's 201, and a grammar explanation for A1 learners should not be the fastest voice in the set. am_adam was not reused here because it already speaks accent and mediation, and the owner asked for a mix of people.",
+    "review": "af_nicole (-0.38, least clear of the whole cast) -> af_kore (-0.30, best female). af_nicole was independently the cause of an earlier defect: at 130 wpm she is a 1.84x outlier, and the pace correction needed to bring her to a C1 target hit the renderer's speed clamp and shipped a clip at 152 wpm.",
+    "index": "af_sky (-0.35) -> af_aoede (-0.31). The host voice is the first thing a student hears each day.",
+    "listening_rotation": "am_michael -> am_eric and af_nicole -> af_kore, for the same reasons. The other three were already in the clearest tier."
+  },
   "_american_voices_available": {
     "af_heart": "US female, warm, professional",
     "af_bella": "US female, clear, neutral",
-    "af_nicole": "US female, calm, mature",
+    "af_kore": "US female, clear and even — best measured female",
+    "af_aoede": "US female, bright, welcoming",
     "af_sarah": "US female, bright, energetic",
-    "af_sky": "US female, young, friendly",
-    "am_adam": "US male, professional, neutral",
-    "am_michael": "US male, warm, conversational"
+    "am_adam": "US male, professional, neutral — best measured voice overall",
+    "am_eric": "US male, even and articulate",
+    "af_nicole": "US female, calm, mature — RETIRED from the cast, least clear measured",
+    "af_sky": "US female, young, friendly — retired from the cast",
+    "am_michael": "US male, warm, conversational — RETIRED from the cast, reported unclear by a student and measured 6th of 9"
   },
   "_forbidden_voices": ["bf_emma", "bf_isabella", "bm_george", "bm_lewis"],
   "cast": {
-    "index":     { "voice": "af_sky",     "role": "Host — opens each day, friendly and welcoming" },
-    "accent":    { "voice": "am_adam",    "role": "Pronunciation model — the clearest, most neutral American voice, the one students imitate" },
+    "index":     { "voice": "af_aoede",   "role": "Host — opens each day, friendly and welcoming" },
+    "accent":    { "voice": "am_adam",    "role": "Pronunciation model — the clearest measured voice in the whole set, and the one students imitate" },
     "shadowing": { "voice": "af_heart",   "role": "Main narrator — the passage students shadow" },
     "vocab":     { "voice": "af_bella",   "role": "Vocabulary coach — crisp, clear single words" },
     "reading":   { "voice": "af_sarah",   "role": "Storyteller — narrates reading passages with energy" },
-    "grammar":   { "voice": "am_michael", "role": "Grammar teacher — warm and explanatory" },
+    "grammar":   { "voice": "am_eric",    "role": "Grammar teacher — even and articulate, at a moderate pace for A1 learners" },
     "mediation": { "voice": "am_adam",    "role": "Explainer — relays and simplifies (reuses the clear neutral male)" },
-    "review":    { "voice": "af_nicole",  "role": "Reviewer — calm weekly recap" }
+    "review":    { "voice": "af_kore",    "role": "Reviewer — calm weekly recap, clearest measured female" }
   },
   "listening_rotation": {
-    "_note": "Listening comprehension needs DIFFERENT PEOPLE, not one voice. Listening items rotate deterministically across this set (by item index) so a student practises understanding several American speakers, male and female.",
-    "voices": ["am_michael", "af_sarah", "af_nicole", "am_adam", "af_heart"]
+    "_note": "Listening comprehension needs DIFFERENT PEOPLE, not one voice. Listening items rotate deterministically across this set (by page) so a student practises understanding several American speakers, male and female. Every voice here is in the clearest measured tier.",
+    "voices": ["am_eric", "af_sarah", "af_kore", "am_adam", "af_heart"]
   },
   "default": "af_heart"
 }

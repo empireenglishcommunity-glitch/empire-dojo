@@ -27,6 +27,10 @@ on:
       limit:
         description: "Render at most N clips per shard (throughput probe)"
         default: ""
+      manifest_only:
+        description: "Skip rendering; just rebuild scripts/speech-rendered.json from the bucket"
+        type: boolean
+        default: false
       audio_bucket:
         default: "empire-audio"
 
@@ -59,6 +63,9 @@ jobs:
 
   render:
     needs: plan
+    # Skipped entirely for manifest_only, so re-recording what is already in the
+    # bucket costs one short job instead of 12 Kokoro installs.
+    if: ${{ !inputs.manifest_only }}
     strategy:
       fail-fast: false        # one shard failing must not cancel the rest
       matrix:
@@ -173,10 +180,16 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- scripts/speech-rendered.json; then
+          # Stage FIRST, then compare the index. `git diff --quiet -- <path>`
+          # reports "no change" for a file git is not yet tracking, so on the
+          # first run — the run that creates the manifest — this reported
+          # "manifest unchanged" and pushed nothing. The 40 probe clips were on
+          # R2 with no record of them in the repo, which is precisely the state
+          # the manifest exists to prevent.
+          git add scripts/speech-rendered.json
+          if git diff --cached --quiet -- scripts/speech-rendered.json; then
             echo "manifest unchanged"; exit 0
           fi
-          git add scripts/speech-rendered.json
           # No [skip ci]: this SHOULD be verified. A render commit that skips CI
           # is how main sat unverified after #151.
           git commit -m "chore(speech): record rendered clips present on R2"

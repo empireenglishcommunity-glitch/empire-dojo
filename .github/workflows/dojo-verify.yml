@@ -77,10 +77,26 @@ jobs:
       #  so it starts green rather than being merged already-failing.
       # ---------------------------------------------------------------
       - name: Regenerate site from curriculum
+        id: regen
+        if: ${{ !cancelled() }}
         run: |
           EEC_REPO_DIR=${{ github.workspace }}/empire-nexus python3 scripts/generate.py
 
+      # Every check below runs even if an earlier check FAILED, because a
+      # failing step used to hide every check after it. That is not
+      # hypothetical: the American-voices change (#149) left site/ drifted
+      # from the generator AND shipped a C1 clip at 152 wpm against a 195
+      # target. The drift step failed first, the pace step never ran, and
+      # main stayed red for a single reported reason while a second real
+      # defect sat behind it undetected. One run must now report ALL of
+      # them. `!cancelled()` keeps the steps honest without hiding
+      # anything the way continue-on-error would: each step still fails
+      # the job, it just no longer suppresses its successors.
+      #
+      # These checks all read the regenerated site/, so they are only
+      # meaningful if the generator itself ran — hence the regen guard.
       - name: Committed site/ must match the generator (no drift)
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
         run: |
           if ! git diff --quiet -- site/ scripts/audio-manifest.json; then
             echo "::error::The committed site/ does not match what generate.py produces."
@@ -97,6 +113,7 @@ jobs:
       #  2. Structural / injection sweep over every generated page.
       # ---------------------------------------------------------------
       - name: Verify all generated pages (html.parser + injection sweep)
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
         run: python3 scripts/verify_pages.py
 
       # ---------------------------------------------------------------
@@ -109,6 +126,7 @@ jobs:
       #     Kokoro voices differ by 1.84x at the same speed setting.
       # ---------------------------------------------------------------
       - name: Verify extended-listening delivery pace
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
         run: python3 scripts/verify_audio_pace.py
 
       # ---------------------------------------------------------------
@@ -123,6 +141,7 @@ jobs:
       #     Never describe a green tick here as proof of authenticity.
       # ---------------------------------------------------------------
       - name: Verify authentic-audio declarations
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
         run: |
           EEC_REPO_DIR=${{ github.workspace }}/empire-nexus \
             python3 scripts/verify_authentic_audio.py

@@ -10,17 +10,58 @@ const TTS = {
   speaking: false,
   rate: 0.85, // Slow for beginners
   voice: null,
+  _audio: null,
+  _warned: false,
+
+  /**
+   * Where the pre-rendered speech clips live. NOT /audio/ on the site:
+   * Cloudflare Pages caps a free-plan deployment at 20,000 files and site/ is
+   * already at 8,056, so the 9,360 speech clips are served from R2.
+   */
+  BASE: 'https://audio.empireenglish.online/speech',
 
   init() {
-    // Find American English voice
-    const loadVoices = () => {
-      const voices = speechSynthesis.getVoices();
-      this.voice = voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) ||
-                   voices.find(v => v.lang === 'en-US') ||
-                   voices[0];
-    };
-    loadVoices();
-    speechSynthesis.onvoiceschanged = loadVoices;
+    // Nothing to load. The old implementation hunted for an en-US
+    // speechSynthesis voice here, which is exactly what this replaced: the
+    // device voice varies by phone, is robotic, and on many Android handsets
+    // is not American at all — on a programme that teaches American English.
+    this.voice = null;
+  },
+
+  /** The single voice this page speaks in, derived from the URL. Cached
+   *  because every call site would otherwise recompute it. */
+  pageVoice() {
+    if (!this._pageVoice) {
+      this._pageVoice = (typeof SpeechId !== 'undefined')
+        ? SpeechId.voiceForPath(location.pathname)
+        : 'af_heart';
+    }
+    return this._pageVoice;
+  },
+
+  /**
+   * Say out loud that a clip is missing, INSTEAD of quietly falling back to
+   * the robotic device voice. A silent fallback is how the robot voice
+   * survived on 7 page types unnoticed; if audio is missing the student and
+   * the owner should both be able to see that it is missing.
+   */
+  _reportMissing(text) {
+    if (this._warned) return;          // one banner per page, not one per click
+    this._warned = true;
+    try {
+      const bar = document.createElement('div');
+      bar.setAttribute('role', 'alert');
+      bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9999;' +
+        'background:#c0392b;color:#fff;padding:10px 14px;font-size:0.9rem;' +
+        'text-align:center;line-height:1.5';
+      bar.innerHTML = '\u26a0\ufe0f <b>Audio missing for this page.</b> ' +
+        'The recording has not been generated yet \u2014 please report this. ' +
+        '<span dir="rtl" lang="ar">\u0627\u0644\u0635\u0648\u062a \u063a\u064a\u0631 ' +
+        '\u0645\u062a\u0648\u0641\u0631 \u0644\u0647\u0630\u0647 \u0627\u0644\u0635\u0641\u062d\u0629</span>';
+      document.body.appendChild(bar);
+    } catch (e) { /* document not ready — the console line below still lands */ }
+    console.error('[TTS] no clip for:', JSON.stringify(text),
+                  'voice:', this.pageVoice());
   },
 
   /**
@@ -36,28 +77,66 @@ const TTS = {
    */
   speak(text, rate = null, onDone = null) {
     this.stop();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = this.voice;
-    utterance.rate = rate || this.rate;
-    utterance.pitch = 1;
-    utterance.lang = 'en-US';
+    const r = parseFloat(rate || this.rate);
     this.speaking = true;
-    const finish = () => {
+    let finished = false;
+    const finish = () => {                 // fires once, on end OR failure
+      if (finished) return;
+      finished = true;
       this.speaking = false;
       if (typeof onDone === 'function') onDone();
     };
-    utterance.onend = finish;
-    utterance.onerror = finish;
-    speechSynthesis.speak(utterance);
+
+    if (typeof SpeechId === 'undefined') {
+      // speech-id.js failed to load. Do NOT fall back to speechSynthesis —
+      // that is the robotic voice this replaced, and a silent fallback is
+      // precisely how it went unnoticed on 7 page types.
+      this._reportMissing(text);
+      finish();
+      return;
+    }
+
+    SpeechId.clipId(this.pageVoice(), text).then((id) => {
+      const audio = new Audio(`${this.BASE}/${id}.mp3`);
+      this._audio = audio;
+      // The clip is rendered at a neutral ~160 wpm and the per-call-site
+      // slowdown is applied here instead of being baked in, which would have
+      // meant a separate clip per rate. Browsers pitch-correct playbackRate,
+      // so a slow word still sounds like the same speaker.
+      audio.playbackRate = r;
+      audio.addEventListener('ended', finish);
+      audio.addEventListener('error', () => {
+        this._reportMissing(text);
+        finish();
+      });
+      audio.play().catch(() => {
+        // Autoplay policy blocks playback until the first user gesture. That
+        // is not a missing clip, so it must not raise the missing-audio
+        // banner — every call site here is already behind a click or a
+        // setTimeout following one.
+        finish();
+      });
+    }).catch(() => {                        // SubtleCrypto unavailable
+      this._reportMissing(text);
+      finish();
+    });
   },
 
   stop() {
-    speechSynthesis.cancel();
+    if (this._audio) {
+      this._audio.pause();
+      this._audio = null;
+    }
+    // Cancel any utterance queued by an older cached copy of this file. Harmless
+    // when nothing is speaking, and it keeps a stale service-worker cache from
+    // leaving a robot voice running underneath the new one.
+    if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
     this.speaking = false;
   },
 
   setRate(rate) {
     this.rate = parseFloat(rate);
+    if (this._audio) this._audio.playbackRate = this.rate;
   }
 };
 

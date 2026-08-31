@@ -164,3 +164,27 @@ jobs:
         run: |
           EEC_REPO_DIR=${{ github.workspace }}/empire-nexus \
             python3 scripts/verify_authentic_audio.py
+
+      # ---------------------------------------------------------------
+      #  5. The speech clip id contract, checked across BOTH languages.
+      #
+      #  Python (speech_registry.py) names the files that get rendered;
+      #  site/js/speech-id.js names the file the browser asks for. Two
+      #  implementations, two languages, one contract, and nothing in the
+      #  code forces them to agree. They do not fail gracefully: a
+      #  one-character disagreement means every clip is requested under a
+      #  name that was never rendered and the site goes silent all at once
+      #  — in the browser only, where Python's own tests cannot see it.
+      #
+      #  So this runs the REAL site JS in node against the REAL Python over
+      #  every utterance, not a sample or a fixture.
+      #
+      #  NOT YET WIRED: `speech_registry.py --check`, which asserts every
+      #  utterance HAS a rendered clip. All 9,360 are still unrendered, so
+      #  adding it now would just paint CI red for known, in-progress work.
+      #  It goes in with the render, as the gate that keeps the robotic
+      #  voice from ever coming back.
+      # ---------------------------------------------------------------
+      - name: Speech clip ids must match between python and the browser
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
+        run: python3 scripts/verify_clip_id_parity.py

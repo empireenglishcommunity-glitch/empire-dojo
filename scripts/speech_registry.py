@@ -216,11 +216,40 @@ def main():
     missing = [cid for cid in reg if not (AUDIO / f"{cid}.mp3").exists()]
 
     if args.check:
+        # Characters that Python's str.split() and JavaScript's /\s+/ do NOT
+        # agree on. normalise() runs in Python to name the rendered files and in
+        # site/js/speech-id.js to name the file the browser asks for, so a text
+        # containing any of these would hash differently on the two sides: the
+        # clip would exist and still never be found. No current utterance
+        # contains one, and this check is what keeps that true — it cannot be
+        # caught later, because a missing clip looks identical to an unrendered
+        # one. See verify_clip_id_parity.py, which proves the agreement.
+        divergent = {
+            "\x1c": "FILE SEPARATOR", "\x1d": "GROUP SEPARATOR",
+            "\x1e": "RECORD SEPARATOR", "\x1f": "UNIT SEPARATOR",
+            "\x85": "NEL", "\ufeff": "BOM / ZWNBSP",
+        }
+        bad = [(cid, ch, name) for cid, m in reg.items()
+               for ch, name in divergent.items() if ch in m["text"]]
+        if bad:
+            print(f"::error::{len(bad)} utterance(s) contain whitespace that "
+                  f"Python and JavaScript normalise DIFFERENTLY, so the browser "
+                  f"would compute a different clip id than the renderer used.")
+            for cid, ch, name in bad[:10]:
+                print(f"  {cid}: contains {name} ({ch!r}) — "
+                      f"{reg[cid]['text'][:50]!r}")
+            return 1
+
         if missing:
             print(f"::error::{len(missing)} of {len(reg)} spoken utterances have "
                   f"no rendered clip. The site would fall back to the browser's "
                   f"robotic voice for these. Run the speech render workflow.")
-            by_surface = collections.Counter(reg[c]["surface"] for c in missing)
+            # NOTE: "surfaces" is a LIST — an utterance can appear on more than
+            # one surface. This read "surface" (singular) and raised KeyError on
+            # the only branch it exists to serve, so the gate printed a
+            # traceback instead of the diagnostic whenever it actually tripped.
+            by_surface = collections.Counter(
+                s for c in missing for s in reg[c]["surfaces"])
             for s, n in by_surface.most_common():
                 print(f"  {s}: {n} missing")
             for c in missing[:5]:

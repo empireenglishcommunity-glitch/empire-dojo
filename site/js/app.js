@@ -18,7 +18,14 @@ const TTS = {
    * Cloudflare Pages caps a free-plan deployment at 20,000 files and site/ is
    * already at 8,056, so the 9,360 speech clips are served from R2.
    */
-  BASE: 'https://audio.empireenglish.online/speech',
+  // The /vN/ segment must match R2_PREFIX in scripts/render_speech.py. It is
+  // bumped whenever the AUDIO changes for text that has not changed: a clip id
+  // hashes voice+text, not the bytes, so a re-render lands on the same URL —
+  // and these objects are served `immutable` for a year AND cached cache-first
+  // by the service worker. Without a new path, students would keep the old
+  // audio. v2 fixes clips whose phonemes were corrupted by rendering below
+  // speed 1.0.
+  BASE: 'https://audio.empireenglish.online/speech/v2',
 
   init() {
     // Nothing to load. The old implementation hunted for an en-US

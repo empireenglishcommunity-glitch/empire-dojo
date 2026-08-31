@@ -159,12 +159,13 @@ jobs:
           missing = sorted(c for c in reg if c not in have)
           extra = sorted(c for c in have if c not in reg)
           out = Path("scripts/speech-rendered.json")
+          from render_speech import R2_PREFIX
           out.write_text(json.dumps({
               "_what": ("Speech clip ids present in the R2 bucket, rebuilt by "
                         "listing the bucket. Committed so speech_registry.py "
                         "--check can gate without R2 credentials."),
               "bucket": bucket,
-              "prefix": "speech",
+              "prefix": R2_PREFIX,
               "count": len(have),
               "clips": sorted(have),
           }, indent=1) + "\n")

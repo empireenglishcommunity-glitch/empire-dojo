@@ -230,8 +230,21 @@ def main():
     rendered = set()
     if RENDERED_MANIFEST.exists():
         try:
-            rendered = set(json.loads(
-                RENDERED_MANIFEST.read_text()).get("clips", []))
+            man = json.loads(RENDERED_MANIFEST.read_text())
+            rendered = set(man.get("clips", []))
+            # The manifest must describe the prefix we are actually SERVING.
+            # Clip ids do not change when the audio is re-rendered, so a prefix
+            # bump (the only way to defeat the year-long immutable cache) leaves
+            # a manifest full of ids that exist — under the OLD path. Without
+            # this the gate would report all 9,360 present while the path the
+            # browser fetches was empty: a green tick over a silent site.
+            from render_speech import R2_PREFIX  # local: avoids a cycle
+            if args.check and man.get("prefix") not in (None, R2_PREFIX):
+                print(f"::error::{RENDERED_MANIFEST.name} describes prefix "
+                      f"{man.get('prefix')!r} but clips are served from "
+                      f"{R2_PREFIX!r}. Re-run the speech render workflow so the "
+                      f"manifest reflects the path students actually fetch.")
+                return 1
         except (ValueError, OSError) as exc:
             print(f"::warning::could not read {RENDERED_MANIFEST.name}: {exc}")
     missing = [cid for cid in reg

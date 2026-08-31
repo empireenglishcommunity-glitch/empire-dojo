@@ -75,5 +75,76 @@
     return 'sp-' + hex(digest).slice(0, 16);
   }
 
-  return { norm: norm, clipId: clipId };
+  /* ------------------------------------------------------------------
+   *  WHICH VOICE THIS PAGE SPEAKS IN
+   *
+   *  Derived from the page's own URL rather than written into the page by
+   *  the generator. The generator has ~15 separate page templates, so
+   *  emitting a window.SPEECH_VOICE into each means 15 edits where missing
+   *  ONE silently leaves that surface on the wrong voice — and a wrong voice
+   *  is a wrong clip id, which is a 404, which is silence. The URL already
+   *  encodes everything the rule needs, so there is nothing to forget.
+   *
+   *  Mirrors speech_registry.py:
+   *      surface = path.stem                  (the filename, no extension)
+   *      index   = sum of every \d+ run in the path
+   *      voice   = rotation[index % 5] for listening/broadcast, else cast
+   *  verify_clip_id_parity.py checks this against Python for every real page
+   *  path in site/, which is what catches the edge cases ("/" -> index, clean
+   *  URLs with no .html, trailing slashes).
+   *
+   *  The cast is duplicated here because the browser cannot read
+   *  scripts/voice_cast.json. The parity test asserts the two are identical,
+   *  so the duplication cannot drift silently.
+   * ------------------------------------------------------------------ */
+  const CAST = {
+    index: 'af_sky',
+    accent: 'am_adam',
+    shadowing: 'af_heart',
+    vocab: 'af_bella',
+    reading: 'af_sarah',
+    grammar: 'am_michael',
+    mediation: 'am_adam',
+    review: 'af_nicole'
+  };
+  const LISTENING_ROTATION =
+    ['am_michael', 'af_sarah', 'af_nicole', 'am_adam', 'af_heart'];
+  const DEFAULT_VOICE = 'af_heart';
+
+  function surfaceOf(pathname) {
+    let p = String(pathname || '').split('?')[0].split('#')[0];
+    // "/a1/week1/day1/" and "/" are served as index.html, and Python sees a
+    // stem of "index" for those — without this they would fall through to the
+    // default voice instead of the index voice.
+    if (p === '' || p.endsWith('/')) return 'index';
+    const last = p.split('/').pop();
+    return last.replace(/\.html?$/i, '');
+  }
+
+  function rotationIndex(pathname) {
+    const p = String(pathname || '').split('?')[0].split('#')[0];
+    const nums = p.match(/\d+/g);
+    if (!nums) return 0;
+    return nums.reduce((a, n) => a + parseInt(n, 10), 0);
+  }
+
+  function voiceForPath(pathname) {
+    const surface = surfaceOf(pathname);
+    if (surface === 'listening' || surface === 'broadcast') {
+      return LISTENING_ROTATION[
+        rotationIndex(pathname) % LISTENING_ROTATION.length];
+    }
+    return CAST[surface] || DEFAULT_VOICE;
+  }
+
+  return {
+    norm: norm,
+    clipId: clipId,
+    surfaceOf: surfaceOf,
+    rotationIndex: rotationIndex,
+    voiceForPath: voiceForPath,
+    _cast: CAST,
+    _rotation: LISTENING_ROTATION,
+    _default: DEFAULT_VOICE
+  };
 }));

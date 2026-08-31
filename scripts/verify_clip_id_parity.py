@@ -41,7 +41,7 @@ JS_FILE = REPO / "site" / "js" / "speech-id.js"
 
 sys.path.insert(0, str(SCRIPT_DIR))
 from speech_registry import (SITE, build_registry, clip_id,  # noqa: E402
-                             normalise, scan)
+                             normalise, page_voice, rotation_index, scan)
 from voice_cast import load_cast, validate_cast  # noqa: E402
 
 
@@ -199,6 +199,73 @@ def main():
             print("      ::error:: a real utterance contains a character that "
                   "Python and JS normalise differently.")
             failures.append(present)
+
+    # 5. The cast duplicated inside speech-id.js must equal voice_cast.json.
+    #    The browser cannot read the JSON, so the values are repeated in JS —
+    #    and a silent divergence there means the wrong voice, which means the
+    #    wrong clip id, which is a 404 and silence rather than a visible error.
+    cast = load_cast()
+    js_cast = subprocess.run(
+        [node, "-e",
+         "const s=require(process.argv[1]);"
+         "process.stdout.write(JSON.stringify("
+         "{cast:s._cast,rotation:s._rotation,def:s._default}));",
+         str(JS_FILE)], capture_output=True, text=True)
+    jc = json.loads(js_cast.stdout)
+    py_cast = {k: v["voice"] for k, v in cast["cast"].items()}
+    cast_ok = (jc["cast"] == py_cast
+               and jc["rotation"] == cast["listening_rotation"]["voices"]
+               and jc["def"] == cast["default"])
+    print(f"  {'cast matches voice_cast.json':<34}{len(py_cast):>7} surfaces  "
+          f"{'identical' if cast_ok else 'MISMATCH'}")
+    if not cast_ok:
+        print(f"      python: {py_cast}\n      js:     {jc['cast']}")
+        print(f"      python rotation: {cast['listening_rotation']['voices']}")
+        print(f"      js     rotation: {jc['rotation']}")
+        failures.append("cast")
+
+    # 6. voiceForPath() must agree with page_voice() for EVERY real page. This
+    #    is what makes deriving the voice from the URL safe instead of emitting
+    #    it into ~15 generator templates.
+    if not args.quick:
+        rels = [str(p.relative_to(SITE)) for p in sorted(SITE.rglob("*.html"))
+                if p.relative_to(SITE).parts[0] != "audio"]
+        # The browser sees a leading slash; Python sees a site-relative path.
+        urls = ["/" + r for r in rels]
+        js_voices = json.loads(subprocess.run(
+            [node, "-e",
+             "const s=require(process.argv[1]);"
+             "const i=JSON.parse(require('fs').readFileSync(process.argv[2],'utf8'));"
+             "process.stdout.write(JSON.stringify(i.map(u=>s.voiceForPath(u))));",
+             str(JS_FILE), "/dev/stdin"],
+            input=json.dumps(urls), capture_output=True, text=True).stdout)
+        py_voices = [page_voice(Path(r).stem, rotation_index(Path(r)), cast)
+                     for r in rels]
+        bad = [(u, a, b) for u, a, b in zip(urls, py_voices, js_voices) if a != b]
+        print(f"  {'voice per page URL':<34}{len(urls):>7} compared   "
+              f"{'MISMATCH ' + str(len(bad)) if bad else 'all identical'}")
+        for u, a, b in bad[:10]:
+            print(f"      {u}: python={a} js={b}")
+        failures += bad
+
+        # Clean URLs (no .html) and directory URLs must resolve the same way,
+        # because that is how Cloudflare Pages actually serves these pages.
+        variants = [u[:-5] for u in urls[:400] if u.endswith(".html")]
+        js_v = json.loads(subprocess.run(
+            [node, "-e",
+             "const s=require(process.argv[1]);"
+             "const i=JSON.parse(require('fs').readFileSync(process.argv[2],'utf8'));"
+             "process.stdout.write(JSON.stringify(i.map(u=>s.voiceForPath(u))));",
+             str(JS_FILE), "/dev/stdin"],
+            input=json.dumps(variants), capture_output=True, text=True).stdout)
+        py_v = [page_voice(Path(v).stem, rotation_index(Path(v + ".html")), cast)
+                for v in variants]
+        badv = [(u, a, b) for u, a, b in zip(variants, py_v, js_v) if a != b]
+        print(f"  {'same voice without .html':<34}{len(variants):>7} compared   "
+              f"{'MISMATCH ' + str(len(badv)) if badv else 'all identical'}")
+        for u, a, b in badv[:5]:
+            print(f"      {u}: python={a} js={b}")
+        failures += badv
 
     print()
     if failures:

@@ -179,12 +179,25 @@ jobs:
       #  So this runs the REAL site JS in node against the REAL Python over
       #  every utterance, not a sample or a fixture.
       #
-      #  NOT YET WIRED: `speech_registry.py --check`, which asserts every
-      #  utterance HAS a rendered clip. All 9,360 are still unrendered, so
-      #  adding it now would just paint CI red for known, in-progress work.
-      #  It goes in with the render, as the gate that keeps the robotic
-      #  voice from ever coming back.
       # ---------------------------------------------------------------
       - name: Speech clip ids must match between python and the browser
         if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
         run: python3 scripts/verify_clip_id_parity.py
+
+      # ---------------------------------------------------------------
+      #  6. Every spoken utterance must HAVE a rendered clip.
+      #
+      #  This is the gate that stops the robotic voice coming back. TTS.speak
+      #  no longer falls back to speechSynthesis — by design, because a silent
+      #  fallback is exactly how the device voice survived unnoticed on 7 page
+      #  types. The consequence is that an utterance with no clip is now a
+      #  visible "audio missing" banner for a student, so adding new spoken
+      #  text without rendering it has to fail the build instead.
+      #
+      #  Reads scripts/speech-rendered.json, the committed record of the R2
+      #  bucket, so this needs no credentials and runs on every PR. If it
+      #  fails, run the speech render workflow.
+      # ---------------------------------------------------------------
+      - name: Every spoken utterance must have a rendered clip
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
+        run: python3 scripts/speech_registry.py --check

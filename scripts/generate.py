@@ -379,7 +379,7 @@ def gen_accent(level, week, day, focus, norm, phoneme_focus=None):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="shadowing.html">{bl("Shadowing", "المحاكاة")} →</a></div></div>
 {bottom_nav('accent')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_shadowing(level, week, day, theme, norm, aid):
@@ -420,7 +420,7 @@ def gen_shadowing(level, week, day, theme, norm, aid):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="accent.html">← {bl("Accent", "النطق")}</a><a href="listening.html">{bl("Listening", "الاستماع")} →</a></div></div>
 {bottom_nav('shadowing')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def gen_speaking(level, week, day, theme, mission):
@@ -467,7 +467,7 @@ def gen_speaking(level, week, day, theme, mission):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="vocab.html">← {bl("Vocab", "المفردات")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('speaking')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 def build_review_items(level, week, weeks_vocab, weeks_grammar):
@@ -597,7 +597,7 @@ def gen_review(level, week, day, theme, items):
 <div class="card"><p>{bl("No review items for this week yet.", "لا توجد أسئلة مراجعة للأسبوع ده بعد.")}</p></div>
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('review')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
     LABEL = {"vocab_en2ar": bl("What does this word mean?", "الكلمة دي معناها إيه؟"),
              "vocab_ar2en": bl("Which English word is this?", "دي أنهي كلمة إنجليزي؟"),
@@ -639,7 +639,7 @@ def gen_review(level, week, day, theme, items):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="vocab.html">📖 {bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('review')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>
 const reviewAnswers={answers_json};
 const reviewWeeks={weeks_json};
@@ -715,7 +715,7 @@ def gen_mediation(level, week, day, theme, mediation):
 <div class="card"><p>{bl("The mediation task for this week is not published yet.", "مهمة الوساطة للأسبوع ده لسه مش منشورة.")}</p></div>
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('mediation')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
     title = esc_html(mediation.get("title", ""))
     title_ar = esc_html(mediation.get("title_ar", ""))
@@ -786,7 +786,7 @@ def gen_mediation(level, week, day, theme, mediation):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="reading.html">📖 {bl("Reading", "القراءة")} →</a></div></div>
 {bottom_nav('mediation')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>
 const Mediation={{
   _total:{len(points)},
@@ -826,7 +826,7 @@ def gen_reading(level, week, day, theme, reading):
 <div class="card"><p>{bl("The reading passage for this week is not published yet.", "نص القراءة للأسبوع ده لسه مش منشور.")}</p></div>
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('reading')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
     title = esc_html(reading.get("title", ""))
     title_ar = esc_html(reading.get("title_ar", ""))
@@ -908,7 +908,7 @@ def gen_reading(level, week, day, theme, reading):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="grammar.html">📐 {bl("Grammar", "القواعد")} →</a></div></div>
 {bottom_nav('reading')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>
 const readingAnswers={answers_json};
 const readingText={safe_json_for_script_tag(reading.get("text", ""))};
@@ -968,7 +968,7 @@ def gen_grammar(level, week, day, theme, grammar, grammar_point=None):
 <div class="card"><p>{bl("No grammar pattern is authored for this week yet.", "لا يوجد نمط قواعد لهذا الأسبوع بعد.")}</p></div>
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('grammar')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
     name = esc_html(grammar.get("pattern_name", ""))
     name_ar = esc_html(grammar.get("pattern_name_ar", ""))
@@ -1117,7 +1117,7 @@ def gen_grammar(level, week, day, theme, grammar, grammar_point=None):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('grammar')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>
 const grammarAnswers={answers_json};
 const GrammarPractice={{
@@ -1229,7 +1229,7 @@ def gen_listening(level, week, day, theme, day_vocab, all_week_vocab, day_listen
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="shadowing.html">← {bl("Shadowing", "المحاكاة")}</a><a href="vocab.html">{bl("Vocab", "المفردات")} →</a></div></div>
 {bottom_nav('listening')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const dictationWords={dictation_json};document.addEventListener('DOMContentLoaded',()=>Dictation.init(dictationWords));var _lqTotal={len(questions)},_lqAnswered=0;function checkAnswer(el,c){{var opts=el.closest('.options');if(opts.dataset.answered)return;opts.dataset.answered='1';opts.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');if(c)el.classList.add('correct');else{{el.classList.add('wrong');opts.querySelector('[data-correct]').classList.add('correct')}}_lqAnswered++;if(_lqTotal>0&&_lqAnswered>=_lqTotal&&window.ExerciseComplete)window.ExerciseComplete();}}</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
@@ -1261,7 +1261,7 @@ def gen_vocab(level, week, day, theme, words):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="listening.html">← {bl("Listening", "الاستماع")}</a><a href="speaking.html">{bl("Speaking", "التحدث")} →</a></div></div>
 {bottom_nav('vocab')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>const words={safe_json_for_script_tag(words)};document.addEventListener('DOMContentLoaded',()=>{{Flashcard.init(words);InteractiveVocab.init(words)}});</script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
@@ -1317,7 +1317,7 @@ def gen_broadcast(level, week, day, theme, bc):
 <div class="card"><p>{bl("The extended listening for this week is not published yet.", "الاستماع الممتد للأسبوع ده لسه مش منشور.")}</p></div>
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a></div></div>
 {bottom_nav('broadcast')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
     title = esc_html(bc.get("title", ""))
     title_ar = esc_html(bc.get("title_ar", ""))
@@ -1486,7 +1486,7 @@ def gen_broadcast(level, week, day, theme, bc):
 {swipe_hint()}
 <div class="nav page-nav" style="margin-top:20px"><a href="/">🏠 {bl("Home", "الرئيسية")}</a><a href="index.html">📋 {bl("Today's menu", "قائمة اليوم")}</a><a href="reading.html">📖 {bl("Reading", "القراءة")} →</a></div></div>
 {bottom_nav('broadcast')}
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>
 <script>
 const bcSegments={seq_json};
 const bcGistAnswer={gist_answer};
@@ -1689,7 +1689,7 @@ def gen_day_index(level, week, day, grammar=None, can_do=None, reading=None,
 <div class="nav" style="margin-top:20px"><a href="/index.html">← {bl("Home", "الرئيسية")}</a></div>
 <div class="footer">Empire English Community — Common Sense First 🏛️</div>
 </div>
-<script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
+<script src="/js/speech-id.js"></script><script src="/js/app.js"></script><script src="/js/darb.js"></script>{content_gate_js()}{copyright_footer()}</div></body></html>'''
 
 
 # ============================================================

@@ -8,13 +8,28 @@
  *     STALE empire.css forever (new JS rendered new calendar cells while
  *     the old CSS had no styles for them → unstyled purple links). Bug #2.
  *   - Images / audio (.png/.jpg/.mp3/.webm) → CACHE-FIRST (immutable, large;
- *     saves students' data). These filenames don't change content.
+ *     saves students' data).
  *
- * The CACHE_NAME is versioned; bumping it purges every old cache on
- * activate, so this deploy also clears any stale empire-v1 assets.
+ * CACHE-FIRST HERE MEANS FOREVER. The audio branch below returns the cached
+ * response without ever revalidating, and clip ids are POSITION-based
+ * ({level}-w{week}-bc{i}), not content hashes — so re-rendering a clip
+ * changes the bytes while the URL stays identical. A student who already
+ * holds the old file will keep it for good.
+ *
+ * So: RE-RENDERING ANY SHIPPED CLIP REQUIRES BUMPING CACHE_NAME. It is the
+ * only thing that evicts the old audio, because `activate` deletes every
+ * cache whose key is not the current CACHE_NAME. Nothing enforces this
+ * mechanically — the URL is unchanged, so no check can see the difference.
+ * This comment used to claim these filenames "don't change content", which
+ * is what made the v6 -> v7 bump easy to miss.
  */
 
-const CACHE_NAME = 'empire-v6';  // v6: 189 broadcast clips re-voiced British -> American
+// v7: c1-w6-bc0 re-rendered af_nicole -> af_bella (152 -> 203 wpm). Without
+//     this bump every student who had already opened that C1 week 6 page
+//     would have kept the 152 wpm clip permanently, on the one descriptor
+//     (C1.R.1) that is entirely a claim about delivery speed.
+// v6: 189 broadcast clips re-voiced British -> American
+const CACHE_NAME = 'empire-v7';
 const OFFLINE_URL = '/offline';
 
 // Pre-cache only the offline fallback + icons (NOT css/js — those are

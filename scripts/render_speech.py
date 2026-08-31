@@ -69,8 +69,10 @@ Usage:
     render_speech.py --plan --shards 12        # show the split, render nothing
 """
 import argparse
+import html
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -118,6 +120,64 @@ def speed_for_voice(voice):
     """
     base = VOICE_WPM.get(voice, FALLBACK_VOICE_WPM)
     return max(SPEED_MIN, min(SPEED_MAX, SPEECH_TARGET_WPM / base))
+
+
+# Notation that belongs on the SCREEN and not in the ear. The accent drills show
+# IPA next to the spelling so a student can see the sound; Kokoro reads the
+# characters, so the clip said "measure slash edge slash major" instead of
+# "measure, major". 63 clips were affected, all on the accent surface — which is
+# the pronunciation model students are asked to imitate, so it is the worst
+# possible place for it.
+# Spans may contain spaces — /prəˈvaɪdɪd ðət/ is one unit — so this must not
+# stop at whitespace, or the slashes survive and the IPA inside gets mangled
+# into "/prvadd t/" instead of removed.
+_IPA_SPAN = re.compile(r"/[^/]{1,48}/")
+# NON-ASCII ONLY, and asserted below. An earlier version of this set was written
+# by transcribing IPA diphthongs by hand and picked up the plain letters "e" and
+# "a", so _IPA_WORD matched almost every English word and "She is a student."
+# rendered as "is". Any ASCII letter in here silently deletes real speech.
+_IPA_CHARS = "ʒʃθðŋæəɪʊɔɑːˈˌɡʧʤʔɜɐʌ"
+assert all(ord(c) > 127 for c in _IPA_CHARS), \
+    "_IPA_CHARS must contain no ASCII: it would delete ordinary words"
+# A whole WORD is dropped if it contains IPA, rather than having the IPA letters
+# deleted from it: stripping characters turned "wəz" into "wz" and "thən" into
+# "thn", which Kokoro then dutifully tries to pronounce.
+_IPA_WORD = re.compile(r"\S*[" + _IPA_CHARS + r"]\S*")
+_STRIP_CHARS = re.compile(
+    r"[\U0001F300-\U0001FAFF\u2600-\u27BF\u2190-\u21FF]")   # emoji, arrows
+_TIDY = [
+    (re.compile(r"\(\s*\)"), " "),          # brackets emptied by the above
+    (re.compile(r"\s*,\s*,+"), ","),        # commas left adjacent
+    (re.compile(r"^[\s,;:.]+"), ""),        # leading punctuation
+    (re.compile(r"\s+([,.;:?!])"), r"\1"),  # space before punctuation
+    (re.compile(r"\s{2,}"), " "),
+]
+
+
+def speakable(text: str) -> str:
+    """What Kokoro should SAY for this text.
+
+    Deliberately separate from the clip id, which hashes the ORIGINAL on-screen
+    text — the browser computes the id from what it displays and cannot know
+    about this. So the audio can be cleaned without touching the hash contract
+    in site/js/speech-id.js, and no clip id changes.
+    """
+    # HTML entities first. The generator escapes text for the page, and the
+    # escaped form reaches the TTS: 57 clips (43 reading, 14 mediation) carried
+    # 126 instances of &quot;, so a student heard the entity read out where a
+    # quotation mark should have been silent. Unescaping is safe here because
+    # this string is only ever spoken, never inserted into HTML.
+    out = html.unescape(text or "")
+    out = _IPA_SPAN.sub(" ", out)
+    out = _IPA_WORD.sub(" ", out)
+    out = _STRIP_CHARS.sub("", out)
+    for pat, rep in _TIDY:
+        out = pat.sub(rep, out)
+    out = out.strip(" ,;:")
+    # If stripping removed effectively everything, keep the original rather than
+    # render silence — a clip that says the wrong thing is still better than a
+    # clip that says nothing and looks like a broken file.
+    return out if len(out.split()) >= 1 else (text or "")
 
 
 def registry():
@@ -185,10 +245,23 @@ def main():
     ap.add_argument("--bucket", default=os.environ.get("AUDIO_BUCKET", "empire-audio"))
     ap.add_argument("--plan", action="store_true", help="show the split only")
     ap.add_argument("--limit", type=int, help="render at most N clips (throughput probe)")
+    ap.add_argument("--ids", nargs="*",
+                    help="re-render exactly these clip ids, ignoring what is "
+                         "already in the bucket. For fixing specific clips "
+                         "without a full --regenerate pass.")
     args = ap.parse_args()
 
     reg = registry()
     groups, load = shard_of(reg, args.shards)
+
+    if args.ids:
+        todo = [c for c in args.ids if c in reg]
+        missing = [c for c in args.ids if c not in reg]
+        if missing:
+            print(f"  ::warning::{len(missing)} id(s) are not in the registry, "
+                  f"skipped: {missing[:5]}")
+        print(f"  targeted re-render of {len(todo)} clip(s)")
+        return _render(todo, reg, args)
 
     if args.plan:
         print(f"  {'shard':>6}{'clips':>8}{'words':>9}{'est min audio':>15}")
@@ -213,6 +286,17 @@ def main():
         print("  nothing to do")
         return 0
 
+    return _render(todo, reg, args, have=have)
+
+
+def _render(todo, reg, args, have=None):
+    """Synthesise and upload `todo`. Shared by the sharded path and --ids."""
+    have = have if have is not None else set()
+    if not todo:
+        print("  nothing to do")
+        return 0
+    s3 = r2_client()
+
     import numpy as np  # noqa: F401  (kokoro returns numpy arrays)
     import soundfile as sf
     from kokoro_onnx import Kokoro
@@ -226,7 +310,8 @@ def main():
         m = reg[cid]
         try:
             samples, sr = kokoro.create(
-                m["text"], voice=m["voice"], speed=RENDER_SPEED, lang="en-us")
+                speakable(m["text"]), voice=m["voice"],
+                speed=RENDER_SPEED, lang="en-us")
             p = out_dir / f"{cid}.mp3"
             sf.write(str(p), samples, sr)
             s3.put_object(Bucket=args.bucket, Key=f"{R2_PREFIX}/{cid}.mp3",
@@ -252,7 +337,7 @@ def main():
                   f"({audio_sec/el if el else 0:.2f}x realtime)")
 
     Path(f"shard-{args.shard}.json").write_text(json.dumps(
-        sorted(set(have) | {c for c in todo[:done]}), indent=0))
+        sorted(set(have) | set(todo[:done])), indent=0))
     print(f"  shard {args.shard}: rendered {done}, failed {failed}")
     return 1 if failed else 0
 

@@ -27,6 +27,9 @@ on:
       limit:
         description: "Render at most N clips per shard (throughput probe)"
         default: ""
+      ids:
+        description: "Space-separated clip ids to re-render in place (overwrites; ignores what is already in the bucket)"
+        default: ""
       manifest_only:
         description: "Skip rendering; just rebuild scripts/speech-rendered.json from the bucket"
         type: boolean
@@ -109,11 +112,21 @@ jobs:
 
       - name: Render shard ${{ matrix.shard }}
         run: |
-          python3 scripts/render_speech.py \
-            --model-dir ./kokoro \
-            --shard ${{ matrix.shard }} \
-            --shards ${{ inputs.shards }} \
-            ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }}
+          if [ -n "${{ inputs.ids }}" ]; then
+            # Targeted, in-place re-render. Only shard 0 does it, so the same
+            # clip is not rendered by twelve jobs at once.
+            if [ "${{ matrix.shard }}" != "0" ]; then
+              echo "targeted id render runs on shard 0 only — nothing to do"; exit 0
+            fi
+            python3 scripts/render_speech.py --model-dir ./kokoro \
+              --ids ${{ inputs.ids }}
+          else
+            python3 scripts/render_speech.py \
+              --model-dir ./kokoro \
+              --shard ${{ matrix.shard }} \
+              --shards ${{ inputs.shards }} \
+              ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }}
+          fi
 
       - uses: actions/upload-artifact@v4
         with:

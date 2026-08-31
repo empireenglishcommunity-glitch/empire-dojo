@@ -201,3 +201,21 @@ jobs:
       - name: Every spoken utterance must have a rendered clip
         if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
         run: python3 scripts/speech_registry.py --check
+
+      # ---------------------------------------------------------------
+      #  7. What Kokoro is told to SAY.
+      #
+      #  speakable() strips notation that belongs on screen and not in the ear
+      #  — the accent drills print IPA beside the spelling, and Kokoro read the
+      #  characters, so a clip said "measure slash edge slash major".
+      #
+      #  The risk is entirely on the other side. An early version of its
+      #  word-dropping pattern included the plain letters "e" and "a", which
+      #  turned "She is a student." into "is". Nothing downstream could catch
+      #  that: the clip id comes from the ORIGINAL text, so the id stays valid,
+      #  the file exists, is non-zero and has a plausible duration. It would
+      #  just have said the wrong thing.
+      # ---------------------------------------------------------------
+      - name: Spoken-text sanitiser must strip notation and nothing else
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
+        run: python3 scripts/verify_speakable.py

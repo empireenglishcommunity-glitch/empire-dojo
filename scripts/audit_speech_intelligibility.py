@@ -49,12 +49,46 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 CACHE = Path(os.environ.get("SPEECH_AUDIT_CACHE", "_speech_audit_cache"))
 
 
+# Differences that are ASR ORTHOGRAPHY, not audio faults. Every one of these
+# was a false positive in a real run, and each buries the defects worth seeing.
+# Numbers: "four hundred" is transcribed "400"; nothing is wrong with the audio.
+_NUM = {
+    "zero": "0", "one": "1", "two": "2", "three": "3", "four": "4", "five": "5",
+    "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10",
+    "eleven": "11", "twelve": "12", "thirteen": "13", "fourteen": "14",
+    "fifteen": "15", "sixteen": "16", "seventeen": "17", "eighteen": "18",
+    "nineteen": "19", "twenty": "20", "thirty": "30", "forty": "40",
+    "fifty": "50", "sixty": "60", "seventy": "70", "eighty": "80",
+    "ninety": "90", "hundred": "100", "thousand": "1000",
+    "first": "1st", "second": "2nd", "third": "3rd", "fourth": "4th",
+    "fifth": "5th", "ninth": "9th", "eleventh": "11th", "twelfth": "12th",
+}
+# Spelling variants an ASR picks freely. Not pronunciation differences.
+_SPELL = {
+    "rigour": "rigor", "colour": "color", "behaviour": "behavior",
+    "favour": "favor", "labour": "labor", "honour": "honor",
+    "programme": "program", "practise": "practice", "sara": "sarah",
+    "ok": "okay", "borne": "born", "prose": "pros",
+}
+
+
 def normalise_for_compare(s: str) -> str:
-    """Compare words only. ASR punctuation and casing are not the point, and
-    holding it to them would bury real defects under noise."""
+    """Compare only what was actually SPOKEN.
+
+    Casing, punctuation, apostrophes, digits-vs-words and spelling variants are
+    all things an ASR chooses for itself and a speaker never utters. Holding the
+    audio to them produced a 20.7% "mismatch" rate in the first run, almost all
+    of it noise: "Achilles' heel" vs "Achilles heel", "to" vs "too", "Aswan"
+    heard as "a swan", "rigour" vs "rigor". Real defects — a spurious syllable
+    at the start of a clip — were sitting in that list, indistinguishable.
+    """
     s = s.lower().replace("’", "'")
     s = re.sub(r"[^a-z0-9' ]", " ", s)
-    return " ".join(s.split())
+    s = s.replace("'", "")            # possessives/contractions are not spoken
+    out = []
+    for w in s.split():
+        out.append(_SPELL.get(w, _NUM.get(w, w)))
+    return " ".join(out)
 
 
 def fetch(cid: str) -> Path:

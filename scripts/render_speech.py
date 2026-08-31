@@ -24,14 +24,37 @@ Clips are therefore assigned to shards by descending word count, longest
 first into whichever shard is currently lightest, which balances total WORDS
 per shard — the thing that actually costs time.
 
-PACE: NORMALISED PER VOICE, NOT LEFT AT speed=1.0
--------------------------------------------------
-Kokoro voices differ by 1.84x at speed=1.0 (af_nicole 130 wpm, af_sky 230).
-Left uncorrected, the same sentence would be read at wildly different speeds
-depending only on which voice the cast assigned to that surface, and af_nicole
-pages would feel broken. Every clip is therefore rendered at
-    speed = SPEECH_TARGET_WPM / VOICE_WPM[voice]
-so all voices deliver at a comparable rate.
+PACE: RENDERED AT speed=1.0, AND SLOWED AT PLAYBACK INSTEAD
+-----------------------------------------------------------
+This originally normalised per voice — speed = SPEECH_TARGET_WPM / VOICE_WPM —
+so that Kokoro's 1.84x spread between voices did not make the same sentence fast
+on one surface and slow on another. That was a mistake, and a student caught it:
+Mai reported that "She is a student." on a1/week1/day1/grammar sounded noisy and
+almost mispronounced.
+
+She was right. SLOWING KOKORO DOWN CORRUPTS PHONEMES. Rendering that sentence as
+am_michael at speed 0.829 produces a spurious leading syllable — an independent
+ASR transcribes the clip as "as she is a student". At speed 1.0 the same voice
+and text transcribe cleanly. Measured across 7 voices x 8 short sentences:
+
+    normalised speed (0.70-1.23)    16/56 wrong   (29%)
+    speed 1.0                        0/56 wrong   ( 0%)
+
+af_sky at 0.696 was worst at 6/8. af_nicole at 1.231 — the only voice being
+sped UP — was clean, which is what identifies slowing as the cause rather than
+any departure from 1.0.
+
+Nothing else caught this. The waveforms were clean: no clipping, sane peaks,
+plausible durations, correct clip ids, and verify_audio_pace only measures the
+level-scoped broadcast clips. Every existing check passed on audio that says the
+wrong words, because no check listened. scripts/audit_speech_intelligibility.py
+now exists for exactly that.
+
+The rate difference this reintroduces does not need fixing here: each surface
+has ONE voice, so delivery is consistent within a page, and the resolver already
+applies the per-call-site slowdown with audio.playbackRate (0.7 for vocabulary,
+0.6 for dictation), which browsers pitch-correct and which does not touch
+phonemes. Slowing at PLAYBACK is safe; slowing at SYNTHESIS is not.
 
 The per-call-site SLOWDOWN is deliberately NOT baked in. Call sites ask for
 slower delivery for learners — TTS.speak(word.word, 0.7) for vocabulary,
@@ -46,8 +69,10 @@ Usage:
     render_speech.py --plan --shards 12        # show the split, render nothing
 """
 import argparse
+import html
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -66,12 +91,93 @@ from voice_cast import load_cast, validate_cast  # noqa: E402
 # in audio_pace.py), so one neutral target is right here.
 SPEECH_TARGET_WPM = 160.0
 FALLBACK_VOICE_WPM = 210.0
-R2_PREFIX = "speech"
+
+# Every clip is rendered at exactly this. See the module docstring: any value
+# below 1.0 corrupts phonemes in Kokoro, which is what shipped a clip saying
+# "as she is a student".
+RENDER_SPEED = 1.0
+
+# THE PREFIX IS VERSIONED, and must be bumped whenever the AUDIO for an
+# unchanged text changes.
+#
+# A clip id is sha256(voice|text) — it says nothing about the audio bytes. So
+# re-rendering produces different audio at an identical URL, and these objects
+# are uploaded with `max-age=31536000, immutable`, plus the service worker
+# caches anything ending .mp3 cache-first and never revalidates. Overwriting in
+# place would therefore leave existing students on the old, faulty audio for up
+# to a year while the bucket looked correct.
+#
+# v2: rendered at speed 1.0 after per-voice slowing was found to corrupt
+#     phonemes (29% of sampled clips mis-spoken).
+# v1: initial render, per-voice speed normalisation — DEFECTIVE, superseded.
+R2_PREFIX = "speech/v2"
 
 
 def speed_for_voice(voice):
+    """Kept only so the old normalisation is still inspectable and testable.
+
+    NOT used for rendering any more — see RENDER_SPEED and the module docstring.
+    """
     base = VOICE_WPM.get(voice, FALLBACK_VOICE_WPM)
     return max(SPEED_MIN, min(SPEED_MAX, SPEECH_TARGET_WPM / base))
+
+
+# Notation that belongs on the SCREEN and not in the ear. The accent drills show
+# IPA next to the spelling so a student can see the sound; Kokoro reads the
+# characters, so the clip said "measure slash edge slash major" instead of
+# "measure, major". 63 clips were affected, all on the accent surface — which is
+# the pronunciation model students are asked to imitate, so it is the worst
+# possible place for it.
+# Spans may contain spaces — /prəˈvaɪdɪd ðət/ is one unit — so this must not
+# stop at whitespace, or the slashes survive and the IPA inside gets mangled
+# into "/prvadd t/" instead of removed.
+_IPA_SPAN = re.compile(r"/[^/]{1,48}/")
+# NON-ASCII ONLY, and asserted below. An earlier version of this set was written
+# by transcribing IPA diphthongs by hand and picked up the plain letters "e" and
+# "a", so _IPA_WORD matched almost every English word and "She is a student."
+# rendered as "is". Any ASCII letter in here silently deletes real speech.
+_IPA_CHARS = "ʒʃθðŋæəɪʊɔɑːˈˌɡʧʤʔɜɐʌ"
+assert all(ord(c) > 127 for c in _IPA_CHARS), \
+    "_IPA_CHARS must contain no ASCII: it would delete ordinary words"
+# A whole WORD is dropped if it contains IPA, rather than having the IPA letters
+# deleted from it: stripping characters turned "wəz" into "wz" and "thən" into
+# "thn", which Kokoro then dutifully tries to pronounce.
+_IPA_WORD = re.compile(r"\S*[" + _IPA_CHARS + r"]\S*")
+_STRIP_CHARS = re.compile(
+    r"[\U0001F300-\U0001FAFF\u2600-\u27BF\u2190-\u21FF]")   # emoji, arrows
+_TIDY = [
+    (re.compile(r"\(\s*\)"), " "),          # brackets emptied by the above
+    (re.compile(r"\s*,\s*,+"), ","),        # commas left adjacent
+    (re.compile(r"^[\s,;:.]+"), ""),        # leading punctuation
+    (re.compile(r"\s+([,.;:?!])"), r"\1"),  # space before punctuation
+    (re.compile(r"\s{2,}"), " "),
+]
+
+
+def speakable(text: str) -> str:
+    """What Kokoro should SAY for this text.
+
+    Deliberately separate from the clip id, which hashes the ORIGINAL on-screen
+    text — the browser computes the id from what it displays and cannot know
+    about this. So the audio can be cleaned without touching the hash contract
+    in site/js/speech-id.js, and no clip id changes.
+    """
+    # HTML entities first. The generator escapes text for the page, and the
+    # escaped form reaches the TTS: 57 clips (43 reading, 14 mediation) carried
+    # 126 instances of &quot;, so a student heard the entity read out where a
+    # quotation mark should have been silent. Unescaping is safe here because
+    # this string is only ever spoken, never inserted into HTML.
+    out = html.unescape(text or "")
+    out = _IPA_SPAN.sub(" ", out)
+    out = _IPA_WORD.sub(" ", out)
+    out = _STRIP_CHARS.sub("", out)
+    for pat, rep in _TIDY:
+        out = pat.sub(rep, out)
+    out = out.strip(" ,;:")
+    # If stripping removed effectively everything, keep the original rather than
+    # render silence — a clip that says the wrong thing is still better than a
+    # clip that says nothing and looks like a broken file.
+    return out if len(out.split()) >= 1 else (text or "")
 
 
 def registry():
@@ -139,10 +245,23 @@ def main():
     ap.add_argument("--bucket", default=os.environ.get("AUDIO_BUCKET", "empire-audio"))
     ap.add_argument("--plan", action="store_true", help="show the split only")
     ap.add_argument("--limit", type=int, help="render at most N clips (throughput probe)")
+    ap.add_argument("--ids", nargs="*",
+                    help="re-render exactly these clip ids, ignoring what is "
+                         "already in the bucket. For fixing specific clips "
+                         "without a full --regenerate pass.")
     args = ap.parse_args()
 
     reg = registry()
     groups, load = shard_of(reg, args.shards)
+
+    if args.ids:
+        todo = [c for c in args.ids if c in reg]
+        missing = [c for c in args.ids if c not in reg]
+        if missing:
+            print(f"  ::warning::{len(missing)} id(s) are not in the registry, "
+                  f"skipped: {missing[:5]}")
+        print(f"  targeted re-render of {len(todo)} clip(s)")
+        return _render(todo, reg, args)
 
     if args.plan:
         print(f"  {'shard':>6}{'clips':>8}{'words':>9}{'est min audio':>15}")
@@ -167,6 +286,17 @@ def main():
         print("  nothing to do")
         return 0
 
+    return _render(todo, reg, args, have=have)
+
+
+def _render(todo, reg, args, have=None):
+    """Synthesise and upload `todo`. Shared by the sharded path and --ids."""
+    have = have if have is not None else set()
+    if not todo:
+        print("  nothing to do")
+        return 0
+    s3 = r2_client()
+
     import numpy as np  # noqa: F401  (kokoro returns numpy arrays)
     import soundfile as sf
     from kokoro_onnx import Kokoro
@@ -180,8 +310,8 @@ def main():
         m = reg[cid]
         try:
             samples, sr = kokoro.create(
-                m["text"], voice=m["voice"],
-                speed=round(speed_for_voice(m["voice"]), 4), lang="en-us")
+                speakable(m["text"]), voice=m["voice"],
+                speed=RENDER_SPEED, lang="en-us")
             p = out_dir / f"{cid}.mp3"
             sf.write(str(p), samples, sr)
             s3.put_object(Bucket=args.bucket, Key=f"{R2_PREFIX}/{cid}.mp3",
@@ -207,7 +337,7 @@ def main():
                   f"({audio_sec/el if el else 0:.2f}x realtime)")
 
     Path(f"shard-{args.shard}.json").write_text(json.dumps(
-        sorted(set(have) | {c for c in todo[:done]}), indent=0))
+        sorted(set(have) | set(todo[:done])), indent=0))
     print(f"  shard {args.shard}: rendered {done}, failed {failed}")
     return 1 if failed else 0
 

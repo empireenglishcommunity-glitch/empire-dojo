@@ -98,17 +98,17 @@
    *  so the duplication cannot drift silently.
    * ------------------------------------------------------------------ */
   const CAST = {
-    index: 'af_sky',
+    index: 'af_aoede',
     accent: 'am_adam',
     shadowing: 'af_heart',
     vocab: 'af_bella',
     reading: 'af_sarah',
-    grammar: 'am_michael',
+    grammar: 'am_eric',
     mediation: 'am_adam',
-    review: 'af_nicole'
+    review: 'af_kore'
   };
   const LISTENING_ROTATION =
-    ['am_michael', 'af_sarah', 'af_nicole', 'am_adam', 'af_heart'];
+    ['am_eric', 'af_sarah', 'af_kore', 'am_adam', 'af_heart'];
   const DEFAULT_VOICE = 'af_heart';
 
   function surfaceOf(pathname) {

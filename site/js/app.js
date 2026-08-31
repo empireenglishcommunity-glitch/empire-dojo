@@ -18,7 +18,14 @@ const TTS = {
    * Cloudflare Pages caps a free-plan deployment at 20,000 files and site/ is
    * already at 8,056, so the 9,360 speech clips are served from R2.
    */
-  BASE: 'https://audio.empireenglish.online/speech',
+  // The /vN/ segment must match R2_PREFIX in scripts/render_speech.py. It is
+  // bumped whenever the AUDIO changes for text that has not changed: a clip id
+  // hashes voice+text, not the bytes, so a re-render lands on the same URL —
+  // and these objects are served `immutable` for a year AND cached cache-first
+  // by the service worker. Without a new path, students would keep the old
+  // audio. v2 fixes clips whose phonemes were corrupted by rendering below
+  // speed 1.0.
+  BASE: 'https://audio.empireenglish.online/speech/v2',
 
   init() {
     // Nothing to load. The old implementation hunted for an en-US
@@ -740,27 +747,53 @@ const Gamification = {
   },
 
   /**
+   * Where am I? Returns {level, week, day, type} or null.
+   *
+   * ONE parser, because three copies of this had already rotted. Each of
+   * _restoreDoneCheckbox, _renderProgressBar and _checkDailyCompletion carried
+   * its own `/\/(l\d)\/week(\d+)\/day(\d)/` — the LEGACY L0-L3 level scheme.
+   * The site moved to CEFR levels (a1..c2) and those levels were archived, so
+   * that pattern has matched NOTHING since: all three functions have been
+   * silently returning early on every page of the site.
+   *
+   * darb.js was updated for CEFR at the time and app.js was not, which is why
+   * marking an exercise done still worked while restoring it never did. A
+   * student reported the symptom: she completed the grammar exercise, left,
+   * came back, and it showed as not done. It had been saved correctly all
+   * along — nothing read it back.
+   *
+   * The exercise list matches darb.js: all ten surfaces, not the four this
+   * used to know about.
+   */
+  _locate() {
+    const EX = ['accent', 'shadowing', 'listening', 'vocab', 'speaking',
+                'grammar', 'reading', 'mediation', 'review', 'broadcast'];
+    const path = window.location.pathname;
+    const m = path.match(/\/(l\d|[abc][12])\/week(\d+)\/day(\d+)/);
+    if (!m) return null;
+    const type = EX.find(t => path.endsWith('/' + t) || path.endsWith('/' + t + '.html'));
+    return { level: m[1], week: parseInt(m[2]), day: parseInt(m[3]),
+             type: type || null, exercises: EX };
+  },
+
+  /**
    * Fix D017: the "Done" checkbox's checked state was never restored on
    * page load -- Progress.markDone() writes to localStorage, but nothing
    * ever read it back to set the checkbox's `.checked` property, so
    * navigating away and back always showed an unchecked box even though
-   * the exercise really was recorded as done. Detect level/week/day/type
-   * from the URL (same regex + exercise-type detection used elsewhere in
-   * this file) and sync the checkbox to the stored state.
+   * the exercise really was recorded as done.
+   *
+   * That fix was correct and then quietly stopped working: see _locate().
+   * DarbDone.init() only renders "✅ Completed today" when it finds the box
+   * already checked, so with this dead the completed state was invisible on
+   * every return visit.
    */
   _restoreDoneCheckbox() {
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d)/);
-    if (!match) return;
-    const [, level, week, day] = match;
-
-    const types = ['accent', 'shadowing', 'listening', 'vocab'];
-    const path = window.location.pathname;
-    const type = types.find(t => path.endsWith('/' + t) || path.endsWith('/' + t + '.html'));
-    if (!type) return;
-
+    const at = this._locate();
+    if (!at || !at.type) return;
     const checkbox = document.querySelector('.done-section .checkbox');
     if (!checkbox) return;
-    checkbox.checked = Progress.isDone(level, parseInt(week), parseInt(day), type);
+    checkbox.checked = Progress.isDone(at.level, at.week, at.day, at.type);
   },
 
   _getToday() {
@@ -795,38 +828,41 @@ const Gamification = {
     }
   },
 
+  // The bar counts the FIVE exercises in the bottom nav. It used to count four
+  // and divide by four while the nav already showed five, so 'speaking' could
+  // never be reflected. The remaining surfaces (grammar, reading, mediation,
+  // review, broadcast) are reached from the day menu and are deliberately not
+  // part of the daily bar — widening it would change what "day complete" means.
+  DAILY_EXERCISES: ['accent', 'shadowing', 'listening', 'vocab', 'speaking'],
+
   _renderProgressBar() {
     const bar = document.getElementById('daily-progress');
     if (!bar) return;
+    const at = this._locate();
+    if (!at) return;
 
-    // Detect current level/week/day from URL
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d)/);
-    if (!match) return;
-
-    const [, level, week, day] = match;
-    const types = ['accent', 'shadowing', 'listening', 'vocab'];
+    const types = this.DAILY_EXERCISES;
     let done = 0;
-    types.forEach(t => { if (Progress.isDone(level, parseInt(week), parseInt(day), t)) done++; });
+    types.forEach(t => { if (Progress.isDone(at.level, at.week, at.day, t)) done++; });
 
-    const pct = (done / 4) * 100;
+    const pct = (done / types.length) * 100;
     bar.innerHTML = `<div class="progress-fill" style="width:${pct}%"></div>`;
-    bar.title = `${done}/4 exercises done today`;
+    bar.title = `${done}/${types.length} exercises done today`;
 
     // Update tasks counter
     const counter = document.getElementById('tasks-done');
-    if (counter) counter.textContent = `✅ ${done}/4`;
+    if (counter) counter.textContent = `✅ ${done}/${types.length}`;
   },
 
   _checkDailyCompletion() {
-    const match = window.location.pathname.match(/\/(l\d)\/week(\d+)\/day(\d)/);
-    if (!match) return;
+    const at = this._locate();
+    if (!at) return;
 
-    const [, level, week, day] = match;
-    const types = ['accent', 'shadowing', 'listening', 'vocab'];
-    const allDone = types.every(t => Progress.isDone(level, parseInt(week), parseInt(day), t));
+    const types = this.DAILY_EXERCISES;
+    const allDone = types.every(t => Progress.isDone(at.level, at.week, at.day, t));
 
     if (allDone) {
-      const confettiKey = `empire_confetti_${level}_w${week}_d${day}`;
+      const confettiKey = `empire_confetti_${at.level}_w${at.week}_d${at.day}`;
       if (!localStorage.getItem(confettiKey)) {
         localStorage.setItem(confettiKey, '1');
         this._showConfetti();
@@ -877,6 +913,15 @@ const SwipeNav = {
 
     document.addEventListener('touchstart', (e) => this._onTouchStart(e), { passive: true });
     document.addEventListener('touchend', (e) => this._onTouchEnd(e), { passive: true });
+
+    // Reveal the "← Swipe to navigate →" hint ONLY now that the listeners are
+    // actually attached. The generator prints that hint on every exercise page,
+    // but this function returns early on any page outside `pages` — so grammar,
+    // reading, mediation, review and broadcast were advertising a gesture that
+    // did nothing, which is what a student reported. The CSS now requires
+    // .swipe-ready, so the hint and the behaviour cannot drift apart again.
+    document.querySelectorAll('.swipe-hint')
+      .forEach((el) => el.classList.add('swipe-ready'));
   },
 
   _onTouchStart(e) {

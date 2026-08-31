@@ -978,7 +978,13 @@ body::before {
   .nav.page-nav { display: none; }
 
   /* Show swipe hint on mobile */
-  .swipe-hint { display: block; }
+  /* Only shown once SwipeNav has actually bound its listeners — it adds
+     .swipe-ready. Every exercise page printed this hint, but SwipeNav only
+     activates on the five pages in the bottom nav, so grammar, reading,
+     mediation, review and broadcast advertised a gesture that did nothing.
+     A student reported exactly that. Gating on the class means the hint can
+     never again promise something the JS is not doing. */
+  .swipe-hint.swipe-ready { display: block; }
 
   /* Bottom fixed navigation bar (S1.3) */
   .bottom-nav {

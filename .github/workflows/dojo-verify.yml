@@ -16,6 +16,14 @@ on:
       - "site/**"
       - "functions/**"
       - ".github/workflows/dojo-verify.yml"
+  # Manual trigger, because audio-render.yml commits rendered MP3s with
+  # "[skip ci]" — deliberately, since a 6937-page regeneration is not worth
+  # running for every shard of a long render. The side effect is that after a
+  # render the branch tip has never been verified and there is no way to ask
+  # for it: re-running an old run just re-runs the old commit. That is how a
+  # freshly rendered clip could reach main unchecked. Now it can be demanded
+  # on any ref.
+  workflow_dispatch:
 
 jobs:
   verify:

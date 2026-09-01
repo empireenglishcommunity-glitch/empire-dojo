@@ -107,8 +107,19 @@
     mediation: 'am_adam',
     review: 'af_kore'
   };
+  // Chosen on ISOLATED-WORD accuracy, not sentence accuracy — the listening
+  // surface is 86.8% single words (3,153 of 3,633 clips), and the two rankings
+  // disagree sharply. Measured 2026-09-01 over 87 real words from the site,
+  // transcribed with faster-whisper: am_adam 97.7%, af_heart 95.4%,
+  // af_bella 94.3%, af_nicole 94.3%, am_fenrir 88.5%.
+  //
+  // am_eric was removed: 66.7%, worst of the twelve shortlisted, 31 points below
+  // am_adam. It was serving the page a student reported as unclear, and on her
+  // own three words it produced 'pound'->"Boundy", 'cheap'->"Jeeba", 'cut'->"God".
+  // It stays the grammar voice, which is all sentences and where it is strong.
+  // Full data and reasoning: scripts/voice_cast.json.
   const LISTENING_ROTATION =
-    ['am_eric', 'af_sarah', 'af_kore', 'am_adam', 'af_heart'];
+    ['am_adam', 'af_heart', 'af_bella', 'af_nicole', 'am_fenrir'];
   const DEFAULT_VOICE = 'af_heart';
 
   function surfaceOf(pathname) {

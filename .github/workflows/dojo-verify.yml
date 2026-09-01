@@ -231,6 +231,20 @@ jobs:
       #
       # These do NOT depend on the regen step — they only read site/js/, which the
       # generator does not produce — so they run even if regeneration fails.
+      # Practice-word lists deliberately show a correct model beside a WRONG form
+      # marked ❌. On the page that is the teaching; spoken aloud it inverts, because
+      # ❌ sits in the emoji range speakable() strips — so the error was voiced with
+      # no cue that it was an error. Most such items also encode wrong STRESS via
+      # capitalisation, which TTS cannot render at all. The screen keeps the
+      # contrast; the ear only ever hears correct English.
+      #
+      # This asserts BOTH directions: nothing unspeakable is spoken, AND the pages
+      # still DISPLAY the ❌ contrast — otherwise deleting the teaching material
+      # would also make it pass.
+      - name: Audio must speak only correct English (screen keeps the contrast)
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
+        run: python3 scripts/verify_spoken_is_correct_english.py
+
       - name: Site must not invent a streak or a "today" (static)
         if: ${{ !cancelled() }}
         run: python3 scripts/verify_no_invented_streak.py

@@ -1,0 +1,160 @@
+{
+ "am_adam": {
+  "exact": 62,
+  "n": 64,
+  "misses": [
+   "rained->reigned.",
+   "source->Zores."
+  ]
+ },
+ "am_fenrir": {
+  "exact": 57,
+  "n": 64,
+  "misses": [
+   "fish->Thank you.",
+   "advise->Advice.",
+   "aside->the side.",
+   "month->Manze.",
+   "logical->Logic Real",
+   "rained->Reigned.",
+   "source->ZORZ"
+  ]
+ },
+ "am_michael": {
+  "exact": 61,
+  "n": 64,
+  "misses": [
+   "fish->VEXIO",
+   "you->You go.",
+   "source->Zores."
+  ]
+ },
+ "am_eric": {
+  "exact": 42,
+  "n": 64,
+  "misses": [
+   "evoke->N'vogue.",
+   "seamless->Zimla.",
+   "doubt->Don't.",
+   "situated->Ziduated.",
+   "fish->We'll be right back.",
+   "abroad->the broad.",
+   "advise->We advise.",
+   "polite->Belite.",
+   "film->VILM",
+   "premise->Bremers.",
+   "packed->Bacta",
+   "aside->Was I",
+   "sooner->Zunar",
+   "announced->who announced.",
+   "after->Laughter.",
+   "unpack->Lynn Pack.",
+   "patient->Bayesian",
+   "you->New",
+   "source->Zores.",
+   "scarcely->It's Garry's Lee.",
+   "school->It's cool.",
+   "or->More?"
+  ]
+ },
+ "af_heart": {
+  "exact": 62,
+  "n": 64,
+  "misses": [
+   "fish->Vesh",
+   "logical->L\u00c1GICA"
+  ]
+ },
+ "af_bella": {
+  "exact": 61,
+  "n": 64,
+  "misses": [
+   "fish->Wish.",
+   "logical->Logic.",
+   "rained->Reigned."
+  ]
+ },
+ "af_nova": {
+  "exact": 57,
+  "n": 64,
+  "misses": [
+   "evoke->Avoke!",
+   "fish->Bye.",
+   "advise->Advice",
+   "you->Yo!",
+   "district->Distract.",
+   "rained->Reigned",
+   "source->North."
+  ]
+ },
+ "af_nicole": {
+  "exact": 62,
+  "n": 64,
+  "misses": [
+   "rained->Reigned.",
+   "or->Lord."
+  ]
+ },
+ "af_alloy": {
+  "exact": 52,
+  "n": 64,
+  "misses": [
+   "waste->Waste them.",
+   "seamless->Simeless.",
+   "fish->FESTIONAL",
+   "busy->Buzzie!",
+   "packed->Pact.",
+   "concision->Concern",
+   "you->You are",
+   "district->Distract.",
+   "rained->Reigned.",
+   "source->Zores!",
+   "visited->Where's our dad?",
+   "or->Lord."
+  ]
+ },
+ "af_kore": {
+  "exact": 55,
+  "n": 64,
+  "misses": [
+   "evoke->Vogue.",
+   "advise->Advice.",
+   "polite->Belyte.",
+   "avoid->Void.",
+   "premise->Bremis.",
+   "month->Monzy.",
+   "arise->Rise.",
+   "rained->Reigned.",
+   "source->Zores."
+  ]
+ },
+ "af_sarah": {
+  "exact": 57,
+  "n": 64,
+  "misses": [
+   "fish->wish",
+   "widely->Widelys",
+   "after->AFTERS",
+   "logical->Logica.",
+   "orderly->Orderlies.",
+   "source->Zores.",
+   "waiting->Waitings!"
+  ]
+ },
+ "af_aoede": {
+  "exact": 54,
+  "n": 64,
+  "misses": [
+   "evoke->VOGUE",
+   "fish->Thank you.",
+   "polite->light.",
+   "premise->Bremis",
+   "packed->pack",
+   "aside->The side.",
+   "logical->Logico.",
+   "arise->Rise.",
+   "source->Zors.",
+   "or->worry"
+  ]
+ }
+}

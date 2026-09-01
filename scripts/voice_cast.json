@@ -127,7 +127,9 @@
       "af_jessica": 65.2,
       "af_river": 60.9,
       "am_onyx": 52.2
-    }
+    },
+    "_RENDERER_CAVEAT_READ_THIS": "⚠️ The 87-word benchmark was rendered through the VPS Kokoro HTTP server (kokoro-fastapi, localhost:8880). PRODUCTION clips are rendered by a DIFFERENT implementation — kokoro_onnx inside the speech-render workflow (render_speech.py imports it directly). Same model, different code path, and measurably different output: for am_adam saying 'cheap' the two differ in loudness (rms 0.110 vs 0.073) and duration (0.53s vs 0.55s), and the production clip transcribes worse. So the percentages below rank voices RELATIVE to each other on a renderer students never hear. They were spot-checked against 29 real production clips from R2 across the new rotation: 90% overall (af_bella 6/6, af_nicole 6/6, af_heart 5/6, am_adam 5/6, am_fenrir 4/5), which is consistent with the ranking and is why the change was kept. But do NOT quote the individual percentages as production numbers, and re-run any future benchmark through kokoro_onnx so it measures the renderer that actually ships.",
+    "_remaining_misses_are_mostly_homophones": "The production misses were 'buy'->'Bye', 'bought'->'But', 'whereas'->'wearers'. Those are ASR limits on isolated monosyllables, not necessarily audible defects — 'buy' and 'bye' are homophones, so no transcriber can separate them without context. Treat a single-word ASR miss as a prompt to listen, never as proof the clip is bad."
   },
   "_changes_2026_09_01": {
     "listening_rotation": "am_eric, af_sarah and af_kore OUT; af_bella, af_nicole and am_fenrir IN. Mean single-word accuracy 86.4% -> 94.0%. am_eric was the worst of all 12 shortlisted voices on isolated words at 66.7% — 31 points below am_adam — and it was serving the reported page. On the student's own three words it produced 'pound'->'Boundy', 'cheap'->'Jeeba', 'cut'->'God'.",

@@ -26,6 +26,25 @@ WHAT IT MEASURES
   wpm        speaking rate at speed 1.0, for reference only. Everything is
              rendered at 1.0 because slowing Kokoro corrupts phonemes.
 
+⚠️ TWO LIMITS OF THIS SCRIPT, both found the hard way on 2026-09-01.
+
+1. IT MEASURES SENTENCES ONLY. SENTENCES below is prose and four-word sentences,
+   and the comment there says as much. But 59.4% of the site's 9,360 spoken clips
+   are 1-2 WORDS, and the listening surface is 86.8% single words. A voice can be
+   strong on prose and poor on isolated words: am_michael ranks 6th of 9 on
+   sentences yet 93.1% on words, while am_eric is 3rd on sentences and LAST on
+   words (66.7%). Choosing a listening voice from this script's output picked the
+   worst available voice for that surface, and a student reported it.
+   Pass a word list when the surface is words.
+
+2. IT MUST RENDER THROUGH THE PRODUCTION PATH. render_speech.py imports
+   `kokoro_onnx` directly; the VPS also runs a kokoro-fastapi HTTP server on
+   8880. They are the same model behind different code and their output differs
+   measurably (for one clip: rms 0.110 vs 0.073, duration 0.53s vs 0.55s, and a
+   different ASR result). Benchmarking through the HTTP server ranks voices on
+   audio no student ever hears. Use --model-dir with kokoro_onnx, as this script
+   already does, and never substitute the server for convenience.
+
 ASR is a proxy, not a verdict on beauty. It answers "can the words be recovered
 from this voice", which is the part that matters for a listener learning the
 language, and it does so consistently across voices.

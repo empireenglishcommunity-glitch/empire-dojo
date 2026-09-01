@@ -5,8 +5,30 @@
   "_how_these_were_chosen": "MEASURED, not picked from adjectives. scripts/benchmark_voices.py renders the same 10 sentences (A1 grammar patterns plus longer prose) with all 9 American male and 11 American female Kokoro voices at speed 1.0, transcribes each with an ASR, and reports word-for-word recovery, word error rate and mean ASR confidence. Confidence is the discriminator: every strong voice reaches 100% exact, but they differ in how clearly they get there. The previous cast was assembled from the descriptions in generate_audio.py, which is how the least clear voice in the whole set ended up teaching grammar.",
   "_measured_2026_08_31": {
     "_note": "conf = mean ASR avg_logprob, closer to 0 is clearer. All voices below reached 100% exact recovery unless stated.",
-    "male": {"am_adam": -0.28, "am_fenrir": -0.29, "am_eric": -0.30, "am_puck": -0.32, "am_liam": -0.33, "am_michael": -0.36, "am_onyx": -0.37, "am_echo": "-0.33 (90% exact)", "am_santa": "-0.35 (90% exact)"},
-    "female": {"af_kore": -0.30, "af_heart": -0.31, "af_aoede": -0.31, "af_bella": -0.31, "af_sarah": -0.32, "af_jessica": -0.33, "af_sky": -0.35, "af_alloy": -0.36, "af_river": -0.36, "af_nicole": -0.38, "af_nova": "-0.37 (90% exact)"}
+    "male": {
+      "am_adam": -0.28,
+      "am_fenrir": -0.29,
+      "am_eric": -0.3,
+      "am_puck": -0.32,
+      "am_liam": -0.33,
+      "am_michael": -0.36,
+      "am_onyx": -0.37,
+      "am_echo": "-0.33 (90% exact)",
+      "am_santa": "-0.35 (90% exact)"
+    },
+    "female": {
+      "af_kore": -0.3,
+      "af_heart": -0.31,
+      "af_aoede": -0.31,
+      "af_bella": -0.31,
+      "af_sarah": -0.32,
+      "af_jessica": -0.33,
+      "af_sky": -0.35,
+      "af_alloy": -0.36,
+      "af_river": -0.36,
+      "af_nicole": -0.38,
+      "af_nova": "-0.37 (90% exact)"
+    }
   },
   "_changes_2026_08_31": {
     "grammar": "am_michael (-0.36, 6th of 9 males) -> am_eric (-0.30, 3rd). This is the voice the student complained about. am_fenrir scored marginally better (-0.29) but speaks at 223 wpm against am_eric's 201, and a grammar explanation for A1 learners should not be the fastest voice in the set. am_adam was not reused here because it already speaks accent and mediation, and the owner asked for a mix of people.",
@@ -21,25 +43,99 @@
     "af_aoede": "US female, bright, welcoming",
     "af_sarah": "US female, bright, energetic",
     "am_adam": "US male, professional, neutral — best measured voice overall",
-    "am_eric": "US male, even and articulate",
-    "af_nicole": "US female, calm, mature — RETIRED from the cast, least clear measured",
+    "am_eric": "US male, even and articulate — grammar voice. Strong on SENTENCES (-0.30, 3rd of 9 males) but 66.7% on ISOLATED WORDS, the worst of the 12 shortlisted, so it was removed from the listening rotation on 2026-09-01. Fine for sentence surfaces; never use it for single-word drills.",
+    "af_nicole": "US female, calm, mature — 94.3% on ISOLATED WORDS (joint 3rd of 12), and RETURNED to the listening rotation 2026-09-01. It was retired 2026-08-31 for a 130 wpm pace problem and a poor SENTENCE score; neither applies to one-word clips, and verify_audio_pace.py only gates kind=='broadcast'. Do NOT use it for long-form broadcast audio.",
     "af_sky": "US female, young, friendly — retired from the cast",
-    "am_michael": "US male, warm, conversational — RETIRED from the cast, reported unclear by a student and measured 6th of 9"
+    "am_michael": "US male, warm, conversational — 93.1% on isolated words, but STILL RETIRED. Rejected by ear by a student on the grammar surface, where it also measures 6th of 9 on sentences. Kept out deliberately: a proxy metric does not overrule a student report.",
+    "am_fenrir": "US male, brisk and articulate — 88.5% on isolated words; second male in the listening rotation from 2026-09-01"
   },
-  "_forbidden_voices": ["bf_emma", "bf_isabella", "bm_george", "bm_lewis"],
+  "_forbidden_voices": [
+    "bf_emma",
+    "bf_isabella",
+    "bm_george",
+    "bm_lewis"
+  ],
   "cast": {
-    "index":     { "voice": "af_aoede",   "role": "Host — opens each day, friendly and welcoming" },
-    "accent":    { "voice": "am_adam",    "role": "Pronunciation model — the clearest measured voice in the whole set, and the one students imitate" },
-    "shadowing": { "voice": "af_heart",   "role": "Main narrator — the passage students shadow" },
-    "vocab":     { "voice": "af_bella",   "role": "Vocabulary coach — crisp, clear single words" },
-    "reading":   { "voice": "af_sarah",   "role": "Storyteller — narrates reading passages with energy" },
-    "grammar":   { "voice": "am_eric",    "role": "Grammar teacher — even and articulate, at a moderate pace for A1 learners" },
-    "mediation": { "voice": "am_adam",    "role": "Explainer — relays and simplifies (reuses the clear neutral male)" },
-    "review":    { "voice": "af_kore",    "role": "Reviewer — calm weekly recap, clearest measured female" }
+    "index": {
+      "voice": "af_aoede",
+      "role": "Host — opens each day, friendly and welcoming"
+    },
+    "accent": {
+      "voice": "am_adam",
+      "role": "Pronunciation model — the clearest measured voice in the whole set, and the one students imitate"
+    },
+    "shadowing": {
+      "voice": "af_heart",
+      "role": "Main narrator — the passage students shadow"
+    },
+    "vocab": {
+      "voice": "af_bella",
+      "role": "Vocabulary coach — crisp, clear single words"
+    },
+    "reading": {
+      "voice": "af_sarah",
+      "role": "Storyteller — narrates reading passages with energy"
+    },
+    "grammar": {
+      "voice": "am_eric",
+      "role": "Grammar teacher — even and articulate, at a moderate pace for A1 learners"
+    },
+    "mediation": {
+      "voice": "am_adam",
+      "role": "Explainer — relays and simplifies (reuses the clear neutral male)"
+    },
+    "review": {
+      "voice": "af_kore",
+      "role": "Reviewer — calm weekly recap, clearest measured female"
+    }
   },
   "listening_rotation": {
-    "_note": "Listening comprehension needs DIFFERENT PEOPLE, not one voice. Listening items rotate deterministically across this set (by page) so a student practises understanding several American speakers, male and female. Every voice here is in the clearest measured tier.",
-    "voices": ["am_eric", "af_sarah", "af_kore", "am_adam", "af_heart"]
+    "_note": "Listening comprehension needs DIFFERENT PEOPLE, not one voice, so items rotate deterministically across this set (by page). 2 male, 3 female. Every voice here scores >=88.5% on ISOLATED WORDS (see _measured_single_words_2026_09_01), which is what this surface actually is — 86.8% of its 3,633 clips are a single word. Chosen on word accuracy, NOT sentence accuracy: those rankings disagree sharply and this surface is words.",
+    "voices": [
+      "am_adam",
+      "af_heart",
+      "af_bella",
+      "af_nicole",
+      "am_fenrir"
+    ]
   },
-  "default": "af_heart"
+  "default": "af_heart",
+  "_measured_single_words_2026_09_01": {
+    "_why": "The 2026-08-31 cast was chosen on SENTENCES — benchmark_voices.py's own comment says 'plus longer prose so a voice cannot win by only doing well on four-word sentences'. Nothing ever measured ISOLATED WORDS, and 59.4% of the site's 9,360 spoken clips are 1-2 words. The listening surface is 86.8% single words. A student reported the a1/week7/day2 listening audio as unclear; that page is three single words served by the rotation.",
+    "_method": "Rendered REAL single words taken from the site (not invented ones) at speed 1.0 on the production Kokoro, transcribed with faster-whisper 'small', scored on exact word recovery. Two disjoint samples: 23 words across 20 voices, then 64 different words across the 12 shortlisted. 87 words total per voice. Percentages are exact-recovery on those 87.",
+    "_caveat": "ASR on an isolated word is a weak absolute signal — there is no context to recover from. It is a fair RELATIVE comparison because every voice got identical inputs, and the top-to-bottom spread (97.7% vs 66.7%) is far larger than the sample noise. It is not a verdict on which voice sounds pleasant.",
+    "exact_recovery_pct_87_words": {
+      "am_adam": 97.7,
+      "af_heart": 95.4,
+      "af_bella": 94.3,
+      "af_nicole": 94.3,
+      "am_michael": 93.1,
+      "af_nova": 89.7,
+      "am_fenrir": 88.5,
+      "af_kore": 86.2,
+      "af_sarah": 86.2,
+      "af_alloy": 82.8,
+      "af_aoede": 82.8,
+      "am_eric": 66.7
+    },
+    "_round1_only_20_voices_23_words": {
+      "am_puck": 82.6,
+      "am_liam": 78.3,
+      "am_echo": 73.9,
+      "am_santa": 69.6,
+      "af_sky": 69.6,
+      "af_jessica": 65.2,
+      "af_river": 60.9,
+      "am_onyx": 52.2
+    },
+    "_RENDERER_CAVEAT_READ_THIS": "⚠️ The 87-word benchmark was rendered through the VPS Kokoro HTTP server (kokoro-fastapi, localhost:8880). PRODUCTION clips are rendered by a DIFFERENT implementation — kokoro_onnx inside the speech-render workflow (render_speech.py imports it directly). Same model, different code path, and measurably different output: for am_adam saying 'cheap' the two differ in loudness (rms 0.110 vs 0.073) and duration (0.53s vs 0.55s), and the production clip transcribes worse. So the percentages below rank voices RELATIVE to each other on a renderer students never hear. They were spot-checked against 29 real production clips from R2 across the new rotation: 90% overall (af_bella 6/6, af_nicole 6/6, af_heart 5/6, am_adam 5/6, am_fenrir 4/5), which is consistent with the ranking and is why the change was kept. But do NOT quote the individual percentages as production numbers, and re-run any future benchmark through kokoro_onnx so it measures the renderer that actually ships.",
+    "_remaining_misses_are_mostly_homophones": "The production misses were 'buy'->'Bye', 'bought'->'But', 'whereas'->'wearers'. Those are ASR limits on isolated monosyllables, not necessarily audible defects — 'buy' and 'bye' are homophones, so no transcriber can separate them without context. Treat a single-word ASR miss as a prompt to listen, never as proof the clip is bad."
+  },
+  "_changes_2026_09_01": {
+    "listening_rotation": "am_eric, af_sarah and af_kore OUT; af_bella, af_nicole and am_fenrir IN. Mean single-word accuracy 86.4% -> 94.0%. am_eric was the worst of all 12 shortlisted voices on isolated words at 66.7% — 31 points below am_adam — and it was serving the reported page. On the student's own three words it produced 'pound'->'Boundy', 'cheap'->'Jeeba', 'cut'->'God'.",
+    "_why_af_nicole_returns": "It was retired on 2026-08-31 for being a 130 wpm PACE outlier that made a C1 broadcast clip unreachable, and for scoring worst on SENTENCES. Neither applies here: verify_audio_pace.py only reads clips with kind=='broadcast', so a slow voice cannot fail pace on a speech clip, and there is no wpm target on a one-word utterance. On isolated words af_nicole is 94.3% — joint third of twelve.",
+    "_why_am_michael_does_NOT_return": "It measures 93.1% on single words, better than four current cast voices, so the numbers would justify it. Deliberately not restored: the same student rejected it by ear on the grammar surface. Overruling a student report with a proxy metric is how you lose the student's trust. am_fenrir (88.5%) takes the second male slot instead.",
+    "_why_grammar_KEEPS_am_eric": "am_eric is 66.7% on isolated words but the grammar surface has ZERO single-word clips — it is all sentences, where am_eric measures -0.30, third best of nine males. It is not a bad voice; it is a voice that is bad at words in isolation. Judging it by the wrong metric would be the same mistake in reverse.",
+    "_why_review_is_UNCHANGED": "review is 79% single words on af_kore at 86.2%, which is mediocre. Left alone on purpose: the gain to a fresh voice is ~3.5 points, inside the noise of an 87-word sample, and it would mean re-rendering 321 clips for a difference that cannot be distinguished from measurement error."
+  }
 }

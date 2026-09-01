@@ -1,0 +1,236 @@
+{
+ "am_adam": {
+  "exact": 23,
+  "n": 23,
+  "conf": -0.693549083367638,
+  "misses": []
+ },
+ "am_fenrir": {
+  "exact": 20,
+  "n": 23,
+  "conf": -0.6837377512553711,
+  "misses": [
+   "cheap->Jeep.",
+   "assist->exist.",
+   "used->Use them."
+  ]
+ },
+ "am_eric": {
+  "exact": 16,
+  "n": 23,
+  "conf": -0.652816925949068,
+  "misses": [
+   "pound->Boundy",
+   "cheap->Jeeba.",
+   "cut->God",
+   "influence->the influence.",
+   "assist->What is this?",
+   "connotative->quantitative.",
+   "Adapt->We'll adapt."
+  ]
+ },
+ "am_puck": {
+  "exact": 19,
+  "n": 23,
+  "conf": -0.7153043647298655,
+  "misses": [
+   "cheap->jeep",
+   "assist->resist",
+   "used->use that.",
+   "Adapt->Adopt."
+  ]
+ },
+ "am_liam": {
+  "exact": 18,
+  "n": 23,
+  "conf": -0.6810483207305272,
+  "misses": [
+   "cheap->It's here.",
+   "irritating->zero-tating.",
+   "cut->God",
+   "assist->Oh, that's this.",
+   "made->married"
+  ]
+ },
+ "am_michael": {
+  "exact": 20,
+  "n": 23,
+  "conf": -0.684208858451241,
+  "misses": [
+   "cheap->Jeep.",
+   "cut->God.",
+   "assist->Azist."
+  ]
+ },
+ "am_onyx": {
+  "exact": 12,
+  "n": 23,
+  "conf": -0.7287303553759188,
+  "misses": [
+   "cheap->I'll see you in the next video.  Bye.",
+   "irritating->We're rotating.",
+   "cut->cotton.",
+   "nuanced->Nuance",
+   "wet->What?",
+   "provision->Proversion.",
+   "influence->in flow-ins.",
+   "assist->What's next?",
+   "used->Yo, stop.",
+   "made->Madeleine.",
+   "Adapt->with that."
+  ]
+ },
+ "am_echo": {
+  "exact": 17,
+  "n": 23,
+  "conf": -0.719308382676872,
+  "misses": [
+   "cheap->G-Ball.",
+   "irritating->by rotating.",
+   "cut->Come.",
+   "assist->Well, that's this.",
+   "made->Maid.",
+   "Adapt->will adapt."
+  ]
+ },
+ "am_santa": {
+  "exact": 16,
+  "n": 23,
+  "conf": -0.7187081588690573,
+  "misses": [
+   "cheap->Jeebo",
+   "irritating->Irrotating!",
+   "wet->What?",
+   "birthday->BOOTH DAY!",
+   "assist->A Visp!",
+   "made->Maid!",
+   "Adapt->O'Debt!"
+  ]
+ },
+ "af_kore": {
+  "exact": 20,
+  "n": 23,
+  "conf": -0.7044675141850614,
+  "misses": [
+   "cheap->Jeep.",
+   "cut->gut",
+   "assist->exist."
+  ]
+ },
+ "af_heart": {
+  "exact": 21,
+  "n": 23,
+  "conf": -0.7218454358247002,
+  "misses": [
+   "cheap->Sheep.",
+   "assist->Exist."
+  ]
+ },
+ "af_aoede": {
+  "exact": 18,
+  "n": 23,
+  "conf": -0.7348371338060677,
+  "misses": [
+   "cheap->Jeeb.",
+   "cut->Kite.",
+   "assist->Resist.",
+   "made->Maid.",
+   "connotative->Conitative"
+  ]
+ },
+ "af_bella": {
+  "exact": 21,
+  "n": 23,
+  "conf": -0.7370733599114863,
+  "misses": [
+   "cheap->Seep.",
+   "already->All ready."
+  ]
+ },
+ "af_sarah": {
+  "exact": 18,
+  "n": 23,
+  "conf": -0.6886323831990886,
+  "misses": [
+   "dollar->dollars",
+   "cheap->Jeep.",
+   "bargain->Bargains",
+   "made->Maid.",
+   "already->ALREADYS"
+  ]
+ },
+ "af_jessica": {
+  "exact": 15,
+  "n": 23,
+  "conf": -0.7241397385703358,
+  "misses": [
+   "cheap->The table.",
+   "cut->Good.",
+   "wet->WED",
+   "provision->A provision.",
+   "assist->of this",
+   "used->are used.",
+   "made->Madeleine.",
+   "Adapt->Adopt."
+  ]
+ },
+ "af_sky": {
+  "exact": 16,
+  "n": 23,
+  "conf": -0.7162918665486834,
+  "misses": [
+   "dollar->It's dollar.",
+   "cheap->And cheap.",
+   "irritating->guirotating",
+   "assist->I SIST.",
+   "used->are used.",
+   "made->It's made.",
+   "Adapt->and adapt."
+  ]
+ },
+ "af_alloy": {
+  "exact": 20,
+  "n": 23,
+  "conf": -0.6906936368926219,
+  "misses": [
+   "cheap->See ya, Bob.",
+   "assist->as this.",
+   "made->Maid."
+  ]
+ },
+ "af_river": {
+  "exact": 14,
+  "n": 23,
+  "conf": -0.6641748856641625,
+  "misses": [
+   "pound->Pound it.",
+   "dollar->dollar it",
+   "cheap->Jeeba",
+   "cut->Call it a day.",
+   "wet->What?",
+   "assist->I'll see you guys next time.",
+   "made->MADEL",
+   "connotative->Conitative.",
+   "Adapt->Adopt."
+  ]
+ },
+ "af_nicole": {
+  "exact": 20,
+  "n": 23,
+  "conf": -0.6821932199455443,
+  "misses": [
+   "cheap->Cheaper",
+   "assist->assessed.",
+   "Adapt->Adopt."
+  ]
+ },
+ "af_nova": {
+  "exact": 21,
+  "n": 23,
+  "conf": -0.6691158164547096,
+  "misses": [
+   "cheap->jeep",
+   "assist->I'll list."
+  ]
+ }
+}

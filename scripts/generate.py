@@ -73,6 +73,73 @@ def esc(s):
     return str(s).replace("\\", "\\\\").replace("'", "\\'").replace('"', "&quot;").replace("\n", " ")
 
 
+# ── What the ear is allowed to hear ─────────────────────────────────────────
+#
+# Practice-word lists deliberately mix a correct model with a WRONG form marked
+# ❌, plus notation showing bad delivery. On the page that is good teaching: the
+# student sees both and the ❌ says which to avoid.
+#
+# Spoken aloud it inverts. `❌` is U+274C, inside the emoji range render_speech's
+# speakable() already strips, so the marker is removed and THE ERROR IS SPOKEN
+# WITH NO CUE THAT IT IS AN ERROR — right and wrong arrive identically labelled.
+# A synthesiser has no way to say "this next one is wrong."
+#
+# Worse, most error items encode wrong STRESS through capitalisation, which TTS
+# cannot render at all. Measured with Kokoro (am_adam): `BIGG-ist` 22,316 bytes,
+# `bigg-EST` 20,396, plain `biggest` 13,868 — both hyphenated forms ~50% LONGER
+# than the real word, because the hyphen becomes a pause. Neither demonstrates
+# stress; they just sound chopped. So the ❌ clip could not teach its own point
+# even in principle.
+#
+# Rule: the SCREEN teaches the contrast, the EAR only ever hears correct English.
+# Audited 2026-08-31 across 630 accent pages — 53 buttons, 108 items, 0 buttons
+# left with nothing to say.
+#
+# Deliberately NOT attempted: "repairing" a ✅ stress respelling by removing its
+# hyphen. `BIGG-ist` -> "biggest" happens to work, but `HOTT-ist` -> "hottist"
+# is not a word and Kokoro would guess at it. Dropping errors is safe; rewriting
+# correct content to sound better is a different decision and not this one.
+_SPOKEN_ERROR_MARK = "\u274c"          # ❌
+_SPOKEN_MIDDLE_DOT = "\u00b7"          # · — used to show separated delivery
+_SPOKEN_META_LABEL = re.compile(
+    r"\((?:separated|chunk|compressed|linked|blended|reduced)\)", re.I)
+#
+# There is deliberately NO "hyphen-split syllables" rule. The obvious one,
+# `\b\w+-\w+-\w+` for `pro-vi-ded`, also matches ordinary English compounds —
+# it fired on `tongue-in-cheek` and `state-of-the-art` in 31 real payloads, and
+# would have silently deleted them from the audio. Checked across the whole site:
+# every genuine syllable-split demo ALSO carries a `(separated)` label or a
+# middle dot, so the rule was redundant as well as harmful. This is the same
+# shape as the IPA character set that once included plain "e" and "a" and
+# reduced "She is a student." to "is": an over-broad rule deletes real speech
+# and looks like it is working.
+
+
+def _not_speakable(item):
+    """Why this practice item must not be spoken, or None if it is fine."""
+    s = (item or "").strip()
+    if _SPOKEN_ERROR_MARK in s:
+        return "error form"
+    if _SPOKEN_META_LABEL.search(s):
+        # e.g. "/prəˈvaɪdɪd ðət/ (chunk)" — speakable() strips the IPA and leaves
+        # only "(chunk)", so the student hears the label and none of the content.
+        return "meta-label"
+    if _SPOKEN_MIDDLE_DOT in s:
+        return "separated delivery"
+    return None
+
+
+def spoken_words(words):
+    """The subset of a practice-word list that should be SPOKEN.
+
+    Display keeps the full list — callers must pass the unfiltered list to the
+    visible markup and this result only to TTS.speak(). Returns [] if nothing
+    survives, and the caller then omits the button rather than shipping one that
+    speaks silence.
+    """
+    return [w for w in (words or []) if _not_speakable(w) is None]
+
+
 def esc_html(s):
     """Escape a string for safe inclusion as HTML body/attribute text.
 
@@ -334,9 +401,19 @@ def gen_accent(level, week, day, focus, norm, phoneme_focus=None):
     words_card = ""
     if norm["words"]:
         words = norm["words"][:8]
+        # DISPLAY: the full authored list, including the ❌ contrasts — that is the
+        # teaching. SPEECH: correct forms only (see spoken_words above). The two
+        # deliberately differ, and the button is omitted entirely rather than
+        # rendered mute if nothing survives filtering.
         words_html = " &bull; ".join(f"<b>{esc_html(w)}</b>" for w in words)
+        say = spoken_words(words)
+        hear_btn = ""
+        if say:
+            hear_btn = (f'<button class="btn btn-outline btn-sm" '
+                        f'onclick="TTS.speak(\'{esc(", ".join(say))}\', 0.6)">'
+                        f'🔊 {bl("Hear Words", "استمع للكلمات")}</button>')
         words_card = (f'<div class="card"><h2>🎯 {bl("Practice Words", "كلمات للتمرين")}</h2><div class="transcript">{words_html}</div>'
-                      f'<button class="btn btn-outline btn-sm" onclick="TTS.speak(\'{esc(", ".join(words))}\', 0.6)">🔊 {bl("Hear Words", "استمع للكلمات")}</button></div>')
+                      f'{hear_btn}</div>')
 
     return f'''<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/png" href="/favicon.png"><title>Accent Week {week} Day {day} | Empire English</title>{pwa_head()}<link rel="stylesheet" href="/css/empire.css">{content_gate_css()}</head><body>

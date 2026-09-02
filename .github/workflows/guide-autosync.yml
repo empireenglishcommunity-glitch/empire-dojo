@@ -1,0 +1,91 @@
+name: guide autosync (manuals follow the live system)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Keeps the student (/guide) and owner (/ops-guide) manuals up to date with the
+# live system WITH NO HUMAN ACTION (owner decision — fully hands-off).
+#
+# What it does, on a schedule and on demand:
+#   1. Checks out empire-dojo (this repo) and empire-nexus (the curriculum +
+#      config + feature-flag source of truth).
+#   2. Runs scripts/guide_sync.py, which re-derives the facts (level table, week
+#      counts, vocab counts, the whole feature-flag catalog, schedule) from
+#      empire-nexus and rewrites ONLY the fenced <!-- AUTO:key --> regions in the
+#      two guide pages. Editorial Arabic prose outside the markers is untouched.
+#   3. If anything changed, commits it straight to main and pushes.
+#
+# Because the two guide files live under site/, that push matches deploy-site.yml's
+# `paths: site/**` trigger, so the site redeploys automatically. End to end:
+# empire-nexus changes -> (next run) guides regenerate -> commit -> deploy. No PR,
+# no review — that is the explicit choice here. The commit still runs through
+# `empire-dojo verify` (no [skip ci]), so a change that somehow broke a page or a
+# drift check would still be caught by the normal gate on main.
+#
+# guide_sync only touches the AUTO regions and only when the DERIVED facts differ,
+# so a run with no upstream change is a clean no-op (no empty commit).
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  schedule:
+    # 03:40 UTC daily — after the nightly backup/maintenance window, and off the
+    # top of the hour to avoid the Actions scheduling stampede.
+    - cron: "40 3 * * *"
+  workflow_dispatch: {}   # let the owner trigger an immediate refresh
+
+# Never let two autosync runs push to main at once.
+concurrency:
+  group: guide-autosync
+  cancel-in-progress: false
+
+permissions:
+  contents: write         # needed to commit + push the refreshed guides
+
+jobs:
+  autosync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout empire-dojo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Checkout empire-nexus (curriculum / config / flags source)
+        uses: actions/checkout@v4
+        with:
+          repository: empireenglishcommunity-glitch/empire-nexus
+          path: empire-nexus
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # No pip installs: guide_facts.py is dependency-free (it stubs python-dotenv
+      # when absent), exactly so this job stays light and cannot fail on a missing
+      # bot dependency.
+
+      - name: Refresh the guide manuals from the live system
+        run: |
+          EEC_REPO_DIR=${{ github.workspace }}/empire-nexus \
+            python3 scripts/guide_sync.py
+
+      - name: Commit + push if anything changed (auto-deploys via deploy-site.yml)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Stage the two guide pages explicitly — nothing else this job could
+          # ever touch should be committed.
+          git add site/guide/index.html site/ops-guide/index.html
+          if git diff --cached --quiet; then
+            echo "guides already up to date — nothing to publish."
+            exit 0
+          fi
+          echo "guides changed — publishing:"
+          git --no-pager diff --cached --stat
+          # No [skip ci]: the commit should still pass `empire-dojo verify`, and
+          # the push under site/** is what triggers the Cloudflare Pages deploy.
+          git commit -m "chore(guides): auto-sync manuals with the live system
+
+          Regenerated the AUTO regions of /guide and /ops-guide from the current
+          empire-nexus curriculum/config/flags. Automated, unreviewed by design
+          (owner opted for hands-off publishing); still gated by empire-dojo
+          verify and deployed by deploy-site."
+          git push origin main

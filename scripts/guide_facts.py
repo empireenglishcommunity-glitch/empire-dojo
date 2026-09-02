@@ -57,9 +57,29 @@ def _require_nexus():
             f"sibling of empire-dojo, or set EEC_REPO_DIR.")
 
 
+def _ensure_dotenv_stub():
+    """empire-nexus's config.py does `from dotenv import load_dotenv; load_dotenv()`
+    at import. The dojo CI environment installs only its own deps (not the bot's),
+    so python-dotenv is absent and importing config would ModuleNotFoundError —
+    which silently left the guides UNSYNCED in CI. load_dotenv() is a no-op here
+    (there is no .env to read), so provide a harmless stub when the real package
+    is missing. This keeps guide_facts dependency-free, like generate.py."""
+    if "dotenv" in sys.modules:
+        return
+    try:
+        import dotenv  # noqa: F401
+    except ImportError:
+        import types
+        stub = types.ModuleType("dotenv")
+        stub.load_dotenv = lambda *a, **k: False
+        sys.modules["dotenv"] = stub
+
+
 def _import_bot_module(name):
-    """Import a bot src module (config, flag_registry) without its package
-    side effects. These two import cleanly (no DB, no dotenv-at-import)."""
+    """Import a bot src module (config, flag_registry). config needs a dotenv
+    shim (see _ensure_dotenv_stub); flag_registry imports cleanly. Neither
+    touches the DB at import."""
+    _ensure_dotenv_stub()
     if str(BOT_SRC) not in sys.path:
         sys.path.insert(0, str(BOT_SRC))
     return __import__(name)

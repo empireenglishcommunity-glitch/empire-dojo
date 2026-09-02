@@ -83,7 +83,8 @@ RENDERED_MANIFEST = SCRIPT_DIR / "speech-rendered.json"
 
 sys.path.insert(0, str(SCRIPT_DIR))
 from audio_pace import SPEED_MAX, SPEED_MIN, VOICE_WPM  # noqa: E402
-from speech_registry import SITE, build_registry, scan  # noqa: E402
+from speech_registry import (SITE, add_assessment_pool,  # noqa: E402
+                             build_registry, scan)
 from voice_cast import load_cast, validate_cast  # noqa: E402
 # NOTE: audio_postprocess is imported lazily inside _render(), NOT here. It
 # pulls in numpy, and the --plan path (the workflow's "Show the split" step)
@@ -196,6 +197,10 @@ def registry():
     cast = load_cast()
     validate_cast(cast)
     found, _pages, _voices = scan(SITE, cast)
+    # The assessment/placement tests speak words that never appear in a static
+    # page (the server picks them at runtime), so scan() cannot see them. Add
+    # that pool explicitly or those clips 404 for students. See speech_registry.
+    add_assessment_pool(found, cast)
     return build_registry(found)
 
 

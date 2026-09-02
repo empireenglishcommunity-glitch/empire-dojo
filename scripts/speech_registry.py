@@ -39,6 +39,7 @@ import argparse
 import collections
 import hashlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -46,6 +47,14 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 SITE = SCRIPT_DIR.parent / "site"
 AUDIO = SITE / "audio"
+
+# The curriculum data lives in the empire-nexus checkout (same source generate.py
+# reads). The assessment and placement tests pull their listening words from
+# here at runtime, so every one of these words needs a rendered clip — see
+# add_assessment_pool().
+EEC_REPO_DIR = Path(os.environ.get("EEC_REPO_DIR",
+                                   SCRIPT_DIR.parent.parent / "empire-nexus"))
+CURRICULUM_DATA_DIR = (EEC_REPO_DIR / "bots" / "discord-learning-bot" / "data")
 # The committed record of which speech clips exist in the R2 bucket. Written by
 # .github/workflows/speech-render.yml from an actual bucket listing.
 RENDERED_MANIFEST = SCRIPT_DIR / "speech-rendered.json"
@@ -66,6 +75,23 @@ UNESCAPE = {"n": "\n", "t": "\t", "r": "\r", "\\": "\\", "'": "'", '"': '"',
 def normalise(text: str) -> str:
     """Must match the JS `_norm()` in app.js exactly."""
     return " ".join((text or "").split())
+
+
+def is_speakable(t: str) -> bool:
+    """Whether a normalised string is worth rendering a clip for.
+
+    Skips empties and single NON-WORD characters (stray punctuation, a lone
+    dash), which are junk. But a single-letter WORD is real speech and MUST be
+    kept: the earlier `len(t) < 2` guard silently dropped the vocabulary word
+    "I" (a1 week 1, أنا), so the assessment's TTS.speak("I") had no clip and
+    showed students the "Audio missing" banner. "I" and "a" are the English
+    single-letter words this needs to admit.
+    """
+    if not t:
+        return False
+    if len(t) == 1:
+        return t.isalpha()
+    return True
 
 
 def clip_id(voice: str, text: str) -> str:
@@ -160,7 +186,7 @@ def scan(site: Path, cast):
 
         def record(t, kind, surf):
             t = normalise(t)
-            if len(t) < 2:
+            if not is_speakable(t):
                 return
             e = found[(voice, t)]
             e["count"] += 1
@@ -184,6 +210,53 @@ def scan(site: Path, cast):
                     if isinstance(row, dict):
                         record(str(row.get(field, "")), "dynamic", dyn_surface)
     return found, pages, page_voices
+
+
+def add_assessment_pool(found, cast, data_dir=CURRICULUM_DATA_DIR):
+    """Inject the ASSESSMENT + PLACEMENT listening word pool into `found`.
+
+    Why this is needed: the assessment (/assessment/) and placement (/placement/)
+    pages build their listening dictation items from the SERVER at runtime —
+    TTS.speak(item.say_en) in assessment.js / placement/index.html — not from
+    static HTML. So scan(), which only reads the generated pages, never sees
+    those words, and any word the server serves without a rendered clip shows the
+    student the red "Audio missing for this page" banner (reported by a student
+    on an a-level listening item). The words themselves are the curriculum's
+    vocabulary `word`s and the authored `listening` say_en targets, which live in
+    empire-nexus/.../data/*.json — the same files generate.py reads.
+
+    Both pages fall to DEFAULT_VOICE (af_heart) because 'assessment'/'placement'
+    are not named surfaces, so every pooled word is registered in that voice,
+    matching what the browser will request. Registering them here guarantees the
+    render set (and the --check gate) covers every word the tests can say, for
+    every level, so this cannot silently regress.
+    """
+    voice = cast.get("default", "af_heart")
+    if not data_dir.exists():
+        print(f"::warning::assessment pool: {data_dir} not found — assessment "
+              f"listening clips will NOT be guaranteed. Set EEC_REPO_DIR.")
+        return found
+    added = 0
+    for f in sorted(data_dir.glob("*.json")):
+        try:
+            d = json.loads(f.read_text(encoding="utf-8"))
+        except (ValueError, OSError):
+            continue
+        # vocabulary words (assessment.py builds listening items from these) ...
+        pool = [v.get("word", "") for v in (d.get("vocabulary") or [])]
+        # ... plus the authored listening say_en targets (curated dictation).
+        for it in (d.get("listening") or []):
+            pool.append(it.get("say_en") or it.get("expected") or "")
+        for text in pool:
+            t = normalise(text)
+            if not is_speakable(t):
+                continue
+            e = found[(voice, t)]
+            e["surfaces"].add("assessment")
+            e["kind"].add("assessment")
+            e["count"] += 1
+            added += 1
+    return found
 
 
 def build_registry(found):
@@ -214,6 +287,10 @@ def main():
     cast = load_cast()
     validate_cast(cast)
     found, pages, page_voices = scan(site, cast)
+    # Include the assessment/placement listening pool so the gate fails if any
+    # word those runtime-driven tests can speak has no rendered clip — the exact
+    # gap that showed a student the "Audio missing for this page" banner.
+    add_assessment_pool(found, cast)
     reg = build_registry(found)
 
     # Where a rendered speech clip actually LIVES is R2, not site/audio/ —

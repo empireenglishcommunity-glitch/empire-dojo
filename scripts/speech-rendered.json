@@ -2,7 +2,7 @@
  "_what": "Speech clip ids present in the R2 bucket, rebuilt by listing the bucket. Committed so speech_registry.py --check can gate without R2 credentials.",
  "bucket": "empire-audio",
  "prefix": "speech/v4",
- "count": 5444,
+ "count": 5445,
  "clips": [
   "sp-000180b73eed349a",
   "sp-002cb9a3dfdc2021",
@@ -5262,6 +5262,7 @@
   "sp-f8406441884d5137",
   "sp-f84d78bf45cbbb70",
   "sp-f84da24686892d28",
+  "sp-f8536b06bee1b41d",
   "sp-f8587d0aa136472b",
   "sp-f8596e5385446291",
   "sp-f86e48a77711cd86",

@@ -217,9 +217,16 @@
       <div class="cmd"><div class="name"><code>!maintenance start [soft|hard] [min] [reason]</code> · <code>!maintenance end</code></div><div class="desc">وضع الصيانة: إيقاف/تحذير + إشعار الطلاب، ثم العودة + إعلان (أيام الصيانة لا تكسر السلاسل).</div></div>
       <div class="cmd"><div class="name"><code>!checkgate</code> · <code>!postgate</code></div><div class="desc">تدقيق بوابة القواعد (role-gate) · نشر رسالة الموافقة في <code>#rules</code>.</div></div>
 
-      <h3 style="color:var(--accent);margin:14px 0 6px">⌨️ أوامر Slash (منتقي الطالب بالاسم — تعمل في #admin-commands)</h3>
-      <div class="cmd"><div class="name"><code>/reset-student</code> · <code>/restore-student</code> · <code>/setlevel</code> · <code>/find</code></div><div class="desc">نفس الأوامر أعلاه لكن باختيار الطالب من قائمة (الـ <code>!</code> قد لا يعمل في القناة الخاصة).</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">⌨️ أوامر Slash (استخدم <code>/</code> للإدارة — تعمل في #admin-commands)</h3>
+      <div class="callout">
+        📌 <b>القاعدة للفريق:</b> استخدم <code>/</code> لأوامر الإدارة، واترك <code>!</code> للطلاب.
+        السبب: في قناة <code>#admin-commands</code> الخاصة، الكتابة بـ <code>@</code> لا تُظهر أسماء الطلاب (ديسكورد يخفيهم لأنهم لا يرون القناة)، لكن قوائم الـ Slash يوفّرها البوت نفسه فتظهر دائمًا.
+      </div>
+      <div class="cmd"><div class="name"><code>/onboard</code> — <b>تسجيل طالب جديد (الأمر الأساسي للفريق)</b></div><div class="desc">اكتب <code>/onboard</code> ← اختر العضو من القائمة ← اختر المستوى (A1–C2). يمنحه دور البوابة (يفتح القنوات) + دور المستوى + يسجّله + يضيفه لتنبيهات المجتمع، كل ذلك دفعة واحدة. تكراره يحدّث المستوى فقط.</div></div>
+      <div class="cmd"><div class="name"><code>/setlevel</code> · <code>/find</code> · <code>/reset-student</code> · <code>/restore-student</code></div><div class="desc">نفس أوامر <code>!</code> أعلاه، لكن باختيار الطالب من قائمة يوفّرها البوت.</div></div>
       <div class="cmd"><div class="name"><code>/nutq …</code> · <code>/itqan …</code></div><div class="desc">تحكّم تقييم النطق (<a href="#nutq">Nutq</a>) والاختبار الأسبوعي (<a href="#itqan">Itqan</a>).</div></div>
+      <div class="cmd"><div class="name"><code>/admin command:&lt;الأمر&gt; args:&lt;الباقي&gt;</code> — <b>أي أمر إدارة آخر</b></div><div class="desc">جسر واحد لكل أوامر الإدارة التي ليس لها أمر Slash خاص. اكتب <code>/admin</code> ← اختر الأمر من القائمة ← اكتب باقي المعطيات كما تكتبها بعد <code>!</code> تمامًا.<br>أمثلة: <code>/admin command:status</code> · <code>/admin command:flag args:enable manual_onboarding</code> · <code>/admin command:announce args:الحصة الليلة الساعة 8</code>.<br>الردّ يظهر لك وحدك (ephemeral)، ومخرجات الأمر تنزل في القناة كالمعتاد. يشتغل بنفس كود أمر <code>!</code> تحته تمامًا — نفس النتيجة بالضبط.</div></div>
+      <p style="color:var(--text-muted);font-size:0.85rem">ملاحظة: <code>!onboard @…</code> و<code>!</code> عمومًا ما زالت تعمل، لكن اختيار الطالب بـ <code>@</code> لا يظهر في القناة الخاصة — لذلك استخدم <code>/</code>. الطلاب لا يتأثرون: <code>!</code> تعمل لهم كما هي.</p>
     </div>
 
     <!-- Commands: telegram ops -->
@@ -292,6 +299,7 @@
       <div class="cmd"><div class="name"><code>vocab_cheat_sheet</code> <span class="flag-off">🟠</span></div><div class="desc">Weekly Vocabulary Cheat Sheet in #cheat-sheets (Sahin Phase 4)</div></div>
       <h3 style="color:var(--accent);margin:14px 0 6px">🏰 HISSAR — security / anti-cheat / copyright</h3>
       <div class="cmd"><div class="name"><code>hissar_role_gate</code> <span class="flag-on">🟢</span></div><div class="desc">Role-gate system: new members must accept rules before seeing channels (replaces removed Discord Rules Screening)</div></div>
+      <div class="cmd"><div class="name"><code>manual_onboarding</code> <span class="flag-on">🟢</span></div><div class="desc">Team-run onboarding: students do NOT self-onboard. The self-serve rules gate (✅-react and !agree) and the automated Nour journey are disabled; a team member fully sets up each student with !onboard @student &lt;level&gt;, which grants the gateway role (unlocks channels) + the CEFR level role in one step. Channel security (gateway role + overwrites) is UNCHANGED — only the self-grant paths are off.</div></div>
       <div class="cmd"><div class="name"><code>hissar_anti_cheat</code> <span class="flag-on">🟢</span></div><div class="desc">P4: increased cooldown (180s), persistent cooldown across restarts, progressive quiz delay</div></div>
       <div class="cmd"><div class="name"><code>hissar_ip_detection</code> <span class="flag-on">🟢</span></div><div class="desc">P5: log IPs per token, auto-flag on 5+ unique IPs, Telegram alert to owner</div></div>
       <div class="cmd"><div class="name"><code>hissar_bot_integrity</code> <span class="flag-off">🟠</span></div><div class="desc">Bot-profile tamper detection: alerts the owner if the Ops/Discord bot name, description or bio drifts from its baseline or contains spam (added after the 2026-08-29 Ops-token compromise)</div></div>
@@ -322,7 +330,7 @@
       <div class="cmd"><div class="name"><code>ijtihad_achievement_awards</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 3: achievement payouts — mastery 150 / distinction 250 / monthly review 300 / promotion 500. Before this, all four awarded ZERO while pure attendance paid 105-205/day, so the economy could not express 'this student improved'. Deduped: each achievement pays once, ever</div></div>
       <div class="cmd"><div class="name"><code>ijtihad_seasons</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 2: effort seasons — fixed community-wide 4-week windows. Season effort is DERIVED from points_log date windows (no migration, no new points column), so rank stops being a lifetime integral that rewards seniority over current work</div></div>
       <div class="cmd"><div class="name"><code>ijtihad_sijil</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 1: Sijil — the permanent Record of Honour (!sijil, !honour). Read-only view of durable achievements (weeks mastered, distinctions, levels passed, perfect days, best streak, legacy XP) so seasonal effort resets never erase what a student built</div></div>
-      <p style="color:var(--text-muted);font-size:0.85rem">الإجمالي: <b>61</b> عَلَمًا عبر <b>17</b> مبادرة.</p>
+      <p style="color:var(--text-muted);font-size:0.85rem">الإجمالي: <b>62</b> عَلَمًا عبر <b>17</b> مبادرة.</p>
       <!-- AUTO:flags-ops END -->
     </div>
 

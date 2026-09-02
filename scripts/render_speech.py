@@ -83,6 +83,7 @@ RENDERED_MANIFEST = SCRIPT_DIR / "speech-rendered.json"
 
 sys.path.insert(0, str(SCRIPT_DIR))
 from audio_pace import SPEED_MAX, SPEED_MIN, VOICE_WPM  # noqa: E402
+from audio_postprocess import postprocess  # noqa: E402
 from speech_registry import SITE, build_registry, scan  # noqa: E402
 from voice_cast import load_cast, validate_cast  # noqa: E402
 
@@ -107,10 +108,14 @@ RENDER_SPEED = 1.0
 # place would therefore leave existing students on the old, faulty audio for up
 # to a year while the bucket looked correct.
 #
+# v3: peak-normalised + silence-trimmed in audio_postprocess.py so the clips
+#     match kokoro-fastapi's loudness/clarity — the raw ONNX write shipped
+#     clips as quiet as -8.5 dBFS next to others near full scale, which is why
+#     they "read bad" against the same voice on the Kokoro site.
 # v2: rendered at speed 1.0 after per-voice slowing was found to corrupt
 #     phonemes (29% of sampled clips mis-spoken).
 # v1: initial render, per-voice speed normalisation — DEFECTIVE, superseded.
-R2_PREFIX = "speech/v2"
+R2_PREFIX = "speech/v3"
 
 
 def speed_for_voice(voice):
@@ -312,8 +317,11 @@ def _render(todo, reg, args, have=None):
             samples, sr = kokoro.create(
                 speakable(m["text"]), voice=m["voice"],
                 speed=RENDER_SPEED, lang="en-us")
+            # Match kokoro-fastapi: peak-normalise + trim silence so every clip
+            # ships at a consistent, full loudness. See audio_postprocess.py.
+            samples = postprocess(samples, sr)
             p = out_dir / f"{cid}.mp3"
-            sf.write(str(p), samples, sr)
+            sf.write(str(p), samples, sr, format="MP3")
             s3.put_object(Bucket=args.bucket, Key=f"{R2_PREFIX}/{cid}.mp3",
                           Body=p.read_bytes(), ContentType="audio/mpeg",
                           # Immutable: the id IS the hash of voice+text, so a

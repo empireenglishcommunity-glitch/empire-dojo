@@ -83,9 +83,12 @@ RENDERED_MANIFEST = SCRIPT_DIR / "speech-rendered.json"
 
 sys.path.insert(0, str(SCRIPT_DIR))
 from audio_pace import SPEED_MAX, SPEED_MIN, VOICE_WPM  # noqa: E402
-from audio_postprocess import postprocess  # noqa: E402
 from speech_registry import SITE, build_registry, scan  # noqa: E402
 from voice_cast import load_cast, validate_cast  # noqa: E402
+# NOTE: audio_postprocess is imported lazily inside _render(), NOT here. It
+# pulls in numpy, and the --plan path (the workflow's "Show the split" step)
+# runs on a runner that installs only boto3 — the same reason kokoro/soundfile
+# are imported inside _render() too. A top-level import breaks planning.
 
 # Normal conversational delivery. These are practice prompts, not the
 # level-scoped extended-listening clips (which keep their own per-level targets
@@ -305,6 +308,8 @@ def _render(todo, reg, args, have=None):
     import numpy as np  # noqa: F401  (kokoro returns numpy arrays)
     import soundfile as sf
     from kokoro_onnx import Kokoro
+
+    from audio_postprocess import postprocess  # lazy: needs numpy (see imports)
     md = Path(args.model_dir)
     kokoro = Kokoro(str(md / "kokoro-v1.0.onnx"), str(md / "voices-v1.0.bin"))
 

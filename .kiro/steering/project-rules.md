@@ -100,6 +100,68 @@ Verified fixed by actually running the command, not just editing text.)
 
 ---
 
+## 4.5. Audio: the single brand voice, pacing, and the render rule
+
+> Owner decision (2026-09-02): **`af_heart` is the ONE brand voice for the
+> entire platform** — every UI surface AND every extended-listening broadcast
+> passage. This replaced an earlier multi-voice cast and a rotating listening
+> set. Do NOT reintroduce other voices or a rotation without the owner's
+> explicit agreement. The decision and its rationale are recorded in
+> `scripts/voice_cast.json` under `_brand_voice_decision_2026_09_02`.
+
+**Two separate audio systems — know which you're touching:**
+
+- **UI speech clips** (vocab, grammar, listening, reading, shadowing, etc.):
+  served from **R2** at `audio.empireenglish.online/speech/<vN>/<clip-id>.mp3`.
+  Clip id = `sha256(voice|normalised text)[:16]`, so the id changes if the voice
+  OR the text changes. Rendered by `scripts/render_speech.py` via the
+  **`speech render (kokoro -> R2)`** GitHub workflow. The committed record of
+  what's on R2 is `scripts/speech-rendered.json`, which `speech_registry.py
+  --check` gates on. Current prefix: **`speech/v4`** (also in `site/js/app.js`
+  `BASE`).
+- **Broadcast (extended-listening) clips:** committed in-repo under
+  `site/audio/*.mp3`, served by Cloudflare Pages. Rendered by
+  `scripts/render_broadcast_local.py`. Cache-busted by the service worker
+  `CACHE_NAME` in `site/sw.js` (currently `empire-v9`).
+
+**The voice cast is DUPLICATED in two files and a parity test enforces they
+match:** `scripts/voice_cast.json` (Python) and `site/js/speech-id.js`
+(`CAST` + `LISTENING_ROTATION`, because the browser can't read the JSON).
+Change both together or `verify_clip_id_parity.py` fails the build.
+
+**Pace must NOT be achieved by slowing synthesis.** Kokoro corrupts phonemes
+below ~0.90 `speed` (ASR-confirmed: af_heart at 0.73 renders "She is a student."
+as "as she is a student."). af_heart's natural rate is ~212 wpm, so the lower
+CEFR levels — which the descriptors require to be *slow* — are handled by
+`audio_pace.split_pace()`: render at a phoneme-safe floor (≥ 0.90) and apply the
+rest of the slowdown at **playback** via `audio.playbackRate` (the browser
+pitch-corrects; phonemes are untouched). The per-clip `playback_rate` is stored
+in `audio-manifest.json` and emitted into the page. `verify_audio_pace.py`
+measures **effective** pace (rendered × playback_rate), not raw file duration.
+If you add a voice or change pacing, keep this split — do not render below 0.90.
+
+**⚠️ THE RENDER RULE — read before adding or editing curriculum audio:**
+The **assessment** (`/assessment/`) and **placement** (`/placement/`) tests build
+their listening dictation from the SERVER at runtime (`TTS.speak(item.say_en)`),
+NOT from static pages. So `speech_registry.scan()`, which only reads generated
+HTML, cannot see those words. `speech_registry.add_assessment_pool()` closes
+this by pulling the whole assessment/placement word pool (every vocabulary
+`word` + authored `say_en` in `empire-nexus/.../data/*.json`) into the render set
+and the `--check` gate.
+
+Consequence you MUST remember:
+- **Whenever curriculum vocabulary or listening content changes in empire-nexus
+  (new words, new weeks, edited text), RUN THE `speech render` WORKFLOW** so the
+  new/changed words get af_heart clips on R2. A word with no clip shows students
+  the red "Audio missing for this page" banner. `speech_registry.py --check` (in
+  CI) now flags any uncovered word, so a red gate here means "render, don't
+  override".
+- Single-letter WORDS ("I", "a") are legitimate and must be rendered — see
+  `is_speakable()`. This exact gap once left the a1 word **"I"** (أنا) with no
+  clip, reported by a student. Don't reinstate a blanket `len < 2` skip.
+
+---
+
 ## 5. Deploying (Cloudflare Pages)
 
 ```bash

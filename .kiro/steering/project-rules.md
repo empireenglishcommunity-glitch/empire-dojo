@@ -211,6 +211,21 @@ alone) and commit — the guides update themselves. If you add a NEW fact catego
 to a guide, add a renderer + AUTO markers rather than hand-typing it, so it can't
 drift later.
 
+**It also self-publishes on a schedule (you don't have to run anything).**
+`.github/workflows/guide-autosync.yml` runs **nightly (03:40 UTC)** and on demand
+(Actions → "guide autosync" → Run workflow). It checks out empire-nexus, runs
+`guide_sync.py`, and if a derived fact changed it **auto-commits to `main` and
+pushes** — which, because the guides live under `site/`, triggers `deploy-site`
+and ships the update. So an empire-nexus change reaches the live manuals with
+**zero human action**, usually within a day. Properties to know:
+- A run with no upstream change is a **clean no-op** (no empty commits).
+- The auto-commit carries **no `[skip ci]`**, so it still passes `empire-dojo
+  verify` (page + drift checks) before it deploys.
+- It **only** rewrites AUTO regions — never editorial prose.
+- This is deliberately **auto-publish with no human review** (owner's choice). To
+  switch to review-before-publish, change the commit step to push a branch and
+  open a PR instead of pushing `main` — everything else stays the same.
+
 ---
 
 ## 5. Deploying (Cloudflare Pages)

@@ -44,9 +44,9 @@ MANIFEST = SCRIPT_DIR / "audio-manifest.json"
 OUT = REPO_ROOT / "site" / "audio"
 
 sys.path.insert(0, str(SCRIPT_DIR))
-from audio_pace import (MIN_WORDS_FOR_PACE, SPEED_MAX,  # noqa: E402
-                        SPEED_MIN, VOICE_WPM, pace_report,
-                        speed_for_voice, target_wpm_for)
+from audio_pace import (MIN_WORDS_FOR_PACE, RENDER_SPEED_FLOOR,  # noqa: E402
+                        SPEED_MAX, SPEED_MIN, VOICE_WPM, pace_report,
+                        speed_for_voice, split_pace, target_wpm_for)
 from audio_postprocess import postprocess  # noqa: E402
 
 # Sentence-level chunking. Matches each sentence INCLUDING any closing quote,
@@ -90,49 +90,60 @@ def render(kokoro, text, voice, speed):
 
 
 def render_calibrated(kokoro, text, voice, level, tol, max_passes):
-    """Render, MEASURE the pace, and correct until the clip hits its level target.
+    """Render at a PHONEME-SAFE speed, calibrate the RENDERED pace, and return the
+    PLAYBACK RATE that brings effective delivery to the level target.
 
-    The per-voice rates in audio_pace.py are measured on one reference paragraph
-    read in a single call. Two effects make a real clip come out slower than
-    those rates predict:
+    Why this changed (2026-09-02, single-brand-voice): the old design put the
+    whole level slowdown on Kokoro's `speed`. That is safe only while the voice
+    is fast enough that the needed speed stays >= RENDER_SPEED_FLOOR. With one
+    brand voice (af_heart, 212 wpm) the low levels want speed 0.59-0.82, and
+    below ~0.90 Kokoro corrupts her phonemes ("She is a student." -> "as she is
+    a student.", ASR-confirmed). So the slowdown is SPLIT (see split_pace):
 
-      * chunked synthesis costs ~13% -- each chunk is spoken with sentence-final
-        prosody, so joining N chunks is longer than one N-length utterance;
-      * a voice's rate is not text-independent. bm_george reads a numeral-heavy
-        news bulletin about 11% slower than the reference prose.
+        render_speed  >= RENDER_SPEED_FLOOR   — synthesised, phoneme-safe
+        playback_rate <= 1.0                  — applied by the player, pitch-
+                                                corrected, does NOT touch phonemes
 
-    Open-loop, that left C1 at 172 wpm against a 195 target and individual clips
-    at 134 -- and for C1.R.1 / C2.R.1, whose entire content IS delivery speed,
-    slow is not a harmless miss. Rather than a global fudge factor (which cannot
-    fix per-clip variance, since some clips already overshoot), close the loop:
-    measure the rendered result and scale the speed by target/actual.
+    effective_wpm = rendered_wpm * playback_rate, and the pair is chosen so that
+    equals the level target. The calibration loop below therefore aims the
+    RENDER at target/playback (the pace the file itself must have), never at a
+    speed below the floor.
 
-    Converges in one correction for almost every clip. Returns the best attempt
-    even if tolerance was never met, so a stubborn clip degrades to "as close as
-    Kokoro can get" rather than failing the build.
+    The per-voice base rates in audio_pace.py are measured on one paragraph read
+    in a single call; two effects make a real chunked clip slower than that
+    (~13% for sentence-final prosody per chunk, plus text-dependence), so we
+    still close the loop on the measured rendered pace rather than trust the
+    open-loop speed. Returns the best attempt even if tolerance was never met.
     """
+    render_speed, playback = split_pace(level, voice)
     target = target_wpm_for(level)
-    speed, _ = speed_for_voice(level, voice)
+    # The file itself should read at this pace; after playback slowing it lands
+    # on `target`. When playback == 1.0 this is just `target`.
+    rendered_target = target / playback if playback else target
     words = len(text.split())
-    # Short turns are not measurable; render once, open-loop. See
-    # MIN_WORDS_FOR_PACE in audio_pace.py.
+    # Short turns are not measurable; render once, open-loop, at the safe speed.
     if words < MIN_WORDS_FOR_PACE:
-        samples, sr = render(kokoro, text, voice, speed)
-        return dict(err=0.0, samples=samples, sr=sr, speed=speed,
-                    wpm=words / ((len(samples) / sr) / 60), passes=1,
-                    measurable=False)
+        samples, sr = render(kokoro, text, voice, render_speed)
+        return dict(err=0.0, samples=samples, sr=sr, speed=render_speed,
+                    playback=playback, wpm=words / ((len(samples) / sr) / 60),
+                    passes=1, measurable=False)
     best = None
+    speed = render_speed
     for attempt in range(1, max_passes + 1):
         samples, sr = render(kokoro, text, voice, speed)
         wpm = words / ((len(samples) / sr) / 60)
-        err = abs(wpm - target) / target
+        err = abs(wpm - rendered_target) / rendered_target
         if best is None or err < best["err"]:
             best = dict(err=err, samples=samples, sr=sr, speed=speed,
-                        wpm=wpm, passes=attempt, measurable=True)
+                        playback=playback, wpm=wpm, passes=attempt,
+                        measurable=True)
         if err <= tol:
             break
-        nxt = max(SPEED_MIN, min(SPEED_MAX, speed * (target / wpm)))
-        if abs(nxt - speed) < 1e-4:      # clamped: no further correction possible
+        # Correct toward the rendered_target, but NEVER synthesise below the
+        # phoneme-safe floor — the remaining slowdown is already on playback.
+        nxt = max(RENDER_SPEED_FLOOR,
+                  min(SPEED_MAX, speed * (rendered_target / wpm)))
+        if abs(nxt - speed) < 1e-4:      # at the floor/clamp: no more correction
             break
         speed = nxt
     return best
@@ -188,6 +199,7 @@ def main():
     print(f"  model loaded in {time.time() - t0:.1f}s")
 
     ok, failed, audio_sec, extra_passes, off = 0, [], 0.0, 0, []
+    playback_rates = {}          # clip_id -> rate the player must apply
     t0 = time.time()
     for i, (clip_id, meta) in enumerate(sorted(todo.items()), 1):
         try:
@@ -207,11 +219,18 @@ def main():
             out_samples = postprocess(r["samples"], r["sr"])
             sf.write(str(OUT / f"{clip_id}.mp3"), out_samples, r["sr"],
                      format="MP3")
+            # Record the playback rate this clip must be played at to hit its
+            # level's target pace. 1.0 means "play as rendered". The site
+            # generator reads this and passes it to KokoroAudio.play(id, text,
+            # rate); see audio_pace.split_pace and app.js.
+            playback_rates[clip_id] = r.get("playback", 1.0)
             audio_sec += len(r["samples"]) / r["sr"]
             extra_passes += r["passes"] - 1
             ok += 1
+            # Effective pace = rendered wpm * playback; the loop calibrated the
+            # rendered wpm against target/playback, so compare err on that basis.
             if r.get("measurable", True) and r["err"] > args.tolerance:
-                off.append((clip_id, round(r["wpm"]),
+                off.append((clip_id, round(r["wpm"] * r.get("playback", 1.0)),
                             target_wpm_for(meta.get("level")), r["speed"]))
             if i % 25 == 0 or i == len(todo):
                 el = time.time() - t0
@@ -253,14 +272,23 @@ def main():
         if w < MIN_WORDS_FOR_PACE:
             continue
         words[lvl] = words.get(lvl, 0) + w
-        secs[lvl] = secs.get(lvl, 0.0) + dur
+        # Effective seconds the student hears = rendered duration / playback
+        # (playback < 1.0 makes the clip take LONGER to play). This keeps the
+        # per-level summary honest about delivered pace.
+        pb = playback_rates.get(clip_id, 1.0)
+        secs[lvl] = secs.get(lvl, 0.0) + (dur / pb if pb else dur)
         measured[lvl] = measured.get(lvl, 0) + 1
         if w >= 60 and dur > 0:
-            wpm = w / (dur / 60)
+            # EFFECTIVE pace is what the student hears: rendered wpm * playback.
+            # The file is rendered fast and slowed at playback, so measuring the
+            # bare file would wrongly flag every low-level clip as too fast.
+            pb = playback_rates.get(clip_id, 1.0)
+            wpm = (w / (dur / 60)) * pb
             if abs(wpm - target_wpm_for(lvl)) / target_wpm_for(lvl) > 0.20:
                 slow.append((clip_id, w, round(wpm), target_wpm_for(lvl)))
-    print(f"  (over turns of >= {MIN_WORDS_FOR_PACE} words; shorter turns are "
-          f"not measurable)")
+    # accumulate effective seconds per level so the summary reflects playback too
+    print(f"  (effective pace = rendered x playback; over turns of >= "
+          f"{MIN_WORDS_FOR_PACE} words; shorter turns are not measurable)")
     print(f"  {'lvl':<5}{'clips':>6}{'measured':>9}{'words':>8}{'min':>8}"
           f"{'wpm':>6}{'target':>8}")
     for lvl in sorted(counts):
@@ -275,6 +303,31 @@ def main():
         print(f"\n  {len(slow)} clip(s) more than 20% off their level target:")
         for cid, w, got, want in sorted(slow, key=lambda x: x[2])[:20]:
             print(f"    {cid:<16}{w:>4}w  {got:>4} wpm (target {want})")
+
+    # Persist each clip's playback rate back into the manifest so the site
+    # generator can pass it to the player. Only write when something changed, to
+    # keep the diff minimal, and only touch clips we actually rendered this run.
+    if playback_rates:
+        with open(MANIFEST, encoding="utf-8") as f:
+            full = json.load(f)
+        changed = 0
+        for cid, rate in playback_rates.items():
+            if cid in full:
+                r = round(float(rate), 4)
+                # Store only when it differs from the default 1.0, and record it
+                # as a number the generator/player can read directly.
+                if full[cid].get("playback_rate") != r:
+                    if r == 1.0:
+                        full[cid].pop("playback_rate", None)
+                    else:
+                        full[cid]["playback_rate"] = r
+                    changed += 1
+        if changed:
+            with open(MANIFEST, "w", encoding="utf-8") as f:
+                json.dump(full, f, ensure_ascii=False, indent=2)
+                f.write("\n")
+            print(f"\n  wrote playback_rate for {changed} clip(s) -> "
+                  f"{MANIFEST.name}")
     return 0
 
 

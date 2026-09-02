@@ -70,9 +70,16 @@ def main():
         dur = sf.info(str(p)).duration
         if dur <= 0:
             continue
-        wpm = w / (dur / 60)
+        # EFFECTIVE pace is what the student hears. Broadcast clips are rendered
+        # at a phoneme-safe speed and slowed at PLAYBACK via audio.playbackRate
+        # (see audio_pace.split_pace); a clip with playback_rate 0.65 plays 1/0.65
+        # times longer, so its delivered wpm is rendered_wpm * playback_rate.
+        # Measuring the bare file would wrongly flag every slowed low-level clip.
+        playback = float(meta.get("playback_rate", 1.0)) or 1.0
+        eff_dur = dur / playback
+        wpm = w / (eff_dur / 60)
         words[lvl] = words.get(lvl, 0) + w
-        secs[lvl] = secs.get(lvl, 0.0) + dur
+        secs[lvl] = secs.get(lvl, 0.0) + eff_dur
         n_meas[lvl] = n_meas.get(lvl, 0) + 1
         per_clip.append((cid, lvl, w, wpm))
         if lvl in ("c1", "c2") and wpm < args.floor_c:

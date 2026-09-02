@@ -55,48 +55,45 @@
     "bm_george",
     "bm_lewis"
   ],
+  "_brand_voice_decision_2026_09_02": "OWNER DECISION, overriding the earlier 'mix of teachers' and 'listening must rotate' designs: af_heart is now the SINGLE brand voice for the entire programme — every surface, including the accent/pronunciation model, and the listening surface no longer rotates. The owner listened to the whole cast (rendered by the fixed v3 pipeline) and chose af_heart as the model voice for everything. This is deliberate and supported by the measurements that exist: af_heart is 95.4% on isolated words (2nd of 12, behind only am_adam) and reached 100% exact on sentences, so she is strong on BOTH the single-word surfaces (vocab, listening) and the sentence surfaces (grammar, reading, shadowing). The two designs this replaces were sound on their own terms — a mix aids voice-recognition, and multi-speaker listening trains comprehension of different speakers — but the owner's call is one consistent brand voice. If a future session wants to reintroduce a rotation for the listening COMPREHENSION skill specifically, do it only with the owner's agreement; do not silently revert this.",
   "cast": {
     "index": {
-      "voice": "af_aoede",
-      "role": "Host — opens each day, friendly and welcoming"
+      "voice": "af_heart",
+      "role": "Host — opens each day (brand voice)"
     },
     "accent": {
-      "voice": "am_adam",
-      "role": "Pronunciation model — the clearest measured voice in the whole set, and the one students imitate"
+      "voice": "af_heart",
+      "role": "Pronunciation model — the voice students imitate (brand voice; owner chose her as the model over the male am_adam)"
     },
     "shadowing": {
       "voice": "af_heart",
-      "role": "Main narrator — the passage students shadow"
+      "role": "Main narrator — the passage students shadow (brand voice)"
     },
     "vocab": {
-      "voice": "af_bella",
-      "role": "Vocabulary coach — crisp, clear single words"
+      "voice": "af_heart",
+      "role": "Vocabulary coach — single words (brand voice; 95.4% on isolated words, 2nd of 12)"
     },
     "reading": {
-      "voice": "af_sarah",
-      "role": "Storyteller — narrates reading passages with energy"
+      "voice": "af_heart",
+      "role": "Storyteller — narrates reading passages (brand voice)"
     },
     "grammar": {
-      "voice": "am_eric",
-      "role": "Grammar teacher — even and articulate, at a moderate pace for A1 learners"
+      "voice": "af_heart",
+      "role": "Grammar teacher (brand voice; replaces am_eric — she is strong on the sentence surface too)"
     },
     "mediation": {
-      "voice": "am_adam",
-      "role": "Explainer — relays and simplifies (reuses the clear neutral male)"
+      "voice": "af_heart",
+      "role": "Explainer — relays and simplifies (brand voice)"
     },
     "review": {
-      "voice": "af_kore",
-      "role": "Reviewer — calm weekly recap, clearest measured female"
+      "voice": "af_heart",
+      "role": "Reviewer — weekly recap (brand voice)"
     }
   },
   "listening_rotation": {
-    "_note": "Listening comprehension needs DIFFERENT PEOPLE, not one voice, so items rotate deterministically across this set (by page). 2 male, 3 female. Every voice here scores >=88.5% on ISOLATED WORDS (see _measured_single_words_2026_09_01), which is what this surface actually is — 86.8% of its 3,633 clips are a single word. Chosen on word accuracy, NOT sentence accuracy: those rankings disagree sharply and this surface is words.",
+    "_note": "NO LONGER A ROTATION (owner decision 2026-09-02 — see _brand_voice_decision_2026_09_02). Listening now uses the single brand voice af_heart like every other surface. Kept as a one-entry list, rather than deleted, so voice_for('listening', index) still resolves through the same code path (index % 1 == 0 always returns af_heart) and nothing that calls it needs to change. To restore multi-speaker comprehension training, re-add voices here — with the owner's agreement.",
     "voices": [
-      "am_adam",
-      "af_heart",
-      "af_bella",
-      "af_nicole",
-      "am_fenrir"
+      "af_heart"
     ]
   },
   "default": "af_heart",

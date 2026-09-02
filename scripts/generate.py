@@ -36,6 +36,10 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent  # empire-dojo/ (parent of scripts/)
 
 import os
+import sys
+
+sys.path.insert(0, str(SCRIPT_DIR))
+from audio_pace import split_pace  # noqa: E402  (per-level broadcast pace)
 
 # empire-nexus (formerly EEC-REPO) is a sibling of THIS repo (empire-dojo/),
 # i.e. REPO_ROOT.parent / "empire-nexus" -- not SCRIPT_DIR.parent, since
@@ -1427,7 +1431,12 @@ def gen_broadcast(level, week, day, theme, bc):
     if authentic_scene:
         seq = [{"id": f"{level}-w{week}-scene", "text": ""}]
     else:
-        seq = [{"id": broadcast_audio_id(level, week, i), "text": s.get("text", "")}
+        # Each segment carries the per-level playback rate: broadcast is
+        # rendered phoneme-safe (af_heart) and slowed at playback to hit the
+        # level's CEFR pace target. rate == 1.0 for c1/c2 (no slowing needed).
+        _bc_rate = round(split_pace(level, "af_heart")[1], 4)
+        seq = [{"id": broadcast_audio_id(level, week, i),
+                "text": s.get("text", ""), "rate": _bc_rate}
                for i, s in enumerate(segments)]
     seq_json = safe_json_for_script_tag(seq)
     turn_rows = ""
@@ -2050,13 +2059,28 @@ def generate_level(level, audio_manifest):
         for _i, _seg in enumerate(
                 [s for s in ((broadcast_data or {}).get("segments") or [])
                  if (s.get("text") or "").strip()]):
-            audio_manifest[broadcast_audio_id(level, week, _i)] = {
+            # OWNER DECISION 2026-09-02: af_heart is the single brand voice for
+            # EVERYTHING, so broadcast ignores the content file's per-segment
+            # `voice` and always uses af_heart. The `speaker` label is kept as
+            # on-screen metadata (the transcript still shows who is speaking),
+            # but one voice narrates every turn. See voice_cast.json's
+            # _brand_voice_decision_2026_09_02.
+            _bc_voice = "af_heart"
+            # Pace is split into a phoneme-safe render speed and a playback rate
+            # (af_heart at 212 wpm corrupts below ~0.90, so low levels are
+            # slowed at playback instead of synthesis). Emit the rate so the
+            # player delivers each level at its CEFR target; omit when 1.0.
+            _render_speed, _playback = split_pace(level, _bc_voice)
+            _entry = {
                 "level": level, "week": week, "day": 0,
                 "kind": "broadcast",
-                "voice": _seg.get("voice") or "af_heart",
+                "voice": _bc_voice,
                 "speaker": _seg.get("speaker") or "",
                 "text": " ".join((_seg.get("text") or "").split()),
             }
+            if round(_playback, 4) != 1.0:
+                _entry["playback_rate"] = round(_playback, 4)
+            audio_manifest[broadcast_audio_id(level, week, _i)] = _entry
 
         print(f"  [{level}] Week {week}: {pages_per_day * 7} pages ✅")
 

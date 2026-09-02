@@ -28,7 +28,9 @@ const TTS = {
   // v3 peak-normalises and trims silence so every clip ships at a consistent,
   // full loudness — matching how the voices sound on the Kokoro site instead
   // of the quiet, uneven raw ONNX output.
-  BASE: 'https://audio.empireenglish.online/speech/v3',
+  // v4: single brand voice (af_heart everywhere) — the voice is part of the
+  // clip id, so every non-af_heart clip has a new id and new audio.
+  BASE: 'https://audio.empireenglish.online/speech/v4',
 
   init() {
     // Nothing to load. The old implementation hunted for an en-US
@@ -248,7 +250,12 @@ const KokoroAudio = {
       const next = () => playAt(i + 1);
       const audio = new Audio(`/audio/${item.id}.mp3`);
       this._current = audio;
-      audio.playbackRate = this.rate;
+      // Per-segment playback rate: extended-listening clips are rendered at a
+      // phoneme-safe speed and carry the per-level rate that brings effective
+      // delivery to the CEFR target (see audio_pace.split_pace). A segment
+      // without its own rate falls back to the sequence rate, as before.
+      const segRate = (item.rate != null) ? parseFloat(item.rate) : this.rate;
+      audio.playbackRate = segRate;
       // Guard against double-advancing: an <audio> element can fire both
       // 'error' and a rejected play() promise for the same failure.
       let handed = false;

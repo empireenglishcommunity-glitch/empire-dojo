@@ -47,6 +47,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 from audio_pace import (MIN_WORDS_FOR_PACE, SPEED_MAX,  # noqa: E402
                         SPEED_MIN, VOICE_WPM, pace_report,
                         speed_for_voice, target_wpm_for)
+from audio_postprocess import postprocess  # noqa: E402
 
 # Sentence-level chunking. Matches each sentence INCLUDING any closing quote,
 # the same approach generate.py uses, because Python needs fixed-width
@@ -198,7 +199,13 @@ def main():
             r = render_calibrated(kokoro, meta["text"], voice,
                                   meta.get("level"), args.tolerance,
                                   args.max_passes)
-            sf.write(str(OUT / f"{clip_id}.mp3"), r["samples"], r["sr"],
+            # Peak-normalise + trim only at WRITE time, after pace calibration
+            # has measured duration on the raw samples — so loudness is fixed
+            # without disturbing the wpm the calibration loop converged on. The
+            # outer-edge trim is a fraction of a second on a multi-second clip,
+            # well inside the pace tolerance the verify pass below enforces.
+            out_samples = postprocess(r["samples"], r["sr"])
+            sf.write(str(OUT / f"{clip_id}.mp3"), out_samples, r["sr"],
                      format="MP3")
             audio_sec += len(r["samples"]) / r["sr"]
             extra_passes += r["passes"] - 1

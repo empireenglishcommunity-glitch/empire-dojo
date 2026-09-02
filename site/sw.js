@@ -24,12 +24,18 @@
  * is what made the v6 -> v7 bump easy to miss.
  */
 
+// v8: broadcast clips peak-normalised + silence-trimmed (audio_postprocess.py).
+//     The raw ONNX output shipped clips at inconsistent, often quiet levels
+//     (peaks from -8.5 dBFS to near clipping on the same voice); the re-render
+//     brings every clip to a consistent, full loudness. Without this bump a
+//     student who had opened a page keeps the old quiet /audio/ clip for up to
+//     a year, because sw caches .mp3 cache-first and Pages serves it immutable.
 // v7: c1-w6-bc0 re-rendered af_nicole -> af_bella (152 -> 203 wpm). Without
 //     this bump every student who had already opened that C1 week 6 page
 //     would have kept the 152 wpm clip permanently, on the one descriptor
 //     (C1.R.1) that is entirely a claim about delivery speed.
 // v6: 189 broadcast clips re-voiced British -> American
-const CACHE_NAME = 'empire-v7';
+const CACHE_NAME = 'empire-v8';
 const OFFLINE_URL = '/offline';
 
 // Pre-cache only the offline fallback + icons (NOT css/js — those are

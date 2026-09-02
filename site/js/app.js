@@ -25,7 +25,10 @@ const TTS = {
   // by the service worker. Without a new path, students would keep the old
   // audio. v2 fixes clips whose phonemes were corrupted by rendering below
   // speed 1.0.
-  BASE: 'https://audio.empireenglish.online/speech/v2',
+  // v3 peak-normalises and trims silence so every clip ships at a consistent,
+  // full loudness — matching how the voices sound on the Kokoro site instead
+  // of the quiet, uneven raw ONNX output.
+  BASE: 'https://audio.empireenglish.online/speech/v3',
 
   init() {
     // Nothing to load. The old implementation hunted for an en-US

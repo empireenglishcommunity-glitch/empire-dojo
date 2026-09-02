@@ -248,7 +248,12 @@ const KokoroAudio = {
       const next = () => playAt(i + 1);
       const audio = new Audio(`/audio/${item.id}.mp3`);
       this._current = audio;
-      audio.playbackRate = this.rate;
+      // Per-segment playback rate: extended-listening clips are rendered at a
+      // phoneme-safe speed and carry the per-level rate that brings effective
+      // delivery to the CEFR target (see audio_pace.split_pace). A segment
+      // without its own rate falls back to the sequence rate, as before.
+      const segRate = (item.rate != null) ? parseFloat(item.rate) : this.rate;
+      audio.playbackRate = segRate;
       // Guard against double-advancing: an <audio> element can fire both
       // 'error' and a rejected play() promise for the same failure.
       let handed = false;

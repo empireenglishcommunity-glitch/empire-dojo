@@ -104,16 +104,55 @@ MIN_WORDS_FOR_PACE = 25
 SPEED_MIN = 0.50
 SPEED_MAX = 1.60
 
+# PHONEME-SAFE RENDER FLOOR (added 2026-09-02 with the single-brand-voice change).
+# Synthesising below this `speed` corrupts Kokoro's phonemes — af_heart at 0.85
+# and below inserts a spurious leading syllable ("She is a student." -> "as she
+# is a student."), ASR-confirmed across a speed sweep; she is clean at >=0.90.
+# So we NEVER synthesise slower than this. When a level's target needs more
+# slowing than the floor permits, the remainder is applied at PLAYBACK time via
+# audio.playbackRate, which the browser pitch-corrects and which does not touch
+# phonemes (the same lever vocab/dictation already use). See split_pace().
+RENDER_SPEED_FLOOR = 0.90
+
 
 def target_wpm_for(level):
     return TARGET_WPM_BY_LEVEL.get((level or "").lower(), DEFAULT_TARGET_WPM)
 
 
 def speed_for_voice(level, voice):
-    """The `speed` value that makes `voice` deliver `level` at its target wpm."""
+    """The `speed` value that makes `voice` deliver `level` at its target wpm.
+
+    This is the IDEAL synthesis speed ignoring the phoneme-safety floor; it is
+    kept for the pace math and the report. Renderers must use split_pace(),
+    which never synthesises below RENDER_SPEED_FLOOR.
+    """
     base = VOICE_WPM.get(voice, FALLBACK_VOICE_WPM)
     raw = target_wpm_for(level) / base
     return max(SPEED_MIN, min(SPEED_MAX, raw)), raw
+
+
+def split_pace(level, voice):
+    """Split a level's target pace into a phoneme-safe render speed and a
+    playback rate, so voice x level always hits the target WITHOUT corruption.
+
+    total_ratio = target_wpm / voice_wpm  is the overall slowdown wanted.
+      * If total_ratio >= RENDER_SPEED_FLOOR (light slowing or speed-up), do it
+        all at synthesis: render_speed = clamp(total_ratio), playback = 1.0.
+      * If total_ratio <  RENDER_SPEED_FLOOR (heavy slowing, e.g. af_heart at
+        A1/A2/B1), synthesise at the floor and put the rest on playback:
+            render_speed = RENDER_SPEED_FLOOR
+            playback     = total_ratio / RENDER_SPEED_FLOOR   (< 1.0, slower)
+    Returns (render_speed, playback_rate). Their product equals the clamped
+    total_ratio, i.e. effective wpm == target wpm.
+    """
+    base = VOICE_WPM.get(voice, FALLBACK_VOICE_WPM)
+    total = target_wpm_for(level) / base
+    total = max(SPEED_MIN, min(SPEED_MAX, total))
+    if total >= RENDER_SPEED_FLOOR:
+        return round(total, 4), 1.0
+    render_speed = RENDER_SPEED_FLOOR
+    playback = total / RENDER_SPEED_FLOOR
+    return round(render_speed, 4), round(playback, 4)
 
 
 def speed_for(meta, default_voice=None):

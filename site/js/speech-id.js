@@ -97,29 +97,24 @@
    *  scripts/voice_cast.json. The parity test asserts the two are identical,
    *  so the duplication cannot drift silently.
    * ------------------------------------------------------------------ */
+  // OWNER DECISION 2026-09-02: af_heart is the single brand voice for the whole
+  // programme — every surface. See scripts/voice_cast.json's
+  // _brand_voice_decision_2026_09_02 for the full rationale. This block MUST
+  // stay identical to that file's cast + rotation; the parity test enforces it.
   const CAST = {
-    index: 'af_aoede',
-    accent: 'am_adam',
+    index: 'af_heart',
+    accent: 'af_heart',
     shadowing: 'af_heart',
-    vocab: 'af_bella',
-    reading: 'af_sarah',
-    grammar: 'am_eric',
-    mediation: 'am_adam',
-    review: 'af_kore'
+    vocab: 'af_heart',
+    reading: 'af_heart',
+    grammar: 'af_heart',
+    mediation: 'af_heart',
+    review: 'af_heart'
   };
-  // Chosen on ISOLATED-WORD accuracy, not sentence accuracy — the listening
-  // surface is 86.8% single words (3,153 of 3,633 clips), and the two rankings
-  // disagree sharply. Measured 2026-09-01 over 87 real words from the site,
-  // transcribed with faster-whisper: am_adam 97.7%, af_heart 95.4%,
-  // af_bella 94.3%, af_nicole 94.3%, am_fenrir 88.5%.
-  //
-  // am_eric was removed: 66.7%, worst of the twelve shortlisted, 31 points below
-  // am_adam. It was serving the page a student reported as unclear, and on her
-  // own three words it produced 'pound'->"Boundy", 'cheap'->"Jeeba", 'cut'->"God".
-  // It stays the grammar voice, which is all sentences and where it is strong.
-  // Full data and reasoning: scripts/voice_cast.json.
-  const LISTENING_ROTATION =
-    ['am_adam', 'af_heart', 'af_bella', 'af_nicole', 'am_fenrir'];
+  // Listening no longer rotates (owner decision): the single brand voice speaks
+  // it like every other surface. Kept as a one-entry list so voiceForPath still
+  // resolves through the same code path (index % 1 === 0 -> af_heart).
+  const LISTENING_ROTATION = ['af_heart'];
   const DEFAULT_VOICE = 'af_heart';
 
   function surfaceOf(pathname) {

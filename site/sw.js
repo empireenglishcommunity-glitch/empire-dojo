@@ -24,6 +24,9 @@
  * is what made the v6 -> v7 bump easy to miss.
  */
 
+// v9: single brand voice — af_heart re-renders every broadcast clip (new voice,
+//     new audio at the same /audio/ path). Without this bump a student keeps
+//     the old mixed-voice clip cached for up to a year.
 // v8: broadcast clips peak-normalised + silence-trimmed (audio_postprocess.py).
 //     The raw ONNX output shipped clips at inconsistent, often quiet levels
 //     (peaks from -8.5 dBFS to near clipping on the same voice); the re-render
@@ -35,7 +38,7 @@
 //     would have kept the 152 wpm clip permanently, on the one descriptor
 //     (C1.R.1) that is entirely a claim about delivery speed.
 // v6: 189 broadcast clips re-voiced British -> American
-const CACHE_NAME = 'empire-v8';
+const CACHE_NAME = 'empire-v9';
 const OFFLINE_URL = '/offline';
 
 // Pre-cache only the offline fallback + icons (NOT css/js — those are

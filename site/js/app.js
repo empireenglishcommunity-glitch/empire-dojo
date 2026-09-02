@@ -28,7 +28,9 @@ const TTS = {
   // v3 peak-normalises and trims silence so every clip ships at a consistent,
   // full loudness — matching how the voices sound on the Kokoro site instead
   // of the quiet, uneven raw ONNX output.
-  BASE: 'https://audio.empireenglish.online/speech/v3',
+  // v4: single brand voice (af_heart everywhere) — the voice is part of the
+  // clip id, so every non-af_heart clip has a new id and new audio.
+  BASE: 'https://audio.empireenglish.online/speech/v4',
 
   init() {
     // Nothing to load. The old implementation hunted for an en-US

@@ -111,6 +111,10 @@ RENDER_SPEED = 1.0
 # place would therefore leave existing students on the old, faulty audio for up
 # to a year while the bucket looked correct.
 #
+# v4: single brand voice — every surface is af_heart now, so the clip id
+#     (sha256 of voice|text) changed for every non-af_heart clip. New audio at
+#     new ids: a new path is required so the year-long immutable cache and the
+#     service worker do not keep serving the old mixed-voice clips.
 # v3: peak-normalised + silence-trimmed in audio_postprocess.py so the clips
 #     match kokoro-fastapi's loudness/clarity — the raw ONNX write shipped
 #     clips as quiet as -8.5 dBFS next to others near full scale, which is why
@@ -118,7 +122,7 @@ RENDER_SPEED = 1.0
 # v2: rendered at speed 1.0 after per-voice slowing was found to corrupt
 #     phonemes (29% of sampled clips mis-spoken).
 # v1: initial render, per-voice speed normalisation — DEFECTIVE, superseded.
-R2_PREFIX = "speech/v3"
+R2_PREFIX = "speech/v4"
 
 
 def speed_for_voice(voice):

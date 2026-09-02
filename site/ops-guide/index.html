@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#D4AF37">
   <meta name="robots" content="noindex,nofollow">
   <link rel="stylesheet" href="/css/empire.css">
-  <!-- ops-guide-build: ops-guide-v2 (2026-07-31) — bump on each deploy to verify live -->
+  <!-- ops-guide-build: ops-guide-v2 (2026-09-02) — bump on each deploy to verify live -->
   <style>
     .guide-body { font-family: 'Cairo', sans-serif; line-height: 1.9; }
     .guide-body .card { text-align: right; }
@@ -243,84 +243,87 @@
         <b>التحكّم:</b> Discord <code>!flag list</code> (يعرض الكل بحالتها) · <code>!flag enable &lt;name&gt;</code> / <code>!flag disable &lt;name&gt;</code> (للجميع) · <code>!flag beta &lt;name&gt; @user…</code> (لأفراد محدّدين). تليجرام: <code>/flag</code> · <code>/flag &lt;name&gt; on|off</code>.
       </div>
 
-      <h3 style="color:var(--accent);margin:14px 0 6px">⚙️ AEGIS — أمان الإنتاج</h3>
-      <div class="cmd"><div class="name"><code>systemstatus</code> <span class="flag-on">🟢</span></div><div class="desc">أمر صحّة النظام العام (<code>!systemstatus</code>).</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🌍 BAWABA — الإدماج بدون إنجليزي</h3>
-      <div class="cmd"><div class="name"><code>bawaba_aliases</code> <span class="flag-on">🟢</span></div><div class="desc">أوامر عربية + أرقام (<code>!تم</code>، <code>!1</code>–<code>!7</code>).</div></div>
-      <div class="cmd"><div class="name"><code>bawaba_reactions</code> <span class="flag-on">🟢</span></div><div class="desc">التسجيل بالتفاعل (✅) وإتمام المهام (1️⃣–7️⃣).</div></div>
-      <div class="cmd"><div class="name"><code>bawaba_tutorial</code> <span class="flag-on">🟢</span></div><div class="desc">جولة تعريف تفاعلية (5 خطوات) عند الانضمام.</div></div>
-      <div class="cmd"><div class="name"><code>bawaba_multimedia</code> <span class="flag-on">🟢</span></div><div class="desc">دليل نصّي + مقاطع صوتية في رسالة الترحيب.</div></div>
-      <div class="cmd"><div class="name"><code>bawaba_buddy_prompt</code> <span class="flag-on">🟢</span></div><div class="desc">رسالة buddy مع اقتراح رسالة صوتية.</div></div>
-      <div class="cmd"><div class="name"><code>bawaba_gradual_english</code> <span class="flag-on">🟢</span></div><div class="desc">لغة ردود البوت تتطوّر بالأسبوع (عربي → ثنائي).</div></div>
-      <div class="cmd"><div class="name"><code>bawaba_start_channel</code> <span class="flag-on">🟢</span></div><div class="desc">ذكر <code>#start-here</code> في رسالة الترحيب.</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🔔 NABD — تنبيهات الطلاب</h3>
-      <div class="cmd"><div class="name"><code>nabd_preferences</code> <span class="flag-on">🟢</span></div><div class="desc">أمر إعدادات التنبيهات (<code>!notifications</code>).</div></div>
-      <div class="cmd"><div class="name"><code>nabd_morning</code> <span class="flag-on">🟢</span></div><div class="desc">رسالة صباحية (6:05ص).</div></div>
-      <div class="cmd"><div class="name"><code>nabd_evening</code> <span class="flag-on">🟢</span></div><div class="desc">تذكير مسائي بالمهام الناقصة (8م).</div></div>
-      <div class="cmd"><div class="name"><code>nabd_streak_alert</code> <span class="flag-on">🟢</span></div><div class="desc">تنبيه خطر انكسار السلسلة (9م).</div></div>
-      <div class="cmd"><div class="name"><code>nabd_celebrations</code> <span class="flag-on">🟢</span></div><div class="desc">احتفالات لحظية بالإنجازات.</div></div>
-      <div class="cmd"><div class="name"><code>nabd_weekly_summary</code> <span class="flag-on">🟢</span></div><div class="desc">ملخّص أسبوعي (الجمعة مساءً).</div></div>
-      <div class="cmd"><div class="name"><code>nabd_absence_recovery</code> <span class="flag-on">🟢</span></div><div class="desc">سلّم استرجاع الغائبين (يوم 2/3/5/7).</div></div>
-      <div class="cmd"><div class="name"><code>nabd_social_proof</code> <span class="flag-on">🟢</span></div><div class="desc">إشعارات نشاط الزملاء (اختياري للطالب).</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🚀 TATAWWUR — تطوّر النظام</h3>
-      <div class="cmd"><div class="name"><code>tatawwur_patterns</code> <span class="flag-on">🟢</span></div><div class="desc">أنماط محادثة يومية في المهام.</div></div>
-      <div class="cmd"><div class="name"><code>tatawwur_srs</code> <span class="flag-on">🟢</span></div><div class="desc">التكرار المتباعد لمراجعة المفردات.</div></div>
-      <div class="cmd"><div class="name"><code>tatawwur_pronunciation</code> <span class="flag-off">🟠</span></div><div class="desc"><b>تقييم النطق «Grade my best read»</b> (Azure + المحرّك المجاني). راجع <a href="#nutq">Nutq</a> و<code>/nutq</code>.</div></div>
-      <div class="cmd"><div class="name"><code>tatawwur_showcase</code> <span class="flag-on">🟢</span></div><div class="desc">نشر قصص النجاح تلقائيًا في قنوات العرض.</div></div>
-      <div class="cmd"><div class="name"><code>tatawwur_adaptive</code> <span class="flag-off">🟠</span></div><div class="desc">ضبط الصعوبة التكيّفي.</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">💬 NOUR — رحلة الإدماج + الشخصية</h3>
-      <div class="cmd"><div class="name"><code>nour_msa</code> <span class="flag-on">🟢</span></div><div class="desc">نور تتكلّم بالفصحى بدل العامّية.</div></div>
-      <div class="cmd"><div class="name"><code>nour_journey</code> <span class="flag-on">🟢</span></div><div class="desc">رحلة إدماج مُنظّمة 7 أيام للطلاب الجدد.</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">📡 MARKAZ — مركز عمليات تليجرام</h3>
-      <div class="cmd"><div class="name"><code>markaz_daily_digest</code> <span class="flag-on">🟢</span></div><div class="desc">مُلخّص صباحي على تليجرام (7ص).</div></div>
-      <div class="cmd"><div class="name"><code>markaz_weekly_report</code> <span class="flag-on">🟢</span></div><div class="desc">تقرير أسبوعي (الأحد 9ص).</div></div>
-      <div class="cmd"><div class="name"><code>markaz_monthly_summary</code> <span class="flag-on">🟢</span></div><div class="desc">ملخّص شهري (أول الشهر).</div></div>
-      <div class="cmd"><div class="name"><code>markaz_churn_alerts</code> <span class="flag-on">🟢</span></div><div class="desc">تنبيهات خطر تسرّب الطلاب الصامتين.</div></div>
-      <div class="cmd"><div class="name"><code>markaz_conversion_alerts</code> <span class="flag-on">🟢</span></div><div class="desc">تنبيه جاهزية التحويل عند بلوغ سلسلة 7 أيام.</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🔗 WUSLAH — تناغم المنظومة</h3>
-      <div class="cmd"><div class="name"><code>wuslah_dashboard_api</code> <span class="flag-on">🟢</span></div><div class="desc">تفعيل واجهات لوحة التقدّم + المتصدّرين.</div></div>
-      <div class="cmd"><div class="name"><code>wuslah_exercise_confirm</code> <span class="flag-on">🟢</span></div><div class="desc">تأكيد المهام من الويب إلى Discord.</div></div>
-      <div class="cmd"><div class="name"><code>wuslah_nour_tips</code> <span class="flag-on">🟢</span></div><div class="desc">نصائح دراسة أسبوعية مُولّدة (W4).</div></div>
-      <div class="cmd"><div class="name"><code>wuslah_adaptive</code> <span class="flag-on">🟢</span></div><div class="desc">توصيات تمرين تكيّفية على الويب (W3).</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🧭 MASAR — سردية النمو الشخصي</h3>
-      <div class="cmd"><div class="name"><code>masar_momentum_score</code> <span class="flag-off">🟠</span></div><div class="desc">مؤشّر الزخم على اللوحة + <code>!progress</code>.</div></div>
-      <div class="cmd"><div class="name"><code>masar_growth_letter</code> <span class="flag-off">🟠</span></div><div class="desc">رسالة النمو الأسبوعية من نور (الأربعاء 11ص).</div></div>
-      <div class="cmd"><div class="name"><code>masar_milestone_moments</code> <span class="flag-off">🟠</span></div><div class="desc">رسائل خاصة عند فتح إنجاز.</div></div>
-      <div class="cmd"><div class="name"><code>masar_difficulty_notes</code> <span class="flag-off">🟠</span></div><div class="desc">شفافية تغيّر الصعوبة عبر رسائل.</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🦅 SAHIN — تجربة قنوات Discord</h3>
-      <div class="cmd"><div class="name"><code>vocab_cheat_sheet</code> <span class="flag-off">🟠</span></div><div class="desc">ورقة مفردات أسبوعية في <code>#cheat-sheets</code>.</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🏰 HISSAR — الأمان ومكافحة الغش</h3>
-      <div class="cmd"><div class="name"><code>hissar_role_gate</code> <span class="flag-on">🟢</span></div><div class="desc">بوابة القواعد: العضو الجديد يقبل القواعد قبل رؤية القنوات.</div></div>
-      <div class="cmd"><div class="name"><code>hissar_anti_cheat</code> <span class="flag-on">🟢</span></div><div class="desc">فترات تهدئة أطول + استمرارها بعد إعادة التشغيل + تأخير تدريجي للاختبارات.</div></div>
-      <div class="cmd"><div class="name"><code>hissar_ip_detection</code> <span class="flag-on">🟢</span></div><div class="desc">تسجيل الـ IP لكل توكن + تنبيهك عند 5+ عناوين مختلفة (مشاركة حساب محتملة).</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🎉 HAFIZ — التحفيز</h3>
-      <div class="cmd"><div class="name"><code>hafiz_motivation</code> <span class="flag-off">🟠</span></div><div class="desc">ردود تحفيزية مُولّدة ومتنوّعة (بدون تصحيح) في قنوات الكتابة/العرض.</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🎓 ITQAN — الاختبار الأسبوعي</h3>
-      <div class="cmd"><div class="name"><code>itqan_weekly_assessment</code> <span class="flag-off">🟠</span></div><div class="desc">الاختبار الأسبوعي كاملًا (راجع <a href="#itqan">قسم Itqan</a>).</div></div>
-      <div class="cmd"><div class="name"><code>itqan_progression_gate</code> <span class="flag-off">🟠</span></div><div class="desc">قفل الأسبوع التالي حتى اجتياز الحالي (ناعم — لا يجمّد المهام اليومية).</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🏛️ MAJLIS — المجلس (المجتمع)</h3>
-      <div class="cmd"><div class="name"><code>community_together_credit</code> <span class="flag-on">🟢</span></div><div class="desc">مسار سريع لمهمة المجتمع: 5 دقايق مع حد في المجلس بدل 10 لوحدك.</div></div>
-      <div class="cmd"><div class="name"><code>community_lounge_beacon</code> <span class="flag-on">🟢</span></div><div class="desc">إشعار تلقائي في <code>#community-live</code> لما حد يكون في المجلس.</div></div>
-      <div class="cmd"><div class="name"><code>community_dynamic_rooms</code> <span class="flag-on">🟢</span></div><div class="desc">غرف ديناميكية: سعة ٦ + فتح تلقائي لغرف جديدة لما تمتلئ.</div></div>
-      <div class="cmd"><div class="name"><code>community_pings_optin</code> <span class="flag-on">🟢</span></div><div class="desc">نظام opt-in: الطلاب يفعّلون الإشعارات بأمر <code>!ping-me</code>.</div></div>
-      <div class="cmd"><div class="name"><code>community_power_hour</code> <span class="flag-on">🟢</span></div><div class="desc">ساعة المجتمع ٩–١٠ م مصر — إشعار يومي + رسالة تيليجرام.</div></div>
-      <div class="cmd"><div class="name"><code>community_together_reward</code> <span class="flag-on">🟢</span></div><div class="desc">مكافأة اختيارية (نقاط) لمن يُكمل المهمة مع حد (الافتراضي 0 = مُطفأة).</div></div>
-
-      <h3 style="color:var(--accent);margin:14px 0 6px">🎓 TAQDEEM — تقدّم التقييم</h3>
-      <div class="cmd"><div class="name"><code>assessment_monthly_review</code> <span class="flag-on">🟢</span></div><div class="desc">المراجعة الشهرية — بعد كل 4 اختبارات أسبوعية. تقيس الاحتفاظ بالمعلومات (65% للنجاح).</div></div>
-      <div class="cmd"><div class="name"><code>assessment_advancement_exam</code> <span class="flag-on">🟢</span></div><div class="desc">اختبار الترقية — جزء أول (مهارات) + جزء تاني (تسجيل 60 ثانية). النجاح = ترقية تلقائية.</div></div>
+      <!-- AUTO:flags-ops START · generated by scripts/guide_sync.py — do not edit by hand -->
+      <h3 style="color:var(--accent);margin:14px 0 6px">⚙️ AEGIS — production safety</h3>
+      <div class="cmd"><div class="name"><code>systemstatus</code> <span class="flag-on">🟢</span></div><div class="desc">Public system health command (!systemstatus)</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🌍 BAWABA — zero-English onboarding</h3>
+      <div class="cmd"><div class="name"><code>bawaba_aliases</code> <span class="flag-on">🟢</span></div><div class="desc">Arabic commands + number tasks (!تم, !1-!7)</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_reactions</code> <span class="flag-on">🟢</span></div><div class="desc">Emoji-react registration (✅) + task completion (1️⃣-7️⃣)</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_tutorial</code> <span class="flag-on">🟢</span></div><div class="desc">Interactive 5-step Arabic tutorial quest on join</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_multimedia</code> <span class="flag-on">🟢</span></div><div class="desc">Text journey guide + audio clips in welcome DM</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_buddy_prompt</code> <span class="flag-on">🟢</span></div><div class="desc">Rich buddy DM with voice message suggestion</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_gradual_english</code> <span class="flag-on">🟢</span></div><div class="desc">Bot response language evolves by week (Arabic → bilingual)</div></div>
+      <div class="cmd"><div class="name"><code>bawaba_start_channel</code> <span class="flag-on">🟢</span></div><div class="desc">#start-here mention in welcome DM</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🔔 NABD — student notifications</h3>
+      <div class="cmd"><div class="name"><code>nabd_preferences</code> <span class="flag-on">🟢</span></div><div class="desc">Notification settings command (!notifications / !إشعارات)</div></div>
+      <div class="cmd"><div class="name"><code>nabd_morning</code> <span class="flag-on">🟢</span></div><div class="desc">Morning kickstart DM (6:05 AM daily)</div></div>
+      <div class="cmd"><div class="name"><code>nabd_evening</code> <span class="flag-on">🟢</span></div><div class="desc">Evening incomplete reminder (8 PM)</div></div>
+      <div class="cmd"><div class="name"><code>nabd_streak_alert</code> <span class="flag-on">🟢</span></div><div class="desc">Streak-at-risk alert (9 PM)</div></div>
+      <div class="cmd"><div class="name"><code>nabd_celebrations</code> <span class="flag-on">🟢</span></div><div class="desc">Real-time milestone celebrations</div></div>
+      <div class="cmd"><div class="name"><code>nabd_weekly_summary</code> <span class="flag-on">🟢</span></div><div class="desc">Friday evening progress summary DM</div></div>
+      <div class="cmd"><div class="name"><code>nabd_absence_recovery</code> <span class="flag-on">🟢</span></div><div class="desc">Absence recovery ladder (day 2/3/5/7)</div></div>
+      <div class="cmd"><div class="name"><code>nabd_social_proof</code> <span class="flag-on">🟢</span></div><div class="desc">Opt-in peer activity notifications</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🚀 TATAWWUR — system evolution</h3>
+      <div class="cmd"><div class="name"><code>tatawwur_patterns</code> <span class="flag-on">🟢</span></div><div class="desc">Daily conversational patterns in tasks</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_srs</code> <span class="flag-on">🟢</span></div><div class="desc">Spaced repetition for vocabulary recall</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_pronunciation</code> <span class="flag-off">🟠</span></div><div class="desc">Pronunciation 'Grade my best read' (Azure + free fallback)</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_showcase</code> <span class="flag-on">🟢</span></div><div class="desc">Auto-post success stories to showcase channels</div></div>
+      <div class="cmd"><div class="name"><code>tatawwur_adaptive</code> <span class="flag-off">🟠</span></div><div class="desc">Adaptive difficulty pacing</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">💬 NOUR — autonomous student concierge</h3>
+      <div class="cmd"><div class="name"><code>nour_msa</code> <span class="flag-on">🟢</span></div><div class="desc">Rawiya R0: Nour speaks Modern Standard Arabic (فصحى) instead of Egyptian colloquial</div></div>
+      <div class="cmd"><div class="name"><code>nour_journey</code> <span class="flag-on">🟢</span></div><div class="desc">Rawiya R2: structured 7-day onboarding journey for new students</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">📡 MARKAZ — Telegram operations hub</h3>
+      <div class="cmd"><div class="name"><code>markaz_daily_digest</code> <span class="flag-on">🟢</span></div><div class="desc">Morning Telegram digest via Empire Ops bot (7 AM Dubai)</div></div>
+      <div class="cmd"><div class="name"><code>markaz_weekly_report</code> <span class="flag-on">🟢</span></div><div class="desc">Sunday weekly business report via Empire Ops bot (9 AM Dubai)</div></div>
+      <div class="cmd"><div class="name"><code>markaz_monthly_summary</code> <span class="flag-on">🟢</span></div><div class="desc">Monthly engagement/revenue summary (1st of month)</div></div>
+      <div class="cmd"><div class="name"><code>markaz_churn_alerts</code> <span class="flag-on">🟢</span></div><div class="desc">Churn risk alerts for silent high-value students</div></div>
+      <div class="cmd"><div class="name"><code>markaz_conversion_alerts</code> <span class="flag-on">🟢</span></div><div class="desc">Conversion-ready alerts when students hit 7-day streak</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🔗 WUSLAH — ecosystem harmony</h3>
+      <div class="cmd"><div class="name"><code>wuslah_dashboard_api</code> <span class="flag-on">🟢</span></div><div class="desc">Enable expanded /api/dashboard + /api/leaderboard endpoints</div></div>
+      <div class="cmd"><div class="name"><code>wuslah_exercise_confirm</code> <span class="flag-on">🟢</span></div><div class="desc">Enable web-to-Discord task confirmation via API</div></div>
+      <div class="cmd"><div class="name"><code>wuslah_nour_tips</code> <span class="flag-on">🟢</span></div><div class="desc">Enable AI-generated weekly study tips (W4)</div></div>
+      <div class="cmd"><div class="name"><code>wuslah_adaptive</code> <span class="flag-on">🟢</span></div><div class="desc">Enable adaptive practice recommendations on the web (W3)</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🧭 MASAR — personal growth narrative</h3>
+      <div class="cmd"><div class="name"><code>masar_momentum_score</code> <span class="flag-off">🟠</span></div><div class="desc">Momentum Score on dashboard + !progress (replaces XP bar, fixes D012)</div></div>
+      <div class="cmd"><div class="name"><code>masar_growth_letter</code> <span class="flag-off">🟠</span></div><div class="desc">Nour's Weekly Growth Letter (task + API + dashboard card, fixes D020)</div></div>
+      <div class="cmd"><div class="name"><code>masar_milestone_moments</code> <span class="flag-off">🟠</span></div><div class="desc">Personalized milestone unlock DMs</div></div>
+      <div class="cmd"><div class="name"><code>masar_difficulty_notes</code> <span class="flag-off">🟠</span></div><div class="desc">Adaptive difficulty change transparency DMs</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🦅 SAHIN — Discord channel experience</h3>
+      <div class="cmd"><div class="name"><code>vocab_cheat_sheet</code> <span class="flag-off">🟠</span></div><div class="desc">Weekly Vocabulary Cheat Sheet in #cheat-sheets (Sahin Phase 4)</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🏰 HISSAR — security / anti-cheat / copyright</h3>
+      <div class="cmd"><div class="name"><code>hissar_role_gate</code> <span class="flag-on">🟢</span></div><div class="desc">Role-gate system: new members must accept rules before seeing channels (replaces removed Discord Rules Screening)</div></div>
+      <div class="cmd"><div class="name"><code>hissar_anti_cheat</code> <span class="flag-on">🟢</span></div><div class="desc">P4: increased cooldown (180s), persistent cooldown across restarts, progressive quiz delay</div></div>
+      <div class="cmd"><div class="name"><code>hissar_ip_detection</code> <span class="flag-on">🟢</span></div><div class="desc">P5: log IPs per token, auto-flag on 5+ unique IPs, Telegram alert to owner</div></div>
+      <div class="cmd"><div class="name"><code>hissar_bot_integrity</code> <span class="flag-off">🟠</span></div><div class="desc">Bot-profile tamper detection: alerts the owner if the Ops/Discord bot name, description or bio drifts from its baseline or contains spam (added after the 2026-08-29 Ops-token compromise)</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🎉 HAFIZ — motivational engagement</h3>
+      <div class="cmd"><div class="name"><code>hafiz_motivation</code> <span class="flag-off">🟠</span></div><div class="desc">Phase F (E4): AI-generated, always-varied motivational replies in #lN-text-practice + #lN-showcase, correction-free, throttled</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🎓 ITQAN — weekly mastery assessment</h3>
+      <div class="cmd"><div class="name"><code>itqan_weekly_assessment</code> <span class="flag-off">🟠</span></div><div class="desc">Weekly Assessment (Itqan): calendar-gated, timed weekly mastery test on the practice page (5 skills, spiral, two-dimension pass, public Champions celebration / private support)</div></div>
+      <div class="cmd"><div class="name"><code>itqan_progression_gate</code> <span class="flag-off">🟠</span></div><div class="desc">Itqan R16: mastery-based progression — the next week's content stays locked until the current week's assessment is passed (grandfathers existing students; safety valves keep nobody stuck)</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🏛️ MAJLIS — community lounge</h3>
+      <div class="cmd"><div class="name"><code>community_together_credit</code> <span class="flag-off">🟠</span></div><div class="desc">Majlis R1: company-aware task #7 — voice half satisfied by 5 min together-time in a Majlis lounge (OR the existing 10 min any-voice path; nobody worse off)</div></div>
+      <div class="cmd"><div class="name"><code>community_lounge_beacon</code> <span class="flag-off">🟠</span></div><div class="desc">Majlis R2: smart, self-cleaning presence beacon in #community-live when a Majlis lounge is in the lonely/lively band</div></div>
+      <div class="cmd"><div class="name"><code>community_dynamic_rooms</code> <span class="flag-off">🟠</span></div><div class="desc">Majlis R4: join-to-create overflow pods — auto-spawn capped Majlis lounges and auto-reap when empty</div></div>
+      <div class="cmd"><div class="name"><code>community_pings_optin</code> <span class="flag-off">🟠</span></div><div class="desc">Majlis R5: opt-in community-pings role + Knock button — only opted-in members get @-mentioned by beacons</div></div>
+      <div class="cmd"><div class="name"><code>community_power_hour</code> <span class="flag-off">🟠</span></div><div class="desc">Majlis R6: scheduled Community Hour (9-10 PM Egypt) with rally in #community-live + one Telegram broadcast</div></div>
+      <div class="cmd"><div class="name"><code>community_together_reward</code> <span class="flag-off">🟠</span></div><div class="desc">Majlis R8: optional bonus points/acknowledgement when task #7 is completed via the together path</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🎓 TAQDEEM — assessment progression</h3>
+      <div class="cmd"><div class="name"><code>assessment_monthly_review</code> <span class="flag-off">🟠</span></div><div class="desc">Taqdeem: Monthly Progress Review — retention-focused assessment after every 4 weekly passes (diagnostic + prerequisite for advancement)</div></div>
+      <div class="cmd"><div class="name"><code>assessment_advancement_exam</code> <span class="flag-on">🟢</span></div><div class="desc">Taqdeem: Level Advancement Exam — two-part gate (structured skills + integrated production task) for level promotion</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🏳️ ASSESSMENT — </h3>
+      <div class="cmd"><div class="name"><code>assessment_watchdog</code> <span class="flag-off">🟠</span></div><div class="desc">Every 3h, probe the assessment endpoints and look for stranded attempts, finished monthly reviews with no recorded result, and orphan item rows — alerting Empire Ops on a change of state. Added after three assessment defects in a row were found from student complaints rather than monitoring, including /api/assessment/item answering HTTP 500 to every request for ~24h. Read-only: it reports, never repairs. Also exposes !assessment-health</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🏳️ SUSPENSION — </h3>
+      <div class="cmd"><div class="name"><code>suspension_lifecycle</code> <span class="flag-off">🟠</span></div><div class="desc">Monthly membership lifecycle: !announce-renewal (notice to students), !suspend (withdraw access — clock + status + Darb sessions + link tokens + the Student gateway role, which is what hides the channels), !restore (give it back and bridge the no-access days so a 40-day streak survives), and the 60-day retention cycle (owner warned at day 53, then JSON archive → permanent purge → VACUUM). Suspension deletes NOTHING; only the purge deletes, and it refuses to run if the archive cannot be written</div></div>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🏳️ IJTIHAD — </h3>
+      <div class="cmd"><div class="name"><code>ijtihad_award_table</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 7: the new award table — REPLACES POINTS_PER_TASK (15), POINTS_ALL_TASKS (100) and the STREAK_BONUS_POINTS tenure ladder. Base 10/task x difficulty (1.0-1.5) x quality (1.0-1.3, never below 1.0 so trying is never punished), + 25 for meeting YOUR target, + bounded seasonal streak bonuses at 7/14/21/28 days. Fixes the incentive where attempting Challenging content paid the same as Easy. Hard either/or with the legacy table — they can never both fire</div></div>
+      <div class="cmd"><div class="name"><code>ijtihad_growth_recognition</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 6: growth + grit — !growth, !improved, !spotlight, and five recognitions (Personal Best, Persistence, Comeback, Uphill, Refinement). Growth is measured against the student's OWN 14-day baseline so a beginner can lead; recognitions award NO points, so determination is celebrated without moving anyone above a stronger student on the effort board</div></div>
+      <div class="cmd"><div class="name"><code>ijtihad_boards</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 5: the board set — !season (effort, resets), !peers (journey-stage cohort with min-3 degradation), !consistency (full-day streaks); !top redirects to the season board; and the nightly #streak-tracker becomes a ROLL of who completed their target instead of a 15-name ranking of &gt;=1-task streaks. Every board caps at top 3-5 and lists only students who earned something, so no surface publishes a bottom half</div></div>
+      <div class="cmd"><div class="name"><code>ijtihad_personal_target</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 4: Personal Daily Target (3/5/7, one change per season) + Full-Day streaks + streak freezes. A student who can genuinely only manage 3 gets full 'complete day' credit for 3/3 instead of being permanently short of a bar built for someone with more free time; absolute volume still scales so 7/7 earns more</div></div>
+      <div class="cmd"><div class="name"><code>ijtihad_achievement_awards</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 3: achievement payouts — mastery 150 / distinction 250 / monthly review 300 / promotion 500. Before this, all four awarded ZERO while pure attendance paid 105-205/day, so the economy could not express 'this student improved'. Deduped: each achievement pays once, ever</div></div>
+      <div class="cmd"><div class="name"><code>ijtihad_seasons</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 2: effort seasons — fixed community-wide 4-week windows. Season effort is DERIVED from points_log date windows (no migration, no new points column), so rank stops being a lifetime integral that rewards seniority over current work</div></div>
+      <div class="cmd"><div class="name"><code>ijtihad_sijil</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 1: Sijil — the permanent Record of Honour (!sijil, !honour). Read-only view of durable achievements (weeks mastered, distinctions, levels passed, perfect days, best streak, legacy XP) so seasonal effort resets never erase what a student built</div></div>
+      <p style="color:var(--text-muted);font-size:0.85rem">الإجمالي: <b>61</b> عَلَمًا عبر <b>17</b> مبادرة.</p>
+      <!-- AUTO:flags-ops END -->
     </div>
 
     <!-- Subsystems -->
@@ -344,12 +347,15 @@
     <div class="card guide-section" id="levels">
       <h2>🎓 المستويات والترقية (CEFR — A1 إلى C2)</h2>
       <p><b>6 مستويات</b> متوافقة مع الإطار الأوروبي المرجعي (CEFR)، لكل واحد منهج وعدد أسابيع خاص به. <span class="en">Mi'yar</span> — المحتوى كامل ومؤلَّف لكل المستويات:</p>
-      <div class="cmd"><div class="name">🌱 <b>A1</b> — Breakthrough / مبتدئ</div><div class="desc">للمبتدئين تمامًا — <b>10 أسابيع</b>.</div></div>
-      <div class="cmd"><div class="name">🌿 <b>A2</b> — Waystage / أساسي</div><div class="desc">الماضي، المقارنة، خطط المستقبل — <b>12 أسبوعًا</b>.</div></div>
-      <div class="cmd"><div class="name">🚀 <b>B1</b> — Threshold / متوسط</div><div class="desc">استقلالية في التعبير — <b>14 أسبوعًا</b>.</div></div>
-      <div class="cmd"><div class="name">💪 <b>B2</b> — Vantage / فوق المتوسط</div><div class="desc">طلاقة ونقاش وتفاصيل أدق — <b>16 أسبوعًا</b>.</div></div>
-      <div class="cmd"><div class="name">🏆 <b>C1</b> — Effective Operational Proficiency / متقدّم</div><div class="desc">استخدام مرن وفعّال — <b>18 أسبوعًا</b>.</div></div>
-      <div class="cmd"><div class="name">👑 <b>C2</b> — Mastery / إتقان</div><div class="desc">إتقان شبه كامل — <b>20 أسبوعًا</b>.</div></div>
+      <!-- AUTO:levels-ops START · generated by scripts/guide_sync.py — do not edit by hand -->
+      <div class="cmd"><div class="name"><code>A1</code> 🌱 Breakthrough</div><div class="desc">Beginner · <b>10</b> أسابيع · هدف مفردات <b>750</b> · درجة الترقية <b>70%</b></div></div>
+      <div class="cmd"><div class="name"><code>A2</code> 🌿 Waystage</div><div class="desc">Elementary · <b>12</b> أسابيع · هدف مفردات <b>1500</b> · درجة الترقية <b>72%</b></div></div>
+      <div class="cmd"><div class="name"><code>B1</code> 🚀 Threshold</div><div class="desc">Intermediate · <b>14</b> أسابيع · هدف مفردات <b>3250</b> · درجة الترقية <b>75%</b></div></div>
+      <div class="cmd"><div class="name"><code>B2</code> 💪 Vantage</div><div class="desc">Upper-Intermediate · <b>16</b> أسابيع · هدف مفردات <b>5000</b> · درجة الترقية <b>75%</b></div></div>
+      <div class="cmd"><div class="name"><code>C1</code> 🏆 Effective Operational Proficiency</div><div class="desc">Advanced · <b>18</b> أسابيع · هدف مفردات <b>8000</b> · درجة الترقية <b>78%</b></div></div>
+      <div class="cmd"><div class="name"><code>C2</code> 👑 Mastery</div><div class="desc">Proficiency · <b>20</b> أسابيع · هدف مفردات <b>10000</b> · درجة الترقية <b>80%</b></div></div>
+      <p style="color:var(--text-muted);font-size:0.85rem"><b>6</b> مستويات · <b>90</b> أسبوعاً إجمالاً. الترقية يدوية (<code>!setlevel</code>).</p>
+      <!-- AUTO:levels-ops END -->
       <div class="callout">
         <b>الترقية يدوية بقرارك</b> — مفيش ترقية آلية. رقّي طالبًا عبر:
         <br>Discord: <code>!setlevel &lt;@user&gt; &lt;A1-C2&gt;</code> أو <code>/setlevel</code> (منتقي بالاسم). يتم تحديث رتبة الطالب في Discord تلقائيًا.

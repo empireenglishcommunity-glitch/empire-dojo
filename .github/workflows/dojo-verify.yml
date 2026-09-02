@@ -166,6 +166,22 @@ jobs:
             python3 scripts/verify_authentic_audio.py
 
       # ---------------------------------------------------------------
+      #  4b. Guide manuals must not drift from the live system. The
+      #      student (/guide) and owner (/ops-guide) pages carry AUTO
+      #      regions filled by scripts/guide_sync.py from the real
+      #      curriculum/config/flag data. This FAILS if a generated
+      #      region is stale (someone hand-edited generated HTML, or the
+      #      system changed without re-running guide_sync), and WARNS if
+      #      hand-written editorial prose disagrees with the live facts.
+      #      Fix a hard failure with: python3 scripts/guide_sync.py
+      # ---------------------------------------------------------------
+      - name: Guide manuals must match the live system (no drift)
+        if: ${{ !cancelled() && steps.regen.outcome == 'success' }}
+        run: |
+          EEC_REPO_DIR=${{ github.workspace }}/empire-nexus \
+            python3 scripts/verify_guides.py
+
+      # ---------------------------------------------------------------
       #  5. The speech clip id contract, checked across BOTH languages.
       #
       #  Python (speech_registry.py) names the files that get rendered;

@@ -2482,7 +2482,29 @@ def main():
     print(f"\n  TOTAL: {total} HTML pages generated")
     print(f"  Audio manifest: {AUDIO_MANIFEST_PATH} ({len(audio_manifest)} clips needed)")
     print(f"  Run generate_audio.py against this manifest to produce Kokoro MP3s.")
+
+    # Keep the student/owner manuals in sync with the system on every build.
+    # The guides' AUTO regions (level table, feature-flag catalog, counts) are
+    # filled from the same curriculum/config data used above, so any change to
+    # the system flows into the guides here instead of drifting until someone
+    # notices. Editorial prose is untouched — see scripts/guide_sync.py. If
+    # empire-nexus is absent the sync no-ops with a warning rather than failing.
+    print("\n  Syncing guide manuals (/guide, /ops-guide)...")
+    _sync_guides()
+
     print(f"  Platform ready at: {OUTPUT_DIR}/")
+
+
+def _sync_guides():
+    """Run guide_sync in-process. Kept out of the main flow above so a guide
+    import problem can never block the (more important) page generation."""
+    try:
+        import guide_sync
+        guide_sync.main()
+    except SystemExit:
+        pass  # guide_sync.main() returns via sys.exit in some paths
+    except Exception as exc:  # noqa: BLE001
+        print(f"  ::warning::guide sync skipped — {type(exc).__name__}: {exc}")
 
 
 if __name__ == "__main__":

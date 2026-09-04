@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#D4AF37">
   <meta name="robots" content="noindex,nofollow">
   <link rel="stylesheet" href="/css/empire.css">
-  <!-- ops-guide-build: ops-guide-v2 (2026-09-03) — bump on each deploy to verify live -->
+  <!-- ops-guide-build: ops-guide-v2 (2026-09-04) — bump on each deploy to verify live -->
   <style>
     .guide-body { font-family: 'Cairo', sans-serif; line-height: 1.9; }
     .guide-body .card { text-align: right; }
@@ -326,7 +326,13 @@
       <div class="cmd"><div class="name"><code>ijtihad_achievement_awards</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 3: achievement payouts — mastery 150 / distinction 250 / monthly review 300 / promotion 500. Before this, all four awarded ZERO while pure attendance paid 105-205/day, so the economy could not express 'this student improved'. Deduped: each achievement pays once, ever</div></div>
       <div class="cmd"><div class="name"><code>ijtihad_seasons</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 2: effort seasons — fixed community-wide 4-week windows. Season effort is DERIVED from points_log date windows (no migration, no new points column), so rank stops being a lifetime integral that rewards seniority over current work</div></div>
       <div class="cmd"><div class="name"><code>ijtihad_sijil</code> <span class="flag-off">🟠</span></div><div class="desc">Ijtihad Phase 1: Sijil — the permanent Record of Honour (!sijil, !honour). Read-only view of durable achievements (weeks mastered, distinctions, levels passed, perfect days, best streak, legacy XP) so seasonal effort resets never erase what a student built</div></div>
-      <p style="color:var(--text-muted);font-size:0.85rem">الإجمالي: <b>59</b> عَلَمًا عبر <b>16</b> مبادرة.</p>
+      <h3 style="color:var(--accent);margin:14px 0 6px">🎙️ SAWT — podcast studio</h3>
+      <div class="cmd"><div class="name"><code>sawt_episodes</code> <span class="flag-off">🟠</span></div><div class="desc">Sawt Phase 1: podcast episode management — /create-episode + /publish-episode post level-graded episodes to the per-level #&lt;slug&gt;-podcast channel (level-isolated). OFF until content is ready</div></div>
+      <div class="cmd"><div class="name"><code>sawt_listen_credit</code> <span class="flag-off">🟠</span></div><div class="desc">Sawt Phase 1: award a small, capped acknowledgement when a student marks a podcast episode listened (✅ / !listened). Additive; never breaks existing points/streak rules</div></div>
+      <div class="cmd"><div class="name"><code>sawt_script_gen</code> <span class="flag-off">🟠</span></div><div class="desc">Sawt Phase 2: LLM-assisted podcast script generation — /generate-script turns a topic + level + format into a level-graded conversation script for the owner to review before recording. Nothing publishes automatically</div></div>
+      <div class="cmd"><div class="name"><code>sawt_tts_pipeline</code> <span class="flag-off">🟠</span></div><div class="desc">Sawt Phase 3: in-bot audio assembly — /generate-audio parses a reviewed script into per-speaker segments and renders them via the configured TTS engine. On the 512MB bot host no engine is available, so it explains to render offline (GitHub Actions); the same path produces audio where an engine IS available</div></div>
+      <div class="cmd"><div class="name"><code>sawt_voice_clone</code> <span class="flag-off">🟠</span></div><div class="desc">Sawt Phase 3: use the owner's CLONED voice for their lines (Chatterbox). Requires explicit stored consent (!sawt-consent) + a reference clip; refuses without both. Owner voice only — never clones anyone else</div></div>
+      <p style="color:var(--text-muted);font-size:0.85rem">الإجمالي: <b>64</b> عَلَمًا عبر <b>17</b> مبادرة.</p>
       <!-- AUTO:flags-ops END -->
     </div>
 

@@ -268,3 +268,14 @@ jobs:
       - name: Header streak must render the authoritative value (behavioural)
         if: ${{ !cancelled() }}
         run: node scripts/test_streak_display.js
+
+      # The assessment review must show the student's OWN answer and print the
+      # correct answer at most once. A student saw wrong answers rendered as
+      # "Correct answer: X — Correct answer: X" (the correct word twice, her own
+      # answer never shown), which made correct grading look broken. Behavioural,
+      # because it loads the real assessment.js and exercises _reviewDetail — the
+      # doubling was a rendering bug a static grep would not have caught. Reads
+      # only site/js/, so it does not depend on the regen step.
+      - name: Assessment review must show the student's answer, correct answer once
+        if: ${{ !cancelled() }}
+        run: node scripts/test_assessment_review_detail.js

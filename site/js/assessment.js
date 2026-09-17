@@ -42,6 +42,60 @@ const ItqanAssessment = {
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   },
 
+  /**
+   * Build the per-item review detail line shown under each result row.
+   *
+   * WHY THIS IS A NAMED, SELF-CONTAINED HELPER (do not inline it back):
+   * a student (Esraa, A1) reported answers marked wrong that "looked correct".
+   * The cause was here, not in the grading: the old code prepended
+   * "Correct answer: {expected}" AND appended the server `feedback`, which for
+   * objective items was ITSELF "Correct answer: {expected}". The result was
+   * "Correct answer: has — Correct answer: has" — the correct word twice, and
+   * the student's OWN answer never shown, so a genuinely wrong answer (she
+   * typed a different word) looked like a rejected-correct-answer.
+   *
+   * The contract now, enforced by test_assessment_review_detail.mjs:
+   *  - The correct answer appears AT MOST ONCE. Never doubled.
+   *  - When wrong, show the student's own answer ("Your answer: …") alongside
+   *    the correct one, so the ✗ is self-explanatory.
+   *  - The correct answer comes ONLY from the structured `expected` field, never
+   *    from `feedback` (feedback is a supplementary note; the server no longer
+   *    puts the answer in it — see assessment.py score_objective).
+   *  - Degrade gracefully for older payloads (missing `answer`/`expected`) and
+   *    for audio/writing items (no single `expected` word → show feedback only).
+   */
+  _reviewDetail(it, ok) {
+    it = it || {};
+    const expected = (it.expected == null ? '' : String(it.expected)).trim();
+    const answer = (it.answer == null ? '' : String(it.answer)).trim();
+    // A supplementary note only. Objective items send "" here now; audio/writing
+    // items may send an encouraging line. It must NEVER be treated as the answer.
+    const note = (it.feedback && it.feedback !== '__pending_review__')
+      ? this._esc(it.feedback) : '';
+
+    if (ok) {
+      return note || 'Correct! <span class="ar-inline" lang="ar" dir="rtl">/ صح!</span>';
+    }
+
+    // Wrong. If we know the correct answer (objective items), show BOTH the
+    // student's answer and the correct one so the mark is understandable.
+    if (expected) {
+      const parts = [];
+      if (answer) {
+        parts.push(`Your answer <span class="ar-inline" lang="ar" dir="rtl">/ إجابتك</span>: ` +
+                   `<bdi class="asmt-ans asmt-ans-wrong">${this._esc(answer)}</bdi>`);
+      }
+      parts.push(`Correct answer <span class="ar-inline" lang="ar" dir="rtl">/ الإجابة الصح</span>: ` +
+                 `<bdi class="asmt-ans">${this._esc(expected)}</bdi>`);
+      let detail = parts.join(' — ');
+      if (note) detail += ` — ${note}`;
+      return detail;
+    }
+
+    // No structured correct answer (audio/writing) — the note is all we have.
+    return note;
+  },
+
   // ---- init + routing ----------------------------------------------------
 
   async init() {
@@ -959,10 +1013,7 @@ const ItqanAssessment = {
       items.forEach(it => {
         const ok = it.correct === 1 || it.correct === true;
         const mark = ok ? '<span class="asmt-ok">✓</span>' : '<span class="asmt-bad">✗</span>';
-        let detail = it.feedback ? this._esc(it.feedback) : (ok ? 'Correct!' : '');
-        if (!ok && it.expected) {
-          detail = `Correct answer: <bdi class="asmt-ans">${this._esc(it.expected)}</bdi>` + (it.feedback ? ` — ${this._esc(it.feedback)}` : '');
-        }
+        const detail = this._reviewDetail(it, ok);
         html += `
           <div class="asmt-review-row">
             ${mark}

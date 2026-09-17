@@ -1696,6 +1696,10 @@ body.has-maint-banner { padding-top: 66px; }
    never reorders slashes/punctuation. Applies site-wide. */
 .ar-inline { unicode-bidi: isolate; }
 .asmt-ans { unicode-bidi: isolate; font-weight: 600; }
+/* The student's OWN (wrong) answer in the review — struck + muted so the eye
+   lands on the correct answer, but she can still see exactly what she typed
+   and why the mark was ✗. Added with the Esraa review fix. */
+.asmt-ans-wrong { color: #e74c3c; text-decoration: line-through; font-weight: 600; }
 
 /* Honesty banner (runner) — animated scan line + Arabic reminder */
 .asmt-honesty {
